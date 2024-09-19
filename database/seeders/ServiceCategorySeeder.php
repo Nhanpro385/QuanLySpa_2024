@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Kra8\Snowflake\Snowflake;
 
 class ServiceCategorySeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class ServiceCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+
     }
 }

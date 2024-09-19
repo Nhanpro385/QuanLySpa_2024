@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('content');
             $table->string('url_notification');
             $table->integer('pin')->default(1);
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(false);
             $table->string('created_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();

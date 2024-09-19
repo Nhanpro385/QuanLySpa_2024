@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Staff;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Kra8\Snowflake\Snowflake;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Supplier>
@@ -17,7 +19,12 @@ class SupplierFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'id' => app(Snowflake::class)->next(),
+            'name' => $this->faker->name(),
+            'country' => $this->faker->country(),
+            'contact_email' => $this->faker->email(),
+            'code' => random_int(100000000000, 9999999999999),
+            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray())
         ];
     }
 }

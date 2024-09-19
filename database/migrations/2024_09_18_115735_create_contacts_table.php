@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('email');
             $table->string('phone', 20);
             $table->string('note');
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Staff;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Kra8\Snowflake\Snowflake;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ServiceCategory>
@@ -17,7 +19,10 @@ class ServiceCategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'id' => app(Snowflake::class)->next(),
+            'name' => $this->faker->name(),
+            'description' => $this->faker->sentence(),
+            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray())
         ];
     }
 }

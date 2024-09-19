@@ -14,10 +14,12 @@ return new class extends Migration {
             $table->string('id', 20)->primary();
             $table->time('start_time')->default('08:00:00');
             $table->time('end_time')->default('12:00:00');
+            $table->date('shift_date');
             $table->integer('max_customers')->default(8);
             $table->string('note')->nullable();
             $table->boolean('status')->default(true);
             $table->string('created_by')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
 

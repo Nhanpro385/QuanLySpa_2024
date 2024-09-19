@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('note')->nullable();
             $table->decimal('total_amount', 10, 2);
             $table->boolean('status')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
 

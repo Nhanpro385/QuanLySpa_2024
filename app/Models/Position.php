@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Kra8\Snowflake\HasSnowflakePrimary;
 class Position extends Model
 {
+    use HasSnowflakePrimary;
     use HasFactory;
     use SoftDeletes;
-    protected $id = 'string';
+    protected $keyType = 'string';
     public $incrementing = false;
 
     protected $fillable = [

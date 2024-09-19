@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('id')->primary();
             $table->string('name')->unique();
             $table->string('country');
+            $table->string('contact_email')->unique();
             $table->string('code');
             $table->string('created_by')->nullable();
             $table->softDeletes();

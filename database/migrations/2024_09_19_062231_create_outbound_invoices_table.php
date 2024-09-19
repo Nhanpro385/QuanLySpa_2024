@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->enum('outbound_invoice_type', ['service', 'use']);
             $table->decimal('total_amount', 10, 2);
             $table->boolean('status')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
         Schema::table('outbound_invoices', function (Blueprint $table) {

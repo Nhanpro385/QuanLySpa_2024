@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Staff;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Kra8\Snowflake\Snowflake;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Shift>
@@ -17,7 +20,10 @@ class ShiftFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'id' => app(Snowflake::class)->next(),
+            'shift_date' => $this->faker->unique()->dateTimeBetween('now', '+10 days')->format('Y-m-d'),
+            'note' => 'Phuc vu khach hang',
+            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray()),
         ];
     }
 }
