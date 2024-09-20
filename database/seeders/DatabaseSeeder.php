@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
     {
         Position::factory(10)->create();
         Contact::factory(10)->create();
-        Staff::factory(10)->create();
+        User::factory(10)->create();
         Customer::factory(10)->create();
         Category::factory(10)->create();
         Supplier::factory(10)->create();

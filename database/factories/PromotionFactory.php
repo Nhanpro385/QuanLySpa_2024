@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -25,7 +26,7 @@ class PromotionFactory extends Factory
             'end_date' => $this->faker->date(),
             'promotion_type' => $this->faker->randomElement(['cash', 'percent']),
             'discount_percent' => $this->faker->numberBetween(10000, 100000),
-            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

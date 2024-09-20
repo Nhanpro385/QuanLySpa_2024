@@ -4,12 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Kra8\Snowflake\HasSnowflakePrimary;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasSnowflakePrimary, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -17,9 +19,26 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
+        'position_id',
         'name',
-        'email',
         'password',
+        'role',
+        'full_name',
+        'gender',
+        'phone',
+        'email',
+        'address',
+        'date_of_birth',
+        'note',
+        'status',
+        'created_by'
+    ];
+
+    protected $attributes = [
+        'status' => true,
+        'gender' => 'female',
+        'role' => 'staff'
     ];
 
     /**

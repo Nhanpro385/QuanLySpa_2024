@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Customer;
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -22,7 +23,7 @@ class ConsulationFactory extends Factory
         return [
             'id' => app(Snowflake::class)->next(),
             'customer_id' => $this->faker->randomElement(Customer::pluck('id')->toArray()),
-            'staff_id' => $this->faker->randomElement(Staff::pluck('id')->toArray()),
+            'staff_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'consulation' => $this->faker->text(),
             'skin_condition' => $this->faker->text(),
             'treatment_plan' => $this->faker->text(),

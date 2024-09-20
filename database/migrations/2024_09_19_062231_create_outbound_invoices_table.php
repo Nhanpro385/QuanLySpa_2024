@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->timestamps();
         });
         Schema::table('outbound_invoices', function (Blueprint $table) {
-            $table->foreign('staff_id')->references('id')->on('staffs')->onDelete('set null');
+            $table->foreign('staff_id')->references('id')->on('users')->onDelete('set null');
         });
 
     }

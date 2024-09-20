@@ -22,7 +22,7 @@ return new class extends Migration {
         Schema::table('categories', function (Blueprint $table) {
             $table->foreign('created_by')
                 ->references('id')
-                ->on('staffs')
+                ->on('users')
                 ->onDelete('set null');
         });
     }

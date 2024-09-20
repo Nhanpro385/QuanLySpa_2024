@@ -22,7 +22,7 @@ return new class extends Migration {
         });
 
         Schema::table('inbound_invoices', function (Blueprint $table) {
-            $table->foreign('staff_id')->references('id')->on('staffs')->onDelete('set null');
+            $table->foreign('staff_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('supplier_id')
                 ->references('id')
                 ->on('suppliers')

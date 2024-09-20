@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Customer;
 use App\Models\Shift;
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -27,7 +28,7 @@ class AppointmentFactory extends Factory
             'start_time' => $this->faker->time(),
             'note' => $this->faker->text(),
             'appointment_date' => $this->faker->unique()->dateTimeBetween('now', '+10 days')->format('Y-m-d'),
-            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

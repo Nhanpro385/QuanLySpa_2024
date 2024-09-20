@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Appointment;
 use App\Models\Promotion;
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -28,7 +29,7 @@ class PaymentFactory extends Factory
             'reduce' => $this->faker->numberBetween(10000, 100000),
             'total_amount' => $this->faker->numberBetween(10000, 100000000),
             'payment_type' => $this->faker->randomElement(['cash', 'transfer']),
-            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

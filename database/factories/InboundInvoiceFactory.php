@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Staff;
 use App\Models\Supplier;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -21,7 +22,7 @@ class InboundInvoiceFactory extends Factory
     {
         return [
             'id' => app(Snowflake::class)->next(),
-            'staff_id' => $this->faker->randomElement(Staff::pluck('id')->toArray()),
+            'staff_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'supplier_id' => $this->faker->randomElement(Supplier::pluck('id')->toArray()),
             'note' => 'null',
             'total_amount' => $this->faker->numberBetween(100000, 1000000),

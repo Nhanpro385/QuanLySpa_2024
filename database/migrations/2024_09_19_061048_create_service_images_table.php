@@ -26,7 +26,7 @@ return new class extends Migration {
                 ->on('services')
                 ->onDelete('set null');
 
-            $table->foreign('created_by')->references('id')->on('staffs')->onDelete('set null');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

@@ -30,7 +30,7 @@ return new class extends Migration {
         Schema::table('customers', function (Blueprint $table) {
             $table->foreign('created_by')
                 ->references('id')
-                ->on('staffs')
+                ->on('users')
                 ->onDelete('set null');
         });
     }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Kra8\Snowflake\Snowflake;
@@ -30,7 +31,7 @@ class CustomerFactory extends Factory
             'address' => $this->faker->address(),
             'date_of_birth' => $this->faker->date(),
             'note' => $this->faker->text(),
-            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

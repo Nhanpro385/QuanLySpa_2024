@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Category;
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -30,7 +31,7 @@ class ProductFactory extends Factory
             'date' => $this->faker->dateTime(),
             'image_url' => '/http',
             'description' => $this->faker->text(),
-            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('staffs', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->string('id', 20)->primary();
             $table->string('position_id', 20)->nullable();
             $table->string('name')->unique();
@@ -31,7 +31,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::table('staffs', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->foreign('position_id')
                 ->references('id')
                 ->on('positions')
@@ -39,7 +39,7 @@ return new class extends Migration {
 
             $table->foreign('created_by')
                 ->references('id')
-                ->on('staffs')
+                ->on('users')
                 ->onDelete('no action');
         });
 
@@ -51,9 +51,9 @@ return new class extends Migration {
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('staff_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
-            $table->text('staff_agent')->nullable();
+            $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
@@ -64,7 +64,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('staffs');
+        Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Service;
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -23,7 +24,7 @@ class ServiceImageFactory extends Factory
             'id' => app(Snowflake::class)->next(),
             'service_id' => $this->faker->randomElement(Service::pluck('id')->toArray()),
             'image_url' => 'http://',
-            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray()),
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
         ];
     }
 }

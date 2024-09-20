@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Product;
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -23,7 +24,7 @@ class InventoryFactory extends Factory
             'id' => app(Snowflake::class)->next(),
             'product_id' => $this->faker->randomElement(Product::pluck('id')->toArray()),
             'quantity' => 1,
-            'created_by' => $this->faker->randomElement(Staff::pluck('id')->toArray()),
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
         ];
     }
 }
