@@ -34,4 +34,8 @@ class Staff extends Model
         'gender' => 'female',
         'role' => 'staff'
     ];
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class, 'shifts_id', 'id');
+    }
 }

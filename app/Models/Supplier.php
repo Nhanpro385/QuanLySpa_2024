@@ -22,4 +22,8 @@ class Supplier extends Model
         'code',
         'created_by',
     ];
+    public function inboundInvoice()
+    {
+        return $this->hasMany(Supplier::class, 'suppliers_id', 'id');
+    }
 }

@@ -30,4 +30,8 @@ class ServiceCategory extends Model
         'status' => true,
 
     ];
+    public function service()
+    {
+        return $this->hasMany(ServiceCategory::class, 'servicecategory_id', 'id');
+    }
 }

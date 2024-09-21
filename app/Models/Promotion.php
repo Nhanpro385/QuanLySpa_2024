@@ -28,4 +28,9 @@ class Promotion extends Model
     protected $attribute = [
         'status' => true
     ];
+    public function Payment()
+    {
+        return $this->hasMany(Promotion::class, 'promotions_id', 'id');
+    }
+   
 }

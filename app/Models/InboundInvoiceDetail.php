@@ -25,5 +25,12 @@ class InboundInvoiceDetail extends Model
         'cost_olded',
         'unit_price',
     ];
-
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'products_id', 'id');
+    }
+    public function inboundInvoice()
+    {
+        return $this->belongsTo(InboundInvoice::class, 'inbound_invoices_id', 'id');
+    }
 }

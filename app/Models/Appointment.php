@@ -14,6 +14,7 @@ class Appointment extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
+
     protected $table = 'appointments';
     protected $fillable = [
         'id',
@@ -29,4 +30,30 @@ class Appointment extends Model
     protected $attributes = [
         'status' => true,
     ];
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class, 'shifts_id', 'id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+    public function appointmentService()
+    {
+        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
+    }
+    public function payment()
+    {
+        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
+    }
+    public function treatmentHistory()
+    {
+        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
+    }
+    public function appointmentStaffs()
+    {
+        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
+    }
+
+
 }

@@ -15,6 +15,7 @@ class Position extends Model
     use SoftDeletes;
     protected $keyType = 'string';
     public $incrementing = false;
+    protected $table = 'positions';
 
     protected $fillable = [
         'id',
@@ -26,6 +27,10 @@ class Position extends Model
     public function staffs(): HasMany
     {
         return $this->hasMany(Staff::class);
+    }
+    public function user()
+    {
+        return $this->hasMany(User::class, 'position_id', 'id');
     }
 
 }

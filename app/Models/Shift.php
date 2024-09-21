@@ -34,4 +34,13 @@ class Shift extends Model
         'status' => true,
         'max_customers' => 6
     ];
+    public function appointment()
+    {
+        return $this->hasMany(Shift::class, 'shifts_id', 'id');
+    }
+    public function staff()
+    {
+        return $this->hasMany(Shift::class, 'shifts_id', 'id');
+    }
+    
 }

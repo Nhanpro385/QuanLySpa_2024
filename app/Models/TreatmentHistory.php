@@ -32,4 +32,24 @@ class TreatmentHistory extends Model
     protected $attribute = [
         'status' => true
     ];
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class, 'appointment_id', 'id');
+    }
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'services_id', 'id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    public function treatmentProduct()
+    {
+        return $this->hasMany(TreatmentHistory::class, 'treatment_historie_id', 'id');
+    }
 }

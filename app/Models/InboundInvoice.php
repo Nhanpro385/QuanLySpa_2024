@@ -26,4 +26,18 @@ class InboundInvoice extends Model
     protected $attribute = [
         'status' => true,
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'suppliers_id', 'id');
+    }
+    
+    public function inboundInvoiceDetail()
+    {
+        return $this->hasMany(InboundInvoice::class, 'inbound_invoices_id', 'id');
+    }
+
 }

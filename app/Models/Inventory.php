@@ -21,5 +21,8 @@ class Inventory extends Model
         'quantity',
         'created_by',
     ];
-
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

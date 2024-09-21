@@ -32,4 +32,30 @@ class Product extends Model
     protected $attributes = [
         'status' => true
     ];
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'categorys_id', 'id');
+    }
+    public function inventory()
+    {
+        return $this->hasOne(Inventory::class);
+    }
+    public function inboundInvoiceDetail()
+    {
+        return $this->hasMany(Product::class, 'products_id', 'id');
+    }
+    public function outboundInvoiceDetail()
+    {
+        return $this->hasMany(Product::class, 'products_id', 'id');
+    }
+    public function productService()
+    {
+        return $this->hasMany(Product::class, 'products_id', 'id');
+    }
+    public function treatmentProduct()
+    {
+        return $this->hasMany(Product::class, 'products_id', 'id');
+    }
+
+
 }
