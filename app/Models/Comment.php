@@ -24,4 +24,8 @@ class Comment extends Model
         'status',
         'image_url'
     ];
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'services_id', 'id');
+    }
 }

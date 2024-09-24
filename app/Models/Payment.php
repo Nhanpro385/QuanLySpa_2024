@@ -30,4 +30,12 @@ class Payment extends Model
     protected $attribute = [
         'status' => true
     ];
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class, 'appointment_id', 'id');
+    }
+    public function promotion()
+    {
+        return $this->belongsTo(Promotion::class, 'promotions_id', 'id');
+    }
 }

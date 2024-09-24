@@ -19,4 +19,12 @@ class AppointmentStaff extends Model
         'appointment_id',
         'staff_id'
     ];
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class, 'appointment_id', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

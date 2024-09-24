@@ -29,4 +29,30 @@ class Service extends Model
     protected $attributes = [
         'status' => true
     ];
+    public function serviceCategory()
+    {
+        return $this->belongsTo(ServiceCategory::class, 'servicecategory_id', 'id');
+    }
+    public function appointmentService()
+    {
+        return $this->hasMany(Service::class, 'services_id', 'id');
+    }
+
+    public function treatmentHistory()
+    {
+        return $this->hasMany(Service::class, 'services_id', 'id');
+    }
+    public function comment()
+    {
+        return $this->hasMany(Service::class, 'services_id', 'id');
+    }
+    public function productService()
+    {
+        return $this->hasMany(Service::class, 'services_id', 'id');
+    }
+    public function serviceImage()
+    {
+        return $this->hasMany(Service::class, 'services_id', 'id');
+    }
+
 }

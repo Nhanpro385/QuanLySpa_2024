@@ -26,4 +26,14 @@ class OutboundInvoice extends Model
     protected $attribute = [
         'status' => true
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    public function outboundInvoiceDetail()
+    {
+        return $this->hasMany(OutboundInvoice::class, 'outbound_invoices_id', 'id');
+    }
+
+
 }

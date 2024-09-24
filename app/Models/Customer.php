@@ -31,4 +31,16 @@ class Customer extends Model
         'status' => true,
         'gender' => 'female',
     ];
+    public function consulation()
+    {
+        return $this->hasMany(Customer::class, 'customer_id', 'id');
+    }
+    public function appointment()
+    {
+        return $this->hasMany(Customer::class, 'customer_id', 'id');
+    }
+    public function treatmentHistory()
+    {
+        return $this->hasMany(Customer::class, 'customer_id', 'id');
+    }
 }

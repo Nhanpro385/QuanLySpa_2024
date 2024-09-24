@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->string('id', 20)->primary();
-            $table->string('name');
-            $table->string('email');
+            $table->string('name',255);
+            $table->string('email',255);
             $table->string('phone', 20);
-            $table->string('note');
+            $table->string('note',255);
             $table->boolean('status')->default(false);
             $table->timestamps();
             $table->softDeletes();

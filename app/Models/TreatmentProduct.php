@@ -21,5 +21,13 @@ class TreatmentProduct extends Model
         'product_id',
         'quantity_used'
     ];
+    public function treatmentHistory()
+    {
+        return $this->belongsTo(TreatmentHistory::class, 'treatment_historie_id', 'id');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'products_id', 'id');
+    }
 
 }

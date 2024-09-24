@@ -23,5 +23,13 @@ class OutboundInvoiceDetail extends Model
         'quantity_olded',
         'unit_price',
     ];
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'products_id', 'id');
+    }
+    public function outboundInvoice()
+    {
+        return $this->belongsTo(OutboundInvoice::class, 'outbound_invoices_id', 'id');
+    }
 
 }

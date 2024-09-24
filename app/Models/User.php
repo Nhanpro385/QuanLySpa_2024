@@ -18,7 +18,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
+    protected $table = 'users';
+     protected $fillable = [
         'id',
         'position_id',
         'name',
@@ -62,5 +63,37 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id', 'id');
+    }
+
+    public function consulation()
+    {
+        return $this->hasMany(User::class, 'user_id', 'id');
+    }
+
+    public function staffShifts()
+    {
+        return $this->hasMany(User::class, 'user_id', 'id');
+    }
+    public function appointmentStaff()
+    {
+        return $this->hasMany(User::class, 'user_id', 'id');
+    }
+
+    public function treatmentHistory()
+    {
+        return $this->hasMany(User::class, 'user_id', 'id');
+    }
+    public function notification()
+    {
+        return $this->hasMany(User::class, 'user_id', 'id');
+    }
+    public function inboundInvoice()
+    {
+        return $this->hasMany(User::class, 'user_id', 'id');
     }
 }

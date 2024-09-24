@@ -21,4 +21,8 @@ class ServiceImage extends Model
         'image_url',
         'created_by',
     ];
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'services_id', 'id');
+    }
 }

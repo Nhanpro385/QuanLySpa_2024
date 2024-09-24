@@ -22,4 +22,12 @@ class ProductService extends Model
         'service_id',
         'quantity_used'
     ];
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'services_id', 'id');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'products_id', 'id');
+    }
 }
