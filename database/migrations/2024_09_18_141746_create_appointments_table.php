@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->time('start_time');
             $table->string('note')->nullable();
             $table->date('appointment_date');
-            $table->boolean('status')->default(true);
+            $table->enum('status', ['comfirm', 'cancel', 'complete', 'placed'])->default('placed');
             $table->string('created_by')->nullable();
             $table->softDeletes();
             $table->timestamps();

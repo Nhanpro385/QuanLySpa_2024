@@ -26,7 +26,4 @@ class Appointment extends Model
         'created_by'
     ];
 
-    protected $attributes = [
-        'status' => true,
-    ];
 }
