@@ -5,12 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
-
+    
     public function index()
     {
+
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $suppliers = Supplier::all();
         return response()->json($suppliers);
     }
@@ -18,6 +24,11 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
+
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $request->validate([
             'id' => 'required|string|max:20|unique:suppliers,id',
             'name' => 'required|string|max:255',
@@ -34,6 +45,11 @@ class SupplierController extends Controller
 
     public function show($id)
     {
+
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $supplier = Supplier::findOrFail($id);
         return response()->json($supplier);
     }
@@ -41,6 +57,11 @@ class SupplierController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'country' => 'sometimes|required|string|max:255',
@@ -57,6 +78,11 @@ class SupplierController extends Controller
 
     public function destroy($id)
     {
+
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $supplier = Supplier::findOrFail($id);
         $supplier->delete();
         return response()->json(null, 204);
