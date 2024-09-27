@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
-class SuppliersController extends Controller
+class SupplierController extends Controller
 {
 
     public function index()
@@ -53,7 +54,7 @@ class SuppliersController extends Controller
         return response()->json($supplier);
     }
 
-  
+
     public function destroy($id)
     {
         $supplier = Supplier::findOrFail($id);
