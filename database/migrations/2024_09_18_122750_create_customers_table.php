@@ -12,14 +12,14 @@ return new class extends Migration {
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->string('id', 20)->primary();
-            $table->string('name')->unique();
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->string('name')->nullable()->unique()->default(NULL);
+            $table->string('email')->nullable()->unique()->default(NULL);
+            $table->string('password')->nullable();
             $table->string('full_name');
             $table->enum('gender', ['male', 'female'])->default('female');
             $table->string('phone', 20)->unique();
-            $table->string('address');
-            $table->date('date_of_birth');
+            $table->string('address')->nullable();
+            $table->date('date_of_birth')->nullable();
             $table->string('note')->nullable();
             $table->boolean('status')->default(true);
             $table->rememberToken();

@@ -27,9 +27,7 @@ class Appointment extends Model
         'created_by'
     ];
 
-    protected $attributes = [
-        'status' => true,
-    ];
+
     public function shift()
     {
         return $this->belongsTo(Shift::class, 'shifts_id', 'id');

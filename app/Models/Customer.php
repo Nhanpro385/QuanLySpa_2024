@@ -30,6 +30,9 @@ class Customer extends Model
     protected $attributes = [
         'status' => true,
         'gender' => 'female',
+        'name' => null,
+        'email' => null,
+
     ];
     public function consulation()
     {
