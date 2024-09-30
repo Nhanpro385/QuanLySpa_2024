@@ -43,7 +43,7 @@ import CommentManagement from "../pages/comment";
 import ShiftManagement from "../pages/ShiftManagement";
 // Contact Management
 
-// import ContactManagement from "../pages/contactmanagement";
+import ContactManagement from "../pages/contactmanagement";
 
 const PublicRoutes = [
     // Dashboard
@@ -89,7 +89,7 @@ const PublicRoutes = [
     // Shift Management
     { path: "/shifmanagement", element: <ShiftManagement /> },
     // Contact Management
-    // {path: "/contactmanagement", element: <ContactManagement />},
+    {path: "/contactmanagement", element: <ContactManagement />},
 ];
 
 export { PublicRoutes };
