@@ -11,23 +11,29 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::middleware('auth:api')->group(function () {
-    Route::prefix('admin/suppliers')->group(function () {
-        Route::get('/', [SupplierController::class, 'index'])->name('suppliers.index');
-        Route::post('/', [SupplierController::class, 'store'])->name('suppliers.store');
-        Route::get('/{id}', [SupplierController::class, 'show'])->name('suppliers.show');
-        Route::put('/{id}', [SupplierController::class, 'update'])->name('suppliers.update');
-        Route::delete('/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
-    });
+// Route Categories
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'v0.0.1/admin/category',
+], function ($router) {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::post('/create', [CategoryController::class, 'store']);
+    Route::get('/{id}', [CategoryController::class, 'show']);
+    Route::put('/{id}/edit', [CategoryController::class, 'update']);
+    Route::delete('/{id}/delete', [CategoryController::class, 'destroy']);
 });
+//End
 
-
-Route::middleware('auth:api')->group(function () {
-    Route::prefix('admin/categories')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
-        Route::post('/', [CategoryController::class, 'store'])->name('categories.store');
-        Route::get('/{id}', [CategoryController::class, 'show'])->name('categories.show');
-        Route::put('/{id}', [CategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    });
+// Route Supplier
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'v0.0.1/admin/supplier',
+], function ($router) {
+    Route::get('/', [SupplierController::class, 'index']);
+    Route::post('/create', [SupplierController::class, 'store']);
+    Route::get('/{id}', [SupplierController::class, 'show']);
+    Route::put('/{id}/edit', [SupplierController::class, 'update']);
+    Route::delete('/{id}/delete', [SupplierController::class, 'destroy']);
 });
+//End
+

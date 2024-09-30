@@ -9,77 +9,99 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    
     public function index()
     {
-
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
         $categories = Category::all();
+        $categories = Category::paginate(5);
         return response()->json($categories);
     }
 
+    public function show($id)
+    {
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'không tìm thấy danh mục'], 404);
+        }
+
+        return response()->json($category);
+    }
 
     public function store(Request $request)
     {
 
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    $existingCategoryById = Category::where('id', $request->id)->first();
 
-        $request->validate([
-            'id' => 'required|string|max:20|unique:categories,id',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'created_by' => 'required|string|max:20',
-        ]);
+    $existingCategoryByName = Category::where('name', $request->name)->first();
 
-        $category = Category::create($request->all());
-        return response()->json($category, 201);
+    if ($existingCategoryById && $existingCategoryByName) {
+        return response()->json(['message' => 'ID của bạn đã tại và tên danh mục của bạn bị trùng.'], 400);
+    } elseif ($existingCategoryById) {
+        return response()->json(['message' => 'ID của bạn đã tồn tại.'], 400);
+    } elseif ($existingCategoryByName) {
+        return response()->json(['message' => 'Tên danh mục của bạn bị trùng.'], 400);
     }
 
+    $request->validate([
+        'id' => 'required',
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'status' => 'required|boolean',
+    ]);
 
-    public function show($id)
-    {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
 
-        $category = Category::findOrFail($id);
-        return response()->json($category);
+    $category = Category::create($request->all());
+
+    return response()->json([
+        'message' => 'Thêm danh mục thành công!',
+        'category' => $category,
+    ], 201);
+
     }
-
 
     public function update(Request $request, $id)
     {
 
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    $category = Category::find($id);
 
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'created_by' => 'sometimes|required|string|max:20',
-        ]);
-
-        $category = Category::findOrFail($id);
-        $category->update($request->all());
-        return response()->json($category);
+    if (!$category) {
+        return response()->json(['message' => 'Danh mục không tìm thấy'], 404);
     }
 
+
+    $existingCategoryById = Category::where('id', $request->id)->where('id', '!=', $id)->first();
+
+    $existingCategoryByName = Category::where('name', $request->name)->where('id', '!=', $id)->first();
+
+    if ($existingCategoryById && $existingCategoryByName) {
+        return response()->json(['message' => 'ID của bạn đã tồn tại và tên danh mục của bạn bị trùng.'], 400);
+    } elseif ($existingCategoryById) {
+        return response()->json(['message' => 'ID của bạn đã tồn tại.'], 400);
+    } elseif ($existingCategoryByName) {
+        return response()->json(['message' => 'Tên danh mục của bạn bị trùng.'], 400);
+    }
+
+    $request->validate([
+        'name' => 'sometimes|required|string|max:255',
+        'description' => 'nullable|string',
+        'status' => 'sometimes|required|boolean',
+    ]);
+
+    $category->update($request->all());
+    return response()->json(['message' => 'Cập nhật danh mục thành công!', 'category' => $category]);
+    }
 
     public function destroy($id)
     {
 
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    $category = Category::find($id);
 
-        $category = Category::findOrFail($id);
-        $category->delete();
-        return response()->json(null, 204);
+    if (!$category) {
+        return response()->json(['message' => 'Danh mục không tìm thấy'], 404);
+    }
+
+    $category->delete();
+
+    return response()->json(['message' => 'Danh mục đã được xóa thành công']);
     }
 }
