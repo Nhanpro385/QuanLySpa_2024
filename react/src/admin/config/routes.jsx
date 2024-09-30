@@ -24,11 +24,11 @@ import ProductsAdd from "../pages/product/product_add";
 import ProductCategories from "../pages/product/product_categories";
 
 // Warehouse
-// import Warehouse from "../pages/Warehouse/Warehouse";
-// import WarehouseImport from "../pages/Warehouse/product_import";
-// import WarehouseExport from "../pages/Warehouse/Product_export";
-// import ProductImportDetail from "../pages/Warehouse/product_import_detail";
-// import ProductInventory from "../pages/Warehouse/product_inventory";
+import Warehouse from "../pages/Warehouse/Warehouse";
+import WarehouseImport from "../pages/Warehouse/product_import";
+import WarehouseExport from "../pages/Warehouse/Product_export";
+import ProductImportDetail from "../pages/Warehouse/product_import_detail";
+import ProductInventory from "../pages/Warehouse/product_inventory";
 
 // Promotions
 import Promotions from "../pages/Promotions/Promotions";
@@ -69,11 +69,11 @@ const PublicRoutes = [
     { path: "/product_categories", element: <ProductCategories /> },
 
     // Warehouse
-    // { path: "/warehouse", element: <Warehouse /> },
-    // { path: "/warehouse/import", element: <WarehouseImport /> },
-    // { path: "/warehouse/import/:id", element: <ProductImportDetail /> },
-    // { path: "/warehouse/export", element: <WarehouseExport /> },
-    // { path: "/warehouse/inventory", element: <ProductInventory /> },
+    { path: "/warehouse", element: <Warehouse /> },
+    { path: "/warehouse/import", element: <WarehouseImport /> },
+    { path: "/warehouse/import/:id", element: <ProductImportDetail /> },
+    { path: "/warehouse/export", element: <WarehouseExport /> },
+    { path: "/warehouse/inventory", element: <ProductInventory /> },
     // Promotions
     { path: "/promotions", element: <Promotions /> },
     { path: "/promotions/add", element: <Promotions_add /> },
