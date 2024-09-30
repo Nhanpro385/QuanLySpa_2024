@@ -1,0 +1,9 @@
+export { default as SliderHome } from "./SliderHome";
+export { default as ConsultingFrom } from "./ConsultingFrom";
+export { default as Home_about } from "./Home_about";
+export { default as Home_service } from "./Hom_service";
+export { default as Home_doctor } from "./Home_doctor";
+export { default as Home_facilities } from "./Home_facilities";
+export { default as Home_consultation_reception } from "./Home_consultation_reception";
+export { default as Home_blog } from "./Home_Blog";
+export { default as Home_quote } from "./Home_quote";
