@@ -19,9 +19,9 @@ import Services from "../pages/services/Services";
 import ServicesAdd from "../pages/services/add_services";
 
 // Products
-// import Products from "../pages/product/Products";
-// import ProductsAdd from "../pages/product/product_add";
-// import ProductCategories from "../pages/product/product_categories";
+import Products from "../pages/product/Products";
+import ProductsAdd from "../pages/product/product_add";
+import ProductCategories from "../pages/product/product_categories";
 
 // Warehouse
 // import Warehouse from "../pages/Warehouse/Warehouse";
@@ -63,9 +63,9 @@ const PublicRoutes = [
     { path: "/services", element: <Services /> },
     { path: "/services/add", element: <ServicesAdd /> },
     // Products
-    // { path: "/products", element: <Products /> },
-    // { path: "/products/add", element: <ProductsAdd /> },
-    // { path: "/product_categories", element: <ProductCategories /> },
+    { path: "/products", element: <Products /> },
+    { path: "/products/add", element: <ProductsAdd /> },
+    { path: "/product_categories", element: <ProductCategories /> },
 
     // Warehouse
     // { path: "/warehouse", element: <Warehouse /> },
