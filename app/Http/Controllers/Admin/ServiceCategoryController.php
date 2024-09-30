@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Filters\Admin\ServiceCategoriesFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ServiceCategories\ServiceCategoryRequest;
 use App\Http\Requests\Admin\ServiceCategories\ServiceCategoryUpdateRequest;
 use App\Http\Resources\Admin\ServiceCategories\ServiceCategoryConllection;
 use App\Http\Resources\Admin\ServiceCategories\ServiceCategoryResource;
 use App\Models\ServiceCategory;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,10 +17,29 @@ class ServiceCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $serviceCategory = ServiceCategory::select()->paginate(10);
-        return new ServiceCategoryConllection($serviceCategory);
+        try {
+            $filter = new ServiceCategoriesFilter();
+            $queryResult = $filter->transform($request);
+            $queryItems = $queryResult['filter'];
+            $sorts = $queryResult['sorts'];
+            $perPage = $request->query('per_page', 5);
+            if ($perPage < 1 || $perPage > 100) {
+                $perPage = 5;
+            }
+            $query = ServiceCategory::select(['id', 'name', 'description', 'status'])->where($queryItems);
+            if ($sorts) {
+                $query = $query->orderBy($sorts[0], $sorts[1]);
+            }
+            return new ServiceCategoryConllection($query->paginate($perPage));
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+            ];
+            return response()->json($response, 500);
+        }
     }
 
     /**

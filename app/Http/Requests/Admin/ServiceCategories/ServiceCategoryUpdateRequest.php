@@ -26,7 +26,7 @@ class ServiceCategoryUpdateRequest extends FormRequest
         return [
             'name' => 'required|regex:/^(?!\s*\d).+$/|max:255|min:10|nullable|unique:service_categories,name,' . $this->route('id'),
             'description' => 'nullable',
-            'created_by' => 'nullable',
+            'created_by' => 'nullable|numeric|min:10|max:9999999999999999999|exists:users,id',
             'status' => 'required'
         ];
     }
@@ -39,7 +39,11 @@ class ServiceCategoryUpdateRequest extends FormRequest
             'name.unique' => 'Tên không hợp lệ có thể đã trùng với tên đã có trong hệ thống.',
             'name.max' => 'Tên không được vượt quá 255 kí tự.',
             'name.min' => 'Tên quá ngắn vui lòng nhập hơn 10 kí tự.',
-            'status.required' => 'Vui lòng chọn trạng thái'
+            'status.required' => 'Vui lòng chọn trạng thái',
+            'created_by.numeric' => 'Id nhân viên phải là số nguyên có độ dài không vượt quá 20 kí tự.',
+            'created_by.max' => 'Id nhân viên không vượt quá 20 kí tự.',
+            'created_by.min' => 'Id nhân viên không hợp lệ do quá ngắn',
+            'created_by.exists' => 'Id nhân viên không hợp lệ do không có trong hệ thống',
         ];
     }
 

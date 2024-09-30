@@ -22,10 +22,6 @@ class ServiceCategoryConllection extends ResourceCollection
                     'name' => $serviceCategory->name,
                     'description' => $serviceCategory->description,
                     'status' => $serviceCategory->status,
-                    'created_by' => $serviceCategory->created_by,
-                    'created_at' =>
-                        $serviceCategory->created_at->format('Y-m-d H:i:s'),
-                    'updated_at' => $serviceCategory->updated_at->format('Y-m-d H:i:s')
                 ];
             }),
             'status' => 'true',

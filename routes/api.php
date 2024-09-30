@@ -10,8 +10,8 @@ Route::get('/user', function (Request $request) {
 
 // Route ServiceCategories
 Route::group([
-    // 'middleware' => 'api',
-    'prefix' => 'v1/serviceCategory',
+    'middleware' => 'api',
+    'prefix' => 'v0.0.1/admin/serviceCategory',
 ], function ($router) {
     Route::get('/', [ServiceCategoryController::class, 'index']);
     Route::post('/create', [ServiceCategoryController::class, 'store']);
