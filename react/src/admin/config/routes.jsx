@@ -11,8 +11,8 @@ import Appointments from "../pages/appointments/Appointments";
 import Appointments_Detail from "../pages/appointments/Appointments_Detail";
 
 // Personnel Management
-// import Staffs from "../pages/Staff_management/Staffs";
-// import StaffsDetail from "../pages/Staff_management/StaffsDetail";
+import Staffs from "../pages/Staff_management/Staffs";
+import StaffsDetail from "../pages/Staff_management/StaffsDetail";
 
 // Services
 // import Services from "../pages/services/Services";
@@ -56,8 +56,8 @@ const PublicRoutes = [
     { path: "/appointments/detail/:id", element: <Appointments_Detail /> },
 
     // Personnel Management
-    // { path: "/staffs", element: <Staffs /> },
-    // { path: "/staffs/:id", element: <StaffsDetail /> },
+    { path: "/staffs", element: <Staffs /> },
+    { path: "/staffs/:id", element: <StaffsDetail /> },
 
     // Services
     // { path: "/services", element: <Services /> },
