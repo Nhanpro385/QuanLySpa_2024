@@ -39,7 +39,10 @@ import Promotions_add from "../pages/Promotions/Promotions_add";
 // import CommentManagement from "../pages/comment";
 
 // Shift Management
-// import ShiftManagement from "../pages/Shift Management";
+
+import ShiftManagement from "../pages/ShiftManagement";
+// Contact Management
+
 // import ContactManagement from "../pages/contactmanagement";
 
 const PublicRoutes = [
@@ -84,7 +87,7 @@ const PublicRoutes = [
     // { path: "/CommentManagement", element: <CommentManagement /> },
 
     // Shift Management
-    // { path: "/shifmanagement", element: <ShiftManagement /> },
+    { path: "/shifmanagement", element: <ShiftManagement /> },
     // Contact Management
     // {path: "/contactmanagement", element: <ContactManagement />},
 ];
