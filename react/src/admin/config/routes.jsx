@@ -31,7 +31,8 @@ import ProductCategories from "../pages/product/product_categories";
 // import ProductInventory from "../pages/Warehouse/product_inventory";
 
 // Promotions
-// import Promotions from "../pages/Promotions/Promotions";
+import Promotions from "../pages/Promotions/Promotions";
+import Promotions_add from "../pages/Promotions/Promotions_add";
 
 // Consultant and Comments
 // import Consultant from "../pages/consultant";
@@ -74,7 +75,9 @@ const PublicRoutes = [
     // { path: "/warehouse/export", element: <WarehouseExport /> },
     // { path: "/warehouse/inventory", element: <ProductInventory /> },
     // Promotions
-    // { path: "/promotions", element: <Promotions /> },
+    { path: "/promotions", element: <Promotions /> },
+    { path: "/promotions/add", element: <Promotions_add /> },
+
 
     // Consultant and Comments
     // { path: "/consultant", element: <Consultant /> },
