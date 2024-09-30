@@ -7,8 +7,8 @@ import HistoryService from "../pages/UserManagement/history_sevice";
 import UserDetail from "../pages/UserManagement/UserDetail";
 
 // Appointments
-// import Appointments from "../pages/appointments/Appointments";
-// import Appointments_Detail from "../pages/appointments/Appointments_Detail";
+import Appointments from "../pages/appointments/Appointments";
+import Appointments_Detail from "../pages/appointments/Appointments_Detail";
 
 // Personnel Management
 // import Staffs from "../pages/Staff_management/Staffs";
@@ -52,8 +52,8 @@ const PublicRoutes = [
     { path: "/user/Detail/:id", element: <UserDetail /> },
 
     // Appointments
-    // { path: "/appointments", element: <Appointments /> },
-    // { path: "/appointments/detail/:id", element: <Appointments_Detail /> },
+    { path: "/appointments", element: <Appointments /> },
+    { path: "/appointments/detail/:id", element: <Appointments_Detail /> },
 
     // Personnel Management
     // { path: "/staffs", element: <Staffs /> },
