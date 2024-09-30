@@ -36,7 +36,7 @@ import Promotions_add from "../pages/Promotions/Promotions_add";
 
 // Consultant and Comments
 // import Consultant from "../pages/consultant";
-// import CommentManagement from "../pages/comment";
+import CommentManagement from "../pages/comment";
 
 // Shift Management
 
@@ -84,7 +84,7 @@ const PublicRoutes = [
 
     // Consultant and Comments
     // { path: "/consultant", element: <Consultant /> },
-    // { path: "/CommentManagement", element: <CommentManagement /> },
+    { path: "/CommentManagement", element: <CommentManagement /> },
 
     // Shift Management
     { path: "/shifmanagement", element: <ShiftManagement /> },
