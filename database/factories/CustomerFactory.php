@@ -2,22 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Position;
+use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Kra8\Snowflake\Snowflake;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Customer>
  */
-class UserFactory extends Factory
+class CustomerFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
     protected static ?string $password;
-
     /**
      * Define the model's default state.
      *
@@ -27,27 +23,15 @@ class UserFactory extends Factory
     {
         return [
             'id' => app(Snowflake::class)->next(),
-            'position_id' => $this->faker->randomElement(Position::pluck('id')->toArray()),
+            'full_name' => $this->faker->name(),
             'name' => $this->faker->userName(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => 'staff',
-            'full_name' => $this->faker->name(),
-            'gender' => 'female',
-            'phone' => $this->faker->phoneNumber(),
             'email' => $this->faker->email(),
+            'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'date_of_birth' => $this->faker->date(),
             'note' => $this->faker->text(),
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn(array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }
