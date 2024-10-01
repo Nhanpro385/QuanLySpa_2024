@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+
+.login-wrapper {
+    padding: 20px;
+    border-radius: 10px;
+    background-image: url("../../../assets/images/loginbg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* This ensures the background image stays fixed */
+    overflow: hidden; /* Ensures content doesn't overflow during animation */
+}
+
+.overlay-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    animation: slideInLeft 1s ease-out; /* Apply the left-to-right animation */
+}
+
+.overlay-panel {
+    text-align: center;
+    animation: fadeIn 1.5s ease-in-out; /* Fade-in effect */
+}
+
+.sign-in-container {
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.4);
+    animation: slideInRight 1s ease-out; /* Right-to-left animation */
+}
+
+.forgotlink {
+    color: #e05265;
+    text-decoration: none;
+    font-size: 1.5rem;
+    margin-top: 10px;
+    display: block;
+    text-align: right;
+    animation: fadeIn 2s ease-in-out; /* Slight delay on link fade-in */
+}
+
+/* Keyframe for sliding in from the left */
+@keyframes slideInLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Keyframe for sliding in from the right */
+@keyframes slideInRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Keyframe for fade-in effect */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+button:active {
+  transform: translateY(5px);
+  
+}
