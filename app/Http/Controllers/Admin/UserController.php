@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Filters\Admin\ServiceCategoriesFilter;
+use App\Filters\Admin\UserFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ServiceCategories\ServiceCategoryRequest;
-use App\Http\Requests\Admin\ServiceCategories\ServiceCategoryUpdateRequest;
-use App\Http\Resources\Admin\ServiceCategories\ServiceCategoryConllection;
-use App\Http\Resources\Admin\ServiceCategories\ServiceCategoryResource;
-use App\Models\ServiceCategory;
+use App\Http\Requests\Admin\Users\UserRequest;
+use App\Http\Requests\Admin\Users\UserUpdateRequest;
+use App\Http\Resources\Admin\Users\UserConllection;
+use App\Http\Resources\Admin\Users\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class ServiceCategoryController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +20,7 @@ class ServiceCategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $filter = new ServiceCategoriesFilter();
+            $filter = new UserFilter();
             $queryResult = $filter->transform($request);
             $queryItems = $queryResult['filter'];
             $sorts = $queryResult['sorts'];
@@ -27,21 +28,29 @@ class ServiceCategoryController extends Controller
             if ($perPage < 1 || $perPage > 100) {
                 $perPage = 5;
             }
-            $query = ServiceCategory::select(['id', 'name', 'created_by'])->where($queryItems);
+            $query = User::select([
+                'id',
+                'position_id',
+                'name',
+                'role',
+                'full_name',
+                'gender',
+                'phone',
+                'email',
+                'status'
+            ])->where($queryItems);
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
             }
-            $createdBy = $request->query('created_by');
-            if ($createdBy) {
-                $query = $query->with('createdBy');
-            }
+
             if (count($query->paginate($perPage)) == 0) {
                 return response()->json([
                     "status" => true,
                     "message" => "Không tìm thấy dữ liệu tương ứng"
                 ], 200);
             }
-            return new ServiceCategoryConllection($query->paginate($perPage)->appends($request->query()));
+
+            return new UserConllection($query->paginate($perPage));
         } catch (\Throwable $th) {
             $response = [
                 'status' => 'error',
@@ -51,30 +60,31 @@ class ServiceCategoryController extends Controller
         }
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ServiceCategoryRequest $request)
+    public function store(UserRequest $request)
     {
         try {
-            $validatedData = $request->validated();
-            $serviceCategory = ServiceCategory::create($validatedData);
-
+            $validatorData = $request->validated();
+            //Mã hóa mật khẩu.
+            $validatorData['password'] = Hash::make(12345678);
+            $user = User::create($validatorData);
             $response = [
-                'status' => 'success',
-                'message' => 'Thêm mới loại dịch vụ thành công',
-                'data' => new ServiceCategoryResource($serviceCategory)
+                "status" => "success",
+                "message" => "Thêm mới nhân viên thành công.",
+                "data" => new UserResource($user),
             ];
-
             return response()->json($response);
         } catch (\Throwable $th) {
             $response = [
                 'status' => 'error',
                 'message' => 'Đã xảy ra lỗi trong quá trình thêm mới loại dịch vụ.',
             ];
-
             return response()->json($response, 500);
         }
+
     }
 
     /**
@@ -83,22 +93,19 @@ class ServiceCategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $createdBy = request()->query('created_by');
-            $serviceCategory = ServiceCategory::find($id);
-            if ($createdBy) {
-                $serviceCategory->loadMissing('createdBy');
+            $userData = User::find($id);
 
-            }
-            if (!$serviceCategory) {
+            if (!$userData) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
+
             $arr = [
                 'status' => 'success',
-                'message' => 'Chi tiết loại dịch vụ: ' . $serviceCategory->name,
-                'data' => new ServiceCategoryResource($serviceCategory)
+                'message' => 'Chi tiết thông tin nhân viên: ' . $userData->name,
+                'data' => new UserResource($userData)
             ];
             return response()->json($arr);
         } catch (\Throwable $th) {
@@ -108,32 +115,30 @@ class ServiceCategoryController extends Controller
             ];
             return response()->json($arr, 500);
         }
-    }
 
+    }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ServiceCategoryUpdateRequest $request, string $id)
+    public function update(string $id, UserUpdateRequest $request)
     {
         try {
-            $serviceCategory = ServiceCategory::findOrFail($id);
 
-            if (!$serviceCategory) {
+            $user = User::findOrFail($id);
+            if (!$user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
-
             $validator = $request->validated();
-            $serviceCategory->update($validator);
-
+            $user->update($validator);
             $arr = [
                 'status' => 'success',
-                'message' => 'Chỉnh sửa thành công loại dịch vụ: ' . $serviceCategory->name,
-                'data' => new ServiceCategoryResource($serviceCategory)
+                'message' => 'Chỉnh sửa thành công thông tin nhân viên: ' . $user->name,
+                'data' => new UserResource(resource: $user)
             ];
             return response()->json($arr);
         } catch (\Throwable $th) {
@@ -151,18 +156,18 @@ class ServiceCategoryController extends Controller
     public function destroy(string $id)
     {
         try {
-            $serviceCategory = ServiceCategory::find($id);
+            $user = User::find($id);
 
-            if (!$serviceCategory) {
+            if (!$user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
-            $serviceCategory->delete();
+            $user->delete();
             $arr = [
                 'status' => 'success',
-                'message' => 'Xóa thành công loại dịch vụ: ' . $serviceCategory->name,
+                'message' => 'Xóa thành công nhân viên: ' . $user->name,
             ];
             return response()->json($arr);
         } catch (\Throwable $th) {

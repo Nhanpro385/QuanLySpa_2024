@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Kra8\Snowflake\HasSnowflakePrimary;
 
 class ServiceCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
     use HasFactory, HasSnowflakePrimary;
 
     use SoftDeletes;
@@ -36,8 +37,8 @@ class ServiceCategory extends Model
         return $this->hasMany(ServiceCategory::class, 'servicecategory_id', 'id');
     }
 
-    public function created_by(): BelongsTo
+    public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'created_by');
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 }

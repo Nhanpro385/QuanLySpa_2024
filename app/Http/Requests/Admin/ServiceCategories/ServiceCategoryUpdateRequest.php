@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\ServiceCategories;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class ServiceCategoryUpdateRequest extends FormRequest
 {
@@ -23,8 +24,9 @@ class ServiceCategoryUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            'name' => 'required|regex:/^(?!\s*\d).+$/|max:255|min:10|nullable|unique:service_categories,name,' . $this->route('id'),
+            'name' => 'required|regex:/^(?!\s*\d).+$/|max:255|min:10|' . Rule::unique('service_categories')->ignore($this->id),
             'description' => 'nullable',
             'created_by' => 'nullable|numeric|min:10|max:9999999999999999999|exists:users,id',
             'status' => 'required'
