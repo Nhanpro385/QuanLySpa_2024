@@ -4,104 +4,127 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Admin\Category\CategoryRequest;
+use App\Http\Requests\Admin\Category\CategoryUpdateRequest;
+use App\Http\Resources\Admin\Category\CategoryResource;
+use App\Http\Resources\Admin\Category\CategoryCollection;
+
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
-        $categories = Category::paginate(5);
-        return response()->json($categories);
-    }
-
-    public function show($id)
-    {
-        $category = Category::find($id);
-
-        if (!$category) {
-            return response()->json(['message' => 'không tìm thấy danh mục'], 404);
+        try {
+            $categories = Category::paginate(5);
+            return new CategoryCollection($categories);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        return response()->json($category);
     }
 
-    public function store(Request $request)
+    public function show( $id)
     {
+        try {
 
-    $existingCategoryById = Category::where('id', $request->id)->first();
+            $category = Category::find($id);
 
-    $existingCategoryByName = Category::where('name', $request->name)->first();
+            if (!$category) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Danh mục không tồn tại!',
+                ], 404);
+            }
 
-    if ($existingCategoryById && $existingCategoryByName) {
-        return response()->json(['message' => 'ID của bạn đã tại và tên danh mục của bạn bị trùng.'], 400);
-    } elseif ($existingCategoryById) {
-        return response()->json(['message' => 'ID của bạn đã tồn tại.'], 400);
-    } elseif ($existingCategoryByName) {
-        return response()->json(['message' => 'Tên danh mục của bạn bị trùng.'], 400);
+            $arr = [
+                'status' => 'success',
+                'message' => 'Chi tiết danh mục: ' . $category->name,
+                'data' => new CategoryResource($category)
+            ];
+
+            return response()->json($arr);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
+            ], 500);
+        }
     }
 
-    $request->validate([
-        'id' => 'required',
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'status' => 'required|boolean',
-    ]);
+    public function store(CategoryRequest $request)
+{
+    try {
+
+        $validatedData = $request->validated();
 
 
-    $category = Category::create($request->all());
+        $category = Category::create($validatedData);
 
-    return response()->json([
-        'message' => 'Thêm danh mục thành công!',
-        'category' => $category,
-    ], 201);
-
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Thêm mới danh mục thành công',
+            'data' => new CategoryResource($category)
+        ], 201);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Đã xảy ra lỗi trong quá trình thêm mới danh mục.',
+        ], 500);
     }
+}
 
-    public function update(Request $request, $id)
+    public function update(CategoryUpdateRequest $request, $id)
     {
+        try {
+            $category = Category::findOrFail($id);
+            $category->update($request->validated());
 
-    $category = Category::find($id);
-
-    if (!$category) {
-        return response()->json(['message' => 'Danh mục không tìm thấy'], 404);
-    }
-
-
-    $existingCategoryById = Category::where('id', $request->id)->where('id', '!=', $id)->first();
-
-    $existingCategoryByName = Category::where('name', $request->name)->where('id', '!=', $id)->first();
-
-    if ($existingCategoryById && $existingCategoryByName) {
-        return response()->json(['message' => 'ID của bạn đã tồn tại và tên danh mục của bạn bị trùng.'], 400);
-    } elseif ($existingCategoryById) {
-        return response()->json(['message' => 'ID của bạn đã tồn tại.'], 400);
-    } elseif ($existingCategoryByName) {
-        return response()->json(['message' => 'Tên danh mục của bạn bị trùng.'], 400);
-    }
-
-    $request->validate([
-        'name' => 'sometimes|required|string|max:255',
-        'description' => 'nullable|string',
-        'status' => 'sometimes|required|boolean',
-    ]);
-
-    $category->update($request->all());
-    return response()->json(['message' => 'Cập nhật danh mục thành công!', 'category' => $category]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cập nhật danh mục thành công!',
+                'data' => new CategoryResource($category),
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Danh mục không tồn tại!',
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     public function destroy($id)
     {
+        try {
+            $category = Category::findOrFail($id);
 
-    $category = Category::find($id);
+            $category->delete();
 
-    if (!$category) {
-        return response()->json(['message' => 'Danh mục không tìm thấy'], 404);
-    }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Danh mục đã được xóa thành công'
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 
-    $category->delete();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Danh mục không tồn tại!',
+            ], 404);
+        } catch (\Throwable $th) {
 
-    return response()->json(['message' => 'Danh mục đã được xóa thành công']);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 }

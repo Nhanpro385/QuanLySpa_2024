@@ -24,7 +24,7 @@ Route::group([
 });
 //End
 
-// Route Supplier
+//Route Supplier
 Route::group([
     'middleware' => 'api',
     'prefix' => 'v0.0.1/admin/supplier',
