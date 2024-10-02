@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Admin\Category;
+namespace App\Http\Resources\Admin\Categories;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

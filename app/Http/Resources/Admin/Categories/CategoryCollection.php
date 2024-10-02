@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Admin\Supplier;
+namespace App\Http\Resources\Admin\Categories;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class SupplierCollection extends ResourceCollection
+class CategoryCollection extends ResourceCollection
 {
     public function toArray($request)
     {

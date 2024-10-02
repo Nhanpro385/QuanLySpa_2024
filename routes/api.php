@@ -11,29 +11,30 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-// Route Categories
+// Route Category
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'v0.0.1/admin/category',
+    'prefix' => 'v0.0.1/admin',
 ], function ($router) {
-    Route::get('/', [CategoryController::class, 'index']);
-    Route::post('/create', [CategoryController::class, 'store']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
-    Route::put('/{id}/edit', [CategoryController::class, 'update']);
-    Route::delete('/{id}/delete', [CategoryController::class, 'destroy']);
+    Route::get('/category', [CategoryController::class, 'index']);
+    Route::get('/category/{id}', [CategoryController::class, 'show']);
+    Route::post('/category', [CategoryController::class, 'store']);
+    Route::put('/category/{id}', [CategoryController::class, 'update']);
+    Route::delete('/category/{id}', [CategoryController::class, 'destroy']);
 });
-//End
+// End đây là route của tôi
 
-//Route Supplier
+// Route Supplier
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'v0.0.1/admin/supplier',
+    'prefix' => 'v0.0.1/admin',
 ], function ($router) {
-    Route::get('/', [SupplierController::class, 'index']);
-    Route::post('/create', [SupplierController::class, 'store']);
-    Route::get('/{id}', [SupplierController::class, 'show']);
-    Route::put('/{id}/edit', [SupplierController::class, 'update']);
-    Route::delete('/{id}/delete', [SupplierController::class, 'destroy']);
+    Route::get('/supplier', [SupplierController::class, 'index']);
+    Route::post('/supplier', [SupplierController::class, 'store']);
+    Route::get('/supplier/{id}', [SupplierController::class, 'show']);
+    Route::put('/supplier/{id}', [SupplierController::class, 'update']);
+    Route::delete('/supplier/{id}', [SupplierController::class, 'destroy']);
 });
-//End
+// End
+
 

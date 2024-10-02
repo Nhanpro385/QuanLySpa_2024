@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin\Category;
+namespace App\Http\Requests\Admin\Categories;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CategoryUpdateRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     public function authorize()
     {
@@ -16,21 +16,27 @@ class CategoryUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:categories,name,' . $this->route('id'),
-            'description' => 'nullable|string',
+            'id' => 'required|digits_between:10,20|integer|unique:categories,id',
+            'name' => 'required|string|max:255|unique:categories,name|regex:/^[\p{L} ]+$/u',
+            'description' => 'required|nullable|string',
             'status' => 'required|boolean',
-            
         ];
     }
 
     public function messages()
     {
         return [
+            'id.required' => 'Id không được bỏ trống!',
+            'id.digits_between' => 'Id phải có độ dài từ 10 đến 20 ký tự số không được quá 20 hoặc ít hơn 10.',
+            'id.integer' => 'Id phải là số nguyên.',
+            'id.unique' => 'Id đã tồn tại!',
             'name.required' => 'Tên không được bỏ trống!',
             'name.max' => 'Tên không được vượt quá 255 ký tự.',
             'name.unique' => 'Tên đã tồn tại!',
+            'name.regex' => 'Tên chỉ được phép chứa chữ cái.', 
             'status.required' => 'Trạng thái không được bỏ trống!',
             'status.boolean' => 'Trạng thái phải là true hoặc false.',
+            'description.required' => 'Mô tả không được bỏ trống!',
         ];
     }
 

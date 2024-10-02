@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin\Supplier;
+namespace App\Http\Requests\Admin\Suppliers;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class SupplierUpdateRequest extends FormRequest
+class SupplierRequest extends FormRequest
 {
     public function authorize()
     {
@@ -16,10 +16,11 @@ class SupplierUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:suppliers,name,' . $this->route('id'),
+            'id' => 'required|numeric|digits_between:10,20|unique:suppliers,id',
+            'name' => 'required|string|max:255|unique:suppliers,name|regex:/^[\p{L} ]+$/u',
             'country' => 'required|string|max:255',
-            'contact_email' => 'required|email|unique:suppliers,contact_email,' . $this->route('id'),
-            'code' => 'required|string|max:255|unique:suppliers,code,' . $this->route('id'),
+            'contact_email' => 'required|email|unique:suppliers,contact_email',
+            'code' => 'required|string|max:255|unique:suppliers,code',
             'created_by' => 'nullable|string|max:255',
             'status' => 'required|boolean',
         ];
@@ -28,9 +29,14 @@ class SupplierUpdateRequest extends FormRequest
     public function messages()
     {
         return [
+            'id.required' => 'Id không được bỏ trống!',
+            'id.numeric' => 'Id phải là số.',
+            'id.digits_between' => 'Id phải có từ 10 đến 20 chữ số không được quá 20 hoặc ít hơn 10.',
+            'id.unique' => 'Id đã tồn tại!',
             'name.required' => 'Tên không được bỏ trống!',
             'name.max' => 'Tên không được vượt quá 255 ký tự.',
             'name.unique' => 'Tên đã tồn tại!',
+            'name.regex' => 'Tên chỉ được phép chứa chữ cái.',
             'country.required' => 'Quốc gia không được bỏ trống!',
             'country.max' => 'Quốc gia không được vượt quá 255 ký tự.',
             'contact_email.required' => 'Email không được bỏ trống!',
@@ -41,7 +47,7 @@ class SupplierUpdateRequest extends FormRequest
             'code.unique' => 'Mã đã tồn tại!',
             'created_by.max' => 'Người tạo không được vượt quá 255 ký tự.',
             'status.required' => 'Trạng thái không được bỏ trống!',
-            'status.boolean' => 'Trạng thái phải là true hoặc false.',
+            'status.boolean' => 'Trạng thái phải là true hoặc false.', 
         ];
     }
 

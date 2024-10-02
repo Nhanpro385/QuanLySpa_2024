@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Http\Requests\Admin\Category\CategoryRequest;
-use App\Http\Requests\Admin\Category\CategoryUpdateRequest;
-use App\Http\Resources\Admin\Category\CategoryResource;
-use App\Http\Resources\Admin\Category\CategoryCollection;
+use App\Http\Requests\Admin\Categories\CategoryRequest;
+use App\Http\Requests\Admin\Categories\CategoryUpdateRequest;
+use App\Http\Resources\Admin\Categories\CategoryResource;
+use App\Http\Resources\Admin\Categories\CategoryCollection;
 
 
 class CategoryController extends Controller

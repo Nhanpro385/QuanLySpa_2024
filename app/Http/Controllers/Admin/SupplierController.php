@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
-use App\Http\Requests\Admin\Supplier\SupplierRequest;
-use App\Http\Requests\Admin\Supplier\SupplierUpdateRequest;
-use App\Http\Resources\Admin\Supplier\SupplierResource;
-use App\Http\Resources\Admin\Supplier\SupplierCollection;
+use App\Http\Requests\Admin\Suppliers\SupplierRequest;
+use App\Http\Requests\Admin\Suppliers\SupplierUpdateRequest;
+use App\Http\Resources\Admin\Suppliers\SupplierResource;
+use App\Http\Resources\Admin\Suppliers\SupplierCollection;
 
 class SupplierController extends Controller
 {
@@ -68,7 +68,7 @@ class SupplierController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Đã xảy ra lỗi trong quá trình thêm mới nhà cung cấp.',
-                'error' => $th->getMessage(), 
+                'error' => $th->getMessage(),
             ], 500);
         }
     }
