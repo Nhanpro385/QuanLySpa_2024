@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $table = 'users';
-     protected $fillable = [
+    protected $fillable = [
         'id',
         'position_id',
         'name',
@@ -95,5 +95,10 @@ class User extends Authenticatable
     public function inboundInvoice()
     {
         return $this->hasMany(User::class, 'user_id', 'id');
+    }
+
+    public function serviceCategories()
+    {
+        return $this->hasMany(ServiceCategory::class, 'created_by', 'id');
     }
 }
