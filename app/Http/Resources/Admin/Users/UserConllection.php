@@ -12,24 +12,26 @@ class UserConllection extends ResourceCollection
      *
      * @return array<string, mixed>
      */
+    public $collects = UserResource::class;
     public function toArray(Request $request): array
     {
-        return [
-            'data' => $this->collection->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'position_id' => $user->position_id . "==>name",
-                    'name' => $user->name,
-                    'role' => $user->role,
-                    'full_name' => $user->full_name,
-                    'gender' => $user->gender,
-                    'phone' => $user->phone,
-                    'email' => $user->email,
-                    'status' => $user->status,
-                ];
-            }),
-            'status' => true,
-            'message' => 'Danh sách nhân viên'
-        ];
+        // return [
+        //     'data' => $this->collection->map(function ($user) {
+        //         return [
+        //             'id' => $user->id,
+        //             'position_id' => $user->position_id . "==>name",
+        //             'name' => $user->name,
+        //             'role' => $user->role,
+        //             'full_name' => $user->full_name,
+        //             'gender' => $user->gender,
+        //             'phone' => $user->phone,
+        //             'email' => $user->email,
+        //             'status' => $user->status,
+        //         ];
+        //     }),
+        //     'status' => true,
+        //     'message' => 'Danh sách nhân viên'
+        // ];
+        return parent::toArray($request);
     }
 }

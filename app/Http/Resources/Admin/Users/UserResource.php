@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Admin\Users;
 
+use App\Http\Resources\Admin\Positions\PositionResource;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +18,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'position_id' => $this->position_id,
+            'position' => $this->relationLoaded('position') ? new PositionResource($this->position) : $this->position_id,
             'name' => $this->name,
             'role' => $this->role,
             'full_name' => $this->full_name,
