@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ContactsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,5 +23,12 @@ Route::group([
     Route::put('/serviceCategories/{id}', [ServiceCategoryController::class, 'update']);
     Route::delete('/serviceCategories/{id}', [ServiceCategoryController::class, 'destroy']);
 
+
+
+    Route::get('/contacts', [ContactsController::class, 'index']);
+    Route::post('/contacts', [ContactsController::class, 'store']);
+    Route::get('/contacts/{id}', [ContactsController::class, 'show']);
+    Route::put('/contacts/{id}', [ContactsController::class, 'update']);
+    Route::delete('/contacts/{id}', [ContactsController::class, 'destroy']);
 });
 //End
