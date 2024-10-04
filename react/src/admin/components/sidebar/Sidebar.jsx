@@ -123,6 +123,15 @@ const items = [
         </Link>,
         "8"
       ),
+      getItem(
+        <Link
+          className="text-decoration-none text-black fs-4"
+          to="/admin/categoriesService"
+        >
+          Danh mục dịch vụ
+        </Link>,
+        "13"
+      ),
     ]
   ),
 

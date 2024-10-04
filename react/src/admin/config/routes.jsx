@@ -17,7 +17,7 @@ import StaffsDetail from "../pages/Staff_management/StaffsDetail";
 // Services
 import Services from "../pages/services/Services";
 import ServicesAdd from "../pages/services/add_services";
-
+import ServiceCategories from "../pages/services/Service_categories";
 // Products
 import Products from "../pages/product/Products";
 import ProductsAdd from "../pages/product/product_add";
@@ -66,6 +66,9 @@ const PublicRoutes = [
     // Services
     { path: "/services", element: <Services /> },
     { path: "/services/add", element: <ServicesAdd /> },
+    {
+        path: "/categoriesService", element: <ServiceCategories />,
+    },
     // Products
     { path: "/products", element: <Products /> },
     { path: "/products/add", element: <ProductsAdd /> },
