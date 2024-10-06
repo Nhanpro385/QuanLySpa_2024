@@ -39,14 +39,14 @@ const items = [
 
   // Quản lý khách hàng
   getItem(
-    <Link className="text-decoration-none text-black fs-4" to="/admin/user">
+    <Link className="text-decoration-none text-black fs-4" to="/admin/khachhang">
       Quản lý khách Hàng
     </Link>,
     "sub1",
     <UserOutlined />, // Icon quản lý khách hàng
     [
       getItem(
-        <Link className="text-decoration-none text-black fs-4" to="/admin/user">
+        <Link className="text-decoration-none text-black fs-4" to="/admin/khachhang">
           Danh sách khách hàng
         </Link>,
         "3"
@@ -54,7 +54,7 @@ const items = [
       getItem(
         <Link
           className="text-decoration-none text-black fs-4"
-          to="/admin/user/add"
+          to="/admin/khachhang/them"
         >
           Thêm khách hàng
         </Link>,

@@ -5,7 +5,7 @@ import {
     Row,
     Steps,
     Table,
-    ConfigProvider,
+ 
     Button,
     Typography,
 } from "antd";
@@ -51,16 +51,7 @@ const BookingInfo = () => {
         },
     ];
     return (
-        <ConfigProvider
-            theme={{
-                components: {
-                    Table: {
-                        headerBg: "#E05265",
-                        headerColor: "white",
-                    },
-                },
-            }}
-        >
+    
             <div
                 style={{
                     backgroundColor: "#FFF3F3",
@@ -816,7 +807,7 @@ const BookingInfo = () => {
                     </div>
                 </section>
             </div>
-        </ConfigProvider>
+  
     );
 };
 export default BookingInfo;

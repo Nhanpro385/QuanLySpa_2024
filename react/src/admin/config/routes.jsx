@@ -1,10 +1,10 @@
 import Dashboard from "../pages/Dashboard";
 
 // User Management
-import User from "../pages/UserManagement/User";
-import UserAdd from "../pages/UserManagement/User_add";
-import HistoryService from "../pages/UserManagement/history_sevice";
-import UserDetail from "../pages/UserManagement/UserDetail";
+import Customer from "../pages/customerManagement/customer";
+import CustomersAdd from "../pages/customerManagement/customer_add";
+import HistoryService from "../pages/customerManagement/history_sevice";
+import CustomerDetail from "../pages/customerManagement/UserDetail";
 
 // Appointments
 import Appointments from "../pages/appointments/Appointments";
@@ -50,10 +50,10 @@ const PublicRoutes = [
     { path: "/", element: <Dashboard /> },
 
     // User Management
-    { path: "/user", element: <User /> },
-    { path: "/user/add", element: <UserAdd /> },
-    { path: "/user/history/:id", element: <HistoryService /> },
-    { path: "/user/Detail/:id", element: <UserDetail /> },
+    { path: "/khachhang", element: <Customer /> },
+    { path: "/khachhang/them", element: <CustomersAdd /> },
+    { path: "/khachhang/lichsugiaodich/:id", element: <HistoryService /> },
+    { path: "/khachhang/chitiet/:id", element: <CustomerDetail /> },
 
     // Appointments
     { path: "/appointments", element: <Appointments /> },

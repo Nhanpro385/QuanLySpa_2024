@@ -9,7 +9,13 @@ const endpoints = {
         detail: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         delete: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
     },
-    
+    Customers: {
+        list: `${API_BASE_URL}/customer`,
+        detail: (id) => `${API_BASE_URL}/customer/${id}`,
+        create: `${API_BASE_URL}/customer`,
+        update: (id) => `${API_BASE_URL}/customer/${id}`,
+        delete: (id) => `${API_BASE_URL}/customer/${id}`,
+    },
 };
 
 export default endpoints;
