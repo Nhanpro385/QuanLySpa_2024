@@ -24,7 +24,7 @@ class ServiceCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|numeric|min:10|max:9999999999999999999|unique:service_categories,id',
+            'id' => 'required|numeric|min:1000000000|max:9999999999999999999|unique:service_categories,id',
             'name' => 'required|regex:/^(?!\s*\d).+$/|max:255|min:10|unique:service_categories,name',
             'description' => 'nullable',
             'created_by' => 'nullable|exists:users,id'

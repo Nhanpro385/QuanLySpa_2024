@@ -12,6 +12,8 @@ class ServiceCategoryConllection extends ResourceCollection
      *
      * @return array<string, mixed>
      */
+
+    public $collects = ServiceCategoryResource::class;
     public function toArray(Request $request): array
     {
         // return [

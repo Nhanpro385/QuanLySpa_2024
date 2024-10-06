@@ -27,7 +27,7 @@ class ServiceCategoryController extends Controller
             if ($perPage < 1 || $perPage > 100) {
                 $perPage = 5;
             }
-            $query = ServiceCategory::select(['id', 'name', 'created_by'])->where($queryItems);
+            $query = ServiceCategory::where($queryItems);
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
             }
