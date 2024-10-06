@@ -23,7 +23,8 @@ Route::group([
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
-
+    
+    // Service Categories
     Route::get('/serviceCategories', [ServiceCategoryController::class, 'index']);
     Route::get('/serviceCategories/{id}', [ServiceCategoryController::class, 'show']);
     Route::post('/serviceCategories', [ServiceCategoryController::class, 'store']);
@@ -73,27 +74,15 @@ Route::group([
     Route::post('/category', [CategoryController::class, 'store']);
     Route::put('/category/{id}', [CategoryController::class, 'update']);
     Route::delete('/category/{id}', [CategoryController::class, 'destroy']);
-});
-// End
-
-// Route Supplier
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'v0.0.1/admin',
-], function ($router) {
+    
+    // Supplier
     Route::get('/supplier', [SupplierController::class, 'index']);
     Route::post('/supplier', [SupplierController::class, 'store']);
     Route::get('/supplier/{id}', [SupplierController::class, 'show']);
     Route::put('/supplier/{id}', [SupplierController::class, 'update']);
     Route::delete('/supplier/{id}', [SupplierController::class, 'destroy']);
-});
-// End
-
-// Route Customer
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'v0.0.1/admin',
-], function ($router) {
+    
+    // Customer
     Route::get('/customer', [CustomerController::class, 'index']);
     Route::post('/customer', [CustomerController::class, 'store']);
     Route::get('/customer/{id}', [CustomerController::class, 'show']);
