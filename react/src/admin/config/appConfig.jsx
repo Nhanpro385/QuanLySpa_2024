@@ -1,3 +1,5 @@
+import Products from "../pages/product/Products";
+
 const API_BASE_URL = "http://127.0.0.1:8000/api/v0.0.1/admin"; // Thay đổi theo URL API của bạn
 
 const endpoints = {
@@ -15,6 +17,13 @@ const endpoints = {
         create: `${API_BASE_URL}/customer`,
         update: (id) => `${API_BASE_URL}/customer/${id}`,
         delete: (id) => `${API_BASE_URL}/customer/${id}`,
+    },
+    ProductsCategories: {
+        list: `${API_BASE_URL}/category`,
+        detail: (id) => `${API_BASE_URL}/category/${id}`,
+        create: `${API_BASE_URL}/category`,
+        update: (id) => `${API_BASE_URL}/category/${id}`,
+        delete: (id) => `${API_BASE_URL}/category/${id}`,
     },
 };
 
