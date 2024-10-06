@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Auth\AuthLoginRequest;
+use App\Http\Requests\Admin\Auth\AuthResetPasswordRequest;
+use App\Http\Requests\Admin\Auth\AuthUpdateRequest;
 use App\Http\Resources\Admin\Users\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -34,7 +37,6 @@ class AuthController extends Controller
     public function me(Request $request)
     {
         try {
-
             $id = auth('api')->user()->id;
             $user = User::findOrFail($id);
             if (!$user) {
@@ -86,7 +88,7 @@ class AuthController extends Controller
 
             return $this->respondWithToken($token, $refeshToken);
         } catch (JWTException $exception) {
-            return response()->json(['message' => 'lOI ROI'], 500);
+            return response()->json(['message' => 'Đã có lỗi xảy ra.'], 500);
         }
     }
 
@@ -112,5 +114,54 @@ class AuthController extends Controller
         ]);
     }
 
+
+
+    public function update(AuthUpdateRequest $request)
+    {
+        try {
+            $id = auth('api')->user()->id;
+            $validateData = $request->validated();
+            $user = User::findOrFail($id);
+            $user->update($validateData);
+            $arr = [
+                'status' => 'success',
+                'message' => 'Chỉnh sửa thành công thông tin tài khoản: ' . $user->name,
+                'data' => new UserResource(resource: $user)
+            ];
+            return response()->json($arr);
+        } catch (JWTException $exception) {
+            return response()->json(['message' => 'Đã có lỗi xảy ra.'], 500);
+        }
+    }
+
+    public function resetPassword(AuthResetPasswordRequest $request)
+    {
+        $validateData = $request->validated();
+        if (!Hash::check($request->current_password, auth('api')->user()->password)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Mật khẩu cũ không khớp.'
+            ], 400);
+        }
+
+        $id = auth('api')->user()->id;
+        $user = User::findOrFail($id);
+        $password = Hash::make($request->password);
+        $resetStatus = $user->update([
+            'password' => $password
+        ]);
+
+        if (!$resetStatus) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mật khẩu không được cập nhật thành công.'
+            ], 400);
+        }
+        auth('api')->logout();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Mật khẩu đã được cập nhật thành công. Yêu cầu đăng nhập lại tài khoảng.'
+        ], 200);
+    }
 
 }
