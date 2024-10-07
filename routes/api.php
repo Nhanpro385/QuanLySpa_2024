@@ -1,24 +1,23 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ContactsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 
-// Route Users
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
-// Route Category, Users, Service Categories, Supplier, Customer
+
+// Route Users
 Route::group([
     'middleware' => 'api',
     'prefix' => 'v0.0.1/admin',
-], function () {
-    // Users
+], function ($router) {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::post('/users', [UserController::class, 'store']);
@@ -32,7 +31,44 @@ Route::group([
     Route::put('/serviceCategories/{id}', [ServiceCategoryController::class, 'update']);
     Route::delete('/serviceCategories/{id}', [ServiceCategoryController::class, 'destroy']);
 
-    // Categories
+    Route::get('/positions', [PositionController::class, 'index']);
+    Route::get('/positions/{id}', [PositionController::class, 'show']);
+    Route::post('/positions', [PositionController::class, 'store']);
+    Route::put('/positions/{id}', [PositionController::class, 'update']);
+    Route::delete('/positions/{id}', [PositionController::class, 'destroy']);
+
+});
+//End
+
+//Route JWT
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router) {
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('logout');
+    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api')->name('refresh');
+    Route::get('/me', [AuthController::class, 'me'])->middleware('auth:api')->name('me');
+    Route::put('/me/{id}', [AuthController::class, 'update'])->middleware('auth:api')->name('meUpdate');
+    Route::patch('/me/resetPassword', [AuthController::class, 'resetPassword'])->middleware('auth:api')->name('meResetPassword');
+
+
+
+    Route::get('/contacts', [ContactsController::class, 'index']);
+    Route::post('/contacts', [ContactsController::class, 'store']);
+    Route::get('/contacts/{id}', [ContactsController::class, 'show']);
+    Route::put('/contacts/{id}', [ContactsController::class, 'update']);
+    Route::delete('/contacts/{id}', [ContactsController::class, 'destroy']);
+});
+
+//End
+
+
+// Route Category
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'v0.0.1/admin',
+], function ($router) {
     Route::get('/category', [CategoryController::class, 'index']);
     Route::get('/category/{id}', [CategoryController::class, 'show']);
     Route::post('/category', [CategoryController::class, 'store']);
@@ -54,4 +90,6 @@ Route::group([
     Route::delete('/customer/{id}', [CustomerController::class, 'destroy']);
 });
 // End
+
+
 
