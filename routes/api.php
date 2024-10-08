@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
+
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Auth\Admin\AuthController;
 
-
+require __DIR__ . '/auth.php';
 
 // Route Users
 Route::group([
@@ -23,7 +24,7 @@ Route::group([
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
-    
+
     // Service Categories
     Route::get('/serviceCategories', [ServiceCategoryController::class, 'index']);
     Route::get('/serviceCategories/{id}', [ServiceCategoryController::class, 'show']);
@@ -74,14 +75,14 @@ Route::group([
     Route::post('/category', [CategoryController::class, 'store']);
     Route::put('/category/{id}', [CategoryController::class, 'update']);
     Route::delete('/category/{id}', [CategoryController::class, 'destroy']);
-    
+
     // Supplier
     Route::get('/supplier', [SupplierController::class, 'index']);
     Route::post('/supplier', [SupplierController::class, 'store']);
     Route::get('/supplier/{id}', [SupplierController::class, 'show']);
     Route::put('/supplier/{id}', [SupplierController::class, 'update']);
     Route::delete('/supplier/{id}', [SupplierController::class, 'destroy']);
-    
+
     // Customer
     Route::get('/customer', [CustomerController::class, 'index']);
     Route::post('/customer', [CustomerController::class, 'store']);
@@ -90,6 +91,7 @@ Route::group([
     Route::delete('/customer/{id}', [CustomerController::class, 'destroy']);
 });
 // End
+
 
 
 
