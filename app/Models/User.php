@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Kra8\Snowflake\HasSnowflakePrimary;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable, HasSnowflakePrimary, SoftDeletes;
 
@@ -19,7 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $table = 'users';
-     protected $fillable = [
+    protected $fillable = [
         'id',
         'position_id',
         'name',
@@ -65,9 +66,24 @@ class User extends Authenticatable
         ];
     }
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
     public function position()
     {
-        return $this->belongsTo(Position::class, 'position_id', 'id');
+        return $this->belongsTo(Position::class);
     }
 
     public function consulation()
@@ -95,5 +111,10 @@ class User extends Authenticatable
     public function inboundInvoice()
     {
         return $this->hasMany(User::class, 'user_id', 'id');
+    }
+
+    public function serviceCategories()
+    {
+        return $this->hasMany(ServiceCategory::class, 'created_by', 'id');
     }
 }
