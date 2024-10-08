@@ -25,6 +25,20 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/category/${id}`,
         delete: (id) => `${API_BASE_URL}/category/${id}`,
     },
+    Users: {
+        list: `${API_BASE_URL}/users`,
+        detail: (id) => `${API_BASE_URL}/users/${id}`,
+        create: `${API_BASE_URL}/users`,
+        update: (id) => `${API_BASE_URL}/users/${id}`,
+        delete: (id) => `${API_BASE_URL}/users/${id}`,
+    },
+    Positions: {
+        list: `${API_BASE_URL}/positions`,
+        detail: (id) => `${API_BASE_URL}/positions/${id}`,
+        create: `${API_BASE_URL}/positions`,
+        update: (id) => `${API_BASE_URL}/positions/${id}`,
+        delete: (id) => `${API_BASE_URL}/positions/${id}`,
+    },
 };
 
 export default endpoints;
