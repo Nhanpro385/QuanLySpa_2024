@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { Col, Row, Layout, Drawer, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuOutlined } from "@ant-design/icons";
+import {
+    HomeOutlined,
+    InfoCircleOutlined,
+    TeamOutlined,
+    DollarOutlined,
+    HeartOutlined,
+    GiftOutlined,
+    CalendarOutlined,
+    ShopOutlined,
+    MenuOutlined,
+} from "@ant-design/icons"; // Thêm icon từ ant-design
 
 import logo from "../../assets/images/iconlogo.png";
 import Icontori from "../../assets/images/tori.png";
@@ -30,6 +40,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "home",
+                        icon: <HomeOutlined />, // Icon Trang Chủ
                         style: {
                             padding: "0 10px",
                         },
@@ -37,6 +48,7 @@ const HeaderComponents = () => {
                     {
                         label: "Giới Thiệu",
                         key: "about",
+                        icon: <InfoCircleOutlined />, // Icon Giới Thiệu
                         style: {
                             padding: "0 10px",
                         },
@@ -78,56 +90,48 @@ const HeaderComponents = () => {
                     },
                     {
                         label: (
-                            <Link
-                                to="/service"
-                                style={{ textDecoration: "none" }}
-                            >
+                            <Link to="/service" style={{ textDecoration: "none" }}>
                                 Dịch Vụ
                             </Link>
                         ),
                         key: "service",
+                        icon: <HeartOutlined />, // Icon Dịch Vụ
                         style: {
                             padding: "0 10px",
                         },
                     },
                     {
                         label: (
-                            <Link
-                                to="/pricing"
-                                style={{ textDecoration: "none" }}
-                            >
+                            <Link to="/pricing" style={{ textDecoration: "none" }}>
                                 Bảng Giá
                             </Link>
                         ),
                         key: "price",
+                        icon: <DollarOutlined />, // Icon Bảng Giá
                         style: {
                             padding: "0 10px",
                         },
                     },
                     {
                         label: (
-                            <Link
-                                to="/effect"
-                                style={{ textDecoration: "none" }}
-                            >
+                            <Link to="/effect" style={{ textDecoration: "none" }}>
                                 Hiệu Quả Điều Trị
                             </Link>
                         ),
                         key: "effect",
+                        icon: <ShopOutlined />, // Icon Hiệu Quả Điều Trị
                         style: {
                             padding: "0 10px",
                         },
                     },
                     {
                         label: (
-                            <Link
-                                to="/promotion"
-                                style={{ textDecoration: "none" }}
-                            >
+                            <Link to="/promotion" style={{ textDecoration: "none" }}>
                                 Khuyến Mãi
                             </Link>
                         ),
                         key: "promotion",
+                        icon: <GiftOutlined />, // Icon Khuyến Mãi
                         style: {
                             padding: "0 10px",
                         },
@@ -158,6 +162,7 @@ const HeaderComponents = () => {
                             </button>
                         ),
                         key: "contact",
+                        icon: <CalendarOutlined />, // Icon Đặt Lịch
                         style: {
                             padding: "0 10px",
                         },
@@ -166,11 +171,12 @@ const HeaderComponents = () => {
             />
         );
     };
+
     return (
         <Header
             style={{
                 backgroundColor: "#fff",
-                padding: "0 16px", // Adjust padding to fit content
+                padding: "0 16px",
                 width: "100%",
             }}
             className="container"
@@ -202,13 +208,7 @@ const HeaderComponents = () => {
                 <Col xs={0} sm={0} md={0} lg={18}>
                     <AppMenu isInline={true} />
                 </Col>
-                <Col
-                    xs={16}
-                    sm={24}
-                    md={24}
-                    lg={0}
-                    style={{ textAlign: "right" }}
-                >
+                <Col xs={16} sm={24} md={24} lg={0} style={{ textAlign: "right" }}>
                     <MenuOutlined
                         onClick={() => setVisible(true)}
                         style={{

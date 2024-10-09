@@ -11,6 +11,8 @@ import {
     TagsOutlined,
     ShopOutlined,
     SettingOutlined,
+    CommentOutlined, // Thêm icon cho mục quản lý bình luận
+    PhoneOutlined, // Thêm icon cho mục quản lý liên hệ
 } from "@ant-design/icons"; // Thêm các icon khác từ @ant-design/icons
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
@@ -291,6 +293,8 @@ const items = [
         "sub7",
         <SettingOutlined /> // Icon ca làm việc
     ),
+
+    // Quản lý bình luận và đánh giá
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -298,8 +302,11 @@ const items = [
         >
             Quản lý bình luận và đánh giá
         </Link>,
-        "18"
+        "18",
+        <CommentOutlined /> // Icon bình luận
     ),
+
+    // Quản lý liên hệ
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -307,7 +314,18 @@ const items = [
         >
             Quản lý liên hệ
         </Link>,
-        "19"
+        "19",
+        <PhoneOutlined /> // Icon liên hệ
+    ),
+    getItem(
+        <Link
+            className="text-decoration-none text-black fs-4"
+            to="/admin/thanhtoan"
+        >
+            Quản lý thanh toán
+        </Link>,
+        "2",
+        <DesktopOutlined />
     ),
 ];
 
