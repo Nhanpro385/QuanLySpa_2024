@@ -39,6 +39,14 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/positions/${id}`,
         delete: (id) => `${API_BASE_URL}/positions/${id}`,
     },
+    Suppliers: {
+        list: `${API_BASE_URL}/supplier`,
+        detail: (id) => `${API_BASE_URL}/supplier/${id}`,
+        create: `${API_BASE_URL}/supplier`,
+        update: (id) => `${API_BASE_URL}/supplier/${id}`,
+        delete: (id) => `${API_BASE_URL}/supplier/${id}`,
+    },
+    
 };
 
 export default endpoints;

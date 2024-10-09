@@ -50,6 +50,8 @@ import ShiftManagement from "../pages/ShiftManagement";
 import ContactManagement from "../pages/contactmanagement";
 //patment
 import PaymentManagement from "../pages/paymentManagenment";
+// supplierManagement
+import SupplierManagement from "../pages/supplierManagement";
 const PublicRoutes = [
     // Dashboard
     { path: "/", element: <Dashboard /> },
@@ -101,7 +103,12 @@ const PublicRoutes = [
     // Contact Management
     { path: "/contactmanagement", element: <ContactManagement /> },
     // Payment Management
-    {path:"/thanhtoan",element:<PaymentManagement/>}
+    { path: "/thanhtoan", element: <PaymentManagement /> },
+    // supplierManagement
+    {
+        path: "/nhacungcap",
+        element: <SupplierManagement />,
+    },
 ];
 
 export { PublicRoutes };

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
     DesktopOutlined,
     FileOutlined,
-    PieChartOutlined,
     TeamOutlined,
     UserOutlined,
     SolutionOutlined,
@@ -11,11 +10,12 @@ import {
     TagsOutlined,
     ShopOutlined,
     SettingOutlined,
-    CommentOutlined, // Thêm icon cho mục quản lý bình luận
-    PhoneOutlined, // Thêm icon cho mục quản lý liên hệ
-} from "@ant-design/icons"; // Thêm các icon khác từ @ant-design/icons
+    CommentOutlined,
+    PhoneOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
+
 const { Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -28,7 +28,6 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-    // Trang chủ
     getItem(
         <Link
             className="text-decoration-none text-black fs-2 text-center"
@@ -38,8 +37,6 @@ const items = [
         </Link>,
         "1"
     ),
-
-    // Quản lý khách hàng
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -47,8 +44,8 @@ const items = [
         >
             Quản lý khách Hàng
         </Link>,
-        "sub1",
-        <UserOutlined />, // Icon quản lý khách hàng
+        "2",
+        <UserOutlined />,
         [
             getItem(
                 <Link
@@ -70,8 +67,6 @@ const items = [
             ),
         ]
     ),
-
-    // Quản lý lịch hẹn
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -79,8 +74,8 @@ const items = [
         >
             Quản lý lịch hẹn
         </Link>,
-        "sub2",
-        <CalendarOutlined />, // Icon lịch hẹn
+        "5",
+        <CalendarOutlined />,
         [
             getItem(
                 <Link
@@ -89,12 +84,10 @@ const items = [
                 >
                     Danh sách lịch hẹn
                 </Link>,
-                "5"
+                "6"
             ),
         ]
     ),
-
-    // Quản lý nhân viên
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -102,8 +95,8 @@ const items = [
         >
             Quản lý nhân viên
         </Link>,
-        "sub3",
-        <TeamOutlined />, // Icon quản lý nhân viên
+        "7",
+        <TeamOutlined />,
         [
             getItem(
                 <Link
@@ -112,7 +105,7 @@ const items = [
                 >
                     Danh sách nhân viên
                 </Link>,
-                "7"
+                "8"
             ),
             getItem(
                 <Link
@@ -121,8 +114,7 @@ const items = [
                 >
                     Thêm nhân viên
                 </Link>,
-
-                "6"
+                "9"
             ),
             getItem(
                 <Link
@@ -131,12 +123,10 @@ const items = [
                 >
                     Chức vụ
                 </Link>,
-                "21"
+                "10"
             ),
         ]
     ),
-
-    // Quản lý dịch vụ
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -144,8 +134,8 @@ const items = [
         >
             Quản lý dịch vụ
         </Link>,
-        "sub4",
-        <SolutionOutlined />, // Icon dịch vụ
+        "11",
+        <SolutionOutlined />,
         [
             getItem(
                 <Link
@@ -154,7 +144,7 @@ const items = [
                 >
                     Danh sách dịch vụ
                 </Link>,
-                "8"
+                "12"
             ),
             getItem(
                 <Link
@@ -167,8 +157,6 @@ const items = [
             ),
         ]
     ),
-
-    // Quản lý sản phẩm
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -176,8 +164,8 @@ const items = [
         >
             Quản lý sản phẩm
         </Link>,
-        "sub5",
-        <ShoppingOutlined />, // Icon sản phẩm
+        "14",
+        <ShoppingOutlined />,
         [
             getItem(
                 <Link
@@ -186,7 +174,7 @@ const items = [
                 >
                     Danh sách sản phẩm
                 </Link>,
-                "9"
+                "15"
             ),
             getItem(
                 <Link
@@ -195,7 +183,7 @@ const items = [
                 >
                     Thêm sản phẩm
                 </Link>,
-                "10"
+                "16"
             ),
             getItem(
                 <Link
@@ -204,12 +192,10 @@ const items = [
                 >
                     Danh mục sản phẩm
                 </Link>,
-                "12"
+                "17"
             ),
         ]
     ),
-
-    // Quản lý khuyến mãi
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -217,8 +203,8 @@ const items = [
         >
             Quản lý khuyến mãi
         </Link>,
-        "sub6",
-        <TagsOutlined />, // Icon khuyến mãi
+        "18",
+        <TagsOutlined />,
         [
             getItem(
                 <Link
@@ -227,12 +213,10 @@ const items = [
                 >
                     Danh sách khuyến mãi
                 </Link>,
-                "11"
+                "19"
             ),
         ]
     ),
-
-    // Quản lý kho
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -240,8 +224,8 @@ const items = [
         >
             Quản lý kho
         </Link>,
-        "14",
-        <ShopOutlined />, // Icon kho
+        "20",
+        <ShopOutlined />,
         [
             getItem(
                 <Link
@@ -250,7 +234,7 @@ const items = [
                 >
                     Danh sách kho
                 </Link>,
-                "15"
+                "21"
             ),
             getItem(
                 <Link
@@ -259,7 +243,7 @@ const items = [
                 >
                     Nhập kho
                 </Link>,
-                "16"
+                "22"
             ),
             getItem(
                 <Link
@@ -268,7 +252,7 @@ const items = [
                 >
                     Xuất kho
                 </Link>,
-                "17"
+                "23"
             ),
             getItem(
                 <Link
@@ -277,24 +261,31 @@ const items = [
                 >
                     Quản lý Tồn Kho
                 </Link>,
-                "20"
+                "24"
             ),
         ]
     ),
-
-    // Quản lý ca làm việc
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
             to="/admin/shifmanagement"
         >
-            Quản Ca Làm Việc
+            Quản lý ca làm việc
         </Link>,
-        "sub7",
-        <SettingOutlined /> // Icon ca làm việc
+        "25",
+        <SettingOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/shifmanagement"
+                >
+                    Quản lý ca làm việc
+                </Link>,
+                "26"
+            ),
+        ]
     ),
-
-    // Quản lý bình luận và đánh giá
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -302,11 +293,20 @@ const items = [
         >
             Quản lý bình luận và đánh giá
         </Link>,
-        "18",
-        <CommentOutlined /> // Icon bình luận
+        "27",
+        <CommentOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/CommentManagement"
+                >
+                    Danh sách bình luận
+                </Link>,
+                "28"
+            ),
+        ]
     ),
-
-    // Quản lý liên hệ
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
@@ -314,8 +314,19 @@ const items = [
         >
             Quản lý liên hệ
         </Link>,
-        "19",
-        <PhoneOutlined /> // Icon liên hệ
+        "29",
+        <PhoneOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/ContactManagement"
+                >
+                    Danh sách liên hệ
+                </Link>,
+                "30"
+            ),
+        ]
     ),
     getItem(
         <Link
@@ -324,8 +335,40 @@ const items = [
         >
             Quản lý thanh toán
         </Link>,
-        "2",
-        <DesktopOutlined />
+        "31",
+        <DesktopOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/thanhtoan"
+                >
+                    Quản lý thanh toán
+                </Link>,
+                "32"
+            ),
+        ]
+    ),
+    getItem(
+        <Link
+            className="text-decoration-none text-black fs-4"
+            to="/admin/nhacungcap"
+        >
+            Quản lý Nhà Cung Cấp
+        </Link>,
+        "33",
+        <FileOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/nhacungcap"
+                >
+                    Quản lý Nhà Cung Cấp
+                </Link>,
+                "34"
+            )
+        ]
     ),
 ];
 
