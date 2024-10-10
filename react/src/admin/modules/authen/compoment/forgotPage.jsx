@@ -2,10 +2,10 @@ import React from "react";
 import { Button, Col, Form, Input, Row, Spin, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import "../../modules/authen/styles/LoginPage.scss"; // Use the updated CSS file
-import { loginAction } from "../../modules/authen/actions/authActions";
-import Wellcome from "../../assets/images/loginimg.jpg";
-const LoginPage = () => {
+import "../styles/LoginPage.scss"; // Use the updated CSS file
+import { loginAction } from "../actions/authActions";
+import Wellcome from "../../../assets/images/loginimg.jpg";
+const ForgotPage = () => {
     const [loading, setLoading] = React.useState(false);
     const {
         control,
@@ -69,7 +69,7 @@ const LoginPage = () => {
                         <Row justify="center" align="middle">
                             <Col span={24} className="text-center">
                                 <Form onFinish={handleSubmit(onSubmit)}>
-                                    <h1>Đăng nhập hệ thống</h1>
+                                    <h1>Quên mật khẩu</h1>
                                     <Form.Item>
                                         <Controller
                                             name="email"
@@ -92,37 +92,17 @@ const LoginPage = () => {
                                             </p>
                                         )}
                                     </Form.Item>
-                                    <Form.Item>
-                                        <Controller
-                                            name="password"
-                                            control={control}
-                                            rules={{
-                                                required:
-                                                    "Vui lòng nhập mật khẩu",
-                                            }}
-                                            render={({ field }) => (
-                                                <Input.Password
-                                                    {...field}
-                                                    placeholder="Mật khẩu"
-                                                />
-                                            )}
-                                        />
-                                        {errors.password && (
-                                            <p style={{ color: "red" }}>
-                                                {errors.password.message}
-                                            </p>
-                                        )}
-                                    </Form.Item>
+                                    
                                     <a
                                     style={{
                                         fontSize: "17px",
                                     }}
                                         onClick={() =>
-                                            navigate("/admin/quenmatkhau")
+                                            navigate("/admin/dangnhap")
                                         }
                                         className="forgotlink"
                                     >
-                                        Quên mật khẩu?
+                                        Quay lại đăng nhập
                                     </a>
                                     <br />
                                     <Button
@@ -131,7 +111,7 @@ const LoginPage = () => {
                                         className="buttonlogin"
                                         block
                                     >
-                                        Đăng nhập
+                                        Gửi yêu cầu
                                     </Button>
                                 </Form>
                             </Col>
@@ -143,4 +123,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default ForgotPage;

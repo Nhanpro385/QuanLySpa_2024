@@ -45,7 +45,7 @@ const ModalEditServiceCategory = ({
             ...data,
             status: data.status ? 1 : 0,
         };
-        console.log("formattedData", formattedData);
+      
 
         try {
             // Dispatch the update action

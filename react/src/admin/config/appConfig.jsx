@@ -1,6 +1,7 @@
-import Products from "../pages/product/Products";
+// src/admin/api/endpoints.js
 
 const API_BASE_URL = "http://127.0.0.1:8000/api/v0.0.1/admin"; // Thay đổi theo URL API của bạn
+const API_AUTH_URL = "http://127.0.0.1:8000/api/auth"; // Thay đổi theo URL API của bạn
 
 const endpoints = {
     ServiceCategories: {
@@ -8,7 +9,6 @@ const endpoints = {
         detail: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         create: `${API_BASE_URL}/serviceCategories`,
         update: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
-        detail: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         delete: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
     },
     Customers: {
@@ -46,7 +46,13 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/supplier/${id}`,
         delete: (id) => `${API_BASE_URL}/supplier/${id}`,
     },
-    
+    Auth: {
+        login: `${API_AUTH_URL}/login`,
+        logout: `${API_AUTH_URL}/logout`,
+        refresh: `${API_AUTH_URL}/refresh`,
+        me: `${API_AUTH_URL}/me`,
+        resetPassword: `${API_AUTH_URL}/me/resetPassword`,
+    },
 };
 
 export default endpoints;
