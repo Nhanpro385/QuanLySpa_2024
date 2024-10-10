@@ -10,13 +10,13 @@ use Illuminate\Notifications\Notification;
 class ResetPasswordNotification extends Notification
 {
     use Queueable;
-
+    public $url;
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(string $url)
     {
-        //
+        $this->url = $url;
     }
 
     /**
@@ -35,9 +35,12 @@ class ResetPasswordNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject('Thông báo xác nhận cập nhật lại mật khẩu')
+            ->greeting('Xin chào!')
+            ->line('Xác nhận cập nhật lại mật khẩu tài khoản')
+            ->action('Xác nhận', $this->url)
+            ->salutation('Spa Sakura')
+            ->line('Cảm ơn bạn đã xác nhận tài khoản!');
     }
 
     /**

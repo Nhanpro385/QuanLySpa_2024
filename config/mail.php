@@ -118,4 +118,13 @@ return [
         'name' => env('MAIL_FROM_NAME', 'SPA SAKURA Chăm sóc khách hàng'),
     ],
 
+
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/emails/layouts'),
+        ],
+    ],
+
 ];
