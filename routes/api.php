@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\Admin\AuthController;
 
 require __DIR__ . '/auth.php';
@@ -37,6 +38,14 @@ Route::group([
     Route::post('/positions', [PositionController::class, 'store']);
     Route::put('/positions/{id}', [PositionController::class, 'update']);
     Route::delete('/positions/{id}', [PositionController::class, 'destroy']);
+
+
+
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::post('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
 });
 //End
