@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\StaffShiftController;
 
 
 
@@ -23,7 +24,7 @@ Route::group([
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
-    
+
     // Service Categories
     Route::get('/serviceCategories', [ServiceCategoryController::class, 'index']);
     Route::get('/serviceCategories/{id}', [ServiceCategoryController::class, 'show']);
@@ -74,22 +75,33 @@ Route::group([
     Route::post('/category', [CategoryController::class, 'store']);
     Route::put('/category/{id}', [CategoryController::class, 'update']);
     Route::delete('/category/{id}', [CategoryController::class, 'destroy']);
-    
+
     // Supplier
     Route::get('/supplier', [SupplierController::class, 'index']);
     Route::post('/supplier', [SupplierController::class, 'store']);
     Route::get('/supplier/{id}', [SupplierController::class, 'show']);
     Route::put('/supplier/{id}', [SupplierController::class, 'update']);
     Route::delete('/supplier/{id}', [SupplierController::class, 'destroy']);
-    
+
     // Customer
     Route::get('/customer', [CustomerController::class, 'index']);
     Route::post('/customer', [CustomerController::class, 'store']);
     Route::get('/customer/{id}', [CustomerController::class, 'show']);
     Route::put('/customer/{id}', [CustomerController::class, 'update']);
     Route::delete('/customer/{id}', [CustomerController::class, 'destroy']);
+
+     // Staff Shift
+     Route::get('/staff-shift', [StaffShiftController::class, 'index']);
+     Route::post('/staff-shift', [StaffShiftController::class, 'store']);
+     Route::get('/staff-shift/{id}', [StaffShiftController::class, 'show']);
+     Route::put('/staff-shift/{id}', [StaffShiftController::class, 'update']);
+     Route::delete('/staff-shift/{id}', [StaffShiftController::class, 'destroy']);
+
+
 });
 // End
+
+
 
 
 
