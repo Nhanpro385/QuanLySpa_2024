@@ -20,7 +20,7 @@ export const loginAction = async (email, password) => {
 // Action đăng xuất
 export const logoutAction = async () => {
     try {
-        await API_logout();
+        // await API_logout();
         localStorage.removeItem("token"); // Xóa token khỏi localStorage
         return { success: true };
     } catch (error) {

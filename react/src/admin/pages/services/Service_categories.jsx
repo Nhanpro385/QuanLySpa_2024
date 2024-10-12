@@ -1,41 +1,40 @@
-import React, { useEffect } from "react";
-import {
-    Card,
-    Col,
-    Row,
-    Input,
-    Button,
-    Table,
-    Form,
-    Alert,
-    message,
-    Space,
-} from "antd";
-import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+// ServiceCategories.jsx
+import React, { useEffect, useState } from "react"; // Added useState
+import { Card, Col, Row, Alert, message } from "antd";
+import { useSelector } from "react-redux";
 import {
     ServiceCategoriesAdd,
     ServiceCategoriesDelete,
-    ServiceCategoriesUpdate,
     ServiceCategoriesGet,
     ServiceCategoriesGetById,
 } from "../../redux/slices/servicesCategoriesSlice";
 import { Snowflake } from "@theinternetfolks/snowflake";
-
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import useModal from "../../modules/appointments/hooks/openmodal";
+import ServiceCategoryForm from "../../modules/services/compoments/ServiceCategoryForm"; // Adjust path as necessary
+import ServiceCategoryTable from "./../../modules/services/compoments/ServiceCategoryTable"; // Adjust path as necessary
 import ModalEditServiceCategory from "../../modules/services/compoments/ServiceCategoriesEditModal";
+import { useForm } from "react-hook-form"; // Import useForm
+import useServiceCategoriesActions from "../../modules/services/hooks/useServiceCategories";
+
 const ServiceCategories = () => {
+    const {
+        addServiceCategories,
+        getServiceCategories,
+        updateServiceCategories,
+        deleteServiceCategories,
+        getServiceCategoriesById,
+    } = useServiceCategoriesActions();
+    
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-    const dispatch = useDispatch();
     const { ServiceCategories, loading, error, category } = useSelector(
         (state) => state.ServiceCategories
     );
-    useEffect(() => {
-        dispatch(ServiceCategoriesGet());
-    }, [dispatch]);
 
+    // State to track submission status
+    const [submissionStatus, setSubmissionStatus] = useState(null);
+
+    // Initialize the form
     const {
         control,
         handleSubmit,
@@ -44,57 +43,23 @@ const ServiceCategories = () => {
         formState: { errors },
     } = useForm();
 
-    const dataSource = (ServiceCategories.data || []).map((item) => ({
-        ...item,
-        key: item.id,
-    }));
+    useEffect(() => {
+        getServiceCategories();
+    }, []);
 
-    const columns = [
-        {
-            title: "STT",
-            dataIndex: "stt",
-            key: "stt",
-            render: (text, record, index) => {
-                return (
-                    (ServiceCategories.meta.current_page - 1) *
-                        ServiceCategories.meta.per_page +
-                    index +
-                    1
-                );
-            },
-        },
-        {
-            title: "Tên Danh mục",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "Mô tả",
-            dataIndex: "description",
-            key: "description",
-        },
-        {
-            title: "Hành động",
-            dataIndex: "action",
-            key: "action",
-            render: (text, record) => (
-                <Space>
-                    <Button type="primary" onClick={() => editCate(record.id)}>
-                        <EditOutlined />
-                    </Button>
-                    <Button
-                        color="danger"
-                        variant="outlined"
-                        onClick={() => deleteCate(record.id)}
-                    >
-                        <DeleteOutlined />
-                    </Button>
-                </Space>
-            ),
-        },
-    ];
+    // Effect to show messages based on submission status
+    useEffect(() => {
+        if (submissionStatus === 'success') {
+            messageApi.success("Thêm mới thành công");
+            reset();
+            setSubmissionStatus(null); // Reset submission status
+        } else if (submissionStatus === 'error') {
+            messageApi.error("Thêm mới thất bại");
+            setSubmissionStatus(null); // Reset submission status
+        }
+    }, [submissionStatus, messageApi, reset]);
 
-    const onSubmit = async (data) => {
+    const onSubmit = handleSubmit(async (data) => {
         const payload = {
             id: Snowflake.generate(),
             name: data.name,
@@ -102,115 +67,65 @@ const ServiceCategories = () => {
             description: data.description,
         };
 
-        try {
-            const resultAction = await dispatch(ServiceCategoriesAdd(payload));
+        const resultAction = await addServiceCategories(payload);
+        if (resultAction.meta.requestStatus === "fulfilled") {
+            setSubmissionStatus('success'); // Update submission status to success
+        } else {
+            setSubmissionStatus('error'); // Update submission status to error
+        }
+    });
 
-            if (ServiceCategoriesAdd.fulfilled.match(resultAction)) {
-                reset();
-            } else {
-                if (resultAction.payload?.errors) {
-                    Object.keys(resultAction.payload.errors).forEach((key) => {
-                        setError(key, {
-                            type: "server",
-                            message: resultAction.payload.errors[key][0],
-                        });
-                    });
-                }
-            }
-        } catch (err) {
-            console.error("Unexpected error:", err);
+    const editCate = (id) => {
+        getServiceCategoriesById(id);
+        showModal();
+    };
+
+    const deleteCate = async (id) => {
+        const resultAction = await deleteServiceCategories(id);
+        if (resultAction.meta.requestStatus === "fulfilled") {
+            messageApi.success("Xóa thành công");
         }
     };
 
-    const editCate = (id) => {
-        dispatch(ServiceCategoriesGetById(id));
-        showModal();
-    };
-    const deleteCate = async (id) => {
-        const resultAction = await dispatch(ServiceCategoriesDelete(id));
-        console.log(resultAction);
-    };
+    const dataSource = (ServiceCategories.data || []).map((item) => ({
+        ...item,
+        key: item.id,
+    }));
 
     return (
-        <Row gutter={[16, 16]}>
-            <Col span={24}>
-                <Card title="Danh mục Loại Dịch Vụ">
-                    {error && (
-                        <Alert
-                            message={<span>{error.message}</span>}
-                            type="error"
+        <>
+            {contextHolder}
+            <Row gutter={[16, 16]}>
+                <Col span={24}>
+                    <Card title="Danh mục Loại Dịch Vụ">
+                        {error && (
+                            <Alert message={<span>{error.message}</span>} type="error" />
+                        )}
+                        <ServiceCategoryForm
+                            onSubmit={onSubmit}
+                            errors={errors}
+                            control={control} // Pass control to form
                         />
-                    )}
-                    <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-                        <Form.Item
-                            label="Tên danh mục"
-                            validateStatus={errors.name ? "error" : ""}
-                        >
-                            <Controller
-                                name="name"
-                                control={control}
-                                rules={{
-                                    required: "Tên danh mục là bắt buộc",
-                                    minLength: {
-                                        value: 10,
-                                        message:
-                                            "Tên danh mục phải có ít nhất 10 ký tự",
-                                    },
-                                }}
-                                render={({ field }) => (
-                                    <Input size="large" {...field} />
-                                )}
-                            />
-                            {errors.name && (
-                                <p style={{ color: "red" }}>
-                                    {errors.name.message}
-                                </p>
-                            )}
-                        </Form.Item>
-                        <Form.Item
-                            label="Mô tả"
-                            validateStatus={errors.description ? "error" : ""}
-                        >
-                            <Controller
-                                name="description"
-                                control={control}
-                                defaultValue=""
-                                rules={{ required: "Mô tả là bắt buộc" }}
-                                render={({ field }) => (
-                                    <Input size="large" {...field} />
-                                )}
-                            />
-                            {errors.description && (
-                                <p style={{ color: "red" }}>
-                                    {errors.description.message}
-                                </p>
-                            )}
-                        </Form.Item>
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Thêm Mới
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Card>
-            </Col>
-            <Col span={24}>
-                <Card title="Danh sách danh mục sản phẩm">
-                    <Table
-                        dataSource={dataSource}
-                        columns={columns}
-                        loading={loading}
-                        rowKey="id" // Use the unique id for rowKey
+                    </Card>
+                </Col>
+                <Col span={24}>
+                    <Card title="Danh sách danh mục sản phẩm">
+                        <ServiceCategoryTable
+                            dataSource={dataSource}
+                            loading={loading}
+                            editCate={editCate}
+                            deleteCate={deleteCate}
+                        />
+                    </Card>
+                    <ModalEditServiceCategory
+                        isModalOpen={isModalOpen}
+                        handleOk={handleOk}
+                        handleCancel={handleCancel}
+                        category={category}
                     />
-                </Card>
-                <ModalEditServiceCategory
-                    isModalOpen={isModalOpen}
-                    handleOk={handleOk}
-                    handleCancel={handleCancel}
-                    category={category}
-                />
-            </Col>
-        </Row>
+                </Col>
+            </Row>
+        </>
     );
 };
 

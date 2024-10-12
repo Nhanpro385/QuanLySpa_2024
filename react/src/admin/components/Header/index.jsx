@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, Menu, Badge, Popover, Row, Col, Avatar } from "antd";
+import { Layout, Menu, Badge, Popover, Row, Col, Avatar,notification } from "antd";
 import {
     UserOutlined,
     SettingOutlined,
@@ -8,7 +8,7 @@ import {
 import styles from "../../modules/Notification/notification.module.scss";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-
+import { logoutAction } from "../../modules/authen/actions/authActions";
 const { Header } = Layout;
 
 const HeaderAdmin = () => {
@@ -208,6 +208,37 @@ const HeaderAdmin = () => {
             key: "4",
             icon: <SettingOutlined />,
             label: "Đăng xuất",
+            onClick: () => {
+                const logout = async () => {
+                    try {
+                        const res = await logoutAction();
+                        if (res.success) {
+                            notification.success({
+                                message: "Đăng xuất thành công",
+                                description: "Chuyển hướng đến trang đăng nhập...",
+                                placement: "topRight", 
+                            });
+                            // Redirect to login page after logout
+                            setTimeout(() => {
+                                window.location.href = "/admin/dangnhap";
+                            }, 1000);
+                        } else {
+                            notification.error({
+                                message: "Đăng xuất thất bại",
+                                description: "Đã xảy ra lỗi. Vui lòng thử lại.",
+                                placement: "topRight", 
+                            });
+                        }
+                    } catch (error) {
+                        notification.error({
+                            message: "Lỗi hệ thống",
+                            description: "Không thể đăng xuất. Vui lòng thử lại sau.",
+                            placement: "topRight",
+                        });
+                    }
+                };
+                logout();
+            },
         },
     ];
 
@@ -229,3 +260,4 @@ const HeaderAdmin = () => {
 };
 
 export default HeaderAdmin;
+

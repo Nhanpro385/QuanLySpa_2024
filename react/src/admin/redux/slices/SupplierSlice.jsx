@@ -97,7 +97,9 @@ export const SupplierGetbyId = createAsyncThunk(
 
 // Initial state for Suppliers slice
 const initialState = {
-    Suppliers: [], // List of Suppliers
+    Suppliers:  {
+        data: [],
+    },
     Supplier: {}, // Single Supplier detail
     loading: false, // Loading state
     error: null, // Error state

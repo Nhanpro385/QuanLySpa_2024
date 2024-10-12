@@ -65,7 +65,7 @@ const LoginPage = () => {
                     </div>
                 </Col>
                 <Col span={12} className="form-container">
-                    <Spin spinning={loading}>
+                    {/* <Spin spinning={loading}> */}
                         <Row justify="center" align="middle">
                             <Col span={24} className="text-center">
                                 <Form onFinish={handleSubmit(onSubmit)}>
@@ -130,13 +130,14 @@ const LoginPage = () => {
                                         htmlType="submit"
                                         className="buttonlogin"
                                         block
+                                        loading={loading}
                                     >
                                         Đăng nhập
                                     </Button>
                                 </Form>
                             </Col>
                         </Row>
-                    </Spin>
+                    {/* </Spin> */}
                 </Col>
             </Row>
         </div>
