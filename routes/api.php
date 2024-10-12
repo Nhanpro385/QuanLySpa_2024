@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ContactsController;
+use App\Http\Controllers\Admin\ShiftsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
@@ -69,6 +70,16 @@ Route::group([
     Route::get('/contacts/{id}', [ContactsController::class, 'show']);
     Route::put('/contacts/{id}', [ContactsController::class, 'update']);
     Route::delete('/contacts/{id}', [ContactsController::class, 'destroy']);
+
+    Route::get('/shifts', [ShiftsController::class, 'index']);
+    Route::post('/shifts', [ShiftsController::class, 'store']);
+    Route::get('/shifts/{id}', [ShiftsController::class, 'show']);
+    Route::put('/shifts/{id}', [ShiftsController::class, 'update']);
+    Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
+
+
+
+
 });
 
 //End

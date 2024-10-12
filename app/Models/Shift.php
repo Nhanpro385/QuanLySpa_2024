@@ -36,11 +36,11 @@ class Shift extends Model
     ];
     public function appointment()
     {
-        return $this->hasMany(Shift::class, 'shifts_id', 'id');
+        return $this->hasMany(Shift::class, 'id', 'id');
     }
     public function staff()
     {
-        return $this->hasMany(Shift::class, 'shifts_id', 'id');
+        return $this->hasMany(Shift::class, 'id', 'id');
     }
     
 }
