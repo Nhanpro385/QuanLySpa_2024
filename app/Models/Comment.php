@@ -10,6 +10,7 @@ class Comment extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -24,8 +25,16 @@ class Comment extends Model
         'status',
         'image_url'
     ];
+
+
     public function service()
     {
-        return $this->belongsTo(Service::class, 'services_id', 'id');
+        return $this->belongsTo(Service::class, 'service_id', 'id');
+    }
+
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 }

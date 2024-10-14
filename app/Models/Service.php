@@ -10,6 +10,7 @@ class Service extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -29,30 +30,43 @@ class Service extends Model
     protected $attributes = [
         'status' => true
     ];
+
+ 
     public function serviceCategory()
     {
-        return $this->belongsTo(ServiceCategory::class, 'servicecategory_id', 'id');
-    }
-    public function appointmentService()
-    {
-        return $this->hasMany(Service::class, 'services_id', 'id');
+        return $this->belongsTo(ServiceCategory::class, 'service_category_id', 'id');
     }
 
-    public function treatmentHistory()
+    public function appointmentServices()
     {
-        return $this->hasMany(Service::class, 'services_id', 'id');
-    }
-    public function comment()
-    {
-        return $this->hasMany(Service::class, 'services_id', 'id');
-    }
-    public function productService()
-    {
-        return $this->hasMany(Service::class, 'services_id', 'id');
-    }
-    public function serviceImage()
-    {
-        return $this->hasMany(Service::class, 'services_id', 'id');
+        return $this->hasMany(Appointment::class, 'service_id', 'id');
     }
 
+    public function treatmentHistories()
+    {
+        return $this->hasMany(TreatmentHistory::class, 'service_id', 'id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'service_id', 'id');
+    }
+
+
+    public function productServices()
+    {
+        return $this->hasMany(Product::class, 'service_id', 'id');
+    }
+
+
+    public function serviceImages()
+    {
+        return $this->hasMany(ServiceImage::class, 'service_id', 'id');
+    }
+
+
+    public function customers()
+    {
+        return $this->hasManyThrough(Customer::class, Comment::class, 'service_id', 'id', 'id', 'customer_id');
+    }
 }
