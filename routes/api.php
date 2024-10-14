@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ContactsController;
 use App\Http\Controllers\Admin\ShiftsController;
+use App\Http\Controllers\Admin\StaffShiftController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
@@ -78,7 +80,11 @@ Route::group([
     Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
 
 
-
+    Route::get('/staff-shifts', [StaffShiftController::class, 'index']);
+    Route::post('/staff-shifts', [StaffShiftController::class, 'store']);
+    Route::get('/staff-shifts/{id}', [StaffShiftController::class, 'show']);
+    Route::put('/staff-shifts/{id}', [StaffShiftController::class, 'update']);
+    Route::delete('/staff-shifts/{id}', [StaffShiftController::class, 'destroy']);
 
 });
 
