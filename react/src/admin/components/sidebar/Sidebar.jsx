@@ -1,302 +1,397 @@
 import React, { useState } from "react";
 import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-  SolutionOutlined,
-  CalendarOutlined,
-  ShoppingOutlined,
-  TagsOutlined,
-  ShopOutlined,
-  SettingOutlined,
-} from "@ant-design/icons"; // Thêm các icon khác từ @ant-design/icons
+    DesktopOutlined,
+    FileOutlined,
+    TeamOutlined,
+    UserOutlined,
+    SolutionOutlined,
+    CalendarOutlined,
+    ShoppingOutlined,
+    TagsOutlined,
+    ShopOutlined,
+    SettingOutlined,
+    CommentOutlined,
+    PhoneOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
+
 const { Sider } = Layout;
 
 function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
+    return {
+        key,
+        icon,
+        children,
+        label,
+    };
 }
 
 const items = [
-  // Trang chủ
-  getItem(
-    <Link
-      className="text-decoration-none text-black fs-2 text-center"
-      to="/admin"
-    >
-      Sakura spa
-    </Link>,
-    "1"
-  ),
-
-  // Quản lý khách hàng
-  getItem(
-    <Link className="text-decoration-none text-black fs-4" to="/admin/user">
-      Quản lý khách Hàng
-    </Link>,
-    "sub1",
-    <UserOutlined />, // Icon quản lý khách hàng
-    [
-      getItem(
-        <Link className="text-decoration-none text-black fs-4" to="/admin/user">
-          Danh sách khách hàng
-        </Link>,
-        "3"
-      ),
-      getItem(
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/user/add"
+            className="text-decoration-none text-black fs-2 text-center"
+            to="/admin"
         >
-          Thêm khách hàng
+            Sakura spa
         </Link>,
-        "4"
-      ),
-    ]
-  ),
-
-  // Quản lý lịch hẹn
-  getItem(
-    <Link
-      className="text-decoration-none text-black fs-4"
-      to="/admin/appointments"
-    >
-      Quản lý lịch hẹn
-    </Link>,
-    "sub2",
-    <CalendarOutlined />, // Icon lịch hẹn
-    [
-      getItem(
+        "1"
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/appointments"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/khachhang"
         >
-          Danh sách lịch hẹn
+            Quản lý khách Hàng
         </Link>,
-        "5"
-      ),
-    ]
-  ),
-
-  // Quản lý nhân viên
-  getItem(
-    <Link className="text-decoration-none text-black fs-4" to="/admin/staffs">
-      Quản lý nhân viên
-    </Link>,
-    "sub3",
-    <TeamOutlined />, // Icon quản lý nhân viên
-    [
-      getItem(
+        "2",
+        <UserOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/khachhang"
+                >
+                    Danh sách khách hàng
+                </Link>,
+                "3"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/khachhang/them"
+                >
+                    Thêm khách hàng
+                </Link>,
+                "4"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/staffs"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/appointments"
         >
-          Danh sách nhân viên
+            Quản lý lịch hẹn
         </Link>,
-        "7"
-      ),
-    ]
-  ),
-
-  // Quản lý dịch vụ
-  getItem(
-    <Link className="text-decoration-none text-black fs-4" to="/admin/services">
-      Quản lý dịch vụ
-    </Link>,
-    "sub4",
-    <SolutionOutlined />, // Icon dịch vụ
-    [
-      getItem(
+        "5",
+        <CalendarOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/appointments"
+                >
+                    Danh sách lịch hẹn
+                </Link>,
+                "6"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/services"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/nhanvien"
         >
-          Danh sách dịch vụ
+            Quản lý nhân viên
         </Link>,
-        "8"
-      ),
-      getItem(
+        "7",
+        <TeamOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/nhanvien"
+                >
+                    Danh sách nhân viên
+                </Link>,
+                "8"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/nhanvien/them"
+                >
+                    Thêm nhân viên
+                </Link>,
+                "9"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/nhanvien/chucvu"
+                >
+                    Chức vụ
+                </Link>,
+                "10"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/categoriesService"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/services"
         >
-          Danh mục dịch vụ
+            Quản lý dịch vụ
         </Link>,
-        "13"
-      ),
-    ]
-  ),
-
-  // Quản lý sản phẩm
-  getItem(
-    <Link className="text-decoration-none text-black fs-4" to="/admin/products">
-      Quản lý sản phẩm
-    </Link>,
-    "sub5",
-    <ShoppingOutlined />, // Icon sản phẩm
-    [
-      getItem(
+        "11",
+        <SolutionOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/services"
+                >
+                    Danh sách dịch vụ
+                </Link>,
+                "12"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/categoriesService"
+                >
+                    Danh mục dịch vụ
+                </Link>,
+                "13"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/products"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/products"
         >
-          Danh sách sản phẩm
+            Quản lý sản phẩm
         </Link>,
-        "9"
-      ),
-      getItem(
+        "14",
+        <ShoppingOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/products"
+                >
+                    Danh sách sản phẩm
+                </Link>,
+                "15"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/products/add"
+                >
+                    Thêm sản phẩm
+                </Link>,
+                "16"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/product_categories"
+                >
+                    Danh mục sản phẩm
+                </Link>,
+                "17"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/products/add"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/promotions"
         >
-          Thêm sản phẩm
+            Quản lý khuyến mãi
         </Link>,
-        "10"
-      ),
-      getItem(
+        "18",
+        <TagsOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/promotions"
+                >
+                    Danh sách khuyến mãi
+                </Link>,
+                "19"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/product_categories"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/warehouse"
         >
-          Danh mục sản phẩm
+            Quản lý kho
         </Link>,
-        "12"
-      ),
-    ]
-  ),
-
-  // Quản lý khuyến mãi
-  getItem(
-    <Link
-      className="text-decoration-none text-black fs-4"
-      to="/admin/promotions"
-    >
-      Quản lý khuyến mãi
-    </Link>,
-    "sub6",
-    <TagsOutlined />, // Icon khuyến mãi
-    [
-      getItem(
+        "20",
+        <ShopOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/warehouse"
+                >
+                    Danh sách kho
+                </Link>,
+                "21"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/warehouse/import"
+                >
+                    Nhập kho
+                </Link>,
+                "22"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/warehouse/export"
+                >
+                    Xuất kho
+                </Link>,
+                "23"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/warehouse/inventory"
+                >
+                    Quản lý Tồn Kho
+                </Link>,
+                "24"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/promotions"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/shifmanagement"
         >
-          Danh sách khuyến mãi
+            Quản lý ca làm việc
         </Link>,
-        "11"
-      ),
-    ]
-  ),
-
-  // Quản lý kho
-  getItem(
-    <Link
-      className="text-decoration-none text-black fs-4"
-      to="/admin/warehouse"
-    >
-      Quản lý kho
-    </Link>,
-    "14",
-    <ShopOutlined />, // Icon kho
-    [
-      getItem(
+        "25",
+        <SettingOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/shifmanagement"
+                >
+                    Quản lý ca làm việc
+                </Link>,
+                "26"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/warehouse"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/CommentManagement"
         >
-          Danh sách kho
+            Quản lý bình luận và đánh giá
         </Link>,
-        "15"
-      ),
-      getItem(
+        "27",
+        <CommentOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/CommentManagement"
+                >
+                    Danh sách bình luận
+                </Link>,
+                "28"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/warehouse/import"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/ContactManagement"
         >
-          Nhập kho
+            Quản lý liên hệ
         </Link>,
-        "16"
-      ),
-      getItem(
+        "29",
+        <PhoneOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/ContactManagement"
+                >
+                    Danh sách liên hệ
+                </Link>,
+                "30"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/warehouse/export"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/thanhtoan"
         >
-          Xuất kho
+            Quản lý thanh toán
         </Link>,
-        "17"
-      ),
-      getItem(
+        "31",
+        <DesktopOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/thanhtoan"
+                >
+                    Quản lý thanh toán
+                </Link>,
+                "32"
+            ),
+        ]
+    ),
+    getItem(
         <Link
-          className="text-decoration-none text-black fs-4"
-          to="/admin/warehouse/inventory"
+            className="text-decoration-none text-black fs-4"
+            to="/admin/nhacungcap"
         >
-          Quản lý Tồn Kho
+            Quản lý Nhà Cung Cấp
         </Link>,
-        "20"
-      ),
-    ]
-  ),
-
-  // Quản lý ca làm việc
-  getItem(
-    <Link
-      className="text-decoration-none text-black fs-4"
-      to="/admin/shifmanagement"
-    >
-      Quản Ca Làm Việc
-    </Link>,
-    "sub7",
-    <SettingOutlined /> // Icon ca làm việc
-  ),
-  getItem(
-    <Link
-      className="text-decoration-none text-black fs-4"
-      to="/admin/CommentManagement"
-    >
-      Quản lý bình luận và đánh giá
-    </Link>,
-    "18"
-  ),
-  getItem(
-    <Link
-      className="text-decoration-none text-black fs-4"
-      to="/admin/ContactManagement"
-    >
-      Quản lý liên hệ
-    </Link>,
-    "19"
-  ),
+        "33",
+        <FileOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/nhacungcap"
+                >
+                    Quản lý Nhà Cung Cấp
+                </Link>,
+                "34"
+            )
+        ]
+    ),
 ];
 
 function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
-  return (
-    <Sider
-      collapsible
-      collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
-      width={250}
-      theme="light"
-    >
-      <div className="demo-logo-vertical" />
-      <Menu
-        theme="light"
-        defaultSelectedKeys={["1"]}
-        mode="inline"
-        items={items}
-      />
-    </Sider>
-  );
+    return (
+        <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={(value) => setCollapsed(value)}
+            width={250}
+            theme="light"
+        >
+            <div className="demo-logo-vertical" />
+            <Menu
+                theme="light"
+                defaultSelectedKeys={["1"]}
+                mode="inline"
+                items={items}
+            />
+        </Sider>
+    );
 }
 
 export default Sidebar;

@@ -11,10 +11,13 @@ import AdminLayout from "./admin/components/layout/AdminLayout"; // Layout mặc
 import AppClient from "./client/app"; // Nội dung định tuyến cho client
 import AdminApp from "./admin/app"; // Ứng dụng admin
 import LoginPage from "./admin/pages/authen/loginPage";
-import ForgotPage from "./admin/pages/authen/forgotPage";
+
+import { ConfigProvider } from "antd";
+import ForgotPage from "./admin/modules/authen/compoment/forgotPage";
 
 const App = () => {
     return (
+        <ConfigProvider theme={{ token: { colorPrimary: "#E05265" } }}>
         <Router>
             <Routes>
                 {/* Routes cho client */}
@@ -28,20 +31,16 @@ const App = () => {
                 />
 
                 {/* Routes cho admin */}
-                <Route
-                    path="/admin/*"
-                    element={
-                        <AdminLayout>
-                            <AdminApp />
-                        </AdminLayout>
-                    }
-                />
-                <Route path="/admin/login" element={<LoginPage />} />
-                <Route path="/admin/forgot" element={<ForgotPage />} />
-                {/* Redirect từ bất kỳ route không hợp lệ nào về trang chủ */}
+                <Route path="/admin/*" element={<AdminApp />} />
+                <Route path="/admin/dangnhap" element={<LoginPage />} />
+                <Route path="/admin/quenmatkhau" element={<ForgotPage />} />
+                
+          
+            
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>
+        </ConfigProvider>
     );
 };
 

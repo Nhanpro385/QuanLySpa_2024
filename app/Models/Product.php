@@ -30,11 +30,19 @@ class Product extends Model
     ];
 
     protected $attributes = [
-        'status' => true
+        'status' => true,
+        'description' => 'Mô tả sản phẩm.',
+        'image_url' => 'https://img.freepik.com/premium-photo/beautiful-colorful-valentine-s-day-heart-cloud-as-abstract-backgroundai-technology-generated-imag_1112-11207.jpg'
     ];
+
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
     public function category()
     {
-        return $this->belongsTo(Category::class, 'categorys_id', 'id');
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
     public function inventory()
     {

@@ -4,78 +4,95 @@
 .login-wrapper {
     padding: 20px;
     border-radius: 10px;
-    background-image: url("../../../assets/images/loginbg.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed; /* This ensures the background image stays fixed */
-    overflow: hidden; /* Ensures content doesn't overflow during animation */
+    background: linear-gradient(145deg, #f8b0c2, #f48bb1);
+    height: 100vh;
+    overflow: hidden; 
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffc0cb;
+    padding: 50px;
 }
 
 .overlay-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    animation: slideInLeft 1s ease-out; /* Apply the left-to-right animation */
+    background-color: rgba(255, 192, 203, 0.8);
+    padding: 40px;
+    color: #fff;
+    border-radius: 10px;
+    text-align: center;
 }
 
-.overlay-panel {
-    text-align: center;
-    animation: fadeIn 1.5s ease-in-out; /* Fade-in effect */
+.overlay-panel h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+.form-container {
+   padding: 50px;
 }
 
 .sign-in-container {
     padding: 40px;
-    background-color: rgba(255, 255, 255, 0.4);
-    animation: slideInRight 1s ease-out; /* Right-to-left animation */
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
+h1 {
+    font-family: 'Anton', sans-serif;
+    color: #d16b79;
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input {
+    background-color: #ffe4e9;
+    color: #555;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    padding: 12px;
+}
+
+input::placeholder {
+    color: #999;
+}
+
+
+
+
 .forgotlink {
-    color: #e05265;
+    color: #ff6b6b;
     text-decoration: none;
-    font-size: 1.5rem;
+    font-size: 1rem;
     margin-top: 10px;
     display: block;
     text-align: right;
-    animation: fadeIn 2s ease-in-out; /* Slight delay on link fade-in */
 }
 
-/* Keyframe for sliding in from the left */
-@keyframes slideInLeft {
-    0% {
-        transform: translateX(-100%);
-        opacity: 0;
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
     }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
 
-/* Keyframe for sliding in from the right */
-@keyframes slideInRight {
-    0% {
-        transform: translateX(100%);
-        opacity: 0;
+    .overlay-container {
+        padding: 20px;
+        height: auto;
     }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
 
-/* Keyframe for fade-in effect */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
+    .sign-in-container {
+        width: 90%;
+        max-width: none;
     }
-    100% {
-        opacity: 1;
-    }
-}
-
-button:active {
-  transform: translateY(5px);
-  
 }

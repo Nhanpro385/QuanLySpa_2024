@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Kra8\Snowflake\HasSnowflakePrimary;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasFactory, Notifiable, HasSnowflakePrimary, SoftDeletes;
 
@@ -81,6 +83,12 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function sendPasswordResetNotification($token)
+    {
+        $url = 'http://127.0.0.1:8000/api/reset-password?token=' . $token;
+        $this->notify(new ResetPasswordNotification($url));
+    }
+
     public function position()
     {
         return $this->belongsTo(Position::class);
@@ -116,5 +124,10 @@ class User extends Authenticatable implements JWTSubject
     public function serviceCategories()
     {
         return $this->hasMany(ServiceCategory::class, 'created_by', 'id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'created_by', 'id');
     }
 }

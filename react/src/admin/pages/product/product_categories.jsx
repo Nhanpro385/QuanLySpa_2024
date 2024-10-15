@@ -8,21 +8,25 @@ import {
     Table,
     Form,
     Alert,
-    message     ,
+    message,
     Space,
 } from "antd";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-// import {
-//     categoriesGet,
-//     categoriesAdd,
-//     categoriesDelete,
-//     categoriesGetById,
-// } from "../../redux/slices/categoriesSlice";
+
 import { Snowflake } from "@theinternetfolks/snowflake";
 
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import useModal from "../../modules/appointments/hooks/openmodal";
+import {
+    categoriesAdd,
+    categoriesUpdate,
+    categoriesGet,
+    categoriesDelete,
+    categoriesGetById,
+} from "../../redux/slices/CategoriesProductSlice";
+import { useDispatch, useSelector } from "react-redux";
+import ModalEditCategory from "../../modules/product/compoments/categoriesEditModal";
+
 // import ModalEditCategory from "../../modules/product/compoments/categoriesEditModal";
 const ProductCategories = () => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -31,11 +35,9 @@ const ProductCategories = () => {
     const { categories, loading, error, category } = useSelector(
         (state) => state.categories
     );
-
     useEffect(() => {
         dispatch(categoriesGet());
     }, [dispatch]);
-
     const {
         control,
         handleSubmit,
@@ -44,7 +46,7 @@ const ProductCategories = () => {
         formState: { errors },
     } = useForm();
 
-    const dataSource = categories.data || []; // Ensure this is an array
+    const dataSource = categories.data || [];
 
     const columns = [
         {
@@ -52,12 +54,7 @@ const ProductCategories = () => {
             dataIndex: "stt",
             key: "stt",
             render: (text, record, index) => {
-                return (
-                    (categories.meta.current_page - 1) *
-                        categories.meta.per_page +
-                    index +
-                    1
-                );
+                return index + 1;
             },
         },
         {
@@ -120,7 +117,7 @@ const ProductCategories = () => {
         dispatch(categoriesGetById(id));
         showModal();
     };
-    const deleteCate =  (id) => {
+    const deleteCate = (id) => {
         dispatch(categoriesDelete(id));
     };
 
@@ -128,12 +125,12 @@ const ProductCategories = () => {
         <Row gutter={[16, 16]}>
             <Col span={24}>
                 <Card title="Danh mục sản phẩm">
-                    {error && (
+                    {/* {error && (
                         <Alert
                             message={<span>{error.message}</span>}
                             type="error"
                         />
-                    )}
+                    )} */}
                     <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                         <Form.Item
                             label="Tên danh mục"
@@ -193,16 +190,17 @@ const ProductCategories = () => {
                     <Table
                         dataSource={dataSource}
                         columns={columns}
-                        loading={loading}
+                        // loading={loading}
                         rowKey="id" // Use the unique id for rowKey
                     />
                 </Card>
-                {/* <ModalEditCategory
+                <ModalEditCategory
                     isModalOpen={isModalOpen}
                     handleOk={handleOk}
                     handleCancel={handleCancel}
                     category={category}
-                /> */}
+                 
+                ></ModalEditCategory>
             </Col>
         </Row>
     );

@@ -24,8 +24,8 @@ class Category extends Model
     protected $attributes = [
         'status' => true,
     ];
-    public function product()
+    public function products()
     {
-        return $this->hasMany(Category::class, 'categorys_id', 'id');
+        return $this->hasMany(Product::class, 'category_id', 'id');
     }
 }

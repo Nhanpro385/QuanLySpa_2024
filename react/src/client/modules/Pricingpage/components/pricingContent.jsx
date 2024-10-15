@@ -5,7 +5,7 @@ import {
     Row,
     Table,
     Collapse,
-    ConfigProvider,
+
     Badge,
     Tag,
     Typography,
@@ -106,16 +106,7 @@ const PricingContent = () => {
         },
     ];
     return (
-        <ConfigProvider
-            theme={{
-                components: {
-                    Table: {
-                        colorBgContainer: "#FFDCDC",
-                        colorBorder: "#fff",
-                    },
-                },
-            }}
-        >
+      
             <div>
                 <Row>
                     <Col span={24}>
@@ -323,7 +314,7 @@ const PricingContent = () => {
                     </Col>
                 </Row>
             </div>
-        </ConfigProvider>
+    
     );
 };
 

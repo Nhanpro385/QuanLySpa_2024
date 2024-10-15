@@ -1,18 +1,22 @@
 import Dashboard from "../pages/Dashboard";
 
 // User Management
-import User from "../pages/UserManagement/User";
-import UserAdd from "../pages/UserManagement/User_add";
-import HistoryService from "../pages/UserManagement/history_sevice";
-import UserDetail from "../pages/UserManagement/UserDetail";
+import Customer from "../pages/customerManagement/customer";
+import CustomersAdd from "../pages/customerManagement/customer_add";
+import HistoryService from "../pages/customerManagement/history_sevice";
+import CustomerDetail from "../pages/customerManagement/UserDetail";
 
 // Appointments
 import Appointments from "../pages/appointments/Appointments";
 import Appointments_Detail from "../pages/appointments/Appointments_Detail";
 
-// Personnel Management
+// Personnel Management / Staffs
 import Staffs from "../pages/Staff_management/Staffs";
 import StaffsDetail from "../pages/Staff_management/StaffsDetail";
+import StaffAdd from "../pages/Staff_management/Staff_add";
+
+// positions
+import Positions from "../pages/Staff_management/positions";
 
 // Services
 import Services from "../pages/services/Services";
@@ -44,30 +48,36 @@ import ShiftManagement from "../pages/ShiftManagement";
 // Contact Management
 
 import ContactManagement from "../pages/contactmanagement";
-
+//patment
+import PaymentManagement from "../pages/paymentManagenment";
+// supplierManagement
+import SupplierManagement from "../pages/supplierManagement";
 const PublicRoutes = [
     // Dashboard
     { path: "/", element: <Dashboard /> },
 
     // User Management
-    { path: "/user", element: <User /> },
-    { path: "/user/add", element: <UserAdd /> },
-    { path: "/user/history/:id", element: <HistoryService /> },
-    { path: "/user/Detail/:id", element: <UserDetail /> },
+    { path: "/khachhang", element: <Customer /> },
+    { path: "/khachhang/them", element: <CustomersAdd /> },
+    { path: "/khachhang/lichsugiaodich/:id", element: <HistoryService /> },
+    { path: "/khachhang/chitiet/:id", element: <CustomerDetail /> },
 
     // Appointments
     { path: "/appointments", element: <Appointments /> },
     { path: "/appointments/detail/:id", element: <Appointments_Detail /> },
 
     // Personnel Management
-    { path: "/staffs", element: <Staffs /> },
-    { path: "/staffs/:id", element: <StaffsDetail /> },
-
+    { path: "/nhanvien", element: <Staffs /> },
+    { path: "/nhanvien/:id", element: <StaffsDetail /> },
+    { path: "/nhanvien/them", element: <StaffAdd /> },
+    // positions
+    { path: "/nhanvien/chucvu", element: <Positions /> },
     // Services
     { path: "/services", element: <Services /> },
-    { path: "/services/add", element: <ServicesAdd /> },
+    { path: "/services/them", element: <ServicesAdd /> },
     {
-        path: "/categoriesService", element: <ServiceCategories />,
+        path: "/categoriesService",
+        element: <ServiceCategories />,
     },
     // Products
     { path: "/products", element: <Products /> },
@@ -84,7 +94,6 @@ const PublicRoutes = [
     { path: "/promotions", element: <Promotions /> },
     { path: "/promotions/add", element: <Promotions_add /> },
 
-
     // Consultant and Comments
     { path: "/consultant", element: <Consultant /> },
     { path: "/CommentManagement", element: <CommentManagement /> },
@@ -92,7 +101,14 @@ const PublicRoutes = [
     // Shift Management
     { path: "/shifmanagement", element: <ShiftManagement /> },
     // Contact Management
-    {path: "/contactmanagement", element: <ContactManagement />},
+    { path: "/contactmanagement", element: <ContactManagement /> },
+    // Payment Management
+    { path: "/thanhtoan", element: <PaymentManagement /> },
+    // supplierManagement
+    {
+        path: "/nhacungcap",
+        element: <SupplierManagement />,
+    },
 ];
 
 export { PublicRoutes };

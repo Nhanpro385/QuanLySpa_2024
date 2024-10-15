@@ -3,7 +3,7 @@ import axios from "axios";
 import endpoints from "../../config/appConfig";
 
 export const categoriesGet = createAsyncThunk("categories/get", async () => {
-    const response = await axios.get(endpoints.Categories.list);
+    const response = await axios.get(endpoints.ProductsCategories.list);
     return response.data;
 });
 
@@ -12,7 +12,7 @@ export const categoriesAdd = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axios.post(
-                endpoints.Categories.create,
+                endpoints.ProductsCategories.create,
                 data
             );
             return response.data;
@@ -30,7 +30,7 @@ export const categoriesDelete = createAsyncThunk(
     "categories/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.Categories.delete(id));
+            await axios.delete(endpoints.ProductsCategories.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -49,7 +49,7 @@ export const categoriesUpdate = createAsyncThunk(
             console.log("data", data);
 
             const response = await axios.put(
-                endpoints.Categories.update(data.id),
+                endpoints.ProductsCategories.update(data.id),
                 data
             );
             return response.data;
@@ -66,7 +66,7 @@ export const categoriesUpdate = createAsyncThunk(
 export const categoriesGetById = createAsyncThunk(
     "categories/getById",
     async (id) => {
-        const response = await axios.get(endpoints.Categories.detail(id));
+        const response = await axios.get(endpoints.ProductsCategories.detail(id));
         return response.data;
     }
 );
@@ -159,3 +159,5 @@ const categoriesSlice = createSlice({
 
 export default categoriesSlice.reducer;
 
+ 
+ 
