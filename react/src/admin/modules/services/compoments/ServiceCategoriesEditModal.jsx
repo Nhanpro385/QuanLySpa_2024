@@ -3,7 +3,7 @@ import { Modal, Form, Input, Button, Switch, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { EditFilled } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { ServiceCategoriesUpdate } from "../../../redux/slices/servicesCategoriesSlice";
+import { ServiceCategoriesUpdate } from "@admin/redux/slices/servicesCategoriesSlice";
 
 const ModalEditServiceCategory = ({
     isModalOpen,

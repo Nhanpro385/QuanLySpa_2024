@@ -5,7 +5,7 @@ import {
     CustomerUpdate,
     CustomerDelete,
     CustomerGetbyId,
-} from "../../../redux/slices/CustomerSlice";
+} from "@admin/redux/slices/CustomerSlice";
 const useCustomerActions = () => {
     const dispatch = useDispatch();
 

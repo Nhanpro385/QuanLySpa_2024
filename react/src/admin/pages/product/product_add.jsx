@@ -1,316 +1,383 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     Card,
     Row,
     Col,
-    Form,
-    Select,
     Button,
     Input,
     DatePicker,
     InputNumber,
     Image,
     Upload,
+    Form,
+    Select,
+    message,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
+
 import { Link } from "react-router-dom";
 import JoditEditor from "jodit-react";
-
-const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });
+import { useForm, Controller } from "react-hook-form";
+import usecategoriesActions from "../../modules/product/hooks/useCategoriesProduct";
+import useproductActions from "../../modules/product/hooks/useProduct";
+import { useSelector } from "react-redux";
+import formatDate from "../../utils/formatedate";
+import { generateSnowflakeId } from "../../utils/snowflakeID";
+import { UploadOutlined } from "@ant-design/icons";
 
 const Product_add = () => {
+    const {
+        control,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm();
+    const { addproduct } = useproductActions();
+    const { getcategories } = usecategoriesActions();
+    const { categories, loading, error, category } = useSelector(
+        (state) => state.categories
+    );
+    useEffect(() => {
+        getcategories();
+    }, []);
+    const [file, setFile] = useState([]);
     const editor = useRef(null);
     const [content, setContent] = useState("");
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState("");
-    const [fileList, setFileList] = useState([]);
 
-    const handlePreview = async (file) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj);
+    const onSubmit = async (data) => {
+        try {
+            data.id = generateSnowflakeId();
+            data.date = formatDate(data.date);
+
+            // Tạo đối tượng FormData
+            const formData = new FormData();
+
+            // Gắn dữ liệu text vào FormData
+            for (const key in data) {
+                formData.append(key, data[key]);
+            }
+
+            // Gắn file ảnh vào FormData
+            if (file.length > 0) {
+                formData.append("image_url", file[0].originFileObj);
+            }
+
+            const res = await addproduct(formData);
+            if (res.meta.requestStatus === "fulfilled") {
+                message.success("Thêm sản phẩm thành công!");
+            }else{
+                Object.keys(res.payload.errors).map((key) => {
+                    setError(key, {
+                        type: "manual",
+                        message: res.payload.errors[key][0],
+                    });
+                });
+                
+                message.error("Thêm sản phẩm thất bại!");
+            }
+        } catch (error) {
+            console.log("error", error);
         }
-        setPreviewImage(file.url || file.preview);
-        setPreviewOpen(true);
     };
 
-    const handleChange = ({ fileList: newFileList }) =>
-        setFileList(newFileList);
-
-    const uploadButton = (
-        <button
-            style={{
-                border: 0,
-                background: "none",
-            }}
-            type="button"
-        >
-            <PlusOutlined />
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
-        </button>
-    );
-
     return (
-        <Form layout="vertical">
+        <Form onFinish={handleSubmit(onSubmit)}>
             <Row gutter={[16, 16]}>
-                {/* Col chính chứa thông tin sản phẩm */}
                 <Col span={16}>
                     <Card className="bg-light" title="Thông tin sản phẩm">
                         <Row gutter={[16, 16]}>
                             <Col span={12}>
-                                <Form.Item
-                                    label="Tên sản phẩm"
-                                    name="prodcutName"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập Tên sản phẩm!",
-                                        },
-                                    ]}
-                                >
-                                    <Input size="large" />
-                                </Form.Item>
+                                <Controller
+                                    name="name"
+                                    control={control}
+                                    rules={{
+                                        required: "Vui lòng nhập Tên sản phẩm!",
+                                    }}
+                                    render={({ field }) => (
+                                        <Input
+                                            size="large"
+                                            {...field}
+                                            placeholder="Tên sản phẩm"
+                                        />
+                                    )}
+                                />
+                                {errors.name && (
+                                    <p
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.name.message}
+                                    </p>
+                                )}
                             </Col>
                             <Col span={12}>
-                                <Form.Item
-                                    label="Loại sản phẩm"
-                                    name="username"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng chọn Loại sản phẩm!",
-                                        },
-                                    ]}
-                                >
-                                    <Select
-                                        size="large"
-                                        showSearch
-                                        placeholder="Chọn loại sản phẩm"
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? "")
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
-                                        options={[
-                                            {
-                                                value: "1",
-                                                label: "Mặt nạ",
-                                            },
-                                            {
-                                                value: "2",
-                                                label: "Sữa rửa mặt",
-                                            },
-                                            {
-                                                value: "3",
-                                                label: "Kem dưỡng",
-                                            },
-                                        ]}
-                                    />
-                                </Form.Item>
+                                <Controller
+                                    name="category_id"
+                                    control={control}
+                                    rules={{
+                                        required:
+                                            "Vui lòng chọn Loại sản phẩm!",
+                                    }}
+                                    render={({ field }) => (
+                                        <Select
+                                            loading={loading}
+                                            size="large"
+                                            className="w-100"
+                                            {...field}
+                                            placeholder="Chọn loại sản phẩm"
+                                            options={categories.data.map(
+                                                (item) => ({
+                                                    value: item.id,
+                                                    label: item.name,
+                                                })
+                                            )}
+                                        />
+                                    )}
+                                />
+                                {errors.category_id && (
+                                    <p
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.category_id.message}
+                                    </p>
+                                )}
                             </Col>
                             <Col span={6}>
-                                <Form.Item
-                                    label="Dung tích sản phẩm"
+                                <Controller
                                     name="capacity"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập Dung tích sản phẩm!",
-                                        },
-                                    ]}
-                                >
-                                    <Input
-                                        addonAfter={
-                                            <Select defaultValue="Cái">
-                                                <Select.Option value="Cái">
-                                                    Cái
-                                                </Select.Option>
-                                                <Select.Option value="Thể tích">
-                                                    Thể tích
-                                                </Select.Option>
-                                            </Select>
-                                        }
-                                        size="large"
-                                    />
-                                </Form.Item>
+                                    control={control}
+                                    rules={{
+                                        required:
+                                            "Vui lòng nhập Dung tích sản phẩm!",
+                                    }}
+                                    render={({ field }) => (
+                                        <Input
+                                            addonAfter={
+                                                <Select defaultValue="Cái">
+                                                    <Select.Option value="piece">
+                                                        Cái
+                                                    </Select.Option>
+                                                    <Select.Option value="ml">
+                                                        Thể tích
+                                                    </Select.Option>
+                                                </Select>
+                                            }
+                                            size="large"
+                                            {...field}
+                                            placeholder="Dung tích"
+                                        />
+                                    )}
+                                />
+                                {errors.capacity && (
+                                    <p
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.capacity.message}
+                                    </p>
+                                )}
                             </Col>
                             <Col span={6}>
-                                <Form.Item
-                                    label="Mã Code sản phẩm"
-                                    name="capacity"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập mã code sản phẩm!",
-                                        },
-                                    ]}
-                                >
-                                    <Input size="large" />
-                                </Form.Item>
+                                <Controller
+                                    name="bar_code"
+                                    control={control}
+                                    rules={{
+                                        required:
+                                            "Vui lòng nhập mã code sản phẩm!",
+                                    }}
+                                    render={({ field }) => (
+                                        <Input
+                                            size="large"
+                                            {...field}
+                                            placeholder="Mã Code"
+                                        />
+                                    )}
+                                />
+                                {errors.bar_code && (
+                                    <p
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.bar_code.message}
+                                    </p>
+                                )}
                             </Col>
                             <Col span={12}>
-                                <Form.Item
-                                    label="Thời hạn sản phẩm"
-                                    name="Dateproduct"
-                                >
-                                    <RangePicker
-                                        size="large"
-                                        className="w-100"
-                                        showTime={{ format: "HH:mm" }}
-                                        format="YYYY-MM-DD HH:mm"
-                                    />
-                                </Form.Item>
+                                <Controller
+                                    name="date"
+                                    control={control}
+                                    rules={{
+                                        required:
+                                            "Vui lòng chọn ngày sản xuất!",
+                                    }}
+                                    render={({ field }) => (
+                                        <DatePicker
+                                            size="large"
+                                            className="w-100"
+                                            format="YYYY-MM-DD"
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                                {errors.date && (
+                                    <p
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.date.message}
+                                    </p>
+                                )}
                             </Col>
                         </Row>
                     </Card>
 
-                    <Card className="bg-light" style={{ marginTop: 16 }} title="Giá và số lượng">
+                    <Card
+                        className="bg-light"
+                        style={{ marginTop: 16 }}
+                        title="Giá và số lượng"
+                    >
                         <Row gutter={[16, 16]}>
                             <Col span={12}>
-                                <Form.Item
-                                    label="Giá Nhập"
+                                <Controller
                                     name="cost"
-                                    rules={[
-                                        {
-                                            message: "Vui lòng nhập Giá Nhập!",
-                                        },
-                                    ]}
-                                >
-                                    <InputNumber
-                                        size="large"
-                                        className="w-100"
-                                        defaultValue={1000}
-                                        formatter={(value) =>
-                                            `${value}`.replace(
-                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                ","
-                                            )
-                                        }
-                                        parser={(value) =>
-                                            value?.replace(/\$\s?|(,*)/g, "")
-                                        }
-                                    />
-                                </Form.Item>
+                                    control={control}
+                                    rules={{
+                                        required: "vui lòng nhập giá nhập",
+                                    }}
+                                    render={({ field }) => (
+                                        <InputNumber
+                                            size="large"
+                                            className="w-100"
+                                            {...field}
+                                            placeholder="Giá Nhập"
+                                        />
+                                    )}
+                                />
+                                {errors.cost && (
+                                    <p
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.cost.message}
+                                    </p>
+                                )}
                             </Col>
                             <Col span={12}>
-                                <Form.Item
-                                    label="Giá Bán ra"
+                                <Controller
                                     name="price"
-                                    rules={[
-                                        {
-                                            message:
-                                                "Vui lòng nhập Giá Bán ra!",
-                                        },
-                                    ]}
-                                >
-                                    <InputNumber
-                                        size="large"
-                                        className="w-100"
-                                        defaultValue={1000}
-                                        formatter={(value) =>
-                                            `${value}`.replace(
-                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                ","
-                                            )
-                                        }
-                                        parser={(value) =>
-                                            value?.replace(/\$\s?|(,*)/g, "")
-                                        }
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Số lượng tồn kho"
-                                    name="quantity"
-                                >
-                                    <InputNumber
-                                        size="large"
-                                        className="w-100"
-                                        defaultValue={1000}
-                                    />
-                                </Form.Item>
+                                    control={control}
+                                    rules={{
+                                        required: "vui lòng nhập giá bán",
+                                    }}
+                                    render={({ field }) => (
+                                        <InputNumber
+                                            size="large"
+                                            className="w-100"
+                                            {...field}
+                                            placeholder="Giá Bán"
+                                        />
+                                    )}
+                                />
+                                {errors.price && (
+                                    <p
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.price.message}
+                                    </p>
+                                )}
                             </Col>
                         </Row>
                     </Card>
                 </Col>
 
-                {/* Col chứa hình ảnh sản phẩm */}
                 <Col span={8}>
-                    <Card className="bg-light" style={{ height: "100%" }} title="Hỉnh ảnh sản phẩm">
-                        <Form.Item label="Hình ảnh sản phẩm" name="gender">
-                            <>
+                    <Card
+                        className="bg-light"
+                        style={{ height: "100%" }}
+                        title="Hình ảnh sản phẩm"
+                    >
+                        <Controller
+                            name="image_url"
+                            control={control}
+                            rules={{
+                                required: "Vui lòng chọn ảnh sản phẩm!",
+                            }}
+                            render={({ field }) => (
                                 <Upload
-                                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                                    {...field}
                                     listType="picture-card"
-                                    fileList={fileList}
-                                    onPreview={handlePreview}
-                                    onChange={handleChange}
+                                    fileList={file}
+                                    onChange={({ fileList }) => {
+                                        setFile(fileList);
+                                        field.onChange(fileList);
+                                    }}
+                                    beforeUpload={() => false}
+                                    name="image_url"
+                                    maxCount={1}
                                 >
-                                    {fileList.length >= 8 ? null : uploadButton}
+                                    {file.length < 1 && (
+                                        <div>
+                                            <UploadOutlined />
+                                            <div style={{ marginTop: 8 }}>
+                                                Tải ảnh lên
+                                            </div>
+                                        </div>
+                                    )}
                                 </Upload>
-                                {previewImage && (
-                                    <Image
-                                        wrapperStyle={{ display: "none" }}
-                                        preview={{
-                                            visible: previewOpen,
-                                            onVisibleChange: (visible) =>
-                                                setPreviewOpen(visible),
-                                            afterOpenChange: (visible) =>
-                                                !visible && setPreviewImage(""),
-                                        }}
-                                        src={previewImage}
-                                    />
-                                )}
-                            </>
-                        </Form.Item>
-                    </Card>
-                </Col>
-
-                {/* Ghi chú và mô tả sản phẩm */}
-                <Col span={24}>
-                    <Card className="bg-light" style={{ marginTop: 16 }} title="Ghi chú">
-                        <Form.Item label="Ghi chú" name="note">
-                            <TextArea
-                                rows={4}
-                                placeholder="Tối đa 255 ký tự"
-                                maxLength={255}
-                            />
-                        </Form.Item>
+                            )}
+                        />
+                        {errors.image_url && (
+                            <p
+                                style={{
+                                    color: "red",
+                                }}
+                            >
+                                {errors.image_url.message}
+                            </p>
+                        )}
                     </Card>
                 </Col>
 
                 <Col span={24}>
                     <Card className="bg-light" style={{ marginTop: 16 }}>
-                        <Form.Item label="Mô tả sản phẩm" name="description">
-                            <JoditEditor
-                                ref={editor}
-                                value={content}
-                                tabIndex={1}
-                                onBlur={(newContent) => setContent(newContent)}
-                            />
-                        </Form.Item>
+                        <Controller
+                            name="description"
+                            control={control}
+                            rules={{
+                                required: "Vui lòng nhập Mô tả sản phẩm!",
+                            }}
+                            render={({ field }) => (
+                                <JoditEditor
+                                    ref={editor}
+                                    value={content}
+                                    tabIndex={1}
+                                    onBlur={(newContent) => {
+                                        setContent(newContent);
+                                        field.onChange(newContent); // Update the form state
+                                    }}
+                                />
+                            )}
+                        />
+                        {errors.description && (
+                            <p
+                                style={{
+                                    color: "red",
+                                }}
+                            >
+                                {errors.description.message}
+                            </p>
+                        )}
                     </Card>
                 </Col>
 
-                {/* Button điều hướng */}
                 <Col span={24}>
                     <Form.Item>
                         <Button size="large" type="primary" htmlType="submit">

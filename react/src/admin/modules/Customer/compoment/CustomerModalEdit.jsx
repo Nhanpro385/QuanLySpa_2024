@@ -3,7 +3,7 @@ import { Button, Modal, Form, Input, DatePicker, Select, Space } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import dayjs from "dayjs";
 const { Option } = Select;
-import { formatDate } from "../../../utils";
+import { formatDate } from "@admin/utils";
 const ModalEditCustomer = ({
     isModalOpen,
     handleOk,

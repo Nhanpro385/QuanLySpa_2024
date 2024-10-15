@@ -5,7 +5,7 @@ import {
     categoriesUpdate,
     categoriesDelete,
     categoriesGetById
-} from "../../../redux/slices/CategoriesProductSlice";
+} from "@admin/redux/slices/CategoriesProductSlice";
 const usecategoriesActions = () => {
     const dispatch = useDispatch();
 

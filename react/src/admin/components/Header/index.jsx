@@ -5,10 +5,10 @@ import {
     SettingOutlined,
     NotificationOutlined,
 } from "@ant-design/icons";
-import styles from "../../modules/Notification/notification.module.scss";
+import styles from "@admin/modules/Notification/notification.module.scss";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { logoutAction } from "../../modules/authen/actions/authActions";
+import { logoutAction } from "@admin/modules/authen/actions/authActions";
 const { Header } = Layout;
 
 const HeaderAdmin = () => {

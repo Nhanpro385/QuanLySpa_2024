@@ -1,104 +1,60 @@
-import React from "react";
-import { Table, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Image, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import useproductActions from "@admin/modules/product/hooks/useProduct";
+
+import { useSelector } from "react-redux";
+import TableProduct from "./tableProduct";
+import useModal from "@admin/modules/appointments/hooks/openmodal";
+import ModalEditProduct from "../../modules/product/compoments/ModalEditProduct";
 function Products() {
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const { product } = useSelector((state) => state.products);
+    const { getproduct, updateproduct, deleteproduct, getproductById } = useproductActions();
+
+    useEffect(() => {
+        getproduct();
+    }, []);
+    const [dataEdit, setDataEdit] = useState({});
     const navigation = useNavigate();
-    const dataSource = [
-        {
-            key: "1",
-            name: "Serum trị mụn",
-            image_url: "Ảnh 1",
-            price: "500.000",
-            quantity: "10",
-            capacity: "15ml",
-            date: "10/10/2024",
-            status: "Còn hàng",
-        },
-    ];
-
-    const columns = [
-        {
-            title: "Tên",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "Ảnh",
-            dataIndex: "image_url",
-            key: "image_url",
-        },
-        {
-            title: "Giá",
-            dataIndex: "price",
-            key: "price",
-        },
-        {
-            title: "Số lượng",
-            dataIndex: "quantity",
-            key: "quantity",
-        },
-        {
-            title: "Dung tích",
-            dataIndex: "capacity",
-            key: "capacity",
-        },
-        {
-            title: "Hạn sử dụng",
-            dataIndex: "date",
-            key: "date",
-        },
-        {
-            title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-            render: (status) => (
-                <Button
-                    type="primary"
-                    style={{
-                        backgroundColor: "#52c41a",
-                        borderColor: "#52c41a",
-                        color: "#fff",
-                    }}
-                    disabled
-                >
-                    {status}
-                </Button>
-            ),
-        },
-        {
-            title: "Hành động",
-            key: "action",
-            render: (text, record) => (
-                <span>
-                    <Button
-                        type="primary"
-                        onClick={() => handleEdit(record.key)}
-                        style={{ marginRight: 8 }}
-                    >
-                        Sửa
-                    </Button>
-                    <Button
-                        type="danger"
-                        onClick={() => handleDelete(record.key)}
-                    >
-                        Xóa
-                    </Button>
-                </span>
-            ),
-        },
-    ];
-
-    const handleEdit = (key) => {
-        console.log("Edit", key);
-    };
-
-    const handleDelete = (key) => {
-        console.log("Delete", key);
-    };
-
+    const dataSource = product.data.map((item) => ({
+        key: item.id,
+        name: item.name,
+        image_url: (
+            <Image src="http://127.0.0.1:8000/storage/app/uploads/1729000364_123.png" />
+        ),
+        price: item.price,
+        quantity: item.quantity,
+        capacity: item.capacity,
+        date: item.date,
+        status: item.status,
+    }));
     const handleAdd = () => {
         navigation("/admin/products/add");
+    };
+    const handleEdit = async (record) => {
+        try {
+            const result = await getproductById(record);
+            
+            if (result.meta.requestStatus === "fulfilled") {
+                setDataEdit(result.payload.data);
+                showModal();
+            } else {
+                message.error("Không tìm thấy sản phẩm");
+            }
+        } catch (error) {
+            message.error("Không tìm thấy sản phẩm");
+        }
+    };
+    const handleDelete = async (record) => {
+        const result = await deleteproduct(record);
+        if (result.meta.requestStatus === "fulfilled") {
+            message.success("Xóa sản phẩm thành công");
+            getproduct();
+        } else {
+            message.error("Xóa sản phẩm thất bại");
+        }
     };
 
     return (
@@ -117,7 +73,17 @@ function Products() {
                     Thêm sản phẩm mới
                 </Button>
             </div>
-            <Table dataSource={dataSource} columns={columns} />
+            <TableProduct
+                dataSource={dataSource}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+            />
+            <ModalEditProduct
+                isModalOpen={isModalOpen}
+                handleOk={handleOk}
+                handleCancel={handleCancel}
+                productData={dataEdit}
+            />
         </div>
     );
 }

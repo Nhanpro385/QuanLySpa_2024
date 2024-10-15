@@ -5,7 +5,7 @@ import {
     PositionsUpdate,
     PositionsDelete,
     PositionsGetById,
-} from "../../../redux/slices/PositionsSlice";
+} from "@admin/redux/slices/PositionsSlice";
 const usePositionsActions = () => {
     const dispatch = useDispatch();
 

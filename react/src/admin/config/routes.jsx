@@ -1,57 +1,57 @@
-import Dashboard from "../pages/Dashboard";
+import Dashboard from "@admin/pages/Dashboard";
 
 // User Management
-import Customer from "../pages/customerManagement/customer";
-import CustomersAdd from "../pages/customerManagement/customer_add";
-import HistoryService from "../pages/customerManagement/history_sevice";
-import CustomerDetail from "../pages/customerManagement/UserDetail";
+import Customer from "@admin/pages/customerManagement/customer";
+import CustomersAdd from "@admin/pages/customerManagement/customer_add";
+import HistoryService from "@admin/pages/customerManagement/history_sevice";
+import CustomerDetail from "@admin/pages/customerManagement/UserDetail";
 
 // Appointments
-import Appointments from "../pages/appointments/Appointments";
-import Appointments_Detail from "../pages/appointments/Appointments_Detail";
+import Appointments from "@admin/pages/appointments/Appointments";
+import Appointments_Detail from "@admin/pages/appointments/Appointments_Detail";
 
 // Personnel Management / Staffs
-import Staffs from "../pages/Staff_management/Staffs";
-import StaffsDetail from "../pages/Staff_management/StaffsDetail";
-import StaffAdd from "../pages/Staff_management/Staff_add";
+import Staffs from "@admin/pages/Staff_management/Staffs";
+import StaffsDetail from "@admin/pages/Staff_management/StaffsDetail";
+import StaffAdd from "@admin/pages/Staff_management/Staff_add";
 
 // positions
-import Positions from "../pages/Staff_management/positions";
+import Positions from "@admin/pages/Staff_management/positions";
 
 // Services
-import Services from "../pages/services/Services";
-import ServicesAdd from "../pages/services/add_services";
-import ServiceCategories from "../pages/services/Service_categories";
+import Services from "@admin/pages/services/Services";
+import ServicesAdd from "@admin/pages/services/add_services";
+import ServiceCategories from "@admin/pages/services/Service_categories";
 // Products
-import Products from "../pages/product/Products";
-import ProductsAdd from "../pages/product/product_add";
-import ProductCategories from "../pages/product/product_categories";
+import Products from "@admin/pages/product/Products";
+import ProductsAdd from "@admin/pages/product/product_add";
+import ProductCategories from "@admin/pages/product/product_categories";
 
 // Warehouse
-import Warehouse from "../pages/Warehouse/Warehouse";
-import WarehouseImport from "../pages/Warehouse/product_import";
-import WarehouseExport from "../pages/Warehouse/Product_export";
-import ProductImportDetail from "../pages/Warehouse/product_import_detail";
-import ProductInventory from "../pages/Warehouse/product_inventory";
+import Warehouse from "@admin/pages/Warehouse/Warehouse";
+import WarehouseImport from "@admin/pages/Warehouse/product_import";
+import WarehouseExport from "@admin/pages/Warehouse/Product_export";
+import ProductImportDetail from "@admin/pages/Warehouse/product_import_detail";
+import ProductInventory from "@admin/pages/Warehouse/product_inventory";
 
 // Promotions
-import Promotions from "../pages/Promotions/Promotions";
-import Promotions_add from "../pages/Promotions/Promotions_add";
+import Promotions from "@admin/pages/Promotions/Promotions";
+import Promotions_add from "@admin/pages/Promotions/Promotions_add";
 
 // Consultant and Comments
-import Consultant from "../pages/consultant";
-import CommentManagement from "../pages/comment";
+import Consultant from "@admin/pages/consultant";
+import CommentManagement from "@admin/pages/comment";
 
 // Shift Management
 
-import ShiftManagement from "../pages/ShiftManagement";
+import ShiftManagement from "@admin/pages/ShiftManagement";
 // Contact Management
 
-import ContactManagement from "../pages/contactmanagement";
+import ContactManagement from "@admin/pages/contactmanagement";
 //patment
-import PaymentManagement from "../pages/paymentManagenment";
+import PaymentManagement from "@admin/pages/paymentManagenment";
 // supplierManagement
-import SupplierManagement from "../pages/supplierManagement";
+import SupplierManagement from "@admin/pages/supplierManagement";
 const PublicRoutes = [
     // Dashboard
     { path: "/", element: <Dashboard /> },

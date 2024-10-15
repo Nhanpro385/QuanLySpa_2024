@@ -53,6 +53,13 @@ const endpoints = {
         me: `${API_AUTH_URL}/me`,
         resetPassword: `${API_AUTH_URL}/me/resetPassword`,
     },
+    Products: {
+        list: `${API_BASE_URL}/products`,
+        detail: (id) => `${API_BASE_URL}/products/${id}`,
+        create: `${API_BASE_URL}/products`,
+        update: (id) => `${API_BASE_URL}/products/${id}`,
+        delete: (id) => `${API_BASE_URL}/products/${id}`,
+    },
 };
 
 export default endpoints;

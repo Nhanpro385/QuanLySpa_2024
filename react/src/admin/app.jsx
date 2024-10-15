@@ -3,8 +3,8 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { PublicRoutes } from "./config/routes";
 import { Provider } from "react-redux";
 import store from "@admin/redux/store/store.jsx";
-import AuthMiddleware from "../authMiddleware";
-import AdminLayout from "./components/layout/AdminLayout";
+import AuthMiddleware from "@/authMiddleware";
+import AdminLayout from "@admin/components/layout/AdminLayout";
 import { Button, Result } from "antd";
 
 const AppAdmin = () => {
