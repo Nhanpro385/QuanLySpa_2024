@@ -28,6 +28,7 @@ function Customer() {
     } = useCustomerActions(); // Use the customer actions hook
 
     const { customers, loading } = useSelector((state) => state.customers);
+    
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleCancel } = useModal();
     const [currentCustomer, setCurrentCustomer] = useState(null);
@@ -43,7 +44,7 @@ function Customer() {
                 handleEdit(record);
                 break;
             case "2":
-                navigate(`/admin/user/Detail/${record.id}`);
+                navigate(`/admin/khachhang/chitiet/${record.id}`);
                 break;
             case "3":
                 navigate(`/admin/khachhang/lichsugiaodich/${record.id}`);
@@ -65,7 +66,7 @@ function Customer() {
         try {
             const resultAction = await updateCustomer(updatedCustomer); // Use customer update action
             console.log(resultAction);
-            
+
             if (resultAction.meta.requestStatus === "fulfilled") {
                 message.success("Khách hàng đã được cập nhật");
                 handleCancel();
@@ -112,36 +113,28 @@ function Customer() {
 
     return (
         <Card>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 16,
-                }}
-            >
-                <h2>Danh Sách Người Dùng</h2>
-
-                <Link to="/admin/khachhang/them">
-                    <Button block type="primary">
-                        <PlusOutlined />
-                        Thêm Người Dùng mới
-                    </Button>
-                </Link>
-            </div>
+            <Row gutter={[16, 16]} className="mb-3">
+                <Col xl={20} md={12} sm={24} xs={24}>
+                    <h2>Danh Sách Người Dùng</h2>
+                </Col>
+                <Col xl={4} md={12} sm={24} xs={24}>
+                    <Link to="/admin/khachhang/them">
+                        <Button block type="primary">
+                            <PlusOutlined />
+                            Thêm Người Dùng mới
+                        </Button>
+                    </Link>
+                </Col>
+            </Row>
 
             <Row gutter={[16, 16]}>
-                <Col span={3}>
-                    <Select
-                        style={{ width: 120 }}
-                        className="mb-3 w-100"
-                        placeholder="Giới tính"
-                    >
+                <Col xl={4} md={6} sm={12} xs={24}>
+                    <Select className="mb-3 w-100" placeholder="Giới tính">
                         <Select.Option value="nam">Nam</Select.Option>
                         <Select.Option value="nu">Nữ</Select.Option>
                     </Select>
                 </Col>
-                <Col span={5}>
+                <Col xl={4} md={6} sm={12} xs={24}>
                     <Input.Search placeholder="Tìm kiếm......" />
                 </Col>
             </Row>

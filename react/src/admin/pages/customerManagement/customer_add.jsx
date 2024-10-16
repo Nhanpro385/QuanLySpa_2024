@@ -79,7 +79,7 @@ const CustomersAdd = () => {
             )}
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Tên">
                             <Controller
                                 name="name"
@@ -110,7 +110,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Họ và tên">
                             <Controller
                                 name="full_name"
@@ -137,7 +137,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Email">
                             <Controller
                                 name="email"
@@ -160,7 +160,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Mật khẩu">
                             <Controller
                                 name="password"
@@ -187,7 +187,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Số điện thoại">
                             <Controller
                                 name="phone"
@@ -210,7 +210,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Địa chỉ">
                             <Controller
                                 name="address"
@@ -226,7 +226,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Giới tính">
                             <Controller
                                 name="gender"
@@ -246,7 +246,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Ngày sinh">
                             <Controller
                                 name="date_of_birth"
@@ -267,7 +267,7 @@ const CustomersAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={24}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Ghi chú">
                             <Controller
                                 name="note"
@@ -280,14 +280,23 @@ const CustomersAdd = () => {
                     </Col>
                 </Row>
                 <Form.Item>
-                    <Space>
-                        <Button size="large" type="primary" htmlType="submit">
-                            Thêm khách hàng
-                        </Button>
+                    <Row gutter={[16, 16]}>
+                        <Col xl={4} lg={12} md={12} sm={24} xs={24}>
+                            <Button size="large" type="primary" htmlType="submit" block>
+                                Thêm khách hàng
+                            </Button>
+                        </Col>
+                        <Col xl={4} lg={12} md={12} sm={24} xs={24}>
+                            <Button size="large" onClick={reset} block>
+                                Làm mới
+                            </Button>
+                        </Col>
+                        <Col xl={4} lg={24} md={24} sm={24} xs={24}>
                         <Link to="/admin/user">
-                            <Button size="large">Quay lại</Button>
+                            <Button size="large" block>Quay lại</Button>
                         </Link>
-                    </Space>
+                    </Col>
+                    </Row>
                 </Form.Item>
             </Form>
             {contextHolder}

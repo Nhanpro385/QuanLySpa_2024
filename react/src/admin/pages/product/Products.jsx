@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Image, message } from "antd";
+import { Table, Button, Image, message, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useproductActions from "@admin/modules/product/hooks/useProduct";
@@ -29,7 +29,7 @@ function Products() {
         capacity: item.capacity,
         date: item.date,
         status: item.status,
-    }));
+    })) || [];
     const handleAdd = () => {
         navigation("/admin/products/add");
     };
@@ -59,20 +59,20 @@ function Products() {
 
     return (
         <div>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 16,
-                }}
+            <Row
+                    gutter={[16, 16]}
             >
+                <Col xl={20} md={18} xs={24}>
+                    
                 <h2>Danh Sách Sản Phẩm</h2>
-                <Button type="primary" onClick={() => handleAdd()}>
+                </Col>
+                <Col xl={4} md={6} xs={24}>
+                <Button type="primary" onClick={() => handleAdd()} block>
                     <PlusOutlined />
                     Thêm sản phẩm mới
                 </Button>
-            </div>
+                </Col>
+            </Row>
             <TableProduct
                 dataSource={dataSource}
                 handleEdit={handleEdit}

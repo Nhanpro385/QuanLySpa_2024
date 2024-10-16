@@ -80,8 +80,8 @@ const StaffsAdd = () => {
             )}
             <Spin spinning={loading} size="large" tip="Đang tải...">
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-                <Row gutter={16}>
-                    <Col span={12}>
+                <Row gutter={[16, 16]}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Tên">
                             <Controller
                                 name="name"
@@ -109,7 +109,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Vai trò">
                             <Controller
                                 name="role"
@@ -134,7 +134,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Họ và tên">
                             <Controller
                                 name="full_name"
@@ -162,7 +162,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Mật khẩu">
                             <Controller
                                 name="password"
@@ -191,7 +191,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Số điện thoại">
                             <Controller
                                 name="phone"
@@ -214,7 +214,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Email">
                             <Controller
                                 name="email"
@@ -237,7 +237,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Địa chỉ">
                             <Controller
                                 name="address"
@@ -248,7 +248,7 @@ const StaffsAdd = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Form.Item label="Giới tính">
                             <Controller
                                 name="gender"
@@ -268,7 +268,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Form.Item label="Ngày sinh">
                             <Controller
                                 name="date_of_birth"
@@ -292,7 +292,7 @@ const StaffsAdd = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={24}>
+                    <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Ghi chú">
                             <Controller
                                 name="note"

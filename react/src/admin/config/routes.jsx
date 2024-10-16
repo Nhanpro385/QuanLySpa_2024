@@ -4,7 +4,7 @@ import Dashboard from "@admin/pages/Dashboard";
 import Customer from "@admin/pages/customerManagement/customer";
 import CustomersAdd from "@admin/pages/customerManagement/customer_add";
 import HistoryService from "@admin/pages/customerManagement/history_sevice";
-import CustomerDetail from "@admin/pages/customerManagement/UserDetail";
+import CustomerDetail from "@admin/pages/customerManagement/CustomerDetail";
 
 // Appointments
 import Appointments from "@admin/pages/appointments/Appointments";

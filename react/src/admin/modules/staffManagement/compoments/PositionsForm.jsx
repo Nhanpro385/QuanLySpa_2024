@@ -6,7 +6,7 @@ const PositionsForm = ({ onSubmit, control, errors }) => {
     return (
         <Form layout="vertical" onFinish={onSubmit}>
             <Row gutter={16}>
-                <Col span={12}>
+                <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Form.Item label="Tên danh mục" validateStatus={errors.name ? "error" : ""}>
                         <Controller
                             name="name"
@@ -23,7 +23,7 @@ const PositionsForm = ({ onSubmit, control, errors }) => {
                         {errors.name && <p style={{ color: "red" }}>{errors.name.message}</p>}
                     </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Form.Item label="Lương cơ bản theo giờ" validateStatus={errors.wage ? "error" : ""}>
                         <Controller
                             name="wage"
@@ -53,7 +53,7 @@ const PositionsForm = ({ onSubmit, control, errors }) => {
                 </Col>
             </Row>
             <Row gutter={16}>
-                <Col span={24}>
+                <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Form.Item label="Ghi chú" validateStatus={errors.note ? "error" : ""}>
                         <Controller
                             name="note"

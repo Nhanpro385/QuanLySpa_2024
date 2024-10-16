@@ -211,7 +211,7 @@ const PaymentManagement = () => {
                 >
                     <Row gutter={[16, 16]}>
                         {invoices.map((invoice) => (
-                            <Col span={6} key={invoice.id}>
+                            <Col xl={6} md={8} sm={12} xs={24} key={invoice.id}>
                                 <Card
                                     className="bg-light"
                                     extra={
@@ -299,7 +299,7 @@ const PaymentManagement = () => {
                     style={{ backgroundColor: "#f0f2f5" }}
                 >
                     <Row gutter={[16, 16]} className="mb-3">
-                        <Col span={4}>
+                        <Col xl={4} md={6} sm={24} xs={24}>
                             <Select
                                 placeholder="Sắp xếp"
                                 className="w-100"
@@ -313,7 +313,7 @@ const PaymentManagement = () => {
                                 </Select.Option>
                             </Select>
                         </Col>
-                        <Col span={4}>
+                        <Col xl={4} md={6} sm={24} xs={24}>
                             <Select
                                 placeholder="Lọc theo"
                                 className="w-100"
@@ -330,7 +330,7 @@ const PaymentManagement = () => {
                                 </Select.Option>
                             </Select>
                         </Col>
-                        <Col span={9}>
+                        <Col xl={9} md={6} sm={24} xs={24}>
                             <Input.Search placeholder="Tìm kiếm theo mã hóa đơn hoạc tên khách hàng" />
                         </Col>
                     </Row>

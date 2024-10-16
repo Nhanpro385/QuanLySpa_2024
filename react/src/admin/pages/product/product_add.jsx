@@ -82,10 +82,10 @@ const Product_add = () => {
     return (
         <Form onFinish={handleSubmit(onSubmit)}>
             <Row gutter={[16, 16]}>
-                <Col span={16}>
+                <Col xl={16} md={16} sm={24} xs={24}>
                     <Card className="bg-light" title="Thông tin sản phẩm">
                         <Row gutter={[16, 16]}>
-                            <Col span={12}>
+                            <Col xl={12} md={12} sm={24} xs={24}>
                                 <Controller
                                     name="name"
                                     control={control}
@@ -110,7 +110,7 @@ const Product_add = () => {
                                     </p>
                                 )}
                             </Col>
-                            <Col span={12}>
+                            <Col xl={12} md={12} sm={24} xs={24}>
                                 <Controller
                                     name="category_id"
                                     control={control}
@@ -144,7 +144,7 @@ const Product_add = () => {
                                     </p>
                                 )}
                             </Col>
-                            <Col span={6}>
+                            <Col xl={6} md={6} sm={12} xs={24}>
                                 <Controller
                                     name="capacity"
                                     control={control}
@@ -180,7 +180,7 @@ const Product_add = () => {
                                     </p>
                                 )}
                             </Col>
-                            <Col span={6}>
+                            <Col xl={6} md={6} sm={12} xs={24}>
                                 <Controller
                                     name="bar_code"
                                     control={control}
@@ -206,7 +206,7 @@ const Product_add = () => {
                                     </p>
                                 )}
                             </Col>
-                            <Col span={12}>
+                            <Col xl={12} md={12} sm={24} xs={24}>
                                 <Controller
                                     name="date"
                                     control={control}
@@ -242,7 +242,7 @@ const Product_add = () => {
                         title="Giá và số lượng"
                     >
                         <Row gutter={[16, 16]}>
-                            <Col span={12}>
+                            <Col xl={12} md={12} sm={24} xs={24}>
                                 <Controller
                                     name="cost"
                                     control={control}
@@ -268,7 +268,7 @@ const Product_add = () => {
                                     </p>
                                 )}
                             </Col>
-                            <Col span={12}>
+                            <Col xl={12} md={12} sm={24} xs={24}>
                                 <Controller
                                     name="price"
                                     control={control}
@@ -298,7 +298,7 @@ const Product_add = () => {
                     </Card>
                 </Col>
 
-                <Col span={8}>
+                <Col xl={8} md={8} sm={24} xs={24}>
                     <Card
                         className="bg-light"
                         style={{ height: "100%" }}
@@ -346,7 +346,7 @@ const Product_add = () => {
                     </Card>
                 </Col>
 
-                <Col span={24}>
+                <Col xl={24} md={24} sm={24} xs={24}>
                     <Card className="bg-light" style={{ marginTop: 16 }}>
                         <Controller
                             name="description"

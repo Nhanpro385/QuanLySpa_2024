@@ -86,10 +86,10 @@ const WarehouseImport = () => {
             <Card title="Nhập sản phẩm : #123456789">
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
-                        <Col span={16}>
+                        <Col  xl={16} md={16} sm={24} xs={24}>
                             <Row gutter={[16, 16]}>
                                 {products.length === 0 ? (
-                                    <Col span={24}>
+                                    <Col xl={24} md={24} sm={24} xs={24}>
                                         <Empty
                                             image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
                                             imageStyle={{
@@ -112,12 +112,13 @@ const WarehouseImport = () => {
                                     </Col>
                                 ) : (
                                     products.map((product, index) => (
-                                        <Col span={24} key={index}>
+                                        <Col xl={24} md={24} sm={24} xs={24} index={index}>
                                             <Card
                                                 title={`Sản phẩm ${index + 1}`}
+                                                className="bg-light"
                                             >
                                                 <Row gutter={[16, 16]}>
-                                                    <Col span={12}>
+                                                    <Col xl={12} md={12} sm={24} xs={24}>
                                                         <Form.Item label="Sản phẩm">
                                                             <Select
                                                                 size="large"
@@ -150,7 +151,7 @@ const WarehouseImport = () => {
                                                         </Form.Item>
                                                     </Col>
 
-                                                    <Col span={12}>
+                                                    <Col xl={12} md={12} sm={24} xs={24}>
                                                         <Form.Item label="Nhà phân phối">
                                                             <Select
                                                                 size="large"
@@ -183,7 +184,7 @@ const WarehouseImport = () => {
                                                         </Form.Item>
                                                     </Col>
 
-                                                    <Col span={12}>
+                                                    <Col xl={12} md={12} sm={24} xs={24}>
                                                         <Form.Item label="Số lượng">
                                                             <InputNumber
                                                                 className="w-100"
@@ -216,7 +217,7 @@ const WarehouseImport = () => {
                                                         </Form.Item>
                                                     </Col>
 
-                                                    <Col span={12}>
+                                                    <Col xl={12} md={12} sm={24} xs={24}>
                                                         <Form.Item label="Giá nhập">
                                                             <InputNumber
                                                                 className="w-100"
@@ -293,7 +294,7 @@ const WarehouseImport = () => {
                                 </Form.Item>
                             )}
 
-                            <Card title="Danh sách nhập hàng" className="mt-3">
+                            <Card title="Danh sách nhập hàng" className="mt-3 bg-light">
                                 <Table
                                     columns={columns}
                                     dataSource={dataSource}
@@ -301,9 +302,9 @@ const WarehouseImport = () => {
                             </Card>
                         </Col>
 
-                        <Col span={8}>
-                            <Card>
-                                <Col span={24}>
+                        <Col xl={8} md={8} sm={24} xs={24}>
+                            <Card className="bg-light">
+                                <Col xl={24} md={24} sm={24} xs={24}>
                                     <Form.Item label="Nhân viên nhập">
                                         <Input
                                             size="large"
@@ -312,7 +313,7 @@ const WarehouseImport = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col span={24}>
+                                <Col xl={24} md={24} sm={24} xs={24}>
                                     <Form.Item label="Mô tả">
                                         <Input.TextArea />
                                     </Form.Item>

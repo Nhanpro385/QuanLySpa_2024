@@ -165,12 +165,12 @@ const ShiftManagement = () => {
 
   return (
     <div>
-      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
-        <Col>
+      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }} gutter={[16, 16]}>
+        <Col xl={20} md={20} sm={24} xs={24}>
           <h2>Quản Lý Ca Làm Việc</h2>
         </Col>
-        <Col>
-          <Button type="primary" onClick={showModal}>
+        <Col xl={4} md={4} sm={24} xs={24}>
+          <Button type="primary" onClick={showModal} block>
                 <PlusOutlined></PlusOutlined>
             Thêm Ca Mới
           </Button>
@@ -183,7 +183,7 @@ const ShiftManagement = () => {
       </Row>
 
       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-        <Col span={3}>
+        <Col xl={3} md={6} xs={24}>
           <Select
             className="w-100"
             placeholder="Chức Vụ"
@@ -193,7 +193,7 @@ const ShiftManagement = () => {
             ]}
           />
         </Col>
-        <Col span={3}>
+        <Col xl={3} md={6} xs={24}>
           <Select
             className="w-100"
             placeholder="Ca Làm Việc"
@@ -204,7 +204,7 @@ const ShiftManagement = () => {
             ]}
           />
         </Col>
-        <Col span={6}>
+        <Col xl={6} md={6} xs={24}>
           <Search
             placeholder="Tìm theo Tên hoặc số điện thoại"
             enterButton="Tìm kiếm"

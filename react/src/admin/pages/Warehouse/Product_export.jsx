@@ -87,13 +87,13 @@ const WarehouseExport = () => {
         <Card title="Xuất sản phẩm">
             <Form layout="vertical">
                 <Row gutter={[16, 16]}>
-                    <Col span={16}>
+                    <Col xl={16} md={24} sm={24} xs={24}>
                         <Row gutter={[16, 16]}>
-                            <Col span={24}>
+                            <Col xl={24} md={24} sm={24} xs={24}>
                                 <Card>
                                     {products.map((product, index) => (
                                         <Row gutter={[16, 16]} key={index}>
-                                            <Col span={12}>
+                                            <Col xl={12} md={12} sm={24} xs={24}>
                                                 <Form.Item label="Sản phẩm">
                                                     <Select
                                                         size="large"
@@ -126,7 +126,7 @@ const WarehouseExport = () => {
                                                 </Form.Item>
                                             </Col>
 
-                                            <Col span={12}>
+                                            <Col xl={12} md={12} sm={24} xs={24}>
                                                 <Form.Item label="Số lượng xuất">
                                                     <InputNumber
                                                         className="w-100"
@@ -162,7 +162,7 @@ const WarehouseExport = () => {
                                                     </div>
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={12}>
+                                            <Col xl={12} md={12} sm={24} xs={24}>
                                                 <Form.Item label="Giá xuất">
                                                     <InputNumber
                                                         className="w-100"
@@ -220,9 +220,9 @@ const WarehouseExport = () => {
                             <Table columns={columns} dataSource={dataSource} />
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    <Col xl={8} md={24} sm={24} xs={24}>
                         <Card>
-                            <Col span={24}>
+                            <Col xl={24} md={24} sm={24} xs={24}>
                                 <Form.Item label="Nhân viên xuất">
                                     <Input
                                         size="large"
@@ -231,12 +231,12 @@ const WarehouseExport = () => {
                                     />
                                 </Form.Item>
                             </Col>
-                            <Col span={24}>
+                            <Col xl={24} md={24} sm={24} xs={24}>
                                 <Form.Item label="Mô tả">
                                     <Input.TextArea />
                                 </Form.Item>
                             </Col>
-                            <Col span={24}>
+                            <Col xl={24} md={24} sm={24} xs={24}>
                                 <Radio.Group
                                     
                                     options={options}
@@ -245,7 +245,7 @@ const WarehouseExport = () => {
                                 />
                             </Col>
                                     <Divider />
-                            <Col span={24}>
+                            <Col xl={24} md={24} sm={24} xs={24}>
                                 <h3>
                                     Tổng tiền :
                                     {`${products

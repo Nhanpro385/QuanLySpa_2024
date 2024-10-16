@@ -104,7 +104,7 @@ function HistoryService() {
       }
     >
       <Row className="mb-3" gutter={[16, 16]}>
-        <Col span={4}>
+        <Col xl={4} lg={4} md={4} sm={24} xs={24}>
           <Dropdown
             menu={{
               items,
@@ -121,8 +121,8 @@ function HistoryService() {
             </Button>
           </Dropdown>
         </Col>
-        <Col span={6}>
-          <RangePicker />
+        <Col xl={4} lg={4} md={4} sm={24} xs={24}>
+          <RangePicker className="w-100" />
         </Col>
       </Row>
       <Row gutter={[16, 16]}>
@@ -173,7 +173,7 @@ function HistoryService() {
                       }}
                     />
                   </Col>
-                  <Col span={24} className="text-center">
+                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Descriptions
                       style={{
                         marginTop: "20px",

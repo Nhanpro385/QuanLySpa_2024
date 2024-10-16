@@ -114,29 +114,30 @@ function Services() {
 
     return (
         <div>
-            <Row gutter={16} style={{ marginBottom: 16 }}>
-                <Col span={5}>
+            <Row gutter={[8, 8]} style={{ marginBottom: 16 }}>
+                <Col xl={16} md={12} sm={24} xs={24}>
                     <h2>Danh Sách Dịch Vụ</h2>
                 </Col>
-                <Col span={4}>
-                    <Button type="primary" onClick={showModal}>
+                <Col xl={4} md={6} sm={24} xs={24}>
+                    <Button type="primary" onClick={showModal} block>
                         <PlusOutlined />
                         Thêm dịch vụ mới
                     </Button>
                 </Col>
-                <Col span={4}>
-                    <Button color="primary" variant="outlined">
+                <Col xl={4} md={6} sm={24} xs={24}>
+                    <Button color="primary" variant="outlined" block>
                         <PlusOutlined />
                         Thêm Loại dịch vụ
                     </Button>
                 </Col>
             </Row>
             <Row>
-                <Col span={6}>
+                <Col xl={4} md={6} sm={24} xs={24}>
                     <Input.Search
+                        className="mb-3 w-100"
                         placeholder="Tìm dịch vụ theo tên..."
                         onSearch={(value) => console.log(value)}
-                        style={{ marginBottom: 16 }}
+                        
                     />
                 </Col>
             </Row>
