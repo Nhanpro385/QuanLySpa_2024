@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Auth\Admin\AuthController;
 
 require __DIR__ . '/auth.php';
@@ -46,6 +47,13 @@ Route::group([
     Route::post('/products', [ProductController::class, 'store']);
     Route::post('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+
+    Route::get('/services', [ServiceController::class, 'index']);
+    Route::get('/services/{id}', [ServiceController::class, 'show']);
+    Route::post('/services', [ServiceController::class, 'store']);
+    Route::post('/services/{id}', [ServiceController::class, 'update']);
+    Route::delete('/services/{id}', [ServiceController::class, 'destroy']);
 
 });
 //End

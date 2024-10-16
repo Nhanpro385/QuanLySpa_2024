@@ -32,9 +32,9 @@ class ServiceCategory extends Model
         'status' => true,
 
     ];
-    public function services()
+    public function service()
     {
-        return $this->hasMany(ServiceCategory::class, 'servicecategory_id', 'id');
+        return $this->belongsTo(Service::class, 'service_id', 'id');
     }
 
     public function createdBy(): BelongsTo

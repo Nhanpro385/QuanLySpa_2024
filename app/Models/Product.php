@@ -58,7 +58,7 @@ class Product extends Model
     }
     public function productService()
     {
-        return $this->hasMany(Product::class, 'products_id', 'id');
+        return $this->hasMany(ProductService::class, 'product_id', 'id');
     }
     public function treatmentProduct()
     {

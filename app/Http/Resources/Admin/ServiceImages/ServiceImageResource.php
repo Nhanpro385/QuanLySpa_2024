@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Admin\ServiceCategories;
+namespace App\Http\Resources\Admin\ServiceImages;
 
 use App\Http\Resources\Admin\Users\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ServiceCategoryResource extends JsonResource
+class ServiceImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,14 +17,12 @@ class ServiceCategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'status' => $this->status,
-            'created_by' => $this->relationLoaded('createdBy') ? new UserResource($this->createdBy) : null,
+            'service_id' => $this->service_id,
+            'image_url' => $this->image_url,
+            'created_by' => $this->created_by ? $this->createdBy->name : null,
             'created_at' =>
                 $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-
         ];
     }
 }
