@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->enum('promotion_type', ['cash', 'percent']);
-            $table->decimal('discount_percent', 10, 2);
+            $table->decimal('discount_percent', 10, 2)->default(0.00); 
             $table->boolean('status')->default(true);
             $table->string('created_by')->nullable();
             $table->softDeletes();

@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->integer('rate');
             $table->boolean('status')->default(true);
             $table->string('image_url')->nullable();
+            $table->text('admin_reply')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

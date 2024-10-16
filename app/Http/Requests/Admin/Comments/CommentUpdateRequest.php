@@ -27,11 +27,11 @@ class CommentUpdateRequest extends FormRequest
 
                     $hasUsedService = DB::table('appointments')
                         ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
-                       
+
                         ->exists();
 
                     if (!$hasUsedService) {
-                        $fail('Khách hàng này chưa sử dụng dịch vụ này, không thể bình luận.');
+                        $fail('Khách hàng này chưa sử dụng dịch vụ , không thể bình luận.');
                     }
 
 

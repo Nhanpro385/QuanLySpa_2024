@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\PromotionController;
 
 
 
@@ -99,11 +100,21 @@ Route::group([
      Route::delete('/staff-shift/{id}', [StaffShiftController::class, 'destroy']);
 
      // Comments
-Route::get('/comment', [CommentController::class, 'index']);
-Route::post('/comment', [CommentController::class, 'store']);
-Route::get('/comment/{id}', [CommentController::class, 'show']);
-Route::put('/comment/{id}', [CommentController::class, 'update']);
-Route::delete('/comment/{id}', [CommentController::class, 'destroy']);
+    Route::get('/comment', [CommentController::class, 'index']);
+    Route::post('/comment', [CommentController::class, 'store']);
+    Route::get('/comment/{id}', [CommentController::class, 'show']);
+    Route::put('/comment/{id}', [CommentController::class, 'update']);
+    Route::delete('/comment/{id}', [CommentController::class, 'destroy']);
+    Route::post('/comment/{id}/reply', [CommentController::class, 'store']);
+
+
+     // Promotions
+     Route::get('/promotion', [PromotionController::class, 'index']);
+     Route::post('/promotion', [PromotionController::class, 'store']);
+     Route::get('/promotion/{id}', [PromotionController::class, 'show']);
+     Route::put('/promotion/{id}', [PromotionController::class, 'update']);
+     Route::delete('/promotion/{id}', [PromotionController::class, 'destroy']);
+
 
 
 
