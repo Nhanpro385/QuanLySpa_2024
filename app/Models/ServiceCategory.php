@@ -25,7 +25,8 @@ class ServiceCategory extends Model
         'name',
         'description',
         'status',
-        'created_by'
+        'created_by',
+        'updated_by'
     ];
 
     protected $attributes = [

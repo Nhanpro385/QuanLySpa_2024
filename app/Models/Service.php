@@ -23,12 +23,15 @@ class Service extends Model
         'description',
         'image_url',
         'duration',
+        'priority',
         'status',
-        'created_by'
+        'created_by',
+        'updated_by',
     ];
 
     protected $attributes = [
-        'status' => true
+        'status' => true,
+        'image_url' => 'default.jpg',
     ];
     public function serviceCategory()
     {

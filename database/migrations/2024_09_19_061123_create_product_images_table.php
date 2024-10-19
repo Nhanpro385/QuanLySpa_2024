@@ -10,22 +10,25 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('product_images', function (Blueprint $table) {
             $table->string('id', 20)->primary();
-            $table->string('staff_id', 20);
-            $table->string('notification_type');
-            $table->string('content');
-            $table->string('url_notification');
-            $table->integer('pin')->default(1);
-            $table->boolean('status')->default(false);
+            $table->string('product_id', 20)->nullable();
+            $table->string('image_url');
             $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
-
-
-        Schema::table('notifications', function (Blueprint $table) {
+        Schema::table('product_images', function (Blueprint $table) {
+            $table->foreign('product_id')
+                ->references('id')
+                ->on('products')
+                ->onDelete('set null');
             $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');
@@ -37,6 +40,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('product_images');
     }
 };

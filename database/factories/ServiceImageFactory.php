@@ -23,8 +23,9 @@ class ServiceImageFactory extends Factory
         return [
             'id' => app(Snowflake::class)->next(),
             'service_id' => $this->faker->randomElement(Service::pluck('id')->toArray()),
-            'image_url' => 'http://',
+            'image_url' => 'default.jpg',
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

@@ -17,14 +17,19 @@ return new class extends Migration {
             $table->time('start_time');
             $table->string('note')->nullable();
             $table->date('appointment_date');
-            $table->enum('status', ['comfirm', 'cancel', 'complete', 'placed'])->default('placed');
-            $table->string('created_by')->nullable();
+            $table->tinyInteger('status')->default(1);
+            $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::table('appointments', function (Blueprint $table) {
             $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');

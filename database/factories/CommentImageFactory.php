@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Staff;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ServiceCategory>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CommentImage>
  */
-class ServiceCategoryFactory extends Factory
+class CommentImageFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,8 +21,8 @@ class ServiceCategoryFactory extends Factory
     {
         return [
             'id' => app(Snowflake::class)->next(),
-            'name' => $this->faker->name(),
-            'description' => $this->faker->sentence(),
+            'comment_id' => $this->faker->randomElement(Comment::pluck('id')->toArray()),
+            'image_url' => 'http://',
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
