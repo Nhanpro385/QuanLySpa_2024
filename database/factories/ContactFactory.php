@@ -22,6 +22,7 @@ class ContactFactory extends Factory
             'name' => $this->faker->name,
             'phone' => $this->faker->phoneNumber,
             'email' => $this->faker->email(),
+            'evaluete' => $this->faker->numberBetween(0, 10),
             'note' => $this->faker->text(),
         ];
     }

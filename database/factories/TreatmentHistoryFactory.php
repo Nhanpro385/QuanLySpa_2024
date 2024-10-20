@@ -28,11 +28,12 @@ class TreatmentHistoryFactory extends Factory
             'customer_id' => $this->faker->randomElement(Customer::pluck('id')->toArray()),
             'appointment_id' => $this->faker->randomElement(Appointment::pluck('id')->toArray()),
             'staff_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'image_before' => 'mau',
-            'image_after' => 'mau',
-            'feedback' => 'mau',
-            'note' => 'mau',
-            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
+            'image_before' => 'Anh truoc khi tri lieu',
+            'image_after' => 'Anh sau khi tri lieu',
+            'feedback' => 'Khach hang se gop y',
+            'note' => 'Ghi chu trong lich su',
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

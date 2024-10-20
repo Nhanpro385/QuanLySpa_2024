@@ -22,7 +22,8 @@ class Promotion extends Model
         'promotion_type',
         'discount_percent',
         'status',
-        'created_by'
+        'created_by',
+        'updated_by',
     ];
 
     protected $attribute = [
@@ -32,5 +33,5 @@ class Promotion extends Model
     {
         return $this->hasMany(Promotion::class, 'promotions_id', 'id');
     }
-   
+
 }

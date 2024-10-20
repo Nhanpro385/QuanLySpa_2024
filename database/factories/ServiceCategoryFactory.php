@@ -23,7 +23,8 @@ class ServiceCategoryFactory extends Factory
             'id' => app(Snowflake::class)->next(),
             'name' => $this->faker->name(),
             'description' => $this->faker->sentence(),
-            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }
