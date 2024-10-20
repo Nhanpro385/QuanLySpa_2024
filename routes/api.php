@@ -13,6 +13,9 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Auth\Admin\AuthController;
+use App\Http\Controllers\Admin\StaffShiftController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\PromotionController;
 
 require __DIR__ . '/auth.php';
 
@@ -106,6 +109,33 @@ Route::group([
     Route::get('/customer/{id}', [CustomerController::class, 'show']);
     Route::put('/customer/{id}', [CustomerController::class, 'update']);
     Route::delete('/customer/{id}', [CustomerController::class, 'destroy']);
+
+     // Staff Shift
+     Route::get('/staff-shift', [StaffShiftController::class, 'index']);
+     Route::post('/staff-shift', [StaffShiftController::class, 'store']);
+     Route::get('/staff-shift/{id}', [StaffShiftController::class, 'show']);
+     Route::put('/staff-shift/{id}', [StaffShiftController::class, 'update']);
+     Route::delete('/staff-shift/{id}', [StaffShiftController::class, 'destroy']);
+
+     // Comments
+    Route::get('/comment', [CommentController::class, 'index']);
+    Route::post('/comment', [CommentController::class, 'store']);
+    Route::get('/comment/{id}', [CommentController::class, 'show']);
+    Route::put('/comment/{id}', [CommentController::class, 'update']);
+    Route::delete('/comment/{id}', [CommentController::class, 'destroy']);
+    Route::post('/comment/{id}/reply', [CommentController::class, 'store']);
+
+
+     // Promotions
+     Route::get('/promotion', [PromotionController::class, 'index']);
+     Route::post('/promotion', [PromotionController::class, 'store']);
+     Route::get('/promotion/{id}', [PromotionController::class, 'show']);
+     Route::put('/promotion/{id}', [PromotionController::class, 'update']);
+     Route::delete('/promotion/{id}', [PromotionController::class, 'destroy']);
+
+
+
+
 });
 // End
 
