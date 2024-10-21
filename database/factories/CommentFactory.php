@@ -28,7 +28,8 @@ class CommentFactory extends Factory
             'comment' => 'comment',
             'rate' => 5,
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
+            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'type' => $this->faker->boolean()
         ];
     }
 }

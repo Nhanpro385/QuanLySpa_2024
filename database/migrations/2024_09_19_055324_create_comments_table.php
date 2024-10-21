@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->boolean('status')->default(true);
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
-            $table->text('admin_reply')->nullable();
+            $table->boolean('type')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

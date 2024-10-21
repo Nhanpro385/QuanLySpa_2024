@@ -24,8 +24,8 @@ class Comment extends Model
         'rate',
         'status',
         'created_by',
-        'updated_by',,
-        'admin_reply',
+        'updated_by',
+        'type'
     ];
 
     public function service()
