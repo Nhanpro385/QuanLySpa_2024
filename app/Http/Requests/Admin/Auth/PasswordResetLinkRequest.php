@@ -24,7 +24,7 @@ class PasswordResetLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'phone' => 'required',
             'email' => 'required|email'
         ];
     }
@@ -32,7 +32,7 @@ class PasswordResetLinkRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Tên đăng nhập không được bỏ trống.',
+            'phone.required' => 'Tên đăng nhập không được bỏ trống.',
             'email.required' => 'Vui lòng không được bỏ trống.',
             'email.email' => 'Email không hợp lệ.'
         ];

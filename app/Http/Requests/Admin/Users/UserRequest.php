@@ -26,18 +26,16 @@ class UserRequest extends FormRequest
         return [
             'id' => 'required|numeric|min:1000000000|max:9999999999999999999|unique:users,id',
             'position_id' => 'nullable|numeric|exists:positions,id',
-            'name' => 'required|regex:/^(?!\s*\d).+$/|max:255|min:10|unique:users,name',
-            'password' => 'required|min:8',
-            'role' => 'required|string|in:supper,advice,staff',
+            'role' => 'required|string|numeric',
             'full_name' => 'required|string|max:255|min:10|max:255',
-            'gender' => 'nullable|in:male,female',
+            'gender' => 'nullable|numeric',
             'phone' => 'required|regex:/^(\+?\d{1,4}?)?(\d{10})$/|unique:users,phone',
             'email' => 'required|email|max:255|unique:users,email',
             'address' => 'required|string|max:255',
             'date_of_birth' => 'required|date|before:today',
             'note' => 'nullable|string',
             'status' => 'nullable',
-            'created_by' => 'nullable|numeric|exists:users,id',
+
         ];
     }
 
@@ -51,20 +49,13 @@ class UserRequest extends FormRequest
             'id.unique' => 'ID đã tồn tại trong hệ thống.',
             'position_id.numeric' => 'ID chức vụ phải là số.',
             'position_id.exists' => 'ID chức vụ không tồn tại.',
-            'name.required' => 'Tên là bắt buộc không được để trống.',
-            'name.regex' => 'Tên không được bắt đầu bằng số.',
-            'name.max' => 'Tên không được dài quá 255 ký tự.',
-            'name.min' => 'Tên phải có ít nhất 10 ký tự.',
-            'name.unique' => 'Tên đã tồn tại.',
-            'password.required' => 'Mật khẩu là bắt buộc.',
-            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
             'role.required' => 'Vai trò là bắt buộc.',
-            'role.in' => 'Vai trò phải là một trong các giá trị: super, advice, staff.',
+            'role.numeric' => 'Vai trò phải là một trong các giá trị: super, advice, staff.',
             'full_name.required' => 'Họ và tên là bắt buộc.',
             'full_name.string' => 'Họ và tên phải là chuỗi ký tự.',
             'full_name.max' => 'Họ và tên không được dài quá 255 ký tự.',
             'full_name.min' => 'Họ và tên phải có ít nhất 10 ký tự.',
-            'gender.in' => 'Giới tính phải là nam hoặc nữ.',
+            'gender.numeric' => 'Giới tính phải là nam, nữ hoặc khác.',
             'phone.required' => 'Số điện thoại là bắt buộc.',
             'phone.regex' => 'Số điện thoại không hợp lệ.',
             'phone.unique' => "Số điện thoại đã tồn tại.",
@@ -79,8 +70,7 @@ class UserRequest extends FormRequest
             'date_of_birth.date' => 'Ngày sinh không hợp lệ.',
             'date_of_birth.before' => 'Ngày sinh phải trước ngày hôm nay.',
             'note.string' => 'Ghi chú phải là chuỗi ký tự.',
-            'created_by.numeric' => 'Người tạo phải là số.',
-            'created_by.exists' => 'Người tạo không tồn tại.',
+
         ];
     }
 

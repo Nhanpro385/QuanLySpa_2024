@@ -123,6 +123,9 @@ class AuthController extends Controller
             $validateData = $request->validated();
             $user = User::findOrFail($id);
             $user->update($validateData);
+            $user->update([
+                'updated_by' => $id
+            ]);
             $arr = [
                 'status' => 'success',
                 'message' => 'Chỉnh sửa thành công thông tin tài khoản: ' . $user->name,
@@ -148,8 +151,10 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
         $password = Hash::make($request->password);
         $resetStatus = $user->update([
-            'password' => $password
+            'password' => $password,
+            'updated_by' => $id
         ]);
+
 
         if (!$resetStatus) {
             return response()->json([

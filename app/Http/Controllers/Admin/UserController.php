@@ -11,7 +11,8 @@ use App\Http\Resources\Admin\Users\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 class UserController extends Controller
 {
     /**
@@ -63,10 +64,14 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         try {
+
             $validatorData = $request->validated();
-            //Mã hóa mật khẩu.
-            $validatorData['password'] = Hash::make(12345678);
+            $validatorData['password'] = Hash::make(Str::random(8));
             $user = User::create($validatorData);
+            $created_by = auth('api')->user()->id;
+            $user->update([
+                'created_by' => $created_by
+            ]);
             $response = [
                 "status" => "success",
                 "message" => "Thêm mới nhân viên thành công.",
@@ -76,7 +81,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             $response = [
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình thêm mới loại dịch vụ.',
+                'message' => 'Đã xảy ra lỗi trong quá trình thêm mới nhân viên.',
             ];
             return response()->json($response, 500);
         }
@@ -90,6 +95,7 @@ class UserController extends Controller
     {
         try {
             $userData = User::findOrFail($id);
+
             $position = $request->query('position');
             if ($position) {
                 $userData = User::with('position')->findOrFail($id);
@@ -103,7 +109,7 @@ class UserController extends Controller
 
             $arr = [
                 'status' => 'success',
-                'message' => 'Chi tiết thông tin nhân viên: ' . $userData->name,
+                'message' => 'Chi tiết thông tin nhân viên: ' . $userData->full_name,
                 'data' => new UserResource($userData)
             ];
             return response()->json($arr);
@@ -125,18 +131,23 @@ class UserController extends Controller
     {
         try {
 
-            $user = User::findOrFail($id);
+            $user = User::find($id);
+            $updated_by = auth('api')->user()->id;
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
-            $validator = $request->validated();
-            $user->update($validator);
+            $validatorData = $request->validated();
+
+            $user->update($validatorData);
+            $user->update([
+                'updated_by' => $updated_by
+            ]);
             $arr = [
                 'status' => 'success',
-                'message' => 'Chỉnh sửa thành công thông tin nhân viên: ' . $user->name,
+                'message' => 'Chỉnh sửa thành công thông tin nhân viên: ',
                 'data' => new UserResource(resource: $user)
             ];
             return response()->json($arr);
@@ -152,9 +163,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         try {
+            $updated_by = auth('api')->user()->id;
             $user = User::find($id);
 
             if (!$user) {
@@ -163,10 +175,13 @@ class UserController extends Controller
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
+            $user->update([
+                'updated_by' => $updated_by
+            ]);
             $user->delete();
             $arr = [
                 'status' => 'success',
-                'message' => 'Xóa thành công nhân viên: ' . $user->name,
+                'message' => 'Xóa thành công nhân viên: ' . $user->full_name,
             ];
             return response()->json($arr);
         } catch (\Throwable $th) {
