@@ -78,6 +78,7 @@ const CustomerTable = ({ customers, onClick, loading }) => {
 
     return (
         <Table
+        style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
             loading={loading}

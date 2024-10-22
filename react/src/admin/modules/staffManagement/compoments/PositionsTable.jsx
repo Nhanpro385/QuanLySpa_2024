@@ -39,6 +39,7 @@ const PositionsTable = ({ dataSource, loading, editCate, deleteCate }) => {
 
     return (
         <Table
+            style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
             rowKey="id"

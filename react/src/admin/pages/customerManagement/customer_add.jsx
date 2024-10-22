@@ -64,7 +64,11 @@ const CustomersAdd = () => {
     };
 
     return (
-        <Card title="Thêm khách hàng">
+        <>
+        <h1 className="text-center mb-4">
+            Thêm khách hàng
+            </h1>
+        <Card >
             {success && (
                 <Alert
                     message={success}
@@ -301,6 +305,7 @@ const CustomersAdd = () => {
             </Form>
             {contextHolder}
         </Card>
+        </>
     );
 };
 

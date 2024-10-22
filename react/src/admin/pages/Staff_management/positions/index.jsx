@@ -170,6 +170,7 @@ const Positions = () => {
 
     return (
         <>
+        <h1 className="text-center">Quản lý chức vụ</h1>
             {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col xl={24} lg={24} md={24} sm={24} xs={24}>

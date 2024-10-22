@@ -86,11 +86,12 @@ function Staffs() {
 
     return (
         <div>
+            <h1 className="text-center">Quản lý nhân viên</h1>
             <Row className="mb-3" gutter={[16, 16]}>
-                <Col xxl={21} xl={20} lg={18} md={18} sm={18} xs={24}>
+                <Col xxl={21} xl={20} lg={18} md={18} sm={12} xs={24}>
                     <h2>Danh Sách Nhân Viên</h2>
                 </Col>
-                <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={24}>
+                <Col xxl={3} xl={4} lg={6} md={6} sm={12} xs={24}>
                     <Button type="primary" onClick={handleAdd} block>
                         <PlusOutlined />
                         Thêm Nhân Viên

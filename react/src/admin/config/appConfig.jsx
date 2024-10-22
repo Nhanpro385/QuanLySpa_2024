@@ -60,6 +60,13 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/products/${id}`,
         delete: (id) => `${API_BASE_URL}/products/${id}`,
     },
+    comments:{
+        list: `${API_BASE_URL}/comments`,
+        detail: (id) => `${API_BASE_URL}/comments/${id}`,
+        create: `${API_BASE_URL}/comments`,
+        update: (id) => `${API_BASE_URL}/comments/${id}`,
+        delete: (id) => `${API_BASE_URL}/comments/${id}`,
+    }
 };
 
 export default endpoints;

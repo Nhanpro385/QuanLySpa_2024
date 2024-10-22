@@ -165,9 +165,10 @@ const ShiftManagement = () => {
 
   return (
     <div>
+      <h1 className="text-center">Quản Lý Ca Làm Việc</h1>
       <Row justify="space-between" align="middle" style={{ marginBottom: 16 }} gutter={[16, 16]}>
         <Col xl={20} md={20} sm={24} xs={24}>
-          <h2>Quản Lý Ca Làm Việc</h2>
+          <h2>Danh Sách Ca Làm Việc</h2>
         </Col>
         <Col xl={4} md={4} sm={24} xs={24}>
           <Button type="primary" onClick={showModal} block>
@@ -215,6 +216,7 @@ const ShiftManagement = () => {
       <Table dataSource={dataSource} columns={columns} />
 
       <Col>
+            <h2 className="mb-5">Lịch Làm Việc</h2>
         <ScheduleXCalendar calendarApp={calendar} />
       </Col>
     </div>

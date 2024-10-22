@@ -113,6 +113,7 @@ function Promotions() {
 
     return (
         <div>
+            <h1 className="text-center">Quản lý chương trình khuyến mãi</h1>
             <div
                 style={{
                     display: "flex",

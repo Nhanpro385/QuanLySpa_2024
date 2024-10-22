@@ -41,8 +41,6 @@ const ProductCategories = () => {
         if (resultAction.meta.requestStatus === "fulfilled") {
             messageApi.success("Thêm danh mục thành công!");
         } else {
-            
-
             setApiError(resultAction.payload.errors);
             messageApi.error(resultAction.payload.message || "Có lỗi xảy ra!");
         }
@@ -57,10 +55,10 @@ const ProductCategories = () => {
         }
     };
 
-    const deleteCate = async(id) => {
+    const deleteCate = async (id) => {
         const result = await deletecategories(id);
         console.log(result);
-        
+
         if (result.meta.requestStatus === "fulfilled") {
             messageApi.success("Danh mục đã được xóa!");
         } else {
@@ -69,33 +67,36 @@ const ProductCategories = () => {
     };
 
     return (
-        <Row gutter={[16, 16]}>
-            {contextHolder}
-            <Col span={24}>
-                <Card title="Danh mục sản phẩm">
-                    <CategoriesForm
-                        onSubmit={handleFormSubmit}
-                        error={apiError}
+        <>
+            <h1 className="text-center">Quản Lý Danh Mục Sản Phẩm</h1>
+            <Row gutter={[16, 16]}>
+                {contextHolder}
+                <Col span={24}>
+                    <Card title="Danh mục sản phẩm">
+                        <CategoriesForm
+                            onSubmit={handleFormSubmit}
+                            error={apiError}
+                        />
+                    </Card>
+                </Col>
+                <Col span={24}>
+                    <Card title="Danh sách danh mục sản phẩm">
+                        <CategoriesTable
+                            dataSource={dataSource}
+                            loading={loading}
+                            editCate={editCate}
+                            deleteCate={deleteCate}
+                        />
+                    </Card>
+                    <ModalEditCategory
+                        isModalOpen={isModalOpen}
+                        handleOk={handleOk}
+                        handleCancel={handleCancel}
+                        category={category}
                     />
-                </Card>
-            </Col>
-            <Col span={24}>
-                <Card title="Danh sách danh mục sản phẩm">
-                    <CategoriesTable
-                        dataSource={dataSource}
-                        loading={loading}
-                        editCate={editCate}
-                        deleteCate={deleteCate}
-                    />
-                </Card>
-                <ModalEditCategory
-                    isModalOpen={isModalOpen}
-                    handleOk={handleOk}
-                    handleCancel={handleCancel}
-                    category={category}
-                />
-            </Col>
-        </Row>
+                </Col>
+            </Row>
+        </>
     );
 };
 

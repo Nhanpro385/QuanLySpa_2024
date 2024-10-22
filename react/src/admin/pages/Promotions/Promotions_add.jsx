@@ -26,6 +26,7 @@ const PromotionsAdd = () => {
 
     return (
         <div style={{ padding: "20px" }}>
+            <h1 className="text-center">Quản Lý Khuyến Mãi</h1>
             <Card
                 title={<h2>Thêm Chương Trình Khuyến Mãi</h2>}
                 style={{ width: "100%" }}

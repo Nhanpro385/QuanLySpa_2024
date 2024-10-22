@@ -141,6 +141,7 @@ const CommentManagement = () => {
 
   return (
     <div>
+      <h1 className="text-center">Quản lý bình luận</h1>
       <Card title="Quản lý bình luận" style={{ margin: "20px" }}>
         {dataSource.length === 0 ? (
           <Text type="secondary">Không có bình luận nào.</Text>

@@ -35,10 +35,10 @@ const StaffTable = ({ dataSource, handleEdit, handleDelete }) => {
                 handleEdit(record.key); // Ensure `record.key` is unique
                 break;
             case "2":
-                navigate(`/admin/staffs/${record.key}`);
+                navigate(`/admin/nhanvien/${record.key}`);
                 break;
             case "3":
-                navigate(`/admin/staffs/${record.key}/history`);
+                navigate(`/admin/nhanvien/${record.key}/history`);
                 break;
             case "4":
                 handleDelete(record.key);
@@ -98,6 +98,7 @@ const StaffTable = ({ dataSource, handleEdit, handleDelete }) => {
 
     return (
         <Table
+        style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
             rowKey={(record) => record.key} // Use rowKey to ensure unique keys for each row

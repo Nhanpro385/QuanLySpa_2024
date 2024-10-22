@@ -11,32 +11,34 @@ import ModalEditProduct from "../../modules/product/compoments/ModalEditProduct"
 function Products() {
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const { product } = useSelector((state) => state.products);
-    const { getproduct, updateproduct, deleteproduct, getproductById } = useproductActions();
+    const { getproduct, updateproduct, deleteproduct, getproductById } =
+        useproductActions();
 
     useEffect(() => {
         getproduct();
     }, []);
     const [dataEdit, setDataEdit] = useState({});
     const navigation = useNavigate();
-    const dataSource = product.data.map((item) => ({
-        key: item.id,
-        name: item.name,
-        image_url: (
-            <Image src="http://127.0.0.1:8000/storage/app/uploads/1729000364_123.png" />
-        ),
-        price: item.price,
-        quantity: item.quantity,
-        capacity: item.capacity,
-        date: item.date,
-        status: item.status,
-    })) || [];
+    const dataSource =
+        product.data.map((item) => ({
+            key: item.id,
+            name: item.name,
+            image_url: (
+                <Image src="http://127.0.0.1:8000/storage/app/uploads/1729000364_123.png" />
+            ),
+            price: item.price,
+            quantity: item.quantity,
+            capacity: item.capacity,
+            date: item.date,
+            status: item.status,
+        })) || [];
     const handleAdd = () => {
         navigation("/admin/products/add");
     };
     const handleEdit = async (record) => {
         try {
             const result = await getproductById(record);
-            
+
             if (result.meta.requestStatus === "fulfilled") {
                 setDataEdit(result.payload.data);
                 showModal();
@@ -59,18 +61,16 @@ function Products() {
 
     return (
         <div>
-            <Row
-                    gutter={[16, 16]}
-            >
-                <Col xl={20} md={18} xs={24}>
-                    
-                <h2>Danh Sách Sản Phẩm</h2>
+            <h1 className="text-center">Quản Lý Sản Phẩm</h1>
+            <Row gutter={[16, 16]}>
+                <Col xl={18} md={12} xs={24}>
+                    <h2>Danh Sách Sản Phẩm</h2>
                 </Col>
-                <Col xl={4} md={6} xs={24}>
-                <Button type="primary" onClick={() => handleAdd()} block>
-                    <PlusOutlined />
-                    Thêm sản phẩm mới
-                </Button>
+                <Col xl={6} md={12} xs={24}>
+                    <Button type="primary" onClick={() => handleAdd()} block>
+                        <PlusOutlined />
+                        Thêm sản phẩm mới
+                    </Button>
                 </Col>
             </Row>
             <TableProduct

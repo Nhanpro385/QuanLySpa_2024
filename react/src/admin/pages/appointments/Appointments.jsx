@@ -213,28 +213,35 @@ function Appointments() {
     // Function to match appointments with the calendar date
 
     return (
-        <Row gutter={[16, 16]}>
-            <Col span={24}>
-                <Card>
-                    <Row className="m-2" justify={"space-between"}>
-                        <h2>Danh Sách Đặt Lịch</h2>
-                        <Button type="primary" onClick={showModal}>
-                            <PlusOutlined /> Thêm lịch hẹn
-                        </Button>
-                        <ModalAppointment
-                            isModalOpen={isModalOpen}
-                            handleOk={handleOk}
-                            handleCancel={handleCancel}
-                        ></ModalAppointment>
-                    </Row>
+        <>
+        <h1 className="text-center">Quản lý lịch hẹn</h1>
+            <Row gutter={[16, 16]}>
+                <Col span={24}>
+                    <Card>
+                        <Row className="m-2" justify={"space-between"}>
+                            <h2>Danh Sách Đặt Lịch</h2>
+                            <Button type="primary" onClick={showModal}>
+                                <PlusOutlined /> Thêm lịch hẹn
+                            </Button>
+                            <ModalAppointment
+                                isModalOpen={isModalOpen}
+                                handleOk={handleOk}
+                                handleCancel={handleCancel}
+                            ></ModalAppointment>
+                        </Row>
 
-                    <Table dataSource={dataSource} columns={columns} />
-                </Card>
-            </Col>
-            <Col span={24}>
-                <ScheduleXCalendar calendarApp={calendar} />
-            </Col>
-        </Row>
+                        <Table
+                            style={{ overflowX: "auto" }}
+                            dataSource={dataSource}
+                            columns={columns}
+                        />
+                    </Card>
+                </Col>
+                <Col span={24}>
+                    <ScheduleXCalendar calendarApp={calendar} />
+                </Col>
+            </Row>
+        </>
     );
 }
 

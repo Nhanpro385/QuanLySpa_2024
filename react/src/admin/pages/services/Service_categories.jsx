@@ -94,6 +94,7 @@ const ServiceCategories = () => {
 
     return (
         <>
+        <h1 className="text-center">Danh mục Loại Dịch Vụ</h1>
             {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col span={24}>

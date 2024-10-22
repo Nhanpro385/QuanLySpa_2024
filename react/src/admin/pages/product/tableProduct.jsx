@@ -110,7 +110,9 @@ const TableProduct = ({ dataSource, handleEdit, handleDelete }) => {
         },
     ];
     return (
-        <Table dataSource={dataSource} columns={columns} />
+        <Table 
+        style={{overflowX:"auto"}}
+        dataSource={dataSource} columns={columns} />
     );
 }
 export default TableProduct;

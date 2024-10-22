@@ -113,11 +113,14 @@ function Customer() {
 
     return (
         <Card>
+            <h1 className="text-center mb-4">
+                Quản lý khách hàng
+            </h1>
             <Row gutter={[16, 16]} className="mb-3">
-                <Col xl={20} md={12} sm={24} xs={24}>
+                <Col xl={18} md={12} sm={24} xs={24}>
                     <h2>Danh Sách Người Dùng</h2>
                 </Col>
-                <Col xl={4} md={12} sm={24} xs={24}>
+                <Col xl={6} md={12} sm={24} xs={24}>
                     <Link to="/admin/khachhang/them">
                         <Button block type="primary">
                             <PlusOutlined />

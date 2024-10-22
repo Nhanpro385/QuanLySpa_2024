@@ -65,7 +65,9 @@ const StaffsAdd = () => {
     };
 
     return (
-        <Card title="Thêm nhân viên">
+        <>
+        <h1 className="text-center">Thêm nhân viên</h1>
+        <Card >
             {success && (
                 <Alert
                     message={success}
@@ -318,6 +320,7 @@ const StaffsAdd = () => {
             </Spin>
             {contextHolder}
         </Card>
+        </>
     );
 };
 

@@ -24,7 +24,10 @@ const DefaultLayout = ({ children }) => {
                 },
             }}
         >
-            <Layout>
+            <Layout style={{
+                backgroundColor: "#fff",
+            }}
+            >
                 <HeaderComponents />
                 <Content>{children}</Content>
             </Layout>

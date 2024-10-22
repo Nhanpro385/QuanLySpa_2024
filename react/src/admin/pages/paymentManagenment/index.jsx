@@ -16,7 +16,6 @@ import {
 import { DownOutlined } from "@ant-design/icons";
 import useModal from "../../modules/appointments/hooks/openmodal";
 
-
 const PaymentManagement = () => {
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const {
@@ -79,7 +78,6 @@ const PaymentManagement = () => {
             tags: ["Đã thanh toán"],
         },
     ];
-
 
     const items = [
         {
@@ -203,250 +201,265 @@ const PaymentManagement = () => {
     };
 
     return (
-        <Row gutter={[16, 16]}>
-            <Col span={24}>
-                <Card
-                    title="Các hóa đơn chưa thanh toán"
-                    style={{ backgroundColor: "#f0f2f5" }}
-                >
-                    <Row gutter={[16, 16]}>
-                        {invoices.map((invoice) => (
-                            <Col xl={6} md={8} sm={12} xs={24} key={invoice.id}>
-                                <Card
-                                    className="bg-light"
-                                    extra={
-                                        <Button
-                                            type="primary"
-                                            onClick={showPaymentModal}
-                                        >
-                                            Thanh Toán
-                                        </Button>
-                                    }
-                                    title={`#${invoice.id}`}
-                                    hoverable
+        <>
+            <h1 className="text-center">Quản lý thanh toán</h1>
+            <Row gutter={[16, 16]}>
+                <Col span={24}>
+                    <Card
+                        title="Các hóa đơn chưa thanh toán"
+                        style={{ backgroundColor: "#f0f2f5" }}
+                    >
+                        <Row gutter={[16, 16]}>
+                            {invoices.map((invoice) => (
+                                <Col
+                                    xl={6}
+                                    md={8}
+                                    sm={12}
+                                    xs={24}
+                                    key={invoice.id}
                                 >
-                                    <p>
-                                        Mã hóa đơn:{" "}
-                                        <strong>{invoice.id}</strong>
-                                    </p>
-                                    <p>
-                                        Họ tên: <strong>{invoice.name}</strong>
-                                    </p>
-                                    <p>
-                                        Ngày tạo:{" "}
-                                        <strong>{invoice.date}</strong>
-                                    </p>
-                                    <p>
-                                        Tổng tiền:{" "}
-                                        <strong>{invoice.amount}</strong>
-                                    </p>
-                                    <Button
-                                        danger
-                                        onClick={() => {
-                                            showModal();
-                                            setSelectedInvoice(invoice);
-                                        }}
+                                    <Card
+                                        className="bg-light"
+                                        extra={
+                                            <Button
+                                                type="primary"
+                                                onClick={showPaymentModal}
+                                            >
+                                                Thanh Toán
+                                            </Button>
+                                        }
+                                        title={`#${invoice.id}`}
+                                        hoverable
                                     >
-                                        Chi tiết
-                                    </Button>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
+                                        <p>
+                                            Mã hóa đơn:{" "}
+                                            <strong>{invoice.id}</strong>
+                                        </p>
+                                        <p>
+                                            Họ tên:{" "}
+                                            <strong>{invoice.name}</strong>
+                                        </p>
+                                        <p>
+                                            Ngày tạo:{" "}
+                                            <strong>{invoice.date}</strong>
+                                        </p>
+                                        <p>
+                                            Tổng tiền:{" "}
+                                            <strong>{invoice.amount}</strong>
+                                        </p>
+                                        <Button
+                                            danger
+                                            onClick={() => {
+                                                showModal();
+                                                setSelectedInvoice(invoice);
+                                            }}
+                                        >
+                                            Chi tiết
+                                        </Button>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
 
-                    {/* Modal hiển thị chi tiết hóa đơn */} 
-                    {selectedInvoice && (
+                        {/* Modal hiển thị chi tiết hóa đơn */}
+                        {selectedInvoice && (
+                            <Modal
+                                title={`Chi tiết hóa đơn ${selectedInvoice.id}`}
+                                open={isModalOpen}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                                footer={[
+                                    <Button key="close" onClick={handleCancel}>
+                                        Đóng
+                                    </Button>,
+                                ]}
+                            >
+                                <p>
+                                    Mã hóa đơn:{" "}
+                                    <strong>{selectedInvoice.id}</strong>
+                                </p>
+                                <p>
+                                    Họ tên:{" "}
+                                    <strong>{selectedInvoice.name}</strong>
+                                </p>
+                                <p>
+                                    Ngày tạo:{" "}
+                                    <strong>{selectedInvoice.date}</strong>
+                                </p>
+                                <p>
+                                    Tổng tiền:{" "}
+                                    <strong>{selectedInvoice.amount}</strong>
+                                </p>
+                                <Table
+                                    columns={detailsColumns}
+                                    dataSource={selectedInvoice.details}
+                                    pagination={false}
+                                    rowKey="service"
+                                />
+                            </Modal>
+                        )}
+                    </Card>
+                </Col>
+
+                <Col span={24}>
+                    <Card
+                        title="Lịch sử thanh toán"
+                        style={{ backgroundColor: "#f0f2f5" }}
+                    >
+                        <Row gutter={[16, 16]} className="mb-3">
+                            <Col xl={4} md={6} sm={24} xs={24}>
+                                <Select
+                                    placeholder="Sắp xếp"
+                                    className="w-100"
+                                    defaultValue="newest"
+                                >
+                                    <Select.Option value="newest">
+                                        Mới nhất
+                                    </Select.Option>
+                                    <Select.Option value="oldest">
+                                        Cũ nhất
+                                    </Select.Option>
+                                </Select>
+                            </Col>
+                            <Col xl={4} md={6} sm={24} xs={24}>
+                                <Select
+                                    placeholder="Lọc theo"
+                                    className="w-100"
+                                    defaultValue="all"
+                                >
+                                    <Select.Option value="all">
+                                        Tất cả
+                                    </Select.Option>
+                                    <Select.Option value="paid">
+                                        Đã thanh toán
+                                    </Select.Option>
+                                    <Select.Option value="unpaid">
+                                        Chưa thanh toán
+                                    </Select.Option>
+                                </Select>
+                            </Col>
+                            <Col xl={9} md={6} sm={24} xs={24}>
+                                <Input.Search placeholder="Tìm kiếm theo mã hóa đơn hoạc tên khách hàng" />
+                            </Col>
+                        </Row>
+                        <Table columns={columns} dataSource={data} />
                         <Modal
-                            title={`Chi tiết hóa đơn ${selectedInvoice.id}`}
-                            open={isModalOpen}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            footer={[
-                                <Button key="close" onClick={handleCancel}>
-                                    Đóng
-                                </Button>,
+                            title="Chi tiết hóa đơn"
+                            open={isModalOpen2}
+                            onOk={handleOk2}
+                            onCancel={handleCancel2}
+                        >
+                            <Card title="Chi tiết hóa đơn">
+                                <p>
+                                    Mã hóa đơn:{" "}
+                                    <strong>
+                                        {selectedInvoice?.id || "HD001"}
+                                    </strong>
+                                </p>
+                                <p>
+                                    Tên khách hàng:{" "}
+                                    <strong>
+                                        {selectedInvoice?.name ||
+                                            "Nguyễn Văn A"}
+                                    </strong>
+                                </p>
+                                <p>
+                                    Ngày tạo:{" "}
+                                    <strong>
+                                        {selectedInvoice?.date || "01/01/2021"}
+                                    </strong>
+                                </p>
+                                <Table
+                                    columns={detailsColumns}
+                                    dataSource={selectedInvoice?.details || []}
+                                    pagination={false}
+                                    rowKey="service"
+                                />
+                            </Card>
+                        </Modal>
+                    </Card>
+                </Col>
+
+                {/* Modal thanh toán */}
+                <Modal
+                    title="Thanh Toán"
+                    open={isPaymentModalOpen}
+                    onOk={handlePaymentOk}
+                    onCancel={handlePaymentCancel}
+                    footer={[
+                        <Button key="cancel" onClick={handlePaymentCancel}>
+                            Hủy
+                        </Button>,
+                        <Button
+                            form="paymentForm"
+                            key="submit"
+                            htmlType="submit"
+                            type="primary"
+                        >
+                            Thanh Toán
+                        </Button>,
+                    ]}
+                >
+                    <Form
+                        id="paymentForm"
+                        form={form}
+                        layout="vertical"
+                        onFinish={handlePaymentSubmit}
+                    >
+                        <Form.Item
+                            label="Phương thức thanh toán"
+                            name="paymentMethod"
+                            rules={[
+                                {
+                                    required: true,
+                                    message:
+                                        "Vui lòng chọn phương thức thanh toán!",
+                                },
                             ]}
                         >
-                            <p>
-                                Mã hóa đơn:{" "}
-                                <strong>{selectedInvoice.id}</strong>
-                            </p>
-                            <p>
-                                Họ tên: <strong>{selectedInvoice.name}</strong>
-                            </p>
-                            <p>
-                                Ngày tạo:{" "}
-                                <strong>{selectedInvoice.date}</strong>
-                            </p>
-                            <p>
-                                Tổng tiền:{" "}
-                                <strong>{selectedInvoice.amount}</strong>
-                            </p>
-                            <Table
-                                columns={detailsColumns}
-                                dataSource={selectedInvoice.details}
-                                pagination={false}
-                                rowKey="service"
-                            />
-                        </Modal>
-                    )}
-                </Card>
-            </Col>
-
-            <Col span={24}>
-                <Card
-                    title="Lịch sử thanh toán"
-                    style={{ backgroundColor: "#f0f2f5" }}
-                >
-                    <Row gutter={[16, 16]} className="mb-3">
-                        <Col xl={4} md={6} sm={24} xs={24}>
-                            <Select
-                                placeholder="Sắp xếp"
-                                className="w-100"
-                                defaultValue="newest"
-                            >
-                                <Select.Option value="newest">
-                                    Mới nhất
+                            <Select placeholder="Chọn phương thức">
+                                <Select.Option value="creditCard">
+                                    Thẻ tín dụng
                                 </Select.Option>
-                                <Select.Option value="oldest">
-                                    Cũ nhất
+                                <Select.Option value="cash">
+                                    Tiền mặt
+                                </Select.Option>
+                                <Select.Option value="bankTransfer">
+                                    Chuyển khoản
                                 </Select.Option>
                             </Select>
-                        </Col>
-                        <Col xl={4} md={6} sm={24} xs={24}>
-                            <Select
-                                placeholder="Lọc theo"
-                                className="w-100"
-                                defaultValue="all"
-                            >
-                                <Select.Option value="all">
-                                    Tất cả
-                                </Select.Option>
-                                <Select.Option value="paid">
-                                    Đã thanh toán
-                                </Select.Option>
-                                <Select.Option value="unpaid">
-                                    Chưa thanh toán
-                                </Select.Option>
-                            </Select>
-                        </Col>
-                        <Col xl={9} md={6} sm={24} xs={24}>
-                            <Input.Search placeholder="Tìm kiếm theo mã hóa đơn hoạc tên khách hàng" />
-                        </Col>
-                    </Row>
-                    <Table columns={columns} dataSource={data} />
-                    <Modal
-                        title="Chi tiết hóa đơn"
-                        open={isModalOpen2}
-                        onOk={handleOk2}
-                        onCancel={handleCancel2}
-                    >
-                        <Card title="Chi tiết hóa đơn">
-                            <p>
-                                Mã hóa đơn:{" "}
-                                <strong>
-                                    {selectedInvoice?.id || "HD001"}
-                                </strong>
-                            </p>
-                            <p>
-                                Tên khách hàng:{" "}
-                                <strong>
-                                    {selectedInvoice?.name || "Nguyễn Văn A"}
-                                </strong>
-                            </p>
-                            <p>
-                                Ngày tạo:{" "}
-                                <strong>
-                                    {selectedInvoice?.date || "01/01/2021"}
-                                </strong>
-                            </p>
-                            <Table
-                                columns={detailsColumns}
-                                dataSource={selectedInvoice?.details || []}
-                                pagination={false}
-                                rowKey="service"
-                            />
-                        </Card>
-                    </Modal>
-                </Card>
-            </Col>
-
-            {/* Modal thanh toán */}
-            <Modal
-                title="Thanh Toán"
-                open={isPaymentModalOpen}
-                onOk={handlePaymentOk}
-                onCancel={handlePaymentCancel}
-                footer={[
-                    <Button key="cancel" onClick={handlePaymentCancel}>
-                        Hủy
-                    </Button>,
-                    <Button
-                        form="paymentForm"
-                        key="submit"
-                        htmlType="submit"
-                        type="primary"
-                    >
-                        Thanh Toán
-                    </Button>,
-                ]}
-            >
-                <Form
-                    id="paymentForm"
-                    form={form}
-                    layout="vertical"
-                    onFinish={handlePaymentSubmit}
-                >
-                    <Form.Item
-                        label="Phương thức thanh toán"
-                        name="paymentMethod"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn phương thức thanh toán!",
-                            },
-                        ]}
-                    >
-                        <Select placeholder="Chọn phương thức">
-                            <Select.Option value="creditCard">
-                                Thẻ tín dụng
-                            </Select.Option>
-                            <Select.Option value="cash">Tiền mặt</Select.Option>
-                            <Select.Option value="bankTransfer">
-                                Chuyển khoản
-                            </Select.Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Số tiền"
-                        name="amount"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập số tiền!",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="Nhập số tiền" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Tiền khách hàng trả"
-                        name="customerPaid"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập số tiền!",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="Nhập số tiền khách hàng trả" />
-                    </Form.Item>
-                    <Form.Item label="Ghi chú" name="note">
-                        <Input.TextArea placeholder="Nhập ghi chú (nếu có)" />
-                    </Form.Item>
-                </Form>
-            </Modal>
-        </Row>
+                        </Form.Item>
+                        <Form.Item
+                            label="Số tiền"
+                            name="amount"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Vui lòng nhập số tiền!",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Nhập số tiền" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Tiền khách hàng trả"
+                            name="customerPaid"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Vui lòng nhập số tiền!",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Nhập số tiền khách hàng trả" />
+                        </Form.Item>
+                        <Form.Item label="Ghi chú" name="note">
+                            <Input.TextArea placeholder="Nhập ghi chú (nếu có)" />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            </Row>
+        </>
     );
 };
 

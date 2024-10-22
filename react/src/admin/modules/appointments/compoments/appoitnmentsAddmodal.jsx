@@ -16,36 +16,19 @@ import "dayjs/locale/vi";
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const treeData = [
-    {
-        value: "sever1",
-        title: "Dịch vụ trị mụn",
-        children: [
-            {
-                value: "parent 1-0",
-                title: "Trị mụn chuyên khoa",
-            },
-        ],
-    },
-    {
-        value: "sever2",
-        title: "Dịch vụ trị Thâm",
-        children: [
-            {
-                value: "sever2 1",
-                title: "Trị Thâm bằng laze",
-            },
-        ],
-    },
+const options = [
+    { label: "Dịch vụ 1", value: "a10" },
+
+   
 ];
 function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
-    const [value, setValue] = useState();
+   
     const onOk = (value) => {
         console.log("onOk: ", value);
     };
-    const onChangetreeselect = (newValue) => {
-        setValue(newValue);
-    };
+    const handleChange = (value) => {
+        console.log(`selected ${value}`);
+      };
     return (
         <Modal
             title="Thêm lịch hẹn"
@@ -84,14 +67,6 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item label="Ca làm" name="shift">
-                            <Select placeholder="Chọn Ca làm">
-                                <Select.Option value="1">Ca 1 </Select.Option>
-                                <Select.Option value="2">Ca 2</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
                         <Form.Item label="Giới tính" name="gender">
                             <Select placeholder="Chọn giới tính">
                                 <Select.Option value="NAM">Nam</Select.Option>
@@ -101,30 +76,36 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                     </Col>{" "}
                     <Col span={12}>
                         <Form.Item label="Dịch vụ" name="service">
-                            <TreeSelect
-                                showSearch
+                            <Select
+                                mode="multiple"
+                                allowClear
                                 style={{
                                     width: "100%",
                                 }}
-                                value={value}
-                                dropdownStyle={{
-                                    maxHeight: 400,
-                                    overflow: "auto",
-                                }}
-                                placeholder="Vui lòng chọn dịch vụ"
-                                allowClear
-                                onChange={onChangetreeselect}
-                                treeDefaultExpandAll
-                                treeData={treeData}
+                                placeholder="Chọn dịch vụ"
+                        
+                                onChange={handleChange}
+                                options={options}
                             />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item label="Ca làm" name="shift">
+                            <Select placeholder="Chọn Ca làm">
+                                <Select.Option value="1">Ca 1 </Select.Option>
+                                <Select.Option value="2">Ca 2</Select.Option>
+                            </Select>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item label="Chọn Nhân viên" name="staff">
                             <Select placeholder="Chọn nhân viên">
-                                <Select.Option value="1">Nhân viên 1 </Select.Option>
-                                <Select.Option value="2">Nhân viên 1 </Select.Option>
-                                
+                                <Select.Option value="1">
+                                    Nhân viên 1{" "}
+                                </Select.Option>
+                                <Select.Option value="2">
+                                    Nhân viên 1{" "}
+                                </Select.Option>
                             </Select>
                         </Form.Item>
                     </Col>

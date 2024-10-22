@@ -120,7 +120,7 @@ const ContactManagement = () => {
 
     return (
         <div>
-            <h1>Quản lý liên hệ</h1>
+            <h1 className="text-center">Quản lý liên hệ</h1>
             <Table columns={columns} dataSource={data} />
 
             {/* Modal for viewing contact details */}

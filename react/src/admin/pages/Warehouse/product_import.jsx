@@ -81,7 +81,7 @@ const WarehouseImport = () => {
 
     return (
         <div className="warehouse-import">
-            {" "}
+            <h1 className="text-center">Nhập hàng</h1>
             {/* Apply the CSS class here */}
             <Card title="Nhập sản phẩm : #123456789">
                 <Form layout="vertical">

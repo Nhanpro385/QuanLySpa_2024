@@ -227,6 +227,7 @@ const SupplierManagement = () => {
 
     return (
         <>
+        <h1 className="text-center">Quản Lý Nhà Cung Cấp</h1>
             {contextHolder} {/* Message context holder */}
             <Row gutter={[16, 16]}>
                 <Col span={24}>

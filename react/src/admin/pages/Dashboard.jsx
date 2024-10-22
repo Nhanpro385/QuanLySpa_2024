@@ -288,6 +288,7 @@ const Dashboard = () => {
                         }
                     >
                         <Table
+                            style={{ overflowX: "auto" }}
                             columns={transactionColumns}
                             dataSource={transactionData}
                             pagination={{ pageSize: 5 }}
@@ -298,7 +299,7 @@ const Dashboard = () => {
                     <Card
                         title="Lịch hẹn tư vấn và hẹn dịch vụ"
                         extra={
-                          <Row gutter={[16, 16]} className="mb-3 mt-3">
+                            <Row gutter={[16, 16]} className="mb-3 mt-3">
                                 <Select
                                     defaultValue="Hôm nay"
                                     style={{ width: 120, marginRight: 8 }}
@@ -316,6 +317,7 @@ const Dashboard = () => {
                         }
                     >
                         <Table
+                             style={{ overflowX: "auto" }}
                             columns={appointmentColumns}
                             dataSource={appointmentData}
                             pagination={{ pageSize: 5 }}
