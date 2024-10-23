@@ -123,8 +123,7 @@ Route::group([
     Route::get('/comment/{id}', [CommentController::class, 'show']);
     Route::put('/comment/{id}', [CommentController::class, 'update']);
     Route::delete('/comment/{id}', [CommentController::class, 'destroy']);
-    Route::post('/comment/{id}/reply', [CommentController::class, 'store']);
-
+    Route::post('/comment/{id}/reply', [CommentController::class, 'reply']);
 
      // Promotions
      Route::get('/promotion', [PromotionController::class, 'index']);
