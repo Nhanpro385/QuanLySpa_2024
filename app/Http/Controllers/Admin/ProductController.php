@@ -10,6 +10,7 @@ use App\Http\Resources\Admin\Products\ProductCollection;
 use App\Http\Resources\Admin\Products\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -67,8 +68,8 @@ class ProductController extends Controller
             if ($request->hasFile('image_url')) {
                 $file = $request->file('image_url');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('uploads', $fileName);
-                $validateData['image_url'] = $filePath;
+                $filePath = $file->storeAs('public/uploads/products', $fileName);
+                $validateData['image_url'] = $fileName;
             }
 
             $product = Product::create($validateData);
@@ -112,12 +113,16 @@ class ProductController extends Controller
             }
             $arr = [
                 'status' => 'success',
-                'message' => 'Chi tiết loại sanr phẩm: ' . $query->name,
+                'message' => 'Chi tiết sản phẩm: ' . $query->name,
                 'data' => new ProductResource($query)
             ];
             return response()->json($arr);
         } catch (\Throwable $th) {
-            //throw $th;
+            $arr = [
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
+            ];
+            return response()->json($arr, 500);
         }
     }
 
@@ -137,15 +142,17 @@ class ProductController extends Controller
                 ], 404);
             }
             $validateData = $request->validated();
-
+            if ($product->image_url) {
+                Storage::delete('public/uploads/products/' . $product->image_url);
+            }
             $validateData['image_url'] = $request->image_url ?? $product->image_url;
             $validateData['description'] = $request->description ?? $product->description;
 
             if ($request->hasFile('image_url')) {
                 $file = $request->file('image_url');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('uploads', $fileName);
-                $validateData['image_url'] = $filePath;
+                $filePath = $file->storeAs('public/uploads/products', $fileName);
+                $validateData['image_url'] = $fileName;
             }
             $product->update($validateData);
             $arr = [
@@ -176,6 +183,9 @@ class ProductController extends Controller
                     'status' => 'error',
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
+            }
+            if ($product->image_url) {
+                Storage::delete('public/uploads/products/' . $product->image_url);
             }
             $product->delete();
             $arr = [

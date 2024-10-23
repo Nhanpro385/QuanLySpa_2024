@@ -21,6 +21,7 @@ class Supplier extends Model
         'contact_email',
         'code',
         'created_by',
+        'updated_by',
     ];
     public function inboundInvoice()
     {

@@ -15,18 +15,24 @@ return new class extends Migration {
             $table->string('service_id', 20)->nullable();
             $table->string('image_url');
             $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::table('service_images', function (Blueprint $table) {
-
             $table->foreign('service_id')
                 ->references('id')
                 ->on('services')
                 ->onDelete('set null');
-
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
         });
     }
 

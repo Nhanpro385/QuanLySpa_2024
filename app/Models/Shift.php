@@ -26,6 +26,7 @@ class Shift extends Model
         'note',
         'status',
         'created_by',
+        'updated_by',
     ];
 
     protected $attributes = [
@@ -42,5 +43,5 @@ class Shift extends Model
     {
         return $this->hasMany(Shift::class, 'id', 'id');
     }
-    
+
 }

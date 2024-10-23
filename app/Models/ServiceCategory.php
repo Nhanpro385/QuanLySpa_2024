@@ -25,16 +25,17 @@ class ServiceCategory extends Model
         'name',
         'description',
         'status',
-        'created_by'
+        'created_by',
+        'updated_by'
     ];
 
     protected $attributes = [
         'status' => true,
 
     ];
-    public function services()
+    public function service()
     {
-        return $this->hasMany(ServiceCategory::class, 'servicecategory_id', 'id');
+        return $this->belongsTo(Service::class, 'service_id', 'id');
     }
 
     public function createdBy(): BelongsTo

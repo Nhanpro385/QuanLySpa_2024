@@ -24,15 +24,17 @@ class Product extends Model
         'bar_code',
         'date',
         'image_url',
+        'priority',
         'description',
         'status',
-        'created_by'
+        'created_by',
+        'updated_by',
     ];
 
     protected $attributes = [
         'status' => true,
         'description' => 'Mô tả sản phẩm.',
-        'image_url' => 'https://img.freepik.com/premium-photo/beautiful-colorful-valentine-s-day-heart-cloud-as-abstract-backgroundai-technology-generated-imag_1112-11207.jpg'
+        'image_url' => 'default.jpg'
     ];
 
 
@@ -58,7 +60,7 @@ class Product extends Model
     }
     public function productService()
     {
-        return $this->hasMany(Product::class, 'products_id', 'id');
+        return $this->hasMany(ProductService::class, 'product_id', 'id');
     }
     public function treatmentProduct()
     {
