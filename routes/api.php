@@ -21,9 +21,9 @@ require __DIR__ . '/auth.php';
 
 // Route Users
 Route::group([
-    'middleware' => 'api',
+    'middleware' => ['api', 'auth:api'],
     'prefix' => 'v0.0.1/admin',
-], function ($router) {
+], function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::post('/users', [UserController::class, 'store']);
@@ -50,8 +50,8 @@ Route::group([
     Route::post('/products', [ProductController::class, 'store']);
     Route::post('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
-
-
+    Route::post('/products/uploadImages/{id}', [ProductController::class, 'uploadImages']);
+    Route::delete('/products/deleteImage/{id}', [ProductController::class, 'deleteImage']);
     Route::get('/services', [ServiceController::class, 'index']);
     Route::get('/services/{id}', [ServiceController::class, 'show']);
     Route::post('/services', [ServiceController::class, 'store']);
@@ -138,6 +138,7 @@ Route::group([
 
 });
 // End
+
 
 
 

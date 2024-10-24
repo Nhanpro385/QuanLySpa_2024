@@ -67,11 +67,22 @@ class UserController extends Controller
 
             $validatorData = $request->validated();
             $validatorData['password'] = Hash::make(Str::random(8));
-            $user = User::create($validatorData);
-            $created_by = auth('api')->user()->id;
-            $user->update([
-                'created_by' => $created_by
+
+            $user = User::create([
+                'id' => $validatorData['id'],
+                'position_id' => $validatorData['position_id'],
+                'password' => $validatorData['password'],
+                'role' => $validatorData['role'],
+                'full_name' => $validatorData['full_name'],
+                'gender' => $validatorData['gender'],
+                'phone' => $validatorData['phone'],
+                'email' => $validatorData['email'],
+                'address' => $validatorData['address'],
+                'date_of_birth' => $validatorData['date_of_birth'],
+                'note' => $validatorData['note'],
+                'created_by' => auth('api')->user()->id
             ]);
+
             $response = [
                 "status" => "success",
                 "message" => "Thêm mới nhân viên thành công.",
@@ -147,7 +158,7 @@ class UserController extends Controller
             ]);
             $arr = [
                 'status' => 'success',
-                'message' => 'Chỉnh sửa thành công thông tin nhân viên: ',
+                'message' => 'Chỉnh sửa thành công thông tin nhân viên: ' . $user->full_name,
                 'data' => new UserResource(resource: $user)
             ];
             return response()->json($arr);

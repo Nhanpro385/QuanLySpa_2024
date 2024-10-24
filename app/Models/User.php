@@ -92,7 +92,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 
     public function position()
     {
-        return $this->belongsTo(Position::class);
+        return $this->belongsTo(Position::class, 'position_id', 'id');
     }
 
     public function createdBy(): BelongsTo

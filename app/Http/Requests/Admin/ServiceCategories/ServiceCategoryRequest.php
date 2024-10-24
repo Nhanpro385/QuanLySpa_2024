@@ -27,7 +27,8 @@ class ServiceCategoryRequest extends FormRequest
             'id' => 'required|numeric|min:1000000000|max:9999999999999999999|unique:service_categories,id',
             'name' => 'required|regex:/^(?!\s*\d).+$/|max:255|min:10|unique:service_categories,name',
             'description' => 'nullable',
-            'created_by' => 'nullable|exists:users,id'
+            'parent_id' => 'nullable|numeric|exists:service_categories,id'
+
         ];
     }
 
@@ -44,7 +45,7 @@ class ServiceCategoryRequest extends FormRequest
             'name.unique' => 'Tên không hợp lệ có thể đã trùng với tên đã có trong hệ thống.',
             'name.max' => 'Tên không được vượt quá 255 kí tự.',
             'name.min' => 'Tên quá ngắn vui lòng nhập hơn 10 kí tự.',
-            'created_by.exists' => 'Lỗi vui lòng liên hệ để được nhân hỗ trợ'
+            'parent_id.exists' => 'Không tìm thấy loại dịch vụ cha.'
         ];
     }
 

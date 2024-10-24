@@ -35,7 +35,15 @@ class Service extends Model
         'image_url' => 'default.jpg',
     ];
 
- 
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
     public function serviceCategory()
     {
         return $this->belongsTo(ServiceCategory::class, 'service_category_id', 'id');
@@ -59,7 +67,7 @@ class Service extends Model
 
     public function productServices()
     {
-        return $this->hasMany(Product::class, 'service_id', 'id');
+        return $this->hasMany(ProductService::class, 'service_id', 'id');
     }
 
 

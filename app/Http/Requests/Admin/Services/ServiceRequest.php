@@ -31,7 +31,7 @@ class ServiceRequest extends FormRequest
             'description' => 'nullable|max:255',
             'image_url.*' => 'required|image',
             'duration' => 'required|numeric',
-            'created_by' => 'nullable|exists:users,id',
+            'priority' => 'required|numeric',
         ];
     }
 
@@ -59,7 +59,8 @@ class ServiceRequest extends FormRequest
             'image_url.image' => 'Tệp phải là một hình ảnh.',
             'duration.required' => 'Thời gian là bắt buộc.',
             'duration.numeric' => 'Thời gian phải là một số.',
-            'created_by.exists' => 'Người tạo không tồn tại.',
+            'priority.required' => 'Không được bỏ trống mức độ phổ biến của dịch vụ.',
+            'priority.numeric' => 'Vui lòng chọn giá trị phù hợp.',
         ];
     }
 

@@ -32,10 +32,9 @@ class ProductRequest extends FormRequest
             'capacity' => 'required|numeric',
             'bar_code' => 'required|numeric|unique:products,bar_code',
             'date' => 'required|date|after:tomorrow',
-            'image_url' => 'nullable|image',
+            'image_url' => 'nullable|image|max:1536',
             'description' => 'nullable',
-            'status' => 'nullable',
-            'created_by' => 'nullable|numeric|exists:users,id'
+            'priority' => 'required|numeric',
         ];
     }
     public function messages(): array
@@ -71,10 +70,12 @@ class ProductRequest extends FormRequest
             'date.after' => 'Hạn sự dụng phải được thời hạn sau ngày hiện tại.',
             'image_url.nullable' => 'URL hình ảnh có thể không cần nhập.',
             'image_url.image' => 'URL hình ảnh phải là một tệp hình ảnh hợp lệ.',
+            'image_url.max' => 'Hình ảnh phải là một tệp dưới 2mb.',
+            'priority.required' => 'Không được bỏ trống mức độ phổ biến của sản phẩm',
+            'priority.numeric' => 'Vui lòng chọn giá trị phù hợp.',
             'description.nullable' => 'Mô tả có thể không cần nhập.',
             'status.nullable' => 'Trạng thái có thể không cần nhập.',
-            'created_by.numeric' => 'Người tạo phải là một số.',
-            'created_by.exists' => 'Người tạo không tồn tại.',
+
         ];
     }
 
