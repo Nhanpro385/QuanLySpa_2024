@@ -87,7 +87,7 @@ Route::group([
 
 // Route Category
 Route::group([
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'v0.0.1/admin',
 ], function ($router) {
     Route::get('/category', [CategoryController::class, 'index']);
@@ -136,6 +136,8 @@ Route::group([
 
 
 });
+
+
 // End
 
 

@@ -15,8 +15,9 @@ class SupplierResource extends JsonResource
             'contact_email' => $this->contact_email,
             'code' => $this->code,
             'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'updated_at' => $this->updated_at, 
         ];
     }
 }

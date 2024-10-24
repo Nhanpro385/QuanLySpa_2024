@@ -10,24 +10,39 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->string('id', 20)->primary();
-            $table->string('email')->nullable()->unique()->default(NULL);
-            $table->string('password');
-            $table->string('full_name');
-            $table->tinyInteger('gender')->default(1);
-            $table->string('phone', 20)->unique();
-            $table->string('address')->nullable();
-            $table->date('date_of_birth')->nullable();
-            $table->string('note')->nullable();
+            $table->string('service_id', 20)->nullable();
+            $table->string('customer_id', 20)->nullable();
+            $table->string('parent_comment_id', 20)->nullable();
+            $table->string('appointment_id', 20)->nullable();
+            $table->string('comment', 255);
+            $table->integer('rate')->nullable();
             $table->boolean('status')->default(true);
-            $table->rememberToken();
-            $table->softDeletes();
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
+            $table->boolean('type')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
-        Schema::table('customers', function (Blueprint $table) {
+
+        Schema::table('comments', function (Blueprint $table) {
+            $table->foreign('service_id')
+                ->references('id')
+                ->on('services')
+                ->onDelete('set null');
+            $table->foreign('customer_id')
+                ->references('id')
+                ->on('customers')
+                ->onDelete('set null');
+            $table->foreign('parent_comment_id')
+                ->references('id')
+                ->on('comments')
+                ->onDelete('set null');
+            $table->foreign('appointment_id')
+                ->references('id')
+                ->on('appointments')
+                ->onDelete('set null');
             $table->foreign('created_by')
                 ->references('id')
                 ->on('users')
@@ -44,6 +59,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('comments');
     }
 };
