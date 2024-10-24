@@ -26,7 +26,8 @@ class ContactsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:contacts',
             'phone' => 'required|string|max:20',
-            'note' => 'nullable|string|max:255',
+            'evaluate' => 'nullable|integer|min:0|max:255', // Thêm trường này
+            'note' => 'required|string|max:255', // Note bắt buộc
             'status' => 'boolean',
         ]);
 
@@ -61,7 +62,8 @@ class ContactsController extends Controller
             'name' => 'string|max:255',
             'email' => 'string|email|max:255|unique:contacts,email,' . $id,
             'phone' => 'string|max:20',
-            'note' => 'nullable|string|max:255',
+            'evaluate' => 'nullable|integer|min:0|max:255', // Thêm trường này
+            'note' => 'required|string|max:255', // Note bắt buộc
             'status' => 'boolean',
         ]);
 
