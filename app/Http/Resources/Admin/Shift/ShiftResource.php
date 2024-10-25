@@ -2,17 +2,11 @@
 
 namespace App\Http\Resources\Admin\Shift;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ShiftResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
@@ -23,10 +17,9 @@ class ShiftResource extends JsonResource
             'note' => $this->note,
             'status' => $this->status,
             'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            // Thêm thông tin liên quan nếu cần
-            'staff' => $this->staff->pluck('id'), // Lấy danh sách ID của nhân viên
         ];
     }
 }
