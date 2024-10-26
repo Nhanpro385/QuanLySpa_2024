@@ -26,6 +26,7 @@ const PromotionsAdd = () => {
 
     return (
         <div style={{ padding: "20px" }}>
+            <h1 className="text-center">Quản Lý Khuyến Mãi</h1>
             <Card
                 title={<h2>Thêm Chương Trình Khuyến Mãi</h2>}
                 style={{ width: "100%" }}
@@ -42,7 +43,7 @@ const PromotionsAdd = () => {
                     }}
                 >
                     <Row gutter={16}>
-                        <Col span={12}>
+                        <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="service"
                                 label="Dịch vụ"
@@ -56,7 +57,7 @@ const PromotionsAdd = () => {
                                 <Input placeholder="Nhập tên chương trình khuyến mãi" />
                             </Form.Item>
                         </Col>{" "}
-                        <Col span={12}>
+                        <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="condition"
                                 label="Điều kiện áp dụng"
@@ -71,7 +72,7 @@ const PromotionsAdd = () => {
                                 <Input placeholder="Nhập điều kiện áp dụng" />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="type"
                                 label="Loại khuyến mãi"
@@ -89,7 +90,7 @@ const PromotionsAdd = () => {
                                 </Select>
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="discount"
                                 label="Giảm giá"
@@ -106,7 +107,7 @@ const PromotionsAdd = () => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col  xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="startDate"
                                 label="Ngày bắt đầu"
@@ -120,7 +121,7 @@ const PromotionsAdd = () => {
                                 <RangePicker className="w-100" showTime />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col  xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="endDate"
                                 label="Số lượng sử dụng"

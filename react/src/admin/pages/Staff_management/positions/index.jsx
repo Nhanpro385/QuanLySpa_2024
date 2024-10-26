@@ -1,42 +1,32 @@
 import React, { useEffect } from "react";
-import {
-    Card,
-    Col,
-    Row,
-    Input,
-    Button,
-    Table,
-    Form,
-    message,
-    Space,
-    InputNumber,
-    Alert,
-} from "antd";
-import { useForm, Controller } from "react-hook-form";
+import { Card, Col, Row, message } from "antd";
+import { useForm } from "react-hook-form";
 import { Snowflake } from "@theinternetfolks/snowflake";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import useModal from "../../../modules/appointments/hooks/openmodal";
 import PositionsModalEdit from "../../../modules/staffManagement/compoments/PositionsModalEdit";
-import {
-    PositionsGet,
-    PositionsAdd,
-    PositionsDelete,
-    PositionsGetById,
-    PositionsUpdate,
-} from "../../../redux/slices/PositionsSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import PositionsForm from "../../../modules/staffManagement/compoments/PositionsForm";
+import PositionsTable from "../../../modules/staffManagement/compoments/PositionsTable";
+import usePositionsActions from "../../../modules/staffManagement/hooks/usePositionsAction";
 
 const Positions = () => {
+    const {
+        addPositions,
+        getPositions,
+        updatePositions,
+        deletePositions,
+        getPositionsById,
+    } = usePositionsActions();
+
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-    const dispatch = useDispatch();
     const { Positions, loading, error, Position } = useSelector(
         (state) => state.Positions
     );
 
     useEffect(() => {
-        dispatch(PositionsGet());
-    }, [dispatch]);
+        getPositions();
+    }, []);
 
     const {
         control,
@@ -44,7 +34,6 @@ const Positions = () => {
         reset,
         setError,
         setValue,
-        getValues,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -55,43 +44,6 @@ const Positions = () => {
     });
 
     const dataSource = (Positions && Positions.data) || [];
-    const columns = [
-        {
-            title: "STT",
-            dataIndex: "stt",
-            key: "stt",
-            render: (text, record, index) => index + 1,
-        },
-        {
-            title: "Tên Danh mục",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "Mô tả",
-            dataIndex: "wage",
-            key: "wage",
-        },
-        {
-            title: "Hành động",
-            dataIndex: "action",
-            key: "action",
-            render: (text, record) => (
-                <Space>
-                    <Button type="primary" onClick={() => editCate(record.id)}>
-                        <EditOutlined />
-                    </Button>
-                    <Button
-                        color="danger"
-                        variant="outlined"
-                        onClick={() => deleteCate(record.id)}
-                    >
-                        <DeleteOutlined />
-                    </Button>
-                </Space>
-            ),
-        },
-    ];
 
     const onSubmit = async (data) => {
         const payload = {
@@ -103,20 +55,25 @@ const Positions = () => {
         };
 
         try {
-            const resultAction = await dispatch(PositionsAdd(payload));
-
-            if (PositionsAdd.fulfilled.match(resultAction)) {
+            const resultAction = await addPositions(payload);
+            if (resultAction.meta.requestStatus === "fulfilled") {
                 messageApi.success("Thêm vị trí thành công!");
                 reset();
-            } else {
-                if (resultAction.payload?.errors) {
-                    Object.keys(resultAction.payload.errors).forEach((key) => {
+                getPositions(); // Cập nhật danh sách sau khi thêm
+            } else if (resultAction.meta.requestStatus === "rejected") {
+                const errorPayload = resultAction.payload;
+                if (errorPayload?.errors) {
+                    // Loop through validation errors and display messages
+                    Object.keys(errorPayload.errors).forEach((key) => {
                         setError(key, {
                             type: "server",
-                            message: resultAction.payload.errors[key][0],
+                            message: errorPayload.errors[key][0], // Error message from server
                         });
-                        messageApi.error(resultAction.payload.errors[key][0]);
+                        messageApi.error(errorPayload.errors[key][0]);
                     });
+                } else {
+                    // General error message
+                    messageApi.error("Dữ liệu đầu vào không hợp lệ.");
                 }
             }
         } catch (err) {
@@ -126,13 +83,26 @@ const Positions = () => {
     };
 
     const editCate = async (id) => {
-        try {
-            const resultAction = await dispatch(PositionsGetById(id));
+        if (!id) {
+            messageApi.error("ID không hợp lệ.");
+            return;
+        }
 
-            if (PositionsGetById.fulfilled.match(resultAction)) {
-                setValue("name", resultAction.payload.name);
-                setValue("wage", resultAction.payload.wage);
-                setValue("note", resultAction.payload.note);
+        try {
+            const resultAction = await getPositionsById(id);
+
+            // Check if the request was successful and payload is valid
+            if (
+                resultAction?.meta?.requestStatus === "fulfilled" &&
+                resultAction.payload
+            ) {
+                const { name, wage, note } = resultAction.payload;
+
+                // Additional safety checks before setting form values
+                setValue("name", name || ""); // Ensure it's a string
+                setValue("wage", typeof wage === "number" ? wage : 0); // Default to 0 if wage is invalid
+                setValue("note", note || "");
+
                 showModal();
             } else {
                 messageApi.error("Không thể lấy thông tin vị trí.");
@@ -144,11 +114,21 @@ const Positions = () => {
     };
 
     const deleteCate = async (id) => {
+        if (!id) {
+            messageApi.error("ID không hợp lệ.");
+            return;
+        }
+
         try {
-            const resultAction = await dispatch(PositionsDelete(id));
-            if (PositionsDelete.fulfilled.match(resultAction)) {
+            const resultAction = await deletePositions(id);
+
+            // Check if the request was successful and the payload is valid
+            if (
+                resultAction?.meta?.requestStatus === "fulfilled" &&
+                resultAction.payload
+            ) {
                 messageApi.success("Xoá vị trí thành công!");
-                dispatch(PositionsGet()); // Cập nhật danh sách sau khi xóa
+                getPositions(); // Cập nhật danh sách sau khi xóa
             } else {
                 messageApi.error("Có lỗi xảy ra khi xoá vị trí.");
             }
@@ -159,13 +139,26 @@ const Positions = () => {
     };
 
     const handleEditSubmit = async (data) => {
-        try {
-            const resultAction = await dispatch(PositionsUpdate(data));
+        if (!data || !data.id) {
+            messageApi.error("Dữ liệu hoặc ID không hợp lệ.");
+            return;
+        }
 
-            if (PositionsUpdate.fulfilled.match(resultAction)) {
+        try {
+            const resultAction = await updatePositions(data);
+
+            // Check if the request was successful and the payload is valid
+            if (
+                resultAction?.meta?.requestStatus === "fulfilled" &&
+                resultAction.payload
+            ) {
                 messageApi.success("Cập nhật vị trí thành công!");
-                handleCancel();
-                dispatch(PositionsGet()); // Cập nhật danh sách sau khi cập nhật
+                handleCancel(); // Close the modal after successful update
+                getPositions(); // Refresh the positions list after updating
+            } else if (resultAction?.payload?.errors) {
+                Object.keys(resultAction.payload.errors).forEach((key) => {
+                    messageApi.error(resultAction.payload.errors[key][0]);
+                });
             } else {
                 messageApi.error("Có lỗi xảy ra khi cập nhật.");
             }
@@ -177,128 +170,25 @@ const Positions = () => {
 
     return (
         <>
-            {contextHolder} {/* Đặt contextHolder vào đây */}
+        <h1 className="text-center">Quản lý chức vụ</h1>
+            {contextHolder}
             <Row gutter={[16, 16]}>
-                <Col span={24}>
+                <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Card title="Danh mục Chức vụ">
-                        <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-                            <Row gutter={16}>
-                                <Col span={12}>
-                                    <Form.Item
-                                        label="Tên danh mục"
-                                        validateStatus={errors.name ? "error" : ""}
-                                    >
-                                        <Controller
-                                            name="name"
-                                            control={control}
-                                            rules={{
-                                                required:
-                                                    "Tên danh mục là bắt buộc",
-                                                minLength: {
-                                                    value: 8,
-                                                    message:
-                                                        "Tên phải có ít nhất 8 ký tự.",
-                                                },
-                                            }}
-                                            render={({ field }) => (
-                                                <Input {...field} />
-                                            )}
-                                        />
-                                        {errors.name && (
-                                            <p style={{ color: "red" }}>
-                                                {errors.name.message}
-                                            </p>
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={12}>
-                                    <Form.Item
-                                        label="Lương cơ bản theo giờ"
-                                        validateStatus={errors.wage ? "error" : ""}
-                                    >
-                                        <Controller
-                                            name="wage"
-                                            control={control}
-                                            defaultValue={0}
-                                            rules={{
-                                                required: "Lương là bắt buộc",
-                                                min: {
-                                                    value: 1000,
-                                                    message:
-                                                        "Lương phải lớn hơn 1000",
-                                                },
-                                            }}
-                                            render={({ field }) => (
-                                                <InputNumber
-                                                    className="w-100"
-                                                    suffix="VNĐ"
-                                                    min={1000}
-                                                    formatter={(value) =>
-                                                        `${value}`.replace(
-                                                            /\B(?=(\d{3})+(?!\d))/g,
-                                                            ","
-                                                        )
-                                                    }
-                                                    parser={(value) =>
-                                                        value?.replace(
-                                                            /\$\s?|(,*)/g,
-                                                            ""
-                                                        )
-                                                    }
-                                                    onChange={(value) => {
-                                                        field.onChange(value);
-                                                    }}
-                                                    {...field}
-                                                />
-                                            )}
-                                        />
-                                        {errors.wage && (
-                                            <p style={{ color: "red" }}>
-                                                {errors.wage.message}
-                                            </p>
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <Row gutter={16}>
-                                <Col span={24}>
-                                    <Form.Item
-                                        label="Ghi chú"
-                                        validateStatus={errors.note ? "error" : ""}
-                                    >
-                                        <Controller
-                                            name="note"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Input.TextArea
-                                                    rows={4}
-                                                    {...field}
-                                                />
-                                            )}
-                                        />
-                                        {errors.note && (
-                                            <p style={{ color: "red" }}>
-                                                {errors.note.message}
-                                            </p>
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Thêm Mới
-                                </Button>
-                            </Form.Item>
-                        </Form>
+                        <PositionsForm
+                            onSubmit={handleSubmit(onSubmit)}
+                            control={control}
+                            errors={errors}
+                        />
                     </Card>
                 </Col>
-                <Col span={24}>
-                    <Card title="Danh sách danh mục sản phẩm">
-                        <Table
+                <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <Card title="Danh sách Chức vụ">
+                        <PositionsTable
                             dataSource={dataSource}
-                            columns={columns}
-                            rowKey="id"
                             loading={loading}
+                            editCate={editCate}
+                            deleteCate={deleteCate}
                         />
                     </Card>
                     <PositionsModalEdit

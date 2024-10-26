@@ -26,7 +26,10 @@ class CommentFactory extends Factory
             'parent_comment_id' => null,
             'comment' => 'comment',
             'rate' => 5,
-            'image_url' => 'comment'
+            'image_url' => 'comment',
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'type' => $this->faker->boolean()
         ];
     }
 }

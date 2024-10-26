@@ -25,20 +25,37 @@ class ServiceCategory extends Model
         'name',
         'description',
         'status',
-        'created_by'
+        'parent_id',
+        'created_by',
+        'updated_by',
+
     ];
 
     protected $attributes = [
         'status' => true,
 
     ];
-    public function services()
+    public function servicess()
     {
-        return $this->hasMany(ServiceCategory::class, 'servicecategory_id', 'id');
+        return $this->hasMany(Service::class, 'service_category_id', 'id');
     }
 
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
+
+    public function parentId()
+    {
+        return $this->belongsTo(ServiceCategory::class, 'parent_id', 'id');
+    }
+    public function childrentIds()
+    {
+        return $this->hasMany(ServiceCategory::class, 'parent_id', 'id');
     }
 }

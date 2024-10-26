@@ -35,6 +35,14 @@ class ServiceCategoryController extends Controller
             if ($createdBy) {
                 $query = $query->with('createdBy');
             }
+            $updatedBy = $request->query('updated_by');
+            if ($updatedBy) {
+                $query = $query->with('updatedBy');
+            }
+            $services = $request->query('services');
+            if ($services) {
+                $query = $query->with('services');
+            }
             if (count($query->paginate($perPage)) == 0) {
                 return response()->json([
                     "status" => true,
@@ -58,7 +66,14 @@ class ServiceCategoryController extends Controller
     {
         try {
             $validatedData = $request->validated();
-            $serviceCategory = ServiceCategory::create($validatedData);
+            $serviceCategory = ServiceCategory::create([
+                'id' => $validatedData['id'],
+                'name' => $validatedData['name'],
+                'description' => $validatedData['description'],
+                'parent_id' => $validatedData['parent_id'],
+                'created_by' => auth('api')->user()->id
+            ]);
+
 
             $response = [
                 'status' => 'success',
@@ -80,15 +95,23 @@ class ServiceCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
         try {
-            $createdBy = request()->query('created_by');
-            $serviceCategory = ServiceCategory::find($id);
+            $query = ServiceCategory::query();
+            $createdBy = $request->query('created_by');
             if ($createdBy) {
-                $serviceCategory->loadMissing('createdBy');
-
+                $query = $query->with('createdBy');
             }
+            $updatedBy = $request->query('updated_by');
+            if ($updatedBy) {
+                $query = $query->with('updatedBy');
+            }
+            $services = $request->query('services');
+            if ($services) {
+                $query = $query->with('services');
+            }
+            $serviceCategory = $query->find($id);
             if (!$serviceCategory) {
                 return response()->json([
                     'status' => 'error',
@@ -117,32 +140,39 @@ class ServiceCategoryController extends Controller
      */
     public function update(ServiceCategoryUpdateRequest $request, string $id)
     {
-        try {
-            $serviceCategory = ServiceCategory::findOrFail($id);
+        // try {
 
-            if (!$serviceCategory) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Không tìm thấy dữ liệu',
-                ], 404);
-            }
+        $serviceCategory = ServiceCategory::find($id);
 
-            $validator = $request->validated();
-            $serviceCategory->update($validator);
-
-            $arr = [
-                'status' => 'success',
-                'message' => 'Chỉnh sửa thành công loại dịch vụ: ' . $serviceCategory->name,
-                'data' => new ServiceCategoryResource($serviceCategory)
-            ];
-            return response()->json($arr);
-        } catch (\Throwable $th) {
-            $arr = [
+        if (!$serviceCategory) {
+            return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
-            ];
-            return response()->json($arr, 500);
+                'message' => 'Không tìm thấy dữ liệu',
+            ], 404);
         }
+
+        $validator = $request->validated();
+        $serviceCategory->update([
+            'name' => $validator['name'],
+            'description' => $validator['description'],
+            'status' => $validator['status'],
+            'parent_id' => $validator['parent_id'],
+            'updated_by' => auth('api')->user()->id
+        ]);
+
+        $arr = [
+            'status' => 'success',
+            'message' => 'Chỉnh sửa thành công loại dịch vụ: ' . $serviceCategory->name,
+            'data' => new ServiceCategoryResource($serviceCategory)
+        ];
+        return response()->json($arr);
+        // } catch (\Throwable $th) {
+        //     $arr = [
+        //         'status' => 'error',
+        //         'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
+        //     ];
+        //     return response()->json($arr, 500);
+        // }
     }
 
     /**

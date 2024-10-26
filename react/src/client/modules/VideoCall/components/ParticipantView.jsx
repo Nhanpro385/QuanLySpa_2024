@@ -1,42 +1,74 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import useParticipantHook from "../hooks/useParticipant";
-
+import { Col, Row } from "antd";
+import user from "../../../assets/images/user.png";
 function ParticipantView({ participantId, nameuser }) {
     const { micRef, videoStream, webcamOn, micOn, displayName, isLocal } =
         useParticipantHook(participantId);
 
-
     return (
-        <div key={participantId}>
-            {/* <p>
-                Participant: {displayName} | Webcam: {webcamOn ? "ON" : "OFF"} |
-                Mic: {micOn ? "ON" : "OFF"}
-            </p> */}
+        <div
+            key={participantId}
+            style={{
+                borderRadius: "10px",
+                overflow: "hidden",
+                textAlign: "center", // Center the name
+                height: "100%",
+                minHeight: "400px",
+            }}
+        >
             <audio ref={micRef} autoPlay muted={isLocal} />
             {webcamOn ? (
-                <ReactPlayer
-                    playsinline
-                    pip={false}
-                    light={false}
-                    controls={false}
-                    muted={true}
-                    playing={true}
-                    url={videoStream}
-                    width={"100%"}
-                    height={"100%"}
-                    onError={(err) =>
-                        console.log("participant video error", err)
-                    }
-                />
+                <Row>
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                        <ReactPlayer
+                            playsinline
+                            pip={false}
+                            light={false}
+                            controls={false}
+                            muted={true}
+                            playing={true}
+                            url={videoStream}
+                            onError={(err) =>
+                                console.log("participant video error", err)
+                            }
+                        />
+                    </Col>
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                        <h2 style={{ color: "black", marginTop: "10px" }}>
+                            {displayName}
+                        </h2>
+                    </Col>
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                        {!micOn && (
+                            <p style={{ color: "black", marginTop: "10px" }}>
+                                Mic đã tắt
+                            </p>
+                        )}
+                       
+                    </Col>
+                </Row>
             ) : (
-                <div
-                    style={{
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "black",
-                    }}
-                ></div>
+                <Row
+                    justify="center"
+                    align="middle"
+                    style={{ height: "100%" }}
+                    className="bg-dark"
+                >
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                        <img src={user} alt="user" style={{ width: "400px" }} />
+                    </Col>{" "}
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                        <p style={{ color: "white" }}>Không có video</p>
+                    </Col>
+                    {/* nếu mic tẳt */}
+                    {!micOn && (
+                        <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                            <p style={{ color: "white" }}>Mic đã tắt</p>
+                        </Col>
+                    )}
+                </Row>
             )}
         </div>
     );

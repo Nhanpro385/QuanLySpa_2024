@@ -29,6 +29,16 @@ class Service extends Model
     protected $attributes = [
         'status' => true
     ];
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
     public function serviceCategory()
     {
         return $this->belongsTo(ServiceCategory::class, 'servicecategory_id', 'id');
@@ -48,7 +58,7 @@ class Service extends Model
     }
     public function productService()
     {
-        return $this->hasMany(Service::class, 'services_id', 'id');
+        return $this->hasMany(ProductService::class, 'service_id', 'id');
     }
     public function serviceImage()
     {

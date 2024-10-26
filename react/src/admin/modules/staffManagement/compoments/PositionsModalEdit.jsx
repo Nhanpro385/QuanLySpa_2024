@@ -26,13 +26,14 @@ const PositionsModalEdit = ({
     }, [Position.data, setValue]);
 
     const onSubmit = (data) => {
-        // Kiểm tra và chuyển đổi wage từ chuỗi có dấu phẩy thành số
-        if (data.wage) {
-            data.wage = parseFloat(data.wage.replace(/,/g, "")); // Hoặc parseInt nếu không cần phần thập phân
+    
+        if (typeof data.wage !== "number") {
+            data.wage = parseFloat(data.wage); // Ensures wage is treated as a number
         }
 
         console.log("data", data);
 
+       
         handleEditSubmit({ ...data, id: Position.data.id });
     };
 
@@ -79,7 +80,7 @@ const PositionsModalEdit = ({
                                 style={{ width: "100%" }}
                                 {...field}
                                 formatter={(value) =>
-                                    `$ ${value}`.replace(
+                                    `${value}`.replace(
                                         /\B(?=(\d{3})+(?!\d))/g,
                                         ","
                                     )

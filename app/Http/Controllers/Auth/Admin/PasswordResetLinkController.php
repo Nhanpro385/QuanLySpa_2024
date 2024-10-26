@@ -21,10 +21,10 @@ class PasswordResetLinkController extends Controller
     {
         $validateDate = $request->validated();
 
-        $name = $validateDate['name'];
+        $phone = $validateDate['phone'];
         $email = $validateDate['email'];
 
-        $query = User::where('name', '=', $name)->where('email', '=', $email)->count();
+        $query = User::where('phone', '=', $phone)->where('email', '=', $email)->count();
         if ($query <= 0) {
             return response()->json([
                 'status' => 'error',

@@ -1,5 +1,5 @@
 import axios from "axios";
-import endpoints from "../config/appConfig";
+import endpoints from "@admin/config/appConfig";
 export const API_login = async (email, password) => {
     try {
         const response = await axios.post(endpoints.Auth.login, {

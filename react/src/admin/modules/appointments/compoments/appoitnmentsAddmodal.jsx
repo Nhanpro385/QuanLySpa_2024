@@ -1,185 +1,265 @@
-import React, { useState } from "react";
-import {
-    Modal,
-    Form,
-    Col,
-    Row,
-    Input,
-    Select,
-    DatePicker,
-    Button,
-    TreeSelect,
-} from "antd";
-
+import React from "react";
+import { Modal, Form, Col, Row, Input, Select, DatePicker, Button } from "antd";
 import "dayjs/locale/vi";
+import { useForm, Controller } from "react-hook-form";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const treeData = [
-    {
-        value: "sever1",
-        title: "Dịch vụ trị mụn",
-        children: [
-            {
-                value: "parent 1-0",
-                title: "Trị mụn chuyên khoa",
-            },
-        ],
-    },
-    {
-        value: "sever2",
-        title: "Dịch vụ trị Thâm",
-        children: [
-            {
-                value: "sever2 1",
-                title: "Trị Thâm bằng laze",
-            },
-        ],
-    },
-];
+const options = [{ label: "Dịch vụ 1", value: "a10" }];
+
 function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
-    const [value, setValue] = useState();
-    const onOk = (value) => {
-        console.log("onOk: ", value);
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+
+    const onSubmit = (data) => {
+        console.log("Submitted data: ", data);
     };
-    const onChangetreeselect = (newValue) => {
-        setValue(newValue);
-    };
+
     return (
         <Modal
             title="Thêm lịch hẹn"
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
+            footer={null}
         >
-            <Form layout="vertical">
+            <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
                     <Col span={12}>
-                        <Form.Item
-                            label="Họ và tên"
-                            name="fullname"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Vui lòng nhập họ tên!",
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Tên khách hàng" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Số điện thoại"
-                            name="phone"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Vui lòng nhập số điện thoại!",
-                                },
-                            ]}
-                        >
-                            <Input placeholder="Số điện thoại khách hàng" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Ca làm" name="shift">
-                            <Select placeholder="Chọn Ca làm">
-                                <Select.Option value="1">Ca 1 </Select.Option>
-                                <Select.Option value="2">Ca 2</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Giới tính" name="gender">
-                            <Select placeholder="Chọn giới tính">
-                                <Select.Option value="NAM">Nam</Select.Option>
-                                <Select.Option value="NU">Nữ</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>{" "}
-                    <Col span={12}>
-                        <Form.Item label="Dịch vụ" name="service">
-                            <TreeSelect
-                                showSearch
-                                style={{
-                                    width: "100%",
+                        <Form.Item label="Họ và tên">
+                            <Controller
+                                name="fullname"
+                                control={control}
+                                rules={{
+                                    required: "Vui lòng nhập tên khách hàng",
                                 }}
-                                value={value}
-                                dropdownStyle={{
-                                    maxHeight: 400,
-                                    overflow: "auto",
-                                }}
-                                placeholder="Vui lòng chọn dịch vụ"
-                                allowClear
-                                onChange={onChangetreeselect}
-                                treeDefaultExpandAll
-                                treeData={treeData}
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        placeholder="Tên khách hàng"
+                                    />
+                                )}
                             />
+                            {errors.fullname && (
+                                <p style={{ color: "red" }}>
+                                    {errors.fullname.message}
+                                </p>
+                            )}
                         </Form.Item>
                     </Col>
+
                     <Col span={12}>
-                        <Form.Item label="Chọn Nhân viên" name="staff">
-                            <Select placeholder="Chọn nhân viên">
-                                <Select.Option value="1">Nhân viên 1 </Select.Option>
-                                <Select.Option value="2">Nhân viên 1 </Select.Option>
-                                
-                            </Select>
+                        <Form.Item label="Số điện thoại">
+                            <Controller
+                                name="phone"
+                                control={control}
+                                rules={{
+                                    required: "Vui lòng nhập số điện thoại",
+                                }}
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        placeholder="Số điện thoại khách hàng"
+                                    />
+                                )}
+                            />
+                            {errors.phone && (
+                                <p style={{ color: "red" }}>
+                                    {errors.phone.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item label="Giới tính">
+                            <Controller
+                                name="gender"
+                                control={control}
+                                rules={{ required: "Vui lòng chọn giới tính" }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        placeholder="Chọn giới tính"
+                                    >
+                                        <Select.Option value="NAM">
+                                            Nam
+                                        </Select.Option>
+                                        <Select.Option value="NU">
+                                            Nữ
+                                        </Select.Option>
+                                    </Select>
+                                )}
+                            />
+                            {errors.gender && (
+                                <p style={{ color: "red" }}>
+                                    {errors.gender.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item label="Dịch vụ">
+                            <Controller
+                                name="service"
+                                control={control}
+                                rules={{ required: "Vui lòng chọn dịch vụ" }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        mode="multiple"
+                                        allowClear
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn dịch vụ"
+                                        options={options}
+                                    />
+                                )}
+                            />
+                            {errors.service && (
+                                <p style={{ color: "red" }}>
+                                    {errors.service.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item label="Ca làm">
+                            <Controller
+                                name="shift"
+                                control={control}
+                                rules={{ required: "Vui lòng chọn ca làm" }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        placeholder="Chọn Ca làm"
+                                    >
+                                        <Select.Option value="1">
+                                            Ca 1
+                                        </Select.Option>
+                                        <Select.Option value="2">
+                                            Ca 2
+                                        </Select.Option>
+                                    </Select>
+                                )}
+                            />
+                            {errors.shift && (
+                                <p style={{ color: "red" }}>
+                                    {errors.shift.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item label="Chọn Nhân viên">
+                            <Controller
+                                name="staff"
+                                control={control}
+                                rules={{ required: "Vui lòng chọn nhân viên" }}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        placeholder="Chọn nhân viên"
+                                    >
+                                        <Select.Option value="1">
+                                            Nhân viên 1
+                                        </Select.Option>
+                                        <Select.Option value="2">
+                                            Nhân viên 2
+                                        </Select.Option>
+                                    </Select>
+                                )}
+                            />
+                            {errors.staff && (
+                                <p style={{ color: "red" }}>
+                                    {errors.staff.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                        <Form.Item label="Thời Gian Lịch Hẹn">
+                            <Controller
+                                name="DateTime"
+                                control={control}
+                                rules={{ required: "Vui lòng chọn thời gian" }}
+                                render={({ field }) => (
+                                    <RangePicker
+                                        {...field}
+                                        style={{ width: "100%" }}
+                                        showTime={{ format: "HH:mm" }}
+                                        format="YYYY-MM-DD HH:mm"
+                                    />
+                                )}
+                            />
+                            {errors.DateTime && (
+                                <p style={{ color: "red" }}>
+                                    {errors.DateTime.message}
+                                </p>
+                            )}
                         </Form.Item>
                     </Col>
                     <Col span={24}>
-                        <Form.Item label="Thời Gian Lịch Hẹn" name="DateTime">
-                            <RangePicker
-                                style={{
-                                    width: "100%",
-                                }}
-                                showTime={{
-                                    format: "HH:mm",
-                                }}
-                                format="YYYY-MM-DD HH:mm"
-                                onChange={(value, dateString) => {
-                                    console.log("Selected Time: ", value);
-                                    console.log(
-                                        "Formatted Selected Time: ",
-                                        dateString
-                                    );
-                                }}
-                                onOk={onOk}
+                        <Form.Item label="Trạng Thái">
+                            <Controller
+                                name="Status"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        placeholder="Chọn trạng thái"
+                                    >
+                                        <Select.Option value="datlich">
+                                            Đặt Lịch
+                                        </Select.Option>
+                                        <Select.Option value="xacnhan">
+                                            Xác nhận
+                                        </Select.Option>
+                                        <Select.Option value="dangthuchien">
+                                            Đang Thực hiện
+                                        </Select.Option>
+                                        <Select.Option value="dahoanthanh">
+                                            Đã hoàn thành
+                                        </Select.Option>
+                                    </Select>
+                                )}
                             />
                         </Form.Item>
-                    </Col>{" "}
+                    </Col>
                     <Col span={24}>
-                        <Form.Item label="Ghi chú Lịch hẹn" name="Note">
-                            <TextArea rows={4} />
+                        <Form.Item label="Ghi chú Lịch hẹn">
+                            <Controller
+                                name="Note"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextArea
+                                        {...field}
+                                        rows={4}
+                                        placeholder="Nhập ghi chú"
+                                    />
+                                )}
+                            />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
-                        <Form.Item label="Trạng Thái" name="Status">
-                            <Select placeholder="Chọn trạng thái">
-                                <Select.Option value="datlich">
-                                    Đặt Lịch
-                                </Select.Option>
-                                <Select.Option value="xacnhan">
-                                    Xác nhận
-                                </Select.Option>
-                                <Select.Option value="dangthuchien">
-                                    Đang Thực hiện
-                                </Select.Option>
-                                <Select.Option value="dahoanthanh">
-                                    Đã hoàn thành
-                                </Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
+
+                  
                 </Row>
+
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
                         Thêm Lịch Hẹn
-                    </Button>{" "}
+                    </Button>
                 </Form.Item>
             </Form>
         </Modal>
     );
 }
+
 export default ModalAppointment;

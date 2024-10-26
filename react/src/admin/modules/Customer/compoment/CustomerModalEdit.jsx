@@ -3,18 +3,20 @@ import { Button, Modal, Form, Input, DatePicker, Select, Space } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import dayjs from "dayjs";
 const { Option } = Select;
-import { formatDate } from "../../../utils";
+import { formatDate } from "@admin/utils";
 const ModalEditCustomer = ({
     isModalOpen,
     handleOk,
     handleCancel,
     customer,
-    handleEditSubmit,
+
+    formErrors,
 }) => {
     const {
         control,
         handleSubmit,
         setValue,
+        setError,
         formState: { errors },
     } = useForm();
 
@@ -32,11 +34,19 @@ const ModalEditCustomer = ({
             setValue("role", customer.role);
         }
     }, [customer, setValue]);
+    useEffect(() => {
+        if (formErrors) {
+            console.log(formErrors);
 
+            Object.keys(formErrors).forEach((key) => {
+                setError(key, { type: "manual", message: formErrors[key] });
+            });
+        }
+    }, [formErrors, setError]);
     const onSubmit = (data) => {
         data.date_of_birth = formatDate(data.date_of_birth);
 
-        handleEditSubmit({ ...data, id: customer.id, status: customer.status });
+        handleOk({ ...data, id: customer.id, status: customer.status });
     };
 
     return (

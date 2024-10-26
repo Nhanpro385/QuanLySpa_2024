@@ -22,7 +22,11 @@ class Comment extends Model
         'comment',
         'rate',
         'status',
-        'image_url'
+        'image_url',
+        'created_by',
+        'updated_by',
+        'image_url', 
+        'type'
     ];
     public function service()
     {

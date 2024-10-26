@@ -5,7 +5,7 @@ import {
     SupplierUpdate,
     SupplierDelete,
     SupplierGetbyId,
-} from "../../../redux/slices/SupplierSlice";
+} from "@admin/redux/slices/SupplierSlice";
 const useSupplierActions = () => {
     const dispatch = useDispatch();
 

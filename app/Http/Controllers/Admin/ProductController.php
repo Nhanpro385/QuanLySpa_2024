@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Filters\Admin\ProductFilter;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Products\ProductImageRequest;
 use App\Http\Requests\Admin\Products\ProductRequest;
 use App\Http\Requests\Admin\Products\ProductUpdateRequest;
 use App\Http\Resources\Admin\Products\ProductCollection;
 use App\Http\Resources\Admin\Products\ProductResource;
+use App\Models\Inventory;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Kra8\Snowflake\Snowflake;
 
 class ProductController extends Controller
 {
@@ -61,7 +66,7 @@ class ProductController extends Controller
     {
         try {
             $validateData = $request->validated();
-            $validateData['image_url'] = $request->image_url ?? 'null';
+            $validateData['image_url'] = $request->image_url ?? 'default.jpg';
             $validateData['description'] = $request->description ?? 'Mô tả sản phẩm';
 
             if ($request->hasFile('image_url')) {
@@ -71,7 +76,20 @@ class ProductController extends Controller
                 $validateData['image_url'] = $filePath;
             }
 
-            $product = Product::create($validateData);
+            $product = Product::create([
+                'id' => $validateData['id'],
+                'category_id' => $validateData['category_id'],
+                'name' => $validateData['name'],
+                'price' => $validateData['price'],
+                'cost' => $validateData['cost'],
+                'capacity' => $validateData['capacity'],
+                'bar_code' => $validateData['bar_code'],
+                'date' => $validateData['date'],
+                'image_url' => $validateData['image_url'],
+                'description' => $validateData['description'],
+                'priority' => $validateData['priority'],
+                'created_by' => auth('api')->user()->id
+            ]);
 
             $response = [
                 'status' => 'success',
@@ -148,6 +166,9 @@ class ProductController extends Controller
                 $validateData['image_url'] = $filePath;
             }
             $product->update($validateData);
+            $product->update([
+                'updated_by' => auth('api')->user()->id,
+            ]);
             $arr = [
                 'status' => 'success',
                 'message' => 'Chỉnh sửa thành công sản phẩm: ' . $product->name,
@@ -169,14 +190,46 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         try {
-            $product = Product::find($id);
+            $productInventory = Inventory::where('product_id', $id)->orderBy('created_at', 'DESC')->first();
+            if ($productInventory ? $productInventory->quantity > 0 : false) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không thể xóa sản phẩm',
+                ], 200);
+            }
 
+            $product = Product::find($id);
+            $product->update([
+                'updated_by' => auth('api')->user()->id,
+            ]);
+            $productInventories = Inventory::where('product_id', $id)->get();
+
+            foreach ($productInventories as $inventory) {
+                $inventory->update([
+                    'updated_by' => auth('api')->user()->id,
+                ]);
+                $inventory->delete();
+            }
+
+            $productImages = ProductImage::where('product_id', $id)->get();
+
+            foreach ($productImages as $image) {
+                Storage::delete('public/uploads/products/' . $image->image_url);
+                $image->update([
+                    'updated_by' => auth('api')->user()->id,
+                ]);
+                $image->delete();
+            }
             if (!$product) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
+            if ($product->image_url) {
+                Storage::delete('public/uploads/products/' . $product->image_url);
+            }
+
             $product->delete();
             $arr = [
                 'status' => 'success',
@@ -190,6 +243,71 @@ class ProductController extends Controller
             ];
             return response()->json($arr, 500);
         }
+    }
+
+
+    public function uploadImages(ProductImageRequest $request, string $id)
+    {
+        $validateData = $request->validated();
+
+        if ($validateData == []) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Dữ liệu đầu vào không hợp lệ.',
+                'errors' => [
+                    'image_url' => 'Vui lòng không được để trống.'
+                ]
+            ], 422);
+        }
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy dữ liệu',
+            ], 404);
+        }
+
+        foreach ($request->file('image_url') as $index => $file) {
+
+            $fileName = time() . '_' . $index . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('public/uploads/products', $fileName);
+            ProductImage::create([
+                'id' => app(Snowflake::class)->next(),
+                'product_id' => $id,
+                'image_url' => $fileName,
+                'created_by' => auth('api')->user()->id,
+            ]);
+
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Thêm mới ảnh phụ sản phẩm thành công.',
+
+        ];
+        return response()->json($response);
+    }
+
+
+    public function deleteImage($id)
+    {
+        $image = ProductImage::find($id);
+        if (!$image) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy dữ liệu',
+            ], 404);
+        }
+        $image->update([
+            'updated_by' => auth('api')->user()->id,
+        ]);
+        $image->delete();
+        Storage::delete('public/uploads/products/' . $image->image_url);
+        $arr = [
+            'status' => 'success',
+            'message' => 'Xóa thành công ảnh phụ sản phẩm.'
+        ];
+        return response()->json($arr);
     }
 
 }

@@ -1,8 +1,8 @@
 import { Button, Col, Form, Input, Row, Spin, notification,Card } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../../modules/authen/styles/LoginPage.scss";
-import Wellcome from "../../assets/images/loginimg.jpg";
+// import "@admin/modules/authen/styles/LoginPage.scss";
+import Wellcome from "@admin/assets/images/loginimg.jpg";
 
 const Newpassword = () => {
     const navigate = useNavigate();

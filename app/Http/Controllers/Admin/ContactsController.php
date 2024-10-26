@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Contact;
+use App\Http\Requests\Admin\Contacts\StoreContactRequest;
+use App\Http\Requests\Admin\Contacts\UpdateContactRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\Admin\Contacts\ContactResource;
@@ -20,27 +22,28 @@ class ContactsController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreContactRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:contacts',
-            'phone' => 'required|string|max:20',
-            'note' => 'nullable|string|max:255',
-            'status' => 'boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
         try {
-            $contact = Contact::create($validator->validated());
-            return new ContactResource($contact);
-        } catch (\Throwable $th) {
-            return response()->json(['error' => 'Đã xảy ra lỗi trong quá trình thêm mới liên hệ'], 500);
+            $contact = Contact::create($request->validated());
+    
+            return response()->json([
+                'message' => 'Tạo liên hệ thành công',
+                'data' => new ContactResource($contact)
+            ], 201, ['Content-Type' => 'application/json']); // Thiết lập Content-Type là application/json
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Kiểm tra nếu lỗi là do email trùng lặp
+            if ($e->errorInfo[1] == 1062) { // Mã lỗi SQL cho trùng lặp UNIQUE
+                return response()->json([
+                    'error' => 'Email đã tồn tại. Vui lòng sử dụng email khác.'
+                ], 422, ['Content-Type' => 'application/json']);
+            }
+            return response()->json(['error' => 'Đã xảy ra lỗi trong quá trình thêm mới liên hệ'], 500, ['Content-Type' => 'application/json']);
         }
     }
+    
+
+
 
     public function show($id)
     {
@@ -55,27 +58,15 @@ class ContactsController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateContactRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'string|max:255',
-            'email' => 'string|email|max:255|unique:contacts,email,' . $id,
-            'phone' => 'string|max:20',
-            'note' => 'nullable|string|max:255',
-            'status' => 'boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
         try {
             $contact = Contact::find($id);
             if (!$contact) {
                 return response()->json(['error' => 'Không tìm thấy liên hệ'], 404);
             }
 
-            $contact->update($validator->validated());
+            $contact->update($request->validated());
             return new ContactResource($contact);
         } catch (\Throwable $th) {
             return response()->json(['error' => 'Đã xảy ra lỗi trong quá trình cập nhật liên hệ'], 500);

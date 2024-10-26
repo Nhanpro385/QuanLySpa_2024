@@ -1,21 +1,8 @@
 {
-    "presets": ["@babel/preset-env", "@babel/preset-react"],
-    "plugins": [
-      [
-        "module-resolver",
-        {
-          "root": ["./src"],
-          "alias": {
-            "@admin": "./src/admin",
-            "@client": "./src/client",
-            "@components": "./src/components",
-            "@assets": "./src/assets",
-            "@utils": "./src/utils",
-            "@pages": "./src/pages",
-            "@redux": "./src/admin/redux"
-          }
-        }
-      ]
-    ]
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react"
+  ]
+  
   }
   
