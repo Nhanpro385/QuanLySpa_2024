@@ -19,7 +19,6 @@ class CategoryUpdateRequest extends FormRequest
             'name' => 'required|string|max:255|unique:categories,name,' . $this->route('id') . '|regex:/^[\p{L} ]+$/u',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'parent_id' => 'nullable|digits_between:10,20|integer|exists:categories,id', 
         ];
     }
 
@@ -32,9 +31,6 @@ class CategoryUpdateRequest extends FormRequest
             'name.regex' => 'Tên chỉ được phép chứa chữ cái.',
             'status.required' => 'Trạng thái không được bỏ trống!',
             'status.boolean' => 'Trạng thái phải là true hoặc false.',
-            'parent_id.digits_between' => 'Parent ID phải có độ dài từ 10 đến 20 ký tự số.',
-            'parent_id.integer' => 'Parent ID phải là số nguyên.',
-            'parent_id.exists' => 'Parent ID không tồn tại trong danh mục.',
         ];
     }
 

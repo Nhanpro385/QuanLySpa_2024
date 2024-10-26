@@ -22,7 +22,6 @@ class ContactCollection extends ResourceCollection
                     'phone' => $contact->phone,
                     'email' => $contact->email,
                     'note' => $contact->note,
-                    'evaluate' => $contact->evaluate, // Thêm evaluate
                     'status' => $contact->status,
                 ];
             }),

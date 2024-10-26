@@ -8,30 +8,29 @@ use App\Http\Requests\Admin\Categories\CategoryRequest;
 use App\Http\Requests\Admin\Categories\CategoryUpdateRequest;
 use App\Http\Resources\Admin\Categories\CategoryResource;
 use App\Http\Resources\Admin\Categories\CategoryCollection;
-use Illuminate\Support\Facades\Auth;
+
 
 class CategoryController extends Controller
 {
     public function index()
     {
         try {
-
-            $categories = Category::with('subcategories')->paginate(5);
+            $categories = Category::paginate(5);
             return new CategoryCollection($categories);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình lấy danh sách danh mục.',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
                 'error' => $th->getMessage(),
             ], 500);
         }
     }
 
-    public function show($id)
+    public function show( $id)
     {
         try {
 
-            $category = Category::with('subcategories')->find($id);
+            $category = Category::find($id);
 
             if (!$category) {
                 return response()->json([
@@ -40,59 +39,48 @@ class CategoryController extends Controller
                 ], 404);
             }
 
-            return response()->json([
+            $arr = [
                 'status' => 'success',
                 'message' => 'Chi tiết danh mục: ' . $category->name,
-                'data' => new CategoryResource($category),
-            ]);
+                'data' => new CategoryResource($category)
+            ];
+
+            return response()->json($arr);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
-                'error' => $th->getMessage(),
             ], 500);
         }
     }
 
     public function store(CategoryRequest $request)
-    {
-        try {
+{
+    try {
 
-            $validatedData = $request->validated();
-
-
-            $validatedData['created_by'] = Auth::id();
-            $validatedData['updated_by'] = Auth::id();
+        $validatedData = $request->validated();
 
 
-            $category = Category::create($validatedData);
+        $category = Category::create($validatedData);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Thêm mới danh mục thành công',
-                'data' => new CategoryResource($category)
-            ], 201);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình thêm mới danh mục.',
-                'error' => $th->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Thêm mới danh mục thành công',
+            'data' => new CategoryResource($category)
+        ], 201);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Đã xảy ra lỗi trong quá trình thêm mới danh mục.',
+        ], 500);
     }
+}
 
     public function update(CategoryUpdateRequest $request, $id)
     {
         try {
-
             $category = Category::findOrFail($id);
-
-
-            $validatedData = $request->validated();
-            $validatedData['updated_by'] = Auth::id();
-
-
-            $category->update($validatedData);
+            $category->update($request->validated());
 
             return response()->json([
                 'status' => 'success',
@@ -107,7 +95,7 @@ class CategoryController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
                 'error' => $th->getMessage(),
             ], 500);
         }
@@ -116,23 +104,25 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-
             $category = Category::findOrFail($id);
+
             $category->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Danh mục đã được xóa thành công.'
+                'message' => 'Danh mục đã được xóa thành công'
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Danh mục không tồn tại!',
             ], 404);
         } catch (\Throwable $th) {
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình xóa danh mục.',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
                 'error' => $th->getMessage(),
             ], 500);
         }

@@ -2,90 +2,121 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\StaffShift;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Resources\Admin\StaffShift\StaffShiftCollection;
-
-use App\Http\Resources\Admin\StaffShift\StaffShiftResource;
-use Illuminate\Support\Facades\Validator;
+use App\Models\StaffShift;
+use App\Http\Requests\Admin\StaffShifts\StaffShiftRequest;
+use App\Http\Requests\Admin\StaffShifts\StaffShiftUpdateRequest;
+use App\Http\Resources\Admin\StaffShifts\StaffShiftResource;
+use App\Http\Resources\Admin\StaffShifts\StaffShiftCollection;
 
 class StaffShiftController extends Controller
 {
-    // Lấy danh sách tất cả các StaffShift
     public function index()
     {
-        $staffShifts = StaffShift::all();
-        return StaffShiftResource::collection($staffShifts);
-    }
-
-    // Tạo mới một StaffShift
-    public function store(Request $request)
-    {
-        // Xác thực dữ liệu đầu vào
-        $validator = Validator::make($request->all(), [
-            'staff_id' => 'required|string|max:255',
-            'shift_id' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+        try {
+            $staffShifts = StaffShift::paginate(5);
+            return new StaffShiftCollection($staffShifts);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        // Tạo StaffShift mới
-        $staffShift = StaffShift::create($request->all());
-
-        return new StaffShiftResource($staffShift);
     }
 
-    // Lấy thông tin chi tiết của một StaffShift
     public function show($id)
     {
-        $staffShift = StaffShift::find($id);
+        try {
+            $staffShift = StaffShift::find($id);
 
-        if (!$staffShift) {
-            return response()->json(['error' => 'StaffShift not found'], 404);
+            if (!$staffShift) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Ca làm việc không tồn tại!',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Chi tiết ca làm việc: ' . $staffShift->id,
+                'data' => new StaffShiftResource($staffShift),
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        return new StaffShiftResource($staffShift);
     }
 
-    // Cập nhật thông tin một StaffShift
-    public function update(Request $request, $id)
+    public function store(StaffShiftRequest $request)
     {
-        $staffShift = StaffShift::find($id);
+        try {
+            $validatedData = $request->validated();
+            $staffShift = StaffShift::create($validatedData);
 
-        if (!$staffShift) {
-            return response()->json(['error' => 'StaffShift not found'], 404);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm mới ca làm việc thành công',
+                'data' => new StaffShiftResource($staffShift),
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình thêm mới ca làm việc.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        // Xác thực dữ liệu đầu vào
-        $validator = Validator::make($request->all(), [
-            'staff_id' => 'required|string|max:255',
-            'shift_id' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        // Cập nhật thông tin
-        $staffShift->update($request->all());
-
-        return new StaffShiftResource($staffShift);
     }
 
-    // Xóa một StaffShift
+    public function update(StaffShiftUpdateRequest $request, $id)
+    {
+        try {
+            $staffShift = StaffShift::findOrFail($id);
+            $staffShift->update($request->validated());
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cập nhật ca làm việc thành công!',
+                'data' => new StaffShiftResource($staffShift),
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ca làm việc không tồn tại!',
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
     public function destroy($id)
     {
-        $staffShift = StaffShift::find($id);
+        try {
+            $staffShift = StaffShift::findOrFail($id);
+            $staffShift->delete();
 
-        if (!$staffShift) {
-            return response()->json(['error' => 'StaffShift not found'], 404);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ca làm việc đã được xóa thành công',
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ca làm việc không tồn tại!',
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        $staffShift->delete();
-
-        return response()->json(['message' => 'StaffShift deleted successfully']);
     }
 }

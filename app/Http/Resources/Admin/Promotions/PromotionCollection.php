@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Admin\Comments;
+namespace App\Http\Resources\Admin\Promotions;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class CommentCollection extends ResourceCollection
+class PromotionCollection extends ResourceCollection
 {
     public function toArray($request)
     {

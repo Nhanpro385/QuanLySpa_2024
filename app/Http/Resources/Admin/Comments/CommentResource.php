@@ -18,12 +18,9 @@ class CommentResource extends JsonResource
             'status' => $this->status,
             'image_url' => $this->image_url,
             'admin_reply' => $this->admin_reply,
-            'created_at' => $this->created_at->toISOString(),
-            'updated_at' => $this->updated_at->toISOString(),
-
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
-
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+           
             'replies' => CommentResource::collection($this->whenLoaded('replies')),
         ];
     }

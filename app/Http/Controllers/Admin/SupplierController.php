@@ -8,7 +8,6 @@ use App\Http\Requests\Admin\Suppliers\SupplierRequest;
 use App\Http\Requests\Admin\Suppliers\SupplierUpdateRequest;
 use App\Http\Resources\Admin\Suppliers\SupplierResource;
 use App\Http\Resources\Admin\Suppliers\SupplierCollection;
-use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
@@ -20,7 +19,7 @@ class SupplierController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình lấy danh sách nhà cung cấp.',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
                 'error' => $th->getMessage(),
             ], 500);
         }
@@ -38,11 +37,13 @@ class SupplierController extends Controller
                 ], 404);
             }
 
-            return response()->json([
+            $arr = [
                 'status' => 'success',
-                'message' => 'Chi tiết nhà cung cấp.',
-                'data' => new SupplierResource($supplier),
-            ]);
+                'message' => 'Chi tiết nhà cung cấp: ' . $supplier->name,
+                'data' => new SupplierResource($supplier)
+            ];
+
+            return response()->json($arr);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -56,14 +57,11 @@ class SupplierController extends Controller
     {
         try {
             $validatedData = $request->validated();
-            $validatedData['created_by'] = Auth::id(); 
-            $validatedData['updated_by'] = Auth::id();
-
             $supplier = Supplier::create($validatedData);
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Thêm mới nhà cung cấp thành công.',
+                'message' => 'Thêm mới nhà cung cấp thành công',
                 'data' => new SupplierResource($supplier)
             ], 201);
         } catch (\Throwable $th) {
@@ -79,10 +77,7 @@ class SupplierController extends Controller
     {
         try {
             $supplier = Supplier::findOrFail($id);
-            $validatedData = $request->validated();
-            $validatedData['updated_by'] = Auth::id();
-
-            $supplier->update($validatedData);
+            $supplier->update($request->validated());
 
             return response()->json([
                 'status' => 'success',
@@ -97,7 +92,7 @@ class SupplierController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật nhà cung cấp.',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
                 'error' => $th->getMessage(),
             ], 500);
         }
@@ -121,7 +116,7 @@ class SupplierController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình xóa nhà cung cấp.',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
                 'error' => $th->getMessage(),
             ], 500);
         }

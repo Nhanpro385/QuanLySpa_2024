@@ -10,7 +10,6 @@ use App\Http\Resources\Admin\Customers\CustomerResource;
 use App\Http\Resources\Admin\Customers\CustomerCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -49,32 +48,10 @@ class CustomerController extends Controller
         try {
             $validatedData = $request->validated();
 
+
             if (isset($validatedData['password'])) {
                 $validatedData['password'] = Hash::make($validatedData['password']);
             }
-
-            
-            if (isset($validatedData['gender'])) {
-                switch ($validatedData['gender']) {
-                    case 'male':
-                        $validatedData['gender'] = 1;
-                        break;
-                    case 'female':
-                        $validatedData['gender'] = 2;
-                        break;
-                    case 'other':
-                        $validatedData['gender'] = 3;
-                        break;
-                    default:
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Giá trị của trường giới tính không hợp lệ.',
-                        ], 400);
-                }
-            }
-
-            $validatedData['created_by'] = Auth::id();
-            $validatedData['updated_by'] = Auth::id();
 
             $customer = Customer::create($validatedData);
 
@@ -94,31 +71,10 @@ class CustomerController extends Controller
             $customer = Customer::findOrFail($id);
             $validatedData = $request->validated();
 
+           
             if (isset($validatedData['password'])) {
                 $validatedData['password'] = Hash::make($validatedData['password']);
             }
-
-
-            if (isset($validatedData['gender'])) {
-                switch ($validatedData['gender']) {
-                    case 'male':
-                        $validatedData['gender'] = 1;
-                        break;
-                    case 'female':
-                        $validatedData['gender'] = 2;
-                        break;
-                    case 'other':
-                        $validatedData['gender'] = 3;
-                        break;
-                    default:
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Giá trị của trường giới tính không hợp lệ.',
-                        ], 400);
-                }
-            }
-
-            $validatedData['updated_by'] = Auth::id();
 
             $customer->update($validatedData);
 

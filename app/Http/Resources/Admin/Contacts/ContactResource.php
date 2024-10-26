@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources\Admin\Contacts;
 
 use Illuminate\Http\Request;
@@ -19,7 +20,6 @@ class ContactResource extends JsonResource
             'phone' => $this->phone,
             'email' => $this->email,
             'note' => $this->note,
-            'evaluate' => $this->evaluate, // Thêm evaluate
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
