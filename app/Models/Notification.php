@@ -19,14 +19,17 @@ class Notification extends Model
 
     protected $fillable = [
         'id',
-        'type',
-        'notifiable_id',
-        'notifiable_type',
-        'data',
-        'read_at',
+        'staff_id',
+        'notification_type',
+        'content',
+        'url_notification',
+        'pin',
+        'staff',
     ];
 
-
+    protected $attributes = [
+        'status' => false,
+    ];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

@@ -9,7 +9,7 @@ const PublicRoutes = [
     { path: "/booking", element: <Appbooking /> },
     { path: "/bookinginfo", element: <BookingInfo /> },
     { path: "/pricing", element: <Pricingpage /> },
-    { path: "/videocall", element: <VideoCall /> },
+    { path: "/videocall/:idmeet", element: <VideoCall /> },
 ];
 
 export { PublicRoutes };

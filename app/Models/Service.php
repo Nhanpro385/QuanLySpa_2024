@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -24,15 +22,12 @@ class Service extends Model
         'description',
         'image_url',
         'duration',
-        'priority',
         'status',
-        'created_by',
-        'updated_by',
+        'created_by'
     ];
 
     protected $attributes = [
-        'status' => true,
-        'image_url' => 'default.jpg',
+        'status' => true
     ];
 
     public function createdBy(): BelongsTo
@@ -46,39 +41,28 @@ class Service extends Model
     }
     public function serviceCategory()
     {
-        return $this->belongsTo(ServiceCategory::class, 'service_category_id', 'id');
+        return $this->belongsTo(ServiceCategory::class, 'servicecategory_id', 'id');
     }
-
-    public function appointmentServices()
+    public function appointmentService()
     {
-        return $this->hasMany(Appointment::class, 'service_id', 'id');
+        return $this->hasMany(Service::class, 'services_id', 'id');
     }
 
-    public function treatmentHistories()
+    public function treatmentHistory()
     {
-        return $this->hasMany(TreatmentHistory::class, 'service_id', 'id');
+        return $this->hasMany(Service::class, 'services_id', 'id');
     }
-
-    public function comments()
+    public function comment()
     {
-        return $this->hasMany(Comment::class, 'service_id', 'id');
+        return $this->hasMany(Service::class, 'services_id', 'id');
     }
-
-
-    public function productServices()
+    public function productService()
     {
         return $this->hasMany(ProductService::class, 'service_id', 'id');
     }
-
-
-    public function serviceImages()
+    public function serviceImage()
     {
-        return $this->hasMany(ServiceImage::class, 'service_id', 'id');
+        return $this->hasMany(Service::class, 'services_id', 'id');
     }
 
-
-    public function customers()
-    {
-        return $this->hasManyThrough(Customer::class, Comment::class, 'service_id', 'id', 'id', 'customer_id');
-    }
 }

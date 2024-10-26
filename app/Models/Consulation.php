@@ -22,9 +22,7 @@ class Consulation extends Model
         'consulation',
         'skin_condition',
         'treatment_plan',
-        'status',
-        'created_by',
-        'updated_by',
+        'status'
     ];
 
     protected $attribute = [

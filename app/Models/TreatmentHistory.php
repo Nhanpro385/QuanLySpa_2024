@@ -27,7 +27,6 @@ class TreatmentHistory extends Model
         'note',
         'status',
         'created_by',
-        'updated_by',
     ];
 
     protected $attribute = [

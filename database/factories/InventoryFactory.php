@@ -25,7 +25,6 @@ class InventoryFactory extends Factory
             'product_id' => $this->faker->randomElement(Product::pluck('id')->toArray()),
             'quantity' => 1,
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

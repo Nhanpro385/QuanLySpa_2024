@@ -24,8 +24,7 @@ class Appointment extends Model
         'note',
         'appointment_date',
         'status',
-        'created_by',
-        'updated_by',
+        'created_by'
     ];
 
 

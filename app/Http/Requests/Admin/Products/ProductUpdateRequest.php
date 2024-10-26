@@ -65,7 +65,6 @@ class ProductUpdateRequest extends FormRequest
             'date.required' => 'Ngày là trường bắt buộc.',
             'date.date' => 'Ngày phải là định dạng ngày hợp lệ.',
             'date.unique' => 'Ngày đã tồn tại.',
-            'date.after' => 'Hạn sự dụng phải được thời hạn sau ngày hiện tại.',
             'image_url.nullable' => 'URL hình ảnh có thể không cần nhập.',
             'image_url.image' => 'URL hình ảnh phải là một tệp hình ảnh hợp lệ.',
             'image_url.unique' => 'URL hình ảnh đã tồn tại.',

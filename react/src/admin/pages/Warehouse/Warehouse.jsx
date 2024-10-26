@@ -154,10 +154,10 @@ const Warehouse = () => {
     return (
         <Card title="Quản lý Kho hàng">
             <Row gutter={[16, 16]} className="mb-3" align="middle">
-                <Col span={3}>
+                <Col xl={3} md={6} xs={24}>
                     <h4>Chọn chức năng: </h4>
                 </Col>
-                <Col span={6}>
+                <Col xl={6} md={6} xs={24}>
                     <Radio.Group
                         block
                         options={options}
@@ -166,10 +166,10 @@ const Warehouse = () => {
                         optionType="button"
                     />
                 </Col>
-                <Col span={4}>
+                <Col xl={4} md={6} xs={24}>
                     <Input.Search placeholder="Tìm kiếm" enterButton />
                 </Col>
-                <Col span={3}>
+                <Col xl={3} md={6} xs={24}>
                     <Button
                         block
                         type="primary"

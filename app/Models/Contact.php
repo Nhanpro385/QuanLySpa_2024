@@ -10,14 +10,11 @@ class Contact extends Model
     use HasFactory, HasSnowflakePrimary;
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $table = 'contacts';
-
     protected $fillable = [
         'id',
         'name',
         'phone',
         'email',
-        'evaluete',
         'note',
     ];
 

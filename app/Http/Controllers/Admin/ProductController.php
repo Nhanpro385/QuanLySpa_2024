@@ -72,8 +72,8 @@ class ProductController extends Controller
             if ($request->hasFile('image_url')) {
                 $file = $request->file('image_url');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('public/uploads/products', $fileName);
-                $validateData['image_url'] = $fileName;
+                $filePath = $file->storeAs('uploads', $fileName);
+                $validateData['image_url'] = $filePath;
             }
 
             $product = Product::create([
@@ -130,16 +130,12 @@ class ProductController extends Controller
             }
             $arr = [
                 'status' => 'success',
-                'message' => 'Chi tiết sản phẩm: ' . $query->name,
+                'message' => 'Chi tiết loại sanr phẩm: ' . $query->name,
                 'data' => new ProductResource($query)
             ];
             return response()->json($arr);
         } catch (\Throwable $th) {
-            $arr = [
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
-            ];
-            return response()->json($arr, 500);
+            //throw $th;
         }
     }
 
@@ -159,17 +155,15 @@ class ProductController extends Controller
                 ], 404);
             }
             $validateData = $request->validated();
-            if ($product->image_url) {
-                Storage::delete('public/uploads/products/' . $product->image_url);
-            }
+
             $validateData['image_url'] = $request->image_url ?? $product->image_url;
             $validateData['description'] = $request->description ?? $product->description;
 
             if ($request->hasFile('image_url')) {
                 $file = $request->file('image_url');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('public/uploads/products', $fileName);
-                $validateData['image_url'] = $fileName;
+                $filePath = $file->storeAs('uploads', $fileName);
+                $validateData['image_url'] = $filePath;
             }
             $product->update($validateData);
             $product->update([

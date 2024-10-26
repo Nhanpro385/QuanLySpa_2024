@@ -18,8 +18,6 @@ return new class extends Migration {
             $table->string('skin_condition');
             $table->string('treatment_plan');
             $table->boolean('status')->default(true);
-            $table->string('created_by', 20)->nullable();
-            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,14 +30,6 @@ return new class extends Migration {
                 ->onDelete('set null');
 
             $table->foreign('staff_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');
-            $table->foreign('created_by')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');
-            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');

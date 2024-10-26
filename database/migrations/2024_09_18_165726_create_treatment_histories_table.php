@@ -21,9 +21,7 @@ return new class extends Migration {
             $table->string('feedback');
             $table->string('note')->nullable();
             $table->boolean('status')->default(true);
-            $table->tinyInteger('evaluete')->nullable();
-            $table->string('created_by', 20)->nullable();
-            $table->string('updated_by', 20)->nullable();
+            $table->string('created_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -49,10 +47,6 @@ return new class extends Migration {
                 ->onDelete('set null');
 
             $table->foreign('created_by')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');
-            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');

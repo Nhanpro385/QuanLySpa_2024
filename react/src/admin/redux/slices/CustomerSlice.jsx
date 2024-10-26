@@ -8,7 +8,6 @@ export const CustomerGet = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await axios.get(endpoints.Customers.list);
-          
 
             return response.data;
         } catch (error) {
@@ -99,7 +98,9 @@ export const CustomerGetbyId = createAsyncThunk(
 
 // Initial state for customers slice
 const initialState = {
-    customers: [], // List of customers
+    customers: {
+        data: [],
+    },
     customer: {}, // Single customer detail
     loading: false, // Loading state
     error: null, // Error state
@@ -151,7 +152,7 @@ const CustomerSlice = createSlice({
             })
             .addCase(CustomerDelete.fulfilled, (state, action) => {
                 console.log(action.payload);
-                
+
                 state.customers.data = state.customers.data.filter(
                     (customer) => customer.id !== action.payload
                 );
@@ -169,7 +170,7 @@ const CustomerSlice = createSlice({
             })
             .addCase(CustomerUpdate.fulfilled, (state, action) => {
                 console.log(action.payload.data.id);
-                
+
                 state.customers.data = state.customers.data.map((customer) =>
                     customer.id === action.payload.data.id
                         ? action.payload.data

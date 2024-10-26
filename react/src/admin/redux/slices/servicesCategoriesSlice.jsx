@@ -77,7 +77,9 @@ export const ServiceCategoriesGetById = createAsyncThunk(
 );
 
 const initialState = {
-    ServiceCategories: [],
+    ServiceCategories:  {
+        data: [],
+    },
     category: {},
     loading: false,
     error: null,

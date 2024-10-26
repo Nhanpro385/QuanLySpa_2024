@@ -40,7 +40,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "home",
-                        icon: <HomeOutlined />, // Icon Trang Chủ
+          
                         style: {
                             padding: "0 10px",
                         },
@@ -48,7 +48,7 @@ const HeaderComponents = () => {
                     {
                         label: "Giới Thiệu",
                         key: "about",
-                        icon: <InfoCircleOutlined />, // Icon Giới Thiệu
+
                         style: {
                             padding: "0 10px",
                         },
@@ -95,7 +95,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "service",
-                        icon: <HeartOutlined />, // Icon Dịch Vụ
+
                         style: {
                             padding: "0 10px",
                         },
@@ -107,7 +107,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "price",
-                        icon: <DollarOutlined />, // Icon Bảng Giá
+
                         style: {
                             padding: "0 10px",
                         },
@@ -119,7 +119,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "effect",
-                        icon: <ShopOutlined />, // Icon Hiệu Quả Điều Trị
+           
                         style: {
                             padding: "0 10px",
                         },
@@ -131,7 +131,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "promotion",
-                        icon: <GiftOutlined />, // Icon Khuyến Mãi
+           
                         style: {
                             padding: "0 10px",
                         },
@@ -162,7 +162,7 @@ const HeaderComponents = () => {
                             </button>
                         ),
                         key: "contact",
-                        icon: <CalendarOutlined />, // Icon Đặt Lịch
+           
                         style: {
                             padding: "0 10px",
                         },

@@ -16,17 +16,12 @@ return new class extends Migration {
             $table->string('country');
             $table->string('contact_email')->unique();
             $table->string('code');
-            $table->string('created_by', 20)->nullable();
-            $table->string('updated_by', 20)->nullable();
+            $table->string('created_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
         Schema::table('suppliers', function (Blueprint $table) {
             $table->foreign('created_by')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');
-            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');

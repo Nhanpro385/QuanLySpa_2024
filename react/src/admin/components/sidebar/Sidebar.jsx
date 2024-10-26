@@ -12,6 +12,7 @@ import {
     SettingOutlined,
     CommentOutlined,
     PhoneOutlined,
+    HomeFilled,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
@@ -33,9 +34,10 @@ const items = [
             className="text-decoration-none text-black fs-2 text-center"
             to="/admin"
         >
-            Sakura spa
+            
         </Link>,
-        "1"
+        "1",
+        <HomeFilled />
     ),
     getItem(
         <Link

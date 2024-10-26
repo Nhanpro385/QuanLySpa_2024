@@ -24,15 +24,14 @@ class CustomerFactory extends Factory
         return [
             'id' => app(Snowflake::class)->next(),
             'full_name' => $this->faker->name(),
+            'name' => $this->faker->userName(),
             'password' => static::$password ??= Hash::make('password'),
             'email' => $this->faker->email(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'date_of_birth' => $this->faker->date(),
             'note' => $this->faker->text(),
-            'gender' => $this->faker->numberBetween(0, 5),
-            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

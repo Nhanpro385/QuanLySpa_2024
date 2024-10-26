@@ -18,6 +18,7 @@ class Customer extends Model
     protected $fillable = [
         'id',
         'full_name',
+        'name',
         'password',
         'email',
         'gender',
@@ -26,16 +27,15 @@ class Customer extends Model
         'date_of_birth',
         'note',
         'status',
-        'created_by',
-        'updated_by'
+        'created_by'
     ];
 
     protected $attributes = [
         'status' => true,
-        'gender' => 1,
+        'gender' => 'female',
     ];
 
-
+    
     protected static function boot()
     {
         parent::boot();

@@ -15,21 +15,13 @@ return new class extends Migration {
             $table->string('product_id', 20)->nullable();
             $table->integer('quantity');
             $table->string('created_by', 20)->nullable();
-            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::table('inventories', function (Blueprint $table) {
-            $table->foreign('product_id')
-                ->references('id')
-                ->on('products')
-                ->onDelete('set null');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('set null');
             $table->foreign('created_by')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');
-            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');

@@ -7,7 +7,7 @@ function JoinScreen({ getMeetingAndToken }) {
   
 
     const onClick = async () => {
-        await getMeetingAndToken(meetingId);
+        await getMeetingAndToken(meetingId); 
     };
 
     // Function to start the camera feed

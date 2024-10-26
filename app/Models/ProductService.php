@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ProductService extends Model
 {
     use HasFactory;
-
+    use SoftDeletes;
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -24,10 +24,10 @@ class ProductService extends Model
     ];
     public function service()
     {
-        return $this->belongsTo(Service::class, 'service_id', 'id');
+        return $this->belongsTo(Service::class, 'services_id', 'id');
     }
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->belongsTo(Product::class, 'products_id', 'id');
     }
 }

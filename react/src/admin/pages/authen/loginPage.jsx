@@ -1,10 +1,11 @@
 import React from "react";
-import { Button, Col, Form, Input, Row, Spin, notification } from "antd";
+import { Button, Col, Form, Input, Row, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import "../../modules/authen/styles/LoginPage.scss"; // Use the updated CSS file
+import styles from "@admin/modules/authen/styles/LoginPage.module.scss";
 import { loginAction } from "../../modules/authen/actions/authActions";
 import Wellcome from "../../assets/images/loginimg.jpg";
+import clsx from "clsx";
 const LoginPage = () => {
     const [loading, setLoading] = React.useState(false);
     const {
@@ -14,12 +15,11 @@ const LoginPage = () => {
     } = useForm();
     const navigate = useNavigate();
 
-    // Function to display notifications
     const openNotification = (type, message, description) => {
         notification[type]({
             message,
             description,
-            placement: "topRight", // Can be adjusted: 'topLeft', 'bottomRight', etc.
+            placement: "topRight",
         });
     };
 
@@ -27,7 +27,6 @@ const LoginPage = () => {
         setLoading(true);
         const { email, password } = data;
         const res = await loginAction(email, password);
-        console.log(res);
 
         if (res.success) {
             openNotification(
@@ -50,93 +49,88 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="login-wrapper">
-            <Row className="container">
-                <Col span={12} className="overlay-container">
-                    <div className="overlay-panel">
+        <div className={clsx(styles.login_wrapper)}>
+            <Row className={clsx(styles.container)}>
+                <Col xs={24} md={12} className={clsx(styles.overlay_container)}>
+                    <div className={clsx(styles.overlay_panel)}>
                         <img
                             src={Wellcome}
                             alt="wellcome"
-                            width={300}
+                            width={"60%"}
                             style={{
-                                filter: "drop-shadow(10px 10px 20px rgba(0, 0, 0, 0.5))", // Shadow effect around the image
+                                filter: "drop-shadow(10px 10px 20px rgba(0, 0, 0, 0.5))",
                             }}
                         />
                     </div>
                 </Col>
-                <Col span={12} className="form-container">
-                    <Spin spinning={loading}>
-                        <Row justify="center" align="middle">
-                            <Col span={24} className="text-center">
-                                <Form onFinish={handleSubmit(onSubmit)}>
-                                    <h1>Đăng nhập hệ thống</h1>
-                                    <Form.Item>
-                                        <Controller
-                                            name="email"
-                                            control={control}
-                                            rules={{
-                                                required: "Vui lòng nhập email",
-                                            }}
-                                            render={({ field }) => (
-                                                <Input
-                                                    {...field}
-                                                    type="email"
-                                                    placeholder="Email"
-                                                    className="w-100"
-                                                />
-                                            )}
-                                        />
-                                        {errors.email && (
-                                            <p style={{ color: "red" }}>
-                                                {errors.email.message}
-                                            </p>
-                                        )}
-                                    </Form.Item>
-                                    <Form.Item>
-                                        <Controller
-                                            name="password"
-                                            control={control}
-                                            rules={{
-                                                required:
-                                                    "Vui lòng nhập mật khẩu",
-                                            }}
-                                            render={({ field }) => (
-                                                <Input.Password
-                                                    {...field}
-                                                    placeholder="Mật khẩu"
-                                                />
-                                            )}
-                                        />
-                                        {errors.password && (
-                                            <p style={{ color: "red" }}>
-                                                {errors.password.message}
-                                            </p>
-                                        )}
-                                    </Form.Item>
-                                    <a
-                                    style={{
-                                        fontSize: "17px",
-                                    }}
-                                        onClick={() =>
-                                            navigate("/admin/quenmatkhau")
-                                        }
-                                        className="forgotlink"
-                                    >
-                                        Quên mật khẩu?
-                                    </a>
-                                    <br />
-                                    <Button
-                                        type="primary"
-                                        htmlType="submit"
-                                        className="buttonlogin"
-                                        block
-                                    >
-                                        Đăng nhập
-                                    </Button>
-                                </Form>
-                            </Col>
-                        </Row>
-                    </Spin>
+                <Col xs={24} md={12} className={clsx(styles.form_container)}>
+                    <Form
+                        onFinish={handleSubmit(onSubmit)}
+                        className={clsx(styles.login_form)}
+                    >
+                        <h1 className={clsx(styles.title)}>
+                            Đăng nhập hệ thống
+                        </h1>
+                        <Form.Item>
+                            <Controller
+                                name="email"
+                                control={control}
+                                rules={{ required: "Vui lòng nhập email" }}
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        type="email"
+                                        placeholder="Email"
+                                        className="w-100"
+                                        size="large"
+                                    />
+                                )}
+                            />
+                            {errors.email && (
+                                <p style={{ color: "red" }}>
+                                    {errors.email.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                        <Form.Item>
+                            <Controller
+                                name="password"
+                                control={control}
+                                rules={{ required: "Vui lòng nhập mật khẩu" }}
+                                render={({ field }) => (
+                                    <Input.Password
+                                        {...field}
+                                        placeholder="Mật khẩu"
+                                        size="large"
+
+                                    />
+                                )}
+                            />
+                            {errors.password && (
+                                <p style={{ color: "red" }}>
+                                    {errors.password.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                        <a
+                            style={{ fontSize: "17px" }}
+                            onClick={() => navigate("/admin/quenmatkhau")}
+                            className={clsx(styles.forgotlink)}
+                        >
+                            Quên mật khẩu?
+                        </a>
+                        <br />
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            className="buttonlogin"
+                            block
+                            loading={loading}
+                            size="large"
+                        >
+                            Đăng nhập
+                        </Button>
+                    </Form>
                 </Col>
             </Row>
         </div>

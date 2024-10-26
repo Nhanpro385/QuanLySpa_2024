@@ -23,9 +23,8 @@ class ShiftFactory extends Factory
         return [
             'id' => app(Snowflake::class)->next(),
             'shift_date' => $this->faker->unique()->dateTimeBetween('now', '+10 days')->format('Y-m-d'),
-            'note' => $this->faker->text(),
+            'note' => 'Phuc vu khach hang',
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
         ];
     }
 }

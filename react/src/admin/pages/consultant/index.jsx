@@ -11,6 +11,8 @@ import {
     Dropdown,
     Space,
     Modal,
+    Row,
+    Col,
 } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
@@ -168,59 +170,69 @@ const Consultant = () => {
 
     return (
         <Card>
-            <Form
-                form={form}
-                layout="inline"
-                onFinish={handleFinish}
-                style={{ marginBottom: "20px" }}
-            >
-                <Form.Item
-                    name="customerName"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Vui lòng nhập tên khách hàng!",
-                        },
-                    ]}
-                >
-                    <Input placeholder="Tên khách hàng" />
-                </Form.Item>
-                <Form.Item
-                    name="status"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Vui lòng chọn trạng thái!",
-                        },
-                    ]}
-                >
-                    <Select placeholder="Trạng thái" style={{ width: 120 }}>
-                        <Option value="Đang chờ">Đang chờ</Option>
-                        <Option value="Đang tư vấn">Đang tư vấn</Option>
-                        <Option value="Hoàn thành">Hoàn thành</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="service"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Vui lòng chọn dịch vụ!",
-                        },
-                    ]}
-                >
-                    <Select placeholder="Dịch vụ" style={{ width: 150 }}>
-                        <Option value="Dịch vụ A">Dịch vụ A</Option>
-                        <Option value="Dịch vụ B">Dịch vụ B</Option>
-                        <Option value="Dịch vụ C">Dịch vụ C</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Thêm
-                    </Button>
-                </Form.Item>
-            </Form>
+             <Form
+            form={form}
+            layout="inline"
+            onFinish={handleFinish}
+            style={{ marginBottom: "20px" }}
+        >
+            <Row gutter={[16, 16]}>
+                <Col xs={24} sm={12} md={8} lg={8}>
+                    <Form.Item
+                        name="customerName"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Vui lòng nhập tên khách hàng!",
+                            },
+                        ]}
+                    >
+                        <Input placeholder="Tên khách hàng" />
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={8}>
+                    <Form.Item
+                        name="status"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Vui lòng chọn trạng thái!",
+                            },
+                        ]}
+                    >
+                        <Select placeholder="Trạng thái" style={{ width: "100%" }}>
+                            <Option value="Đang chờ">Đang chờ</Option>
+                            <Option value="Đang tư vấn">Đang tư vấn</Option>
+                            <Option value="Hoàn thành">Hoàn thành</Option>
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={8}>
+                    <Form.Item
+                        name="service"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Vui lòng chọn dịch vụ!",
+                            },
+                        ]}
+                    >
+                        <Select placeholder="Dịch vụ" className="w-100">
+                            <Option value="Dịch vụ A">Dịch vụ A</Option>
+                            <Option value="Dịch vụ B">Dịch vụ B</Option>
+                            <Option value="Dịch vụ C">Dịch vụ C</Option>
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={8}>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" block>
+                            Tìm kiếm
+                        </Button>
+                    </Form.Item>
+                </Col>
+            </Row>
+        </Form>
 
             <Table columns={columns} dataSource={consultations} />
 

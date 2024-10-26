@@ -28,11 +28,10 @@ class ProductFactory extends Factory
             'cost' => $this->faker->numberBetween(100, 99999999),
             'capacity' => $this->faker->numberBetween(100, 3000),
             'bar_code' => $this->faker->numberBetween(444444444444, 999999999999),
-            'priority' => $this->faker->numberBetween(0, 10),
             'date' => $this->faker->dateTime(),
+            'image_url' => '/http',
             'description' => $this->faker->text(),
-            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }
