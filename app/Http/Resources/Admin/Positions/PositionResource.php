@@ -21,8 +21,9 @@ class PositionResource extends JsonResource
             'wage' => $this->wage ? number_format($this->wage) : null,
             'note' => $this->note,
             'users' => UserResource::collection($this->whenLoaded('users')),
-            'created_at' =>
-                $this->created_at->format('Y-m-d'),
+            'created_by' => $this->created_by, 
+            'updated_by' => $this->updated_by,
+            'created_at' => $this->created_at->format('Y-m-d'),
             'updated_at' => $this->updated_at->format('Y-m-d')
         ];
     }

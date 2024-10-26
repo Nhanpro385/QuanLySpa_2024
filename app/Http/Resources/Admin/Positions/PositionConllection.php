@@ -7,14 +7,21 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class PositionConllection extends ResourceCollection
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
+
     public $collects = PositionResource::class;
+
+   
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'status' => 'success',
+            'data' => parent::toArray($request),
+            'meta' => [
+                'total' => $this->total(),
+                'current_page' => $this->currentPage(),
+                'last_page' => $this->lastPage(),
+                'per_page' => $this->perPage(),
+            ],
+        ];
     }
 }
