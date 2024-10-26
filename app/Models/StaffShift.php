@@ -33,4 +33,5 @@ class StaffShift extends Model
     {
         return $this->belongsTo(User::class, 'staff_id', 'id');
     }
+   
 }

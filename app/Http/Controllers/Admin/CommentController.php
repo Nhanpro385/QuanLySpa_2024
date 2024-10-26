@@ -8,13 +8,13 @@ use App\Http\Requests\Admin\Comments\CommentRequest;
 use App\Http\Requests\Admin\Comments\CommentUpdateRequest;
 use App\Http\Resources\Admin\Comments\CommentResource;
 use App\Http\Resources\Admin\Comments\CommentCollection;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
     public function index()
     {
         try {
-           
             $comments = Comment::with('replies.replies')->paginate(5);
             return new CommentCollection($comments);
         } catch (\Throwable $th) {
@@ -26,11 +26,9 @@ class CommentController extends Controller
         }
     }
 
-
     public function show($id)
     {
         try {
-            // Tải cmt
             $comment = Comment::with('replies.replies')->find($id);
 
             if (!$comment) {
@@ -54,12 +52,22 @@ class CommentController extends Controller
         }
     }
 
-
     public function store(CommentRequest $request)
     {
         try {
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('uploads/comments', $imageName, 'public');
+            }
 
             $validatedData = $request->validated();
+            $validatedData['created_by'] = Auth::id();
+            $validatedData['updated_by'] = Auth::id();
+            $validatedData['image'] = $imagePath;
+
             $comment = Comment::create($validatedData);
 
             return response()->json([
@@ -76,13 +84,14 @@ class CommentController extends Controller
         }
     }
 
-
     public function update(CommentUpdateRequest $request, $id)
     {
         try {
-
             $comment = Comment::findOrFail($id);
-            $comment->update($request->validated());
+
+            $validatedData = $request->validated();
+            $validatedData['updated_by'] = Auth::id();
+            $comment->update($validatedData);
 
             return response()->json([
                 'status' => 'success',
@@ -103,11 +112,9 @@ class CommentController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         try {
-
             $comment = Comment::findOrFail($id);
             $comment->delete();
 
@@ -129,16 +136,26 @@ class CommentController extends Controller
         }
     }
 
-    // Admin trả lời cmt
     public function reply(CommentRequest $request, $id)
     {
         try {
             // Tìm cmt cha
             $parentComment = Comment::findOrFail($id);
 
+            // Kiểm tra nếu có ảnh được tải lên
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('uploads/comments', $imageName, 'public');
+            }
 
             $validatedData = $request->validated();
             $validatedData['parent_comment_id'] = $parentComment->id;
+            $validatedData['created_by'] = Auth::id();
+            $validatedData['updated_by'] = Auth::id();
+            $validatedData['image'] = $imagePath;
+            $validatedData['comment'] = $request->input('comment');
 
             $reply = Comment::create($validatedData);
 

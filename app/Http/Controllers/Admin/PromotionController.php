@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Promotions\PromotionRequest;
 use App\Http\Requests\Admin\Promotions\PromotionUpdateRequest;
 use App\Http\Resources\Admin\Promotions\PromotionResource;
 use App\Http\Resources\Admin\Promotions\PromotionCollection;
+use Illuminate\Support\Facades\Auth;
 
 class PromotionController extends Controller
 {
@@ -55,6 +56,7 @@ class PromotionController extends Controller
     {
         try {
             $validatedData = $request->validated();
+
             $promotion = Promotion::create($validatedData);
 
             return response()->json([
@@ -75,7 +77,9 @@ class PromotionController extends Controller
     {
         try {
             $promotion = Promotion::findOrFail($id);
-            $promotion->update($request->validated());
+            $validatedData = $request->validated();
+
+            $promotion->update($validatedData);
 
             return response()->json([
                 'status' => 'success',
@@ -100,7 +104,6 @@ class PromotionController extends Controller
     {
         try {
             $promotion = Promotion::findOrFail($id);
-
             $promotion->delete();
 
             return response()->json([
@@ -120,5 +123,4 @@ class PromotionController extends Controller
             ], 500);
         }
     }
-
 }

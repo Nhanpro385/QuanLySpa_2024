@@ -33,7 +33,7 @@ class CommentRequest extends FormRequest
                         ->exists();
 
                     if (!$hasUsedService) {
-                        $fail('Khách hàng này chưa sử dụng dịch vụ , không thể bình luận.');
+                        $fail('Khách hàng này chưa sử dụng dịch vụ này, không thể bình luận.');
                     }
 
 
@@ -48,7 +48,7 @@ class CommentRequest extends FormRequest
             ],
             'parent_comment_id' => 'nullable|exists:comments,id|integer',
             'comment' => 'required|string|max:500',
-            'rate' => 'required|integer|min:1|max:5',
+            'rate' => 'integer|min:1|max:5',
             'status' => 'required|boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
@@ -70,7 +70,7 @@ class CommentRequest extends FormRequest
             'parent_comment_id.integer' => 'Parent Comment Id phải là số nguyên.',
             'comment.required' => 'Bình luận không được bỏ trống!',
             'comment.max' => 'Bình luận không được vượt quá 500 ký tự.',
-            'rate.required' => 'Đánh giá không được bỏ trống!',
+        
             'rate.integer' => 'Đánh giá phải là số nguyên.',
             'rate.min' => 'Đánh giá phải ít nhất là 1.',
             'rate.max' => 'Đánh giá tối đa là 5.',
