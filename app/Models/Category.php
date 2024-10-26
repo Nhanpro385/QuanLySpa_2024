@@ -15,10 +15,12 @@ class Category extends Model
     protected $table = 'categories';
     protected $fillable = [
         'id',
+        'parent_id',
         'name',
         'status',
         'description',
         'created_by',
+        'updated_by',
     ];
 
     protected $attributes = [
@@ -27,18 +29,5 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany(Product::class, 'category_id', 'id');
-
-    }
-
-
-    public function parent()
-    {
-        return $this->belongsTo(Category::class, 'parent_id');
-    }
-
-    
-    public function subcategories()
-    {
-        return $this->hasMany(Category::class, 'parent_id');
     }
 }

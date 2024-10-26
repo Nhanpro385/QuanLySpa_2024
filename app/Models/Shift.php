@@ -9,8 +9,9 @@ use Kra8\Snowflake\HasSnowflakePrimary;
 
 class Shift extends Model
 {
-    use HasFactory, HasSnowflakePrimary, SoftDeletes;
+    use HasFactory, HasSnowflakePrimary;
 
+    use SoftDeletes;
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -25,23 +26,22 @@ class Shift extends Model
         'note',
         'status',
         'created_by',
+        'updated_by',
     ];
 
     protected $attributes = [
         'start_time' => '08:00:00',
         'end_time' => '12:00:00',
         'status' => true,
-        'max_customers' => 6,
+        'max_customers' => 6
     ];
-
-    // Relationships
-    public function appointments()
+    public function appointment()
     {
-        return $this->hasMany(Appointment::class, 'shift_id', 'id');
+        return $this->hasMany(Shift::class, 'shifts_id', 'id');
+    }
+    public function staff()
+    {
+        return $this->hasMany(Shift::class, 'shifts_id', 'id');
     }
 
-    public function staffs()
-    {
-        return $this->belongsToMany(Staff::class, 'shift_staff', 'shift_id', 'staff_id');
-    }
 }

@@ -21,6 +21,7 @@ class Inventory extends Model
         'product_id',
         'quantity',
         'created_by',
+        'updated_by',
     ];
     public function product()
     {
