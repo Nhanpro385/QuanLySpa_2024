@@ -1,6 +1,7 @@
 // src/admin/api/endpoints.js
 
-const API_BASE_URL = "http://127.0.0.1:8000/api/v0.0.1/admin"; // Thay đổi theo URL API của bạn
+export const API_BASE_URL = "http://127.0.0.1:8000/api/v0.0.1/admin";
+
 const API_AUTH_URL = "http://127.0.0.1:8000/api/auth"; // Thay đổi theo URL API của bạn
 
 const endpoints = {
@@ -81,7 +82,6 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/shifts/${id}`,
         delete: (id) => `${API_BASE_URL}/shifts/${id}`,
     },
-    
 };
 
 export default endpoints;

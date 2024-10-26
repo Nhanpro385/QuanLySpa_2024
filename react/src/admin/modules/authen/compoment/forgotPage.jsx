@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styles from "@admin/modules/authen/styles/LoginPage.module.scss";
 
-import { loginAction } from "../actions/authActions";
+// import { loginAction } from "../actions/authActions";
 import Wellcome from "../../../assets/images/rb_1123.png";
 const ForgotPage = () => {
     const [loading, setLoading] = React.useState(false);
@@ -26,28 +26,28 @@ const ForgotPage = () => {
 
     const onSubmit = async (data) => {
         setLoading(true);
-        const { email, password } = data;
-        const res = await loginAction(email, password);
-        console.log(res);
+        // const { email, password } = data;
+        // const res = await loginAction(email, password);
+        // console.log(res);
 
-        if (res.success) {
-            openNotification(
-                "success",
-                "Đăng nhập thành công",
-                "Chuyển hướng đến trang quản trị..."
-            );
-            setTimeout(() => {
-                setLoading(false);
-                navigate("/admin");
-            }, 1000);
-        } else {
-            openNotification(
-                "error",
-                "Đăng nhập thất bại",
-                res.error.response.data.message
-            );
-            setLoading(false);
-        }
+        // if (res.success) {
+        //     openNotification(
+        //         "success",
+        //         "Đăng nhập thành công",
+        //         "Chuyển hướng đến trang quản trị..."
+        //     );
+        //     setTimeout(() => {
+        //         setLoading(false);
+        //         navigate("/admin");
+        //     }, 1000);
+        // } else {
+        //     openNotification(
+        //         "error",
+        //         "Đăng nhập thất bại",
+        //         res.error.response.data.message
+        //     );
+        //     setLoading(false);
+        // }
     };
 
     return (

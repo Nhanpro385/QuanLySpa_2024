@@ -3,10 +3,13 @@ import { Button, Col, Form, Input, Row, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styles from "@admin/modules/authen/styles/LoginPage.module.scss";
-import { loginAction } from "../../modules/authen/actions/authActions";
+import useAuthActions from "../../modules/authen/hooks/useAuth";
 import Wellcome from "../../assets/images/loginimg.jpg";
 import clsx from "clsx";
 const LoginPage = () => {
+    console.log(123);
+
+    const { authLogin } = useAuthActions();
     const [loading, setLoading] = React.useState(false);
     const {
         control,
@@ -24,11 +27,12 @@ const LoginPage = () => {
     };
 
     const onSubmit = async (data) => {
-        setLoading(true);
+        
         const { email, password } = data;
-        const res = await loginAction(email, password);
-
-        if (res.success) {
+        const res = await authLogin(email, password);
+        console.log(res);
+        
+        if (res.meta.requestStatus === "fulfilled") {
             openNotification(
                 "success",
                 "Đăng nhập thành công",
@@ -42,9 +46,9 @@ const LoginPage = () => {
             openNotification(
                 "error",
                 "Đăng nhập thất bại",
-                res.error.response.data.message
+            
             );
-            setLoading(false);
+           
         }
     };
 
@@ -102,7 +106,6 @@ const LoginPage = () => {
                                         {...field}
                                         placeholder="Mật khẩu"
                                         size="large"
-
                                     />
                                 )}
                             />

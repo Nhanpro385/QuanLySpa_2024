@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import endpoints from "../../config/appConfig";
-
+import axiosInstance from "../../config/axiosInstance";
 // AsyncThunk for fetching customers list
 export const CustomerGet = createAsyncThunk(
     "Customer/get",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Customers.list);
+            const response = await axiosInstance.get(endpoints.Customers.list);
 
             return response.data;
         } catch (error) {
@@ -199,5 +199,5 @@ const CustomerSlice = createSlice({
             });
     },
 });
-
+    
 export default CustomerSlice.reducer;

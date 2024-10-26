@@ -6,6 +6,7 @@ import store from "@admin/redux/store/store.jsx";
 import AuthMiddleware from "@/authMiddleware";
 import AdminLayout from "@admin/components/layout/AdminLayout";
 import { Button, Result } from "antd";
+import LoginPage from "./pages/authen/loginPage";
 
 const AppAdmin = () => {
     return (
@@ -24,10 +25,8 @@ const AppAdmin = () => {
                 ))}
 
                 {/* Route 404 */}
-                <Route
-                    path="*"
-                    element={<NotFound />}
-                />
+                <Route path="*" element={<NotFound />} />
+                <Route path="/dangnhap" element={<LoginPage />} />
             </Routes>
         </Provider>
     );

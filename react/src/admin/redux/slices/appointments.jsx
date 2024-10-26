@@ -2,10 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import endpoints from "../../config/appConfig";
 
-export const appointmentsGet = createAsyncThunk("appointments/get", async () => {
-    const response = await axios.get(endpoints.appointments.list);
-    return response.data;
-});
+export const appointmentsGet = createAsyncThunk(
+    "appointments/get",
+    async () => {
+        const response = await axios.get(endpoints.appointments.list);
+        return response.data;
+    }
+);
 
 export const appointmentsAdd = createAsyncThunk(
     "appointments/add",
@@ -66,9 +69,7 @@ export const appointmentsUpdate = createAsyncThunk(
 export const appointmentsGetById = createAsyncThunk(
     "appointments/getById",
     async (id) => {
-        const response = await axios.get(
-            endpoints.appointments.detail(id)
-        );
+        const response = await axios.get(endpoints.appointments.detail(id));
         return response.data;
     }
 );
