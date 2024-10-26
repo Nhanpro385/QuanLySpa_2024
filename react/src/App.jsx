@@ -7,10 +7,10 @@ import {
 } from "react-router-dom";
 
 import DefaultLayout from "./client/components/layout/DefaultLayout"; // Layout mặc định cho client
-import AdminLayout from "./admin/components/layout/AdminLayout"; // Layout mặc định cho admin
+
 import AppClient from "./client/app"; // Nội dung định tuyến cho client
 import AdminApp from "./admin/app"; // Ứng dụng admin
-import LoginPage from "./admin/pages/authen/loginPage";
+
 
 import { ConfigProvider } from "antd";
 import ForgotPage from "./admin/modules/authen/compoment/forgotPage";
@@ -32,7 +32,7 @@ const App = () => {
 
                 {/* Routes cho admin */}
                 <Route path="/admin/*" element={<AdminApp />} />
-                <Route path="/admin/dangnhap" element={<LoginPage />} />
+              
                 <Route path="/admin/quenmatkhau" element={<ForgotPage />} />
                 
           

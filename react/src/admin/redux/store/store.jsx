@@ -8,6 +8,7 @@ import SuppliersSlice from "../slices/SupplierSlice";
 import productSlice from "../slices/ProductSlice";
 import commentsSlice from "../slices/CommentsSlice";
 import ServiceSlice from "../slices/serviceSlice";
+import authSlice from "../slices/authSlice";
 const store = configureStore({
     reducer: {
         ServiceCategories: ServiceCategoriesSlice,
@@ -19,6 +20,7 @@ const store = configureStore({
         products: productSlice,
         comments: commentsSlice,
         services: ServiceSlice,
+        auth: authSlice,
     },
 });
 
