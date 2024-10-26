@@ -72,7 +72,8 @@ class ServiceController extends Controller
                     'description' => $validateData['description'] ?? 'Mô tả cho dịch vụ',
                     'image_url' => $fileName,
                     'duration' => $validateData['duration'],
-                    'created_by' => $validateData['created_by'] ?? null,
+                    'priority' => $validateData['priority'],
+                    'created_by' => auth('api')->user()->id
                 ]);
             }
 
@@ -84,7 +85,7 @@ class ServiceController extends Controller
                         'id' => app(Snowflake::class)->next(),
                         'service_id' => $validateData['id'],
                         'image_url' => $fileName,
-                        'created_by' => $validateData['created_by'] ?? null,
+                        'created_by' => auth('api')->user()->id
                     ]);
                 }
             }
@@ -120,10 +121,7 @@ class ServiceController extends Controller
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
-            $createdBy = $request->query('created_by');
-            if ($createdBy) {
-                $query = $query->with('createdBy')->find($id);
-            }
+
             $arr = [
                 'status' => 'success',
                 'message' => 'Chi tiết dịch vụ: ' . $query->name,
@@ -154,24 +152,29 @@ class ServiceController extends Controller
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
-            if ($service->image_url) {
-                Storage::delete('public/uploads/services/special/' . $service->image_url);
-            }
+
             if (isset($validateData['image_url'][0])) {
                 $file = $request->file('image_url')[0];
                 $fileName = time() . '_0_' . $file->getClientOriginalName();
                 $filePath = $file->storeAs('public/uploads/services/special', $fileName);
-
+                if ($service->image_url) {
+                    Storage::delete('public/uploads/services/special/' . $service->image_url);
+                }
                 $service->update([
-                    'name' => $validateData['name'],
-                    'service_category_id' => $validateData['service_category_id'] ?? $service->service_category_id,
-                    'price' => $validateData['price'],
-                    'description' => $validateData['description'] ?? 'Mô tả cho dịch vụ',
                     'image_url' => $fileName ?? $service->image_url,
-                    'duration' => $validateData['duration'],
-                    'created_by' => $validateData['created_by'] ?? $service->created_by,
+                    'updated_by' => auth('api')->user()->id
                 ]);
             }
+
+            $service->update([
+                'name' => $validateData['name'],
+                'service_category_id' => $validateData['service_category_id'] ?? $service->service_category_id,
+                'price' => $validateData['price'],
+                'description' => $validateData['description'] ?? 'Mô tả cho dịch vụ',
+                'duration' => $validateData['duration'],
+                'priority' => $validateData['priority'],
+                'updated_by' => auth('api')->user()->id
+            ]);
 
 
             if ($request->hasFile('image_url')) {
@@ -189,7 +192,7 @@ class ServiceController extends Controller
                                 'id' => app(Snowflake::class)->next(),
                                 'service_id' => $id,
                                 'image_url' => $fileName,
-                                'created_by' => $validateData['created_by'] ?? $service->created_by,
+                                'created_by' => auth('api')->user()->id
                             ]
                         );
                     }

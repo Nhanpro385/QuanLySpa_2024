@@ -17,18 +17,41 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'position' => $this->relationLoaded('position') ? new PositionResource($this->position) : $this->position_id,
-            'name' => $this->name,
-            'role' => $this->role,
+            'id' => (string) $this->id,
+            'position' => $this->relationLoaded('position') ? new PositionResource($this->position) : $this->position->name ?? null,
+            'role' => $this->roleName($this->role),
             'full_name' => $this->full_name,
-            'gender' => $this->gender,
+            'gender' => $this->genderName($this->gender),
             'phone' => $this->phone,
             'email' => $this->email,
             'address' => $this->address,
             'date_of_birth' => $this->date_of_birth,
             'note' => $this->note,
             'status' => $this->status,
+            'created_by' => $this->created_by ? $this->createdBy->full_name ?? null : $this->created_by,
+            'updated_by' => $this->updated_by ? $this->updatedBy->full_name ?? null : $this->updated_by,
         ];
+    }
+
+    public function roleName($role)
+    {
+        $name = 'Nhân viên';
+        if ($role == 0) {
+            $name = 'Quản trị viên';
+        } elseif ($role == 2) {
+            $name = 'Nhân viên tư vấn và chăm sóc khách hàng';
+        }
+        return $name;
+    }
+
+    public function genderName($gender)
+    {
+        $name = 'Nữ';
+        if ($gender == 0) {
+            $name = 'Khác';
+        } elseif ($gender == 2) {
+            $name = 'Nam';
+        }
+        return $name;
     }
 }

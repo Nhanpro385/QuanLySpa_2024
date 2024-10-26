@@ -15,15 +15,24 @@ class PositionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $users = $this->whenLoaded('users') ? $this->users : [];
+
         return [
-            'id' => $this->id,
+            'id' => (string) $this->id,
             'name' => $this->name,
             'wage' => $this->wage ? number_format($this->wage) : null,
             'note' => $this->note,
-            'users' => UserResource::collection($this->whenLoaded('users')),
-            'created_by' => $this->created_by, 
-            'updated_by' => $this->updated_by,
-            'created_at' => $this->created_at->format('Y-m-d'),
+            'users' => $users ? $users->map(function ($user) {
+                return [
+                    'id' => (string) $user->id,
+                    'full_name' => $user->full_name,
+                    'role' => $user->role,
+                    'phone' => $user->phone,
+                    'email' => $user->email
+                ];
+            }) : [],
+            'created_at' =>
+                $this->created_at->format('Y-m-d'),
             'updated_at' => $this->updated_at->format('Y-m-d')
         ];
     }

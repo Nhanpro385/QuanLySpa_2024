@@ -26,17 +26,16 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'position_id' => 'nullable|numeric|exists:positions,id',
-            'name' => 'required|regex:/^(?!\s*\d).+$/|max:255|min:10|' . Rule::unique('users')->ignore($this->id),
-            'role' => 'required|string|in:supper,advice,staff',
-            'full_name' => 'required|string|max:255|min:10|max:255',
-            'gender' => 'nullable|in:male,female',
+            'role' => 'required|numeric',
+            'full_name' => 'required|string|max:255|min:10',
+            'gender' => 'nullable|numeric',
             'phone' => 'required|regex:/^(\+?\d{1,4}?)?(\d{10})$/|' . Rule::unique('users')->ignore($this->id),
             'email' => 'required|email|max:255|' . Rule::unique('users')->ignore($this->id),
             'address' => 'required|string|max:255',
             'date_of_birth' => 'required|date|before:today',
             'note' => 'nullable|string',
             'status' => 'nullable|boolean',
-            'created_by' => 'nullable|numeric|exists:users,id',
+
         ];
     }
 
@@ -54,12 +53,12 @@ class UserUpdateRequest extends FormRequest
             'password.required' => 'Mật khẩu là bắt buộc.',
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
             'role.required' => 'Vai trò là bắt buộc.',
-            'role.in' => 'Vai trò phải là một trong các giá trị: super, advice, staff.',
+            'role.numeric' => 'Vai trò phải là một trong các giá trị: super, advice, staff.',
             'full_name.required' => 'Họ và tên là bắt buộc.',
             'full_name.string' => 'Họ và tên phải là chuỗi ký tự.',
             'full_name.max' => 'Họ và tên không được dài quá 255 ký tự.',
             'full_name.min' => 'Họ và tên phải có ít nhất 10 ký tự.',
-            'gender.in' => 'Giới tính phải là nam hoặc nữ.',
+            'gender.numeric' => 'Giới tính phải là nam, nữ hoặc khác.',
             'phone.required' => 'Số điện thoại là bắt buộc.',
             'phone.regex' => 'Số điện thoại không hợp lệ.',
             'phone.unique' => "Số điện thoại đã tồn tại.",
@@ -74,8 +73,6 @@ class UserUpdateRequest extends FormRequest
             'date_of_birth.date' => 'Ngày sinh không hợp lệ.',
             'date_of_birth.before' => 'Ngày sinh phải trước ngày hôm nay.',
             'note.string' => 'Ghi chú phải là chuỗi ký tự.',
-            'created_by.numeric' => 'Người tạo phải là số.',
-            'created_by.exists' => 'Người tạo không tồn tại.',
             'status.boolean' => 'Chưa chọn trạng thái hoặc trạng thái không hợp lệ.'
         ];
     }

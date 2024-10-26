@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -38,17 +40,28 @@ class Product extends Model
     ];
 
 
-    public function createdBy()
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
     }
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
-    public function inventory()
+
+    public function productImages(): HasMany
     {
-        return $this->hasOne(Inventory::class);
+        return $this->hasMany(ProductImage::class, 'product_id', 'id');
+    }
+
+    public function inventories(): HasMany
+    {
+        return $this->hasMany(Inventory::class, 'product_id', 'id')->orderBy('created_at', 'DESC');
     }
     public function inboundInvoiceDetail()
     {

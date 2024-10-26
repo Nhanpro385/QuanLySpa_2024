@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin\Auth;
+namespace App\Http\Requests\Admin\Products;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class PasswordResetLinkRequest extends FormRequest
+class ProductImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +24,16 @@ class PasswordResetLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => 'required',
-            'email' => 'required|email'
+            'image_url.*' => 'required|image|max:1536|file',
         ];
     }
 
     public function messages()
     {
         return [
-            'phone.required' => 'Tên đăng nhập không được bỏ trống.',
-            'email.required' => 'Vui lòng không được bỏ trống.',
-            'email.email' => 'Email không hợp lệ.'
+            'image_url.*.required' => 'Vui lòng chọn hình ảnh.',
+            'image_url.*.max' => 'Kích thước ảnh quá lớn.',
+            'image_url.*.image' => 'Vui lòng chọn file phù hợp.'
         ];
     }
 

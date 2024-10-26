@@ -31,11 +31,11 @@ class ProductUpdateRequest extends FormRequest
             'cost' => 'required|numeric|min:1000|lt:price',
             'capacity' => 'required|numeric',
             'bar_code' => 'required|numeric|' . Rule::unique('products')->ignore($this->id),
-            'date' => 'required|date|after:tomorrow|' . Rule::unique('products')->ignore($this->id),
-            'image_url' => 'nullable|image|' . Rule::unique('products')->ignore($this->id),
+            'date' => 'required|date|after:tomorrow',
+            'image_url' => 'nullable|image|max:1536|' . Rule::unique('products')->ignore($this->id),
+            'priority' => 'required|numeric',
             'description' => 'nullable',
             'status' => 'nullable',
-            'created_by' => 'nullable|numeric|exists:users,id'
         ];
     }
 
@@ -69,10 +69,12 @@ class ProductUpdateRequest extends FormRequest
             'image_url.nullable' => 'URL hình ảnh có thể không cần nhập.',
             'image_url.image' => 'URL hình ảnh phải là một tệp hình ảnh hợp lệ.',
             'image_url.unique' => 'URL hình ảnh đã tồn tại.',
+            'image_url.max' => 'Hình ảnh phải là một tệp dưới 2mb.',
+            'priority.required' => 'Không được bỏ trống mức độ phổ biến của sản phẩm',
+            'priority.numeric' => 'Vui lòng chọn giá trị phù hợp.',
             'description.nullable' => 'Mô tả có thể không cần nhập.',
             'status.nullable' => 'Trạng thái có thể không cần nhập.',
-            'created_by.numeric' => 'Người tạo phải là một số.',
-            'created_by.exists' => 'Người tạo không tồn tại.',
+
         ];
     }
 
