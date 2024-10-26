@@ -8,7 +8,7 @@ const { RangePicker } = DatePicker;
 
 const options = [{ label: "Dịch vụ 1", value: "a10" }];
 
-function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
+function ModalAppointmentEdit({ isModalOpen, handleOk, handleCancel }) {
     const {
         control,
         handleSubmit,
@@ -21,7 +21,7 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
 
     return (
         <Modal
-            title="Thêm lịch hẹn"
+            title="Chỉnh sửa lịch hẹn"
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
@@ -248,8 +248,6 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                             />
                         </Form.Item>
                     </Col>
-
-                  
                 </Row>
 
                 <Form.Item>
@@ -262,4 +260,4 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
     );
 }
 
-export default ModalAppointment;
+export default ModalAppointmentEdit;

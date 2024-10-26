@@ -117,14 +117,14 @@ function Customer() {
                 Quản lý khách hàng
             </h1>
             <Row gutter={[16, 16]} className="mb-3">
-                <Col xl={18} md={12} sm={24} xs={24}>
+                <Col xl={21} md={18} sm={12} xs={24}>
                     <h2>Danh Sách Người Dùng</h2>
                 </Col>
-                <Col xl={6} md={12} sm={24} xs={24}>
+                <Col xl={3} md={6} sm={12} xs={24}>
                     <Link to="/admin/khachhang/them">
                         <Button block type="primary">
                             <PlusOutlined />
-                            Thêm Người Dùng mới
+                            Thêm mới
                         </Button>
                     </Link>
                 </Col>

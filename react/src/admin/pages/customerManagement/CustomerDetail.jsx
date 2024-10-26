@@ -267,7 +267,9 @@ const CustomerDetail = () => {
                             {
                                 label: "Thống kê Dữ liệu",
                                 key: "1",
-                                children: <Statistics_staff />,
+                                children: <h1>
+                                    chua lam gi
+                                </h1>,
                             },
                         ]}
                     />

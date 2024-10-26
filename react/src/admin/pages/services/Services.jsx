@@ -62,6 +62,12 @@ function Services() {
 
     const columns = [
         {
+            title: "STT",
+            dataIndex: "key",
+            key: "key",
+            render: (text, record, index) => index + 1,
+        },
+        {
             title: "Tên dịch vụ",
             dataIndex: "name",
             key: "name",

@@ -56,7 +56,7 @@ const LoginPage = () => {
                         <img
                             src={Wellcome}
                             alt="wellcome"
-                            width={300}
+                            width={"60%"}
                             style={{
                                 filter: "drop-shadow(10px 10px 20px rgba(0, 0, 0, 0.5))",
                             }}
@@ -69,7 +69,8 @@ const LoginPage = () => {
                         className={clsx(styles.login_form)}
                     >
                         <h1 className={clsx(styles.title)}>
-                            Đăng nhập hệ thống</h1>
+                            Đăng nhập hệ thống
+                        </h1>
                         <Form.Item>
                             <Controller
                                 name="email"
@@ -81,6 +82,7 @@ const LoginPage = () => {
                                         type="email"
                                         placeholder="Email"
                                         className="w-100"
+                                        size="large"
                                     />
                                 )}
                             />
@@ -99,6 +101,8 @@ const LoginPage = () => {
                                     <Input.Password
                                         {...field}
                                         placeholder="Mật khẩu"
+                                        size="large"
+
                                     />
                                 )}
                             />
@@ -122,6 +126,7 @@ const LoginPage = () => {
                             className="buttonlogin"
                             block
                             loading={loading}
+                            size="large"
                         >
                             Đăng nhập
                         </Button>

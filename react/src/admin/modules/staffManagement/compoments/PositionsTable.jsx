@@ -16,7 +16,7 @@ const PositionsTable = ({ dataSource, loading, editCate, deleteCate }) => {
             key: "name",
         },
         {
-            title: "Mô tả",
+            title: "Lương theo giờ",
             dataIndex: "wage",
             key: "wage",
         },

@@ -1,171 +1,115 @@
-import {
-  Card,
-  Table,
-  Avatar,
-  Rate,
-  Button,
-  Space,
-  Popconfirm,
-  Modal,
-  Typography,
-} from "antd";
 import React, { useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
+import { Card, Typography } from "antd";
 import useModal from "../../modules/appointments/hooks/openmodal";
+import CommentDetailModal from "../../modules/Comment/compoments/CommentDetailModal";
+import CommentTable from "../../modules/Comment/compoments/CommentTable";
+import ReplyComment from "../../modules/Comment/compoments/ReplyComment";
 
 const { Text } = Typography;
 
-// Modal content component
-const CommentDetailModal = ({ visible, onOk, onCancel, commentDetails }) => {
-  return (
-    <Modal
-      title="Chi tiết bình luận"
-      visible={visible}
-      onOk={onOk}
-      onCancel={onCancel}
-    >
-      <p>
-        <strong>Tên người dùng:</strong> {commentDetails.username}
-      </p>
-      <p>
-        <strong>Sản phẩm:</strong> {commentDetails.product}
-      </p>
-      <p>
-        <strong>Nội dung:</strong> {commentDetails.content}
-      </p>
-      <p>
-        <strong>Đánh giá:</strong> <Rate value={commentDetails.rate} disabled />
-      </p>
-      <p>
-        <strong>Thời gian:</strong> {commentDetails.time}
-      </p>
-    </Modal>
-  );
-};
-
 const CommentManagement = () => {
-  const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-  const [selectedComment, setSelectedComment] = useState(null); // State to hold selected comment details
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const [selectedComment, setSelectedComment] = useState(null); // State to hold selected comment details
+    const [isReplyModalOpen, setReplyModalOpen] = useState(false); // State for reply modal
 
-  const columns = [
-    {
-      title: "#",
-      dataIndex: "key",
-      key: "key",
-    },
-    {
-      title: "Ảnh đại diện",
-      dataIndex: "avatar",
-      key: "avatar",
-      render: (avatar) => <Avatar src={avatar} icon={<UserOutlined />} />,
-    },
-    {
-      title: "Tên người dùng",
-      dataIndex: "username",
-      key: "username",
-    },
-    {
-      title: "Sản phẩm bình luận",
-      dataIndex: "product",
-      key: "product",
-    },
-    {
-      title: "Nội dung",
-      dataIndex: "content",
-      key: "content",
-    },
-    {
-      title: "Đánh giá",
-      dataIndex: "rate",
-      key: "rate",
-      render: (rate) => <Rate value={rate} disabled />,
-    },
-    {
-      title: "Thời gian",
-      dataIndex: "time",
-      key: "time",
-    },
-    {
-      title: "Hành động",
-      key: "actions",
-      render: (_, { key, username, ...record }) => (
-        <Space>
-          <Button    onClick={() => handleViewDetail(record)} type="primary">
-            Xem chi tiết
-          </Button>
-          <Popconfirm
-            title={`Bạn có chắc chắn muốn xóa bình luận của ${username} không?`}
-            onConfirm={() => handleDelete(key)}
-            okText="Có"
-            cancelText="Không"
-          >
-            <Button  ghost danger>
-              Xóa
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+    const handleViewDetail = (comment) => {
+        setSelectedComment(comment); // Set selected comment details
+        showModal(); // Show detail modal
+    };
 
-  const handleDelete = (key) => {
-    console.log("Xóa bình luận với ID:", key);
-    // Implement delete functionality
-  };
+    const handleEdit = (comment) => {
+        console.log("Editing comment:", comment);
+        // Implement edit functionality (e.g., show edit modal)
+    };
 
-  const handleViewDetail = (comment) => {
-    setSelectedComment(comment); // Set selected comment details
-    showModal(); // Show modal
-  };
+    const handleDelete = (key) => {
+        console.log("Deleting comment with ID:", key);
+        // Implement delete functionality
+    };
 
-  const dataSource = [
-    {
-      key: "1",
-      avatar: "https://example.com/avatar1.jpg",
-      username: "Trịnh Trần Phương Tuấn",
-      product: "Sản phẩm A",
-      content: "Rất hài lòng với sản phẩm này!",
-      rate: 5,
-      time: "2 giờ trước",
-    },
-    {
-      key: "2",
-      avatar: "https://example.com/avatar2.jpg",
-      username: "Nguyễn Văn B",
-      product: "Sản phẩm B",
-      content: "Sản phẩm tốt nhưng cần cải thiện đóng gói.",
-      rate: 4,
-      time: "5 giờ trước",
-    },
-  ];
+    const handleReplyClick = (comment) => {
+        setSelectedComment(comment); // Set selected comment for reply
+        setReplyModalOpen(true); // Open reply modal
+    };
 
-  return (
-    <div>
-      <h1 className="text-center">Quản lý bình luận</h1>
-      <Card title="Quản lý bình luận" style={{ margin: "20px" }}>
-        {dataSource.length === 0 ? (
-          <Text type="secondary">Không có bình luận nào.</Text>
-        ) : (
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            pagination={{ pageSize: 5 }}
-          />
-        )}
-      </Card>
-      {selectedComment && ( // Render modal only if a comment is selected
-        <CommentDetailModal
-          visible={isModalOpen}
-          onOk={handleOk}
-          onCancel={() => {
-            handleCancel();
-            setSelectedComment(null); // Clear selected comment on modal close
-          }}
-          commentDetails={selectedComment} // Pass comment details to modal
-        />
-      )}
-    </div>
-  );
+    const handleReplySubmit = (commentKey, replyContent) => {
+        console.log("Replying to comment with ID:", commentKey);
+        console.log("Reply content:", replyContent);
+        // Implement the functionality to save the reply
+        setReplyModalOpen(false); // Close reply modal
+        setSelectedComment(null); // Clear selected comment
+    };
+
+    const dataSource = [
+        {
+            key: "1",
+            avatar: "https://example.com/avatar1.jpg",
+            username: "Trịnh Trần Phương Tuấn",
+            product: "Sản phẩm A",
+            content: "Rất hài lòng với sản phẩm này!",
+            rate: 5,
+            time: "2 giờ trước",
+            replies: [
+                {
+                    key: "1-1",
+                    username: "Admin",
+                    content: "Cảm ơn bạn đã phản hồi!",
+                    time: "1 giờ trước",
+                },
+            ],
+        },
+        {
+            key: "2",
+            avatar: "https://example.com/avatar2.jpg",
+            username: "Nguyễn Văn B",
+            product: "Sản phẩm B",
+            content: "Sản phẩm tốt nhưng cần cải thiện đóng gói.",
+            rate: 4,
+            time: "5 giờ trước",
+            replies: [],
+        },
+    ];
+
+    return (
+        <div>
+            <h1 className="text-center">Quản lý bình luận</h1>
+            <Card title="Quản lý bình luận" style={{ margin: "20px" }}>
+                {dataSource.length === 0 ? (
+                    <Text type="secondary">Không có bình luận nào.</Text>
+                ) : (
+                    <CommentTable
+                        dataSource={dataSource}
+                        handleViewDetail={handleViewDetail}
+                        handleDelete={handleDelete}
+                        handleEdit={handleEdit}
+                        handleReplyClick={handleReplyClick} // Pass reply handler
+                    />
+                )}
+            </Card>
+
+            {isReplyModalOpen &&
+                selectedComment && ( // Render reply modal if it's open and a comment is selected
+                    <ReplyComment
+                        visible={isReplyModalOpen}
+                        onClose={() => setReplyModalOpen(false)} // Close reply modal
+                        onSubmit={handleReplySubmit}
+                        comment={selectedComment}
+                    />
+                )}
+
+            {selectedComment && ( // Render detail modal only if a comment is selected
+                <CommentDetailModal
+                    visible={isModalOpen}
+                    onOk={handleOk}
+                    onCancel={() => {
+                        handleCancel();
+                        setSelectedComment(null); // Clear selected comment on modal close
+                    }}
+                    commentDetails={selectedComment} // Pass comment details to modal
+                />
+            )}
+        </div>
+    );
 };
 
 export default CommentManagement;
