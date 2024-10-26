@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,12 +23,11 @@ class NotificationFactory extends Factory
     {
         return [
             'id' => app(Snowflake::class)->next(),
-            'staff_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'notification_type' => $this->faker->randomElement(['create', 'update', 'destroy']),
-            'content' => $this->faker->sentence(),
-            'url_notification' => 'http://',
-            'pin' => $this->faker->randomElement(['0', '1']),
-
+            'type' => $this->faker->mimeType(),
+            'notifiable_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'notifiable_type' => 'notifiable',
+            'data' => 'Thong bao moi.',
+            'read_at' => $this->faker->dateTime(),
         ];
     }
 }
