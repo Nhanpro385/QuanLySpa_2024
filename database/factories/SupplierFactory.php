@@ -25,8 +25,7 @@ class SupplierFactory extends Factory
             'country' => $this->faker->country(),
             'contact_email' => $this->faker->email(),
             'code' => random_int(100000000000, 9999999999999),
-            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

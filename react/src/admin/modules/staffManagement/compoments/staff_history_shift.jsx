@@ -17,24 +17,24 @@ const monthFormat = "YYYY/MM";
 const Staff_history_shift = () => {
     return (
         <Row>
-            <Col span={24}>
-                <Row gutter={16}>
-                    <Col span={5}>
+            <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                <Row gutter={[16, 16]}>
+                    <Col xl={5} lg={5} md={5} sm={24} xs={24}>
                         <Select className="w-100" placeholder="Bộ lọc">
                             <Select.Option key={1}>Mới nhất</Select.Option>
                             <Select.Option key={2}>Cũ nhất</Select.Option>
                         </Select>
                     </Col>
-                    <Col span={10}>
-                        <RangePicker format={dateFormat} />
+                    <Col xl={10} lg={10} md={10} sm={24} xs={24}>
+                        <RangePicker format={dateFormat} className="w-100" />
                     </Col>
                 </Row>
             </Col>
-            <Col span={24} className="mt-4">
+            <Col xl={24} lg={24} md={24} sm={24} xs={24} className="mt-3">
                 <Row gutter={[16, 16]}>
-                    <Col span={8}>
+                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
                         <Card
-                            className="bg-success-subtle"
+                            className=""
                             bordered={false}
                             style={{
                                 backgroundColor: "#fafafa",
@@ -101,9 +101,9 @@ const Staff_history_shift = () => {
                             </Tag>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
                         <Card
-                            className="bg-danger-subtle"
+                            className=""
                             bordered={false}
                             style={{
                                 backgroundColor: "#fafafa",
@@ -170,9 +170,9 @@ const Staff_history_shift = () => {
                             </Tag>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
                         <Card
-                            className="bg-warning-subtle"
+                            className=""
                             bordered={false}
                             style={{
                                 backgroundColor: "#fafafa",
@@ -239,9 +239,9 @@ const Staff_history_shift = () => {
                             </Tag>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
                         <Card
-                            className="bg-success-subtle"
+                            className=""
                             bordered={false}
                             style={{
                                 backgroundColor: "#fafafa",
@@ -308,9 +308,9 @@ const Staff_history_shift = () => {
                             </Tag>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
                         <Card
-                            className="bg-warning-subtle"
+                            className=""
                             bordered={false}
                             style={{
                                 backgroundColor: "#fafafa",

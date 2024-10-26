@@ -26,6 +26,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     protected $fillable = [
         'id',
         'position_id',
+        'name',
         'password',
         'role',
         'full_name',
@@ -36,14 +37,13 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'date_of_birth',
         'note',
         'status',
-        'created_by',
-        'updated_by',
+        'created_by'
     ];
 
     protected $attributes = [
         'status' => true,
-        'gender' => 1,
-        'role' => 1
+        'gender' => 'female',
+        'role' => 'staff'
     ];
 
     /**

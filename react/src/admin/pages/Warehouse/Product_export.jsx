@@ -71,7 +71,7 @@ const WarehouseExport = () => {
             value: "service",
         },
         {
-            label: "Xuất để sử dụng", 
+            label: "Xuất để sử dụng",
             value: "use",
         },
     ];
@@ -84,188 +84,221 @@ const WarehouseExport = () => {
     }));
 
     return (
-        <Card title="Xuất sản phẩm">
-            <Form layout="vertical">
-                <Row gutter={[16, 16]}>
-                    <Col span={16}>
-                        <Row gutter={[16, 16]}>
-                            <Col span={24}>
-                                <Card>
-                                    {products.map((product, index) => (
-                                        <Row gutter={[16, 16]} key={index}>
-                                            <Col span={12}>
-                                                <Form.Item label="Sản phẩm">
-                                                    <Select
-                                                        size="large"
-                                                        showSearch
-                                                        placeholder="Chọn sản phẩm"
-                                                        filterOption={(
-                                                            input,
-                                                            option
-                                                        ) =>
-                                                            (
-                                                                option?.label ??
-                                                                ""
-                                                            )
-                                                                .toLowerCase()
-                                                                .includes(
-                                                                    input.toLowerCase()
+        <>
+        <h1 className="text-center">Xuất kho</h1>
+            <Card>
+                <Form layout="vertical">
+                    <Row gutter={[16, 16]}>
+                        <Col xl={16} md={24} sm={24} xs={24}>
+                            <Row gutter={[16, 16]}>
+                                <Col xl={24} md={24} sm={24} xs={24}>
+                                    <Card>
+                                        {products.map((product, index) => (
+                                            <Row gutter={[16, 16]} key={index}>
+                                                <Col
+                                                    xl={12}
+                                                    md={12}
+                                                    sm={24}
+                                                    xs={24}
+                                                >
+                                                    <Form.Item label="Sản phẩm">
+                                                        <Select
+                                                            size="large"
+                                                            showSearch
+                                                            placeholder="Chọn sản phẩm"
+                                                            filterOption={(
+                                                                input,
+                                                                option
+                                                            ) =>
+                                                                (
+                                                                    option?.label ??
+                                                                    ""
                                                                 )
-                                                        }
-                                                        options={[
-                                                            {
-                                                                value: "1",
-                                                                label: "Sản phẩm 1",
-                                                            },
-                                                            {
-                                                                value: "2",
-                                                                label: "Sản phẩm 2",
-                                                            },
-                                                        ]}
-                                                    />
-                                                </Form.Item>
-                                            </Col>
+                                                                    .toLowerCase()
+                                                                    .includes(
+                                                                        input.toLowerCase()
+                                                                    )
+                                                            }
+                                                            options={[
+                                                                {
+                                                                    value: "1",
+                                                                    label: "Sản phẩm 1",
+                                                                },
+                                                                {
+                                                                    value: "2",
+                                                                    label: "Sản phẩm 2",
+                                                                },
+                                                            ]}
+                                                        />
+                                                    </Form.Item>
+                                                </Col>
 
-                                            <Col span={12}>
-                                                <Form.Item label="Số lượng xuất">
-                                                    <InputNumber
-                                                        className="w-100"
-                                                        size="large"
-                                                        min={1}
-                                                        max={
-                                                            product.availableStock
-                                                        }
-                                                        value={product.quantity}
-                                                        onChange={(value) => {
-                                                            const newProducts =
-                                                                [...products];
-                                                            newProducts[
-                                                                index
-                                                            ].quantity = value;
-                                                            setProducts(
-                                                                newProducts
-                                                            );
-                                                            handleTotalAmount(
-                                                                index,
-                                                                value,
-                                                                product.cost
-                                                            );
-                                                        }}
-                                                    />
-                                                    <div>
-                                                        <small>
-                                                            Có sẵn:{" "}
-                                                            {
+                                                <Col
+                                                    xl={12}
+                                                    md={12}
+                                                    sm={24}
+                                                    xs={24}
+                                                >
+                                                    <Form.Item label="Số lượng xuất">
+                                                        <InputNumber
+                                                            className="w-100"
+                                                            size="large"
+                                                            min={1}
+                                                            max={
                                                                 product.availableStock
                                                             }
-                                                        </small>
-                                                    </div>
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={12}>
-                                                <Form.Item label="Giá xuất">
-                                                    <InputNumber
-                                                        className="w-100"
-                                                        size="large"
-                                                        min={0}
-                                                        value={product.cost}
-                                                        formatter={(value) =>
-                                                            `₫ ${value}`.replace(
-                                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                                ","
-                                                            )
-                                                        }
-                                                        parser={(value) =>
-                                                            value.replace(
-                                                                /\₫\s?|(,*)/g,
-                                                                ""
-                                                            )
-                                                        }
-                                                        onChange={(value) => {
-                                                            const newProducts =
-                                                                [...products];
-                                                            newProducts[
-                                                                index
-                                                            ].cost = value;
-                                                            setProducts(
-                                                                newProducts
-                                                            );
-                                                            handleTotalAmount(
-                                                                index,
-                                                                product.quantity,
+                                                            value={
+                                                                product.quantity
+                                                            }
+                                                            onChange={(
                                                                 value
-                                                            );
-                                                        }}
-                                                    />
-                                                </Form.Item>
-                                            </Col>
-                                        </Row>
-                                    ))}
-                                </Card>
-                            </Col>
-                        </Row>
+                                                            ) => {
+                                                                const newProducts =
+                                                                    [
+                                                                        ...products,
+                                                                    ];
+                                                                newProducts[
+                                                                    index
+                                                                ].quantity =
+                                                                    value;
+                                                                setProducts(
+                                                                    newProducts
+                                                                );
+                                                                handleTotalAmount(
+                                                                    index,
+                                                                    value,
+                                                                    product.cost
+                                                                );
+                                                            }}
+                                                        />
+                                                        <div>
+                                                            <small>
+                                                                Có sẵn:{" "}
+                                                                {
+                                                                    product.availableStock
+                                                                }
+                                                            </small>
+                                                        </div>
+                                                    </Form.Item>
+                                                </Col>
+                                                <Col
+                                                    xl={12}
+                                                    md={12}
+                                                    sm={24}
+                                                    xs={24}
+                                                >
+                                                    <Form.Item label="Giá xuất">
+                                                        <InputNumber
+                                                            className="w-100"
+                                                            size="large"
+                                                            min={0}
+                                                            value={product.cost}
+                                                            formatter={(
+                                                                value
+                                                            ) =>
+                                                                `₫ ${value}`.replace(
+                                                                    /\B(?=(\d{3})+(?!\d))/g,
+                                                                    ","
+                                                                )
+                                                            }
+                                                            parser={(value) =>
+                                                                value.replace(
+                                                                    /\₫\s?|(,*)/g,
+                                                                    ""
+                                                                )
+                                                            }
+                                                            onChange={(
+                                                                value
+                                                            ) => {
+                                                                const newProducts =
+                                                                    [
+                                                                        ...products,
+                                                                    ];
+                                                                newProducts[
+                                                                    index
+                                                                ].cost = value;
+                                                                setProducts(
+                                                                    newProducts
+                                                                );
+                                                                handleTotalAmount(
+                                                                    index,
+                                                                    product.quantity,
+                                                                    value
+                                                                );
+                                                            }}
+                                                        />
+                                                    </Form.Item>
+                                                </Col>
+                                            </Row>
+                                        ))}
+                                    </Card>
+                                </Col>
+                            </Row>
 
-                        <Divider />
-                        <Form.Item>
-                            <Button
-                                type="primary"
-                                className="mt-3"
-                                onClick={handleAddProduct}
-                            >
-                                Thêm sản phẩm
-                            </Button>
-                        </Form.Item>
-
-                        <Card title="Danh sách xuất kho" className="mt-3">
-                            <Table columns={columns} dataSource={dataSource} />
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                        <Card>
-                            <Col span={24}>
-                                <Form.Item label="Nhân viên xuất">
-                                    <Input
-                                        size="large"
-                                        value={"Nguyễn Văn B"}
-                                        disabled
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={24}>
-                                <Form.Item label="Mô tả">
-                                    <Input.TextArea />
-                                </Form.Item>
-                            </Col>
-                            <Col span={24}>
-                                <Radio.Group
-                                    
-                                    options={options}
-                                    defaultValue="service"
-                                    optionType="button"
-                                />
-                            </Col>
-                                    <Divider />
-                            <Col span={24}>
-                                <h3>
-                                    Tổng tiền :
-                                    {`${products
-                                        .reduce(
-                                            (acc, curr) => acc + curr.total,
-                                            0
-                                        )
-                                        .toLocaleString()}`}
-                                </h3>
-                            </Col>
                             <Divider />
+                            <Form.Item>
+                                <Button
+                                    type="primary"
+                                    className="mt-3"
+                                    onClick={handleAddProduct}
+                                >
+                                    Thêm sản phẩm
+                                </Button>
+                            </Form.Item>
 
-                            <Button type="primary" className="w-100 mt-3">
-                                Xuất kho
-                            </Button>
-                        </Card>
-                    </Col>
-                </Row>
-            </Form>
-        </Card>
+                            <Card title="Danh sách xuất kho" className="mt-3">
+                                <Table
+                                    columns={columns}
+                                    dataSource={dataSource}
+                                />
+                            </Card>
+                        </Col>
+                        <Col xl={8} md={24} sm={24} xs={24}>
+                            <Card>
+                                <Col xl={24} md={24} sm={24} xs={24}>
+                                    <Form.Item label="Nhân viên xuất">
+                                        <Input
+                                            size="large"
+                                            value={"Nguyễn Văn B"}
+                                            disabled
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col xl={24} md={24} sm={24} xs={24}>
+                                    <Form.Item label="Mô tả">
+                                        <Input.TextArea />
+                                    </Form.Item>
+                                </Col>
+                                <Col xl={24} md={24} sm={24} xs={24}>
+                                    <Radio.Group
+                                        options={options}
+                                        defaultValue="service"
+                                        optionType="button"
+                                    />
+                                </Col>
+                                <Divider />
+                                <Col xl={24} md={24} sm={24} xs={24}>
+                                    <h3>
+                                        Tổng tiền :
+                                        {`${products
+                                            .reduce(
+                                                (acc, curr) => acc + curr.total,
+                                                0
+                                            )
+                                            .toLocaleString()}`}
+                                    </h3>
+                                </Col>
+                                <Divider />
+
+                                <Button type="primary" className="w-100 mt-3">
+                                    Xuất kho
+                                </Button>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Form>
+            </Card>
+        </>
     );
 };
 

@@ -26,10 +26,9 @@ class ServiceFactory extends Factory
             'name' => $this->faker->name(),
             'price' => $this->faker->numberBetween(1000, 99999999),
             'description' => $this->faker->text(),
-            'priority' => $this->faker->numberBetween(0, 10),
+            'image_url' => 'http',
             'duration' => $this->faker->numberBetween(10, 120),
-            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
+            'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }
 }

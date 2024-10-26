@@ -64,8 +64,7 @@ const AdminLayout = ({ children }) => {
                             textAlign: "center",
                         }}
                     >
-                        Ant Design ©{new Date().getFullYear()} Created by Ant
-                        UED
+                       Trang quản trị Dịch vụ chăm sóc sức khỏe Sakura Spa ©2025 Created by Sakura Spa
                     </Footer>
                 </Layout>
             </Layout>

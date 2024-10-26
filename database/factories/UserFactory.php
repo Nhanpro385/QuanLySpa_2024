@@ -28,10 +28,11 @@ class UserFactory extends Factory
         return [
             'id' => app(Snowflake::class)->next(),
             'position_id' => $this->faker->randomElement(Position::pluck('id')->toArray()),
+            'name' => $this->faker->userName(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => $this->faker->numberBetween(0, 5),
+            'role' => 'staff',
             'full_name' => $this->faker->name(),
-            'gender' => $this->faker->numberBetween(0, 5),
+            'gender' => 'female',
             'phone' => $this->faker->phoneNumber(),
             'email' => $this->faker->email(),
             'address' => $this->faker->address(),

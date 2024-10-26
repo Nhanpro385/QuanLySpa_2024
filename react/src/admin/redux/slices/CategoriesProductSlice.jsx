@@ -66,13 +66,17 @@ export const categoriesUpdate = createAsyncThunk(
 export const categoriesGetById = createAsyncThunk(
     "categories/getById",
     async (id) => {
-        const response = await axios.get(endpoints.ProductsCategories.detail(id));
+        const response = await axios.get(
+            endpoints.ProductsCategories.detail(id)
+        );
         return response.data;
     }
 );
 
 const initialState = {
-    categories: [],
+    categories: {
+        data: [],
+    },
     category: {},
     loading: false,
     error: null,
@@ -114,7 +118,7 @@ const categoriesSlice = createSlice({
             })
             .addCase(categoriesDelete.fulfilled, (state, action) => {
                 console.log(action.payload);
-                
+
                 state.categories.data = state.categories.data.filter(
                     (cate) => cate.id !== action.payload
                 );
@@ -158,6 +162,3 @@ const categoriesSlice = createSlice({
 });
 
 export default categoriesSlice.reducer;
-
- 
- 

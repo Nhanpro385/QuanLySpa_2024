@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-    Table,
     Button,
     Card,
     Input,
@@ -10,32 +9,34 @@ import {
     Space,
     Select,
     message,
-    Form,
 } from "antd";
 import { DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-    CustomerGet,
-    CustomerUpdate,
-    CustomerDelete,
-} from "../../redux/slices/CustomerSlice"; // Ensure you have an update action
-import ModalEditCustomer from "../../modules/Customer/compoment/modaledit";
+import { useSelector } from "react-redux";
+import ModalEditCustomer from "../../modules/Customer/compoment/CustomerModalEdit";
 import useModal from "../../modules/appointments/hooks/openmodal";
+import CustomerTable from "../../modules/Customer/compoment/CustomerTable";
+import useCustomerActions from "../../modules/Customer/hooks/useCustomerActions";
 
 function Customer() {
-    const dispatch = useDispatch();
-    const { customers, loading, error } = useSelector(
-        (state) => state.customers
-    );
+    const {
+        addCustomer,
+        getCustomer,
+        updateCustomer,
+        deleteCustomer,
+        getCustomerById,
+    } = useCustomerActions(); // Use the customer actions hook
+
+    const { customers, loading } = useSelector((state) => state.customers);
+    
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleCancel } = useModal();
     const [currentCustomer, setCurrentCustomer] = useState(null);
-    const [formErrors, setFormErrors] = useState({}); // Trạng thái lỗi cho form
+    const [formErrors, setFormErrors] = useState({});
 
     useEffect(() => {
-        dispatch(CustomerGet());
-    }, [dispatch]);
+        getCustomer(); // Fetch customers when the component mounts
+    }, []);
 
     const onClick = ({ key, record }) => {
         switch (key) {
@@ -43,7 +44,7 @@ function Customer() {
                 handleEdit(record);
                 break;
             case "2":
-                navigate(`/admin/user/Detail/${record.id}`);
+                navigate(`/admin/khachhang/chitiet/${record.id}`);
                 break;
             case "3":
                 navigate(`/admin/khachhang/lichsugiaodich/${record.id}`);
@@ -62,101 +63,30 @@ function Customer() {
     };
 
     const handleEditSubmit = async (updatedCustomer) => {
-        setFormErrors({});
-
-        const errors = {};
-
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
-        }
-
         try {
-            const resultAction = await dispatch(
-                CustomerUpdate(updatedCustomer)
-            );
-            if (CustomerUpdate.fulfilled.match(resultAction)) {
+            const resultAction = await updateCustomer(updatedCustomer); // Use customer update action
+            console.log(resultAction);
+
+            if (resultAction.meta.requestStatus === "fulfilled") {
                 message.success("Khách hàng đã được cập nhật");
                 handleCancel();
             } else {
+                setFormErrors(resultAction.payload.errors);
                 message.error("Cập nhật khách hàng không thành công");
             }
         } catch (error) {
-            console.error(error);
             message.error("Đã xảy ra lỗi khi cập nhật khách hàng");
         }
     };
 
-    const handleDelete = (id) => {
-        dispatch(CustomerDelete(id));
-        message.success("Khách hàng đã được xóa");
+    const handleDelete = async (id) => {
+        try {
+            await deleteCustomer(id); // Use customer delete action
+            message.success("Khách hàng đã được xóa");
+        } catch (error) {
+            message.error("Đã xảy ra lỗi khi xóa khách hàng");
+        }
     };
-
-    const dataSource = (customers.data || []).map((item) => ({
-        ...item,
-        key: item.id,
-    }));
-
-    const columns = [
-        {
-            title: "STT",
-            dataIndex: "key",
-            key: "key",
-            render: (text, record, index) => {
-                return index + 1;
-            },
-        },
-        {
-            title: "Họ và tên",
-            dataIndex: "full_name",
-            key: "full_name",
-        },
-        {
-            title: "Năm Sinh",
-            dataIndex: "date_of_birth",
-            key: "date_of_birth",
-        },
-        {
-            title: "Tuổi",
-            dataIndex: "age",
-            key: "age",
-        },
-        {
-            title: "Số điện thoại",
-            dataIndex: "phone",
-            key: "phone",
-        },
-        {
-            title: "Địa chỉ",
-            dataIndex: "address",
-            key: "address",
-        },
-        {
-            title: "Thao Tác",
-            key: "action",
-            render: (text, record) => (
-                <span>
-                    <Dropdown
-                        menu={{
-                            items,
-                            onClick: (e) => onClick({ key: e.key, record }),
-                        }}
-                        trigger={["click"]}
-                    >
-                        <Button
-                            type="primary"
-                            onClick={(e) => e.preventDefault()}
-                        >
-                            <Space>
-                                Hành động
-                                <DownOutlined />
-                            </Space>
-                        </Button>
-                    </Dropdown>
-                </span>
-            ),
-        },
-    ];
 
     const items = [
         {
@@ -183,47 +113,41 @@ function Customer() {
 
     return (
         <Card>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 16,
-                }}
-            >
-                <h2>Danh Sách Người Dùng</h2>
+            <h1 className="text-center mb-4">
+                Quản lý khách hàng
+            </h1>
+            <Row gutter={[16, 16]} className="mb-3">
+                <Col xl={21} md={18} sm={12} xs={24}>
+                    <h2>Danh Sách Người Dùng</h2>
+                </Col>
+                <Col xl={3} md={6} sm={12} xs={24}>
+                    <Link to="/admin/khachhang/them">
+                        <Button block type="primary">
+                            <PlusOutlined />
+                            Thêm mới
+                        </Button>
+                    </Link>
+                </Col>
+            </Row>
 
-                <Link to="/admin/khachhang/them">
-                    <Button block type="primary">
-                        <PlusOutlined />
-                        Thêm Người Dùng mới
-                    </Button>
-                </Link>
-            </div>
             <Row gutter={[16, 16]}>
-                <Col span={3}>
-                    <Select
-                        style={{ width: 120 }}
-                        className="mb-3 w-100"
-                        placeholder="Giới tính"
-                    >
+                <Col xl={4} md={6} sm={12} xs={24}>
+                    <Select className="mb-3 w-100" placeholder="Giới tính">
                         <Select.Option value="nam">Nam</Select.Option>
                         <Select.Option value="nu">Nữ</Select.Option>
                     </Select>
                 </Col>
-                <Col span={5}>
+                <Col xl={4} md={6} sm={12} xs={24}>
                     <Input.Search placeholder="Tìm kiếm......" />
                 </Col>
             </Row>
 
-            <Table
-                dataSource={dataSource}
-                columns={columns}
+            <CustomerTable
+                customers={customers}
+                onClick={onClick}
                 loading={loading}
-                pagination={{ pageSize: 10 }}
             />
 
-            {/* Modal for editing customer */}
             <ModalEditCustomer
                 isModalOpen={isModalOpen}
                 handleOk={handleEditSubmit}

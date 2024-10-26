@@ -6,7 +6,7 @@ const SupplierForm = ({ control, handleSubmit, onSubmit, errors }) => {
     return (
         <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
             <Row gutter={16}>
-                <Col span={12}>
+                <Col xl={12} md={12} sm={24} xs={24}>
                     <Form.Item
                         label="Tên Nhà cung cấp"
                         validateStatus={errors.name ? "error" : ""}
@@ -31,7 +31,7 @@ const SupplierForm = ({ control, handleSubmit, onSubmit, errors }) => {
                         )}
                     </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xl={12} md={12} sm={24} xs={24}>
                     <Form.Item
                         label="Địa chỉ"
                         validateStatus={errors.country ? "error" : ""}
@@ -57,7 +57,7 @@ const SupplierForm = ({ control, handleSubmit, onSubmit, errors }) => {
                 </Col>
             </Row>
             <Row gutter={16}>
-                <Col span={12}>
+                <Col xl={12} md={12} sm={24} xs={24}>
                     <Form.Item
                         label="Địa chỉ Email"
                         validateStatus={errors.contact_email ? "error" : ""}
@@ -81,7 +81,7 @@ const SupplierForm = ({ control, handleSubmit, onSubmit, errors }) => {
                         )}
                     </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xl={12} md={12} sm={24} xs={24}>
                     <Form.Item
                         label="Mã số"
                         validateStatus={errors.code ? "error" : ""}

@@ -142,8 +142,7 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(usersDelete.fulfilled, (state, action) => {
-                console.log(action);
-
+           
                 state.users.data = state.users.data.filter(
                     (cate) => cate.id !== action.payload
                 );

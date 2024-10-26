@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Customer;
 use App\Models\Service;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Kra8\Snowflake\Snowflake;
 
@@ -27,6 +26,7 @@ class CommentFactory extends Factory
             'parent_comment_id' => null,
             'comment' => 'comment',
             'rate' => 5,
+            'image_url' => 'comment',
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'type' => $this->faker->boolean()

@@ -1,5 +1,5 @@
 // src/actions/authActions.js
-import { API_login, API_logout } from "../../../api/auth";
+import { API_login, API_logout } from "@admin/api/auth";
 
 // Action đăng nhập
 export const loginAction = async (email, password) => {
@@ -20,7 +20,7 @@ export const loginAction = async (email, password) => {
 // Action đăng xuất
 export const logoutAction = async () => {
     try {
-        await API_logout();
+        // await API_logout();
         localStorage.removeItem("token"); // Xóa token khỏi localStorage
         return { success: true };
     } catch (error) {

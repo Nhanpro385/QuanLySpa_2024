@@ -31,19 +31,13 @@ class ServiceCategoryResource extends JsonResource
                     'status' => $service->status,
                 ];
             }) : [],
-            'parentId' => $this->parentId ?
+            'parent' => $this->parentId ?
                 [
+                    'id' => (string) $this->parentId->id,
                     'name' => $this->parentId->name,
-                    'id' => (string) $this->parentId->id
                 ]
                 : null,
-            'childrentIds' => $childrentIds ? $childrentIds->map(function ($childrentId) {
-                return [
-                    'id' => (string) $childrentId->id,
-                    'name' => $childrentId->name,
-                    'status' => $childrentId->status,
-                ];
-            }) : [],
+            'childs' => $childrentIds ? SimpleServiceCategory::collection($childrentIds) : [],
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
                 'fullname' => $this->createdBy->full_name,
@@ -56,8 +50,7 @@ class ServiceCategoryResource extends JsonResource
             ] : null,
             'created_at' =>
                 $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s')
         ];
     }
 

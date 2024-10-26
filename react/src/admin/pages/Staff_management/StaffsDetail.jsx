@@ -18,28 +18,28 @@ import Staff_history_shift from "../../modules/staffManagement/compoments/staff_
 const StaffsDetail = () => {
     return (
         <Row gutter={[16, 16]}>
-            <Col span={24}>
+            <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                 <Card >
                     <Row>
-                        <Col span={5}>
+                        <Col xl={5} lg={5} md={5} sm={5} xs={24}>
                             <Image src="https://nld.mediacdn.vn/thumb_w/698/2020/9/23/hoo1403-1600769609391337398991-1600824814143647303103-crop-16008249755862069103195.jpg"></Image>
                         </Col>
-                        <Col span={19}>
+                        <Col xl={19} lg={19} md={19} sm={19} xs={24}>
                             <Row>
-                                <Col span={24} className="p-3 ">
+                                <Col xl={24} lg={24} md={24} sm={24} xs={24} className="mb-2">
                                     <Row
                                         justify={"space-between"}
                                         align={"middle"}
                                     >
                                         <Col>
                                             <Row>
-                                                <Col span={24}>
+                                                <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                                                     <h2 className="m-2">
                                                         Nguyễn Thái Dương ( ĐÓm
                                                         con)
                                                     </h2>
                                                 </Col>{" "}
-                                                <Col span={24}>
+                                                <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                                                     <p className="m-2">
                                                         Nhân viên bán hàng
                                                     </p>
@@ -58,10 +58,10 @@ const StaffsDetail = () => {
                                     </Row>
                                 </Col>
                                 <Divider className="m-2"></Divider>
-                                <Col span={24} className="p-3">
+                                <Col xl={24} lg={24} md={24} sm={24} xs={24} className="p-2">
                                     <Form layout="vertical">
                                         <Row gutter={16}>
-                                            <Col span={12}>
+                                            <Col xl={12} lg={12} md={12} sm={12} xs={24}>
                                                 <Form.Item
                                                     label="Họ và tên"
                                                     name="fullname"
@@ -77,7 +77,7 @@ const StaffsDetail = () => {
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={12}>
+                                            <Col xl={12} lg={12} md={12} sm={12} xs={24}>
                                                 <Form.Item
                                                     label="Email"
                                                     name="Email"
@@ -95,7 +95,7 @@ const StaffsDetail = () => {
                                                 </Form.Item>
                                             </Col>
 
-                                            <Col span={12}>
+                                            <Col xl={12} lg={12} md={12} sm={12} xs={24}>
                                                 <Form.Item
                                                     label="Số điện thoại"
                                                     name="numberphone"
@@ -113,7 +113,7 @@ const StaffsDetail = () => {
                                                 </Form.Item>
                                             </Col>
 
-                                            <Col span={12}>
+                                            <Col xl={12} lg={12} md={12} sm={12} xs={24}>
                                                 <Form.Item
                                                     label="Địa chỉ"
                                                     name="address"

@@ -11,7 +11,7 @@ const Statistics_staff = () => {
     return (
         <Row gutter={[16,16]}>
             {/* Số giờ làm việc */}
-            <Col span={6}>
+            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
                         title="Số giờ làm việc"
@@ -26,7 +26,7 @@ const Statistics_staff = () => {
                 </Card>
             </Col>
             {/* Doanh thu cá nhân */}
-            <Col span={6}>
+            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
                         title="Doanh thu cá nhân"
@@ -41,7 +41,7 @@ const Statistics_staff = () => {
                 </Card>
             </Col>
             {/* Số lượng khách hàng mới */}
-            <Col span={6}>
+            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
                         title="Khách hàng mới"
@@ -55,7 +55,7 @@ const Statistics_staff = () => {
                 </Card>
             </Col>
             {/* Tỷ lệ hoàn thành chỉ tiêu */}
-            <Col span={6}>
+            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
                         title="Tỷ lệ hoàn thành chỉ tiêu"
@@ -70,7 +70,7 @@ const Statistics_staff = () => {
                 </Card>
             </Col>
             {/* Đánh giá trung bình */}
-            <Col span={6}>
+            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
                         title="Đánh giá trung bình"

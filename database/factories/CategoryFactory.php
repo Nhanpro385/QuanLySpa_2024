@@ -23,9 +23,7 @@ class CategoryFactory extends Factory
             'id' => app(Snowflake::class)->next(),
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
-            'status' => $this->faker->boolean(),
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
         ];
     }
 }

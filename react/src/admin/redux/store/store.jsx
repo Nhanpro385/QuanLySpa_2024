@@ -5,6 +5,9 @@ import categoriesSlice from "../slices/CategoriesProductSlice";
 import userSlice from "../slices/UserSlice";
 import PositionsSlice from "../slices/PositionsSlice";
 import SuppliersSlice from "../slices/SupplierSlice";
+import productSlice from "../slices/ProductSlice";
+import commentsSlice from "../slices/CommentsSlice";
+import ServiceSlice from "../slices/serviceSlice";
 const store = configureStore({
     reducer: {
         ServiceCategories: ServiceCategoriesSlice,
@@ -13,6 +16,9 @@ const store = configureStore({
         user: userSlice,
         Positions: PositionsSlice,
         Suppliers: SuppliersSlice,
+        products: productSlice,
+        comments: commentsSlice,
+        services: ServiceSlice,
     },
 });
 

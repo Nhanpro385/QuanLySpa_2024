@@ -53,6 +53,35 @@ const endpoints = {
         me: `${API_AUTH_URL}/me`,
         resetPassword: `${API_AUTH_URL}/me/resetPassword`,
     },
+    Products: {
+        list: `${API_BASE_URL}/products`,
+        detail: (id) => `${API_BASE_URL}/products/${id}`,
+        create: `${API_BASE_URL}/products`,
+        update: (id) => `${API_BASE_URL}/products/${id}`,
+        delete: (id) => `${API_BASE_URL}/products/${id}`,
+    },
+    comments: {
+        list: `${API_BASE_URL}/comments`,
+        detail: (id) => `${API_BASE_URL}/comments/${id}`,
+        create: `${API_BASE_URL}/comments`,
+        update: (id) => `${API_BASE_URL}/comments/${id}`,
+        delete: (id) => `${API_BASE_URL}/comments/${id}`,
+    },
+    services: {
+        list: `${API_BASE_URL}/services`,
+        detail: (id) => `${API_BASE_URL}/services/${id}`,
+        create: `${API_BASE_URL}/services`,
+        update: (id) => `${API_BASE_URL}/services/${id}`,
+        delete: (id) => `${API_BASE_URL}/services/${id}`,
+    },
+    shifts: {
+        list: `${API_BASE_URL}/shifts`,
+        detail: (id) => `${API_BASE_URL}/shifts/${id}`,
+        create: `${API_BASE_URL}/shifts`,
+        update: (id) => `${API_BASE_URL}/shifts/${id}`,
+        delete: (id) => `${API_BASE_URL}/shifts/${id}`,
+    },
+    
 };
 
 export default endpoints;

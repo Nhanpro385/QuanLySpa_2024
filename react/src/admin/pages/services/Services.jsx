@@ -1,9 +1,45 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Modal, Row, Col } from "antd";
+import { Table, Button, Input, Modal, Row, Col, Dropdown, Space } from "antd";
 import ServicesAdd from "./add_services";
 import useModal from "../../modules/appointments/hooks/openmodal";
-import { PlusOutlined } from "@ant-design/icons";
+import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
+import ServiceModalEdit from "../../modules/services/compoments/ServiceModalEdit";
+
 function Services() {
+    const onClick = ({ key, record }) => {
+        switch (key) {
+            case "1":
+                handleEdit(record.key);
+                break;
+            case "2":
+                handleViewDetails(record);
+                break;
+            case "4":
+                handleDelete(record.key);
+                break;
+            default:
+                break;
+        }
+    };
+    const items = [
+        {
+            key: "1",
+            label: <Button block> Sửa </Button>,
+        },
+        {
+            key: "2",
+            label: <Button block> Chi tiết </Button>,
+        },
+        {
+            key: "4",
+            label: (
+                <Button block danger>
+                    Xóa
+                </Button>
+            ),
+        },
+    ];
     const [dataSource, setDataSource] = useState([
         {
             key: "1",
@@ -16,9 +52,21 @@ function Services() {
     ]);
 
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const {
+        isModalOpen: isModalOpen2,
+        showModal: showModal2,
+        handleOk: handleOk2,
+        handleCancel: handleCancel2,
+    } = useModal();
     const [editService, setEditService] = useState(null);
 
     const columns = [
+        {
+            title: "STT",
+            dataIndex: "key",
+            key: "key",
+            render: (text, record, index) => index + 1,
+        },
         {
             title: "Tên dịch vụ",
             dataIndex: "name",
@@ -60,28 +108,26 @@ function Services() {
         {
             title: "Hành động",
             key: "action",
+
             render: (text, record) => (
                 <span>
-                    <Button
-                        type="primary"
-                        onClick={() => handleViewDetails(record)}
-                        style={{ marginRight: 8 }}
+                    <Dropdown
+                        menu={{
+                            items,
+                            onClick: (e) => onClick({ key: e.key, record }),
+                        }}
+                        trigger={["click"]}
                     >
-                        Xem chi tiết
-                    </Button>
-                    <Button
-                        type="primary"
-                        onClick={() => handleEdit(record)}
-                        style={{ marginRight: 8 }}
-                    >
-                        Sửa
-                    </Button>
-                    <Button
-                        type="danger"
-                        onClick={() => handleDelete(record.key)}
-                    >
-                        Xóa
-                    </Button>
+                        <Button
+                            type="primary"
+                            onClick={(e) => e.preventDefault()}
+                        >
+                            <Space>
+                                Hành động
+                                <DownOutlined />
+                            </Space>
+                        </Button>
+                    </Dropdown>
                 </span>
             ),
         },
@@ -89,7 +135,7 @@ function Services() {
 
     const handleEdit = (record) => {
         setEditService(record);
-        setIsModalVisible(true);
+        showModal2();
     };
 
     const handleDelete = (key) => {
@@ -114,34 +160,41 @@ function Services() {
 
     return (
         <div>
-            <Row gutter={16} style={{ marginBottom: 16 }}>
-                <Col span={5}>
+            <h1 className="text-center">Quản lý dịch vụ</h1>
+            <Row gutter={[8, 8]} style={{ marginBottom: 16 }}>
+                <Col xl={16} md={12} sm={24} xs={24}>
                     <h2>Danh Sách Dịch Vụ</h2>
                 </Col>
-                <Col span={4}>
-                    <Button type="primary" onClick={showModal}>
+                <Col xl={4} md={6} sm={24} xs={24}>
+                    <Button type="primary" onClick={showModal} block>
                         <PlusOutlined />
                         Thêm dịch vụ mới
                     </Button>
                 </Col>
-                <Col span={4}>
-                    <Button color="primary" variant="outlined">
-                        <PlusOutlined />
-                        Thêm Loại dịch vụ
-                    </Button>
+                <Col xl={4} md={6} sm={24} xs={24}>
+                    <Link to="/admin/categoriesService">
+                        <Button color="primary" variant="outlined" block>
+                            <PlusOutlined />
+                            Thêm Loại dịch vụ
+                        </Button>
+                    </Link>
                 </Col>
             </Row>
             <Row>
-                <Col span={6}>
+                <Col xl={4} md={6} sm={24} xs={24}>
                     <Input.Search
+                        className="mb-3 w-100"
                         placeholder="Tìm dịch vụ theo tên..."
                         onSearch={(value) => console.log(value)}
-                        style={{ marginBottom: 16 }}
                     />
                 </Col>
             </Row>
 
-            <Table dataSource={dataSource} columns={columns} />
+            <Table
+                style={{ overflowX: "auto" }}
+                dataSource={dataSource}
+                columns={columns}
+            />
             <Modal
                 width={800}
                 title={editService ? "Sửa dịch vụ" : "Thêm dịch vụ"}
@@ -151,6 +204,11 @@ function Services() {
             >
                 <ServicesAdd service={editService} />
             </Modal>
+            <ServiceModalEdit
+                isModalOpen={isModalOpen2}
+                handleOk={handleOk2}
+                handleCancel={handleCancel2}
+            />
         </div>
     );
 }

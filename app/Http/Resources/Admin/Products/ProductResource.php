@@ -19,7 +19,10 @@ class ProductResource extends JsonResource
         $inventories = $this->whenLoaded('inventories') ? $this->inventories : [];
         return [
             'id' => (string) $this->id,
-            'category_id' => $this->category_id ? $this->category->name : null,
+            'category_id' => $this->category_id ? [
+                'id' => (string) $this->category_id,
+                'name' => $this->name
+            ] : null,
             'name' => $this->name,
             'price' => $this->price,
             'cost' => $this->cost,
@@ -41,7 +44,7 @@ class ProductResource extends JsonResource
                 return [
                     'id' => $inventorie->id,
                     'quantity' => $inventorie->quantity,
-                    'created_at' => $inventorie->created_at,
+                    'created_at' => $inventorie->created_at ? $inventorie->created_at->format('Y-m-d') : null,
                     'created_by' => $inventorie->created_by ? $inventorie->createdBy->full_name : null,
                     'updated_by' => $inventorie->updated_by ? $inventorie->updatedBy->full_name : null,
                 ];

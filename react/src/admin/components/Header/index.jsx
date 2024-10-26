@@ -1,19 +1,37 @@
 import React, { useState } from "react";
-import { Layout, Menu, Badge, Popover, Row, Col, Avatar } from "antd";
+import {
+    Layout,
+    Menu,
+    Badge,
+    Popover,
+    Row,
+    Col,
+    Avatar,
+    notification,
+    Drawer,
+    Button,
+} from "antd";
 import {
     UserOutlined,
     SettingOutlined,
     NotificationOutlined,
+    MenuOutlined,
 } from "@ant-design/icons";
-import styles from "../../modules/Notification/notification.module.scss";
+import styles from "@admin/modules/Notification/notification.module.scss";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-
+import { logoutAction } from "@admin/modules/authen/actions/authActions";
 const { Header } = Layout;
 
 const HeaderAdmin = () => {
     const [open, setOpen] = useState(false);
-
+    const [open2, setOpen2] = useState(false);
+    const showDrawer = () => {
+        setOpen2(true);
+    };
+    const onClose = () => {
+        setOpen2(false);
+    };
     const [notifications, setNotifications] = useState([
         {
             id: 1,
@@ -195,8 +213,9 @@ const HeaderAdmin = () => {
                     <Badge
                         offset={[10, -5]}
                         count={
-                            notifications.filter((notification) => !notification.read)
-                                .length
+                            notifications.filter(
+                                (notification) => !notification.read
+                            ).length
                         }
                     >
                         Thông báo
@@ -208,6 +227,39 @@ const HeaderAdmin = () => {
             key: "4",
             icon: <SettingOutlined />,
             label: "Đăng xuất",
+            onClick: () => {
+                const logout = async () => {
+                    try {
+                        const res = await logoutAction();
+                        if (res.success) {
+                            notification.success({
+                                message: "Đăng xuất thành công",
+                                description:
+                                    "Chuyển hướng đến trang đăng nhập...",
+                                placement: "topRight",
+                            });
+                            // Redirect to login page after logout
+                            setTimeout(() => {
+                                window.location.href = "/admin/dangnhap";
+                            }, 1000);
+                        } else {
+                            notification.error({
+                                message: "Đăng xuất thất bại",
+                                description: "Đã xảy ra lỗi. Vui lòng thử lại.",
+                                placement: "topRight",
+                            });
+                        }
+                    } catch (error) {
+                        notification.error({
+                            message: "Lỗi hệ thống",
+                            description:
+                                "Không thể đăng xuất. Vui lòng thử lại sau.",
+                            placement: "topRight",
+                        });
+                    }
+                };
+                logout();
+            },
         },
     ];
 
@@ -216,14 +268,38 @@ const HeaderAdmin = () => {
             className="site-layout-background"
             style={{ padding: 0, background: "#fff" }}
         >
-            <div className="logo" />
-            <Menu
-                theme="light"
-                mode="horizontal"
-                defaultSelectedKeys={["1"]}
-                style={{ lineHeight: "64px" }}
-                items={menuItems}
-            />
+            <Row align={"middle"}>
+                <Col xl={24} lg={24} md={24} sm={0} xs={0}>
+                    <Menu
+                        theme="light"
+                        mode="horizontal"
+                        defaultSelectedKeys={["1"]}
+                        style={{ lineHeight: "64px" }}
+                        items={menuItems}
+                    />
+                </Col>
+                <Col xl={0} lg={0} md={0} sm={20} xs={20}>
+                    <h1 className="m-4">Sakura Spa </h1>
+                </Col>
+                <Col xl={0} lg={0} md={0} sm={4} xs={4}>
+                    <Button
+                        type="primary"
+                        className="float-end m-4"
+                        icon={<MenuOutlined />}
+                        onClick={showDrawer}
+                    />
+                </Col>
+            </Row>
+
+            <Drawer onClose={onClose} open={open2}>
+                <Menu
+                    theme="light"
+                    mode="inline"
+                    defaultSelectedKeys={["1"]}
+                    style={{ lineHeight: "64px" }}
+                    items={menuItems}
+                />
+            </Drawer>
         </Header>
     );
 };

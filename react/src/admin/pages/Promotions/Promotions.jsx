@@ -113,6 +113,7 @@ function Promotions() {
 
     return (
         <div>
+            <h1 className="text-center">Quản lý chương trình khuyến mãi</h1>
             <div
                 style={{
                     display: "flex",
@@ -134,7 +135,7 @@ function Promotions() {
             {/* Promotion Cards */}
             <Row gutter={[16, 16]}>
                 {dataSource.map((promotion) => (
-                    <Col span={8} key={promotion.key}>
+                    <Col xl={8} md={12} sm={24} xs={24} key={promotion.key}>
                         <Card
                             bordered={false}
                             actions={[<EllipsisOutlined key="ellipsis" />]}

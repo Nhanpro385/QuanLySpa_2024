@@ -69,7 +69,9 @@ export const PositionsGetById = createAsyncThunk(
 );
 
 const initialState = {
-    Positions: [],
+    Positions:  {
+        data: [],
+    },
     Position: {},
     loading: false,
     error: null,

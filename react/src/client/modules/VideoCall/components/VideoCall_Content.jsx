@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Col, Row, Input, Card, Divider, Badge } from "antd";
+import {
+    Button,
+    Col,
+    Row,
+    Input,
+    Card,
+    Divider,
+    Badge,
+    message,
+    Result,
+} from "antd";
 import { MdMissedVideoCall, MdOutlineAddIcCall } from "react-icons/md";
 import { BsMicMuteFill } from "react-icons/bs";
 import {
@@ -15,23 +25,40 @@ import JoinScreen from "./JoinScreen";
 import MeetingView from "./MeetingView";
 import useChat from "../hooks/useChat";
 import styles from "../styles/Videocall.module.scss";
-import { authToken, createMeeting } from "../services/API";
-
+import {
+    VIDEOSDK_TOKEN,
+    createMeeting,
+    validateMeeting,
+} from "../services/API";
+import { useParams } from "react-router-dom";
 const VideoCall_Content = () => {
+    const { idmeet } = useParams();
+
     const chatEndRef = useRef(null);
 
     const [message, setMessage] = useState("");
     const { mess, sendMessage, id } = useChat();
 
-    const [meetingId, setMeetingId] = useState(null);
-   
+    const [meetingId, setMeetingId] = useState(null); // id của cuộc gọi
+    useEffect(() => {
+        validateMeeting({ roomId: idmeet, token: VIDEOSDK_TOKEN }).then(
+            ({ meetingId, err }) => {
+                console.log(err);
+                if (err) {
+                    message.error(err);
+                } else {
+                    setMeetingId(meetingId);
+                }
+            }
+        );
+        console.log(meetingId);
+    }, [idmeet]);
     const getMeetingAndToken = async (id) => {
+        // Hàm này sẽ tạo cuộc gọi mới hoặc sử dụng cuộc gọi đã tồn tại
         const meetingId =
-            id == null ? await createMeeting({ token: authToken }) : id;
+            id == null ? await createMeeting({ token: VIDEOSDK_TOKEN }) : id;
         setMeetingId(meetingId);
     };
-
- 
 
     const onMeetingLeave = () => {
         setMeetingId(null);
@@ -46,10 +73,10 @@ const VideoCall_Content = () => {
         <div className="container">
             <Divider orientation="left">
                 Cuộc gọi video
-                {meetingId}
+             
             </Divider>
             <Row className={styles.videoCallContainer} gutter={[16, 16]}>
-                <Col xl={16} lg={16} md={24} sm={24} xs={24}>
+                <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <div className={styles.videoContainer}>
                             {meetingId ? (
@@ -58,15 +85,13 @@ const VideoCall_Content = () => {
                                         meetingId,
                                         micEnabled: true,
                                         webcamEnabled: true,
-                                        name: "C.V. Raman",
-                                        
+                                        name: "hao",
                                     }}
-                                    token={authToken}
+                                    token={VIDEOSDK_TOKEN}
                                 >
                                     <MeetingConsumer>
                                         {() => (
                                             <MeetingView
-                                                
                                                 meetingId={meetingId}
                                                 onMeetingLeave={onMeetingLeave}
                                             />
@@ -74,78 +99,25 @@ const VideoCall_Content = () => {
                                     </MeetingConsumer>
                                 </MeetingProvider>
                             ) : (
-                                <JoinScreen
-                                    getMeetingAndToken={getMeetingAndToken}
-                                    
+                                // <JoinScreen
+                                //     getMeetingAndToken={getMeetingAndToken}
+                                // />
+                                <Result
+                                    status="404"
+                                    title="Không tìm thấy cuộc gọi"
+                                    className="w-100"
+                                    subTitle="vui lòng kiểm tra lại đường dẫn và có thông báo về cuộc gọi"
+                                    extra={
+                                        <Button type="primary" onClick={() => window.history.back()}>
+                                           Quay lại
+                                        </Button>
+                                    }
                                 />
                             )}
                         </div>
                     </Col>
-                    {/* <Col
-                        xl={24}
-                        lg={24}
-                        md={24}
-                        sm={24}
-                        xs={24}
-                        className={styles.timevideo}
-                    >
-                        <Badge color="#f50" text="00:00:00" />
-                    </Col>
-                    <Col
-                        xl={24}
-                        lg={24}
-                        md={24}
-                        sm={24}
-                        xs={24}
-                        className={styles.controlContainer}
-                    >
-                        <Row justify="center" align="middle" gutter={[8, 8]}>
-                            <Col
-                                xl={4}
-                                lg={4}
-                                md={4}
-                                sm={4}
-                                xs={4}
-                                className={styles.iconcontrol}
-                            >
-                                <FaVideoSlash
-                                    style={{
-                                        fontSize: "2.5rem",
-                                    }}
-                                />
-                            </Col>
-                            <Col
-                                xl={4}
-                                lg={4}
-                                md={4}
-                                sm={4}
-                                xs={4}
-                                className={styles.iconcontrol}
-                            >
-                                <MdOutlineAddIcCall
-                                    style={{
-                                        fontSize: "2.5rem",
-                                    }}
-                                />
-                            </Col>
-                            <Col
-                                xl={4}
-                                lg={4}
-                                md={4}
-                                sm={4}
-                                xs={4}
-                                className={styles.iconcontrol}
-                            >
-                                <BsMicMuteFill
-                                    style={{
-                                        fontSize: "2.5rem",
-                                    }}
-                                />
-                            </Col>
-                        </Row>
-                    </Col> */}
                 </Col>
-                <Col xl={8} lg={8} md={24} sm={24} xs={24}>
+                {/* <Col xl={8} lg={8} md={24} sm={24} xs={24}>
                     <div className={styles.chatContainer}>
                         <Row justify="center" align="middle">
                             <Col span={24}>
@@ -259,32 +231,10 @@ const VideoCall_Content = () => {
                             </Col>
                         </Row>
                     </div>
-                </Col>
+                </Col> */}
             </Row>
         </div>
     );
-    // return authToken && meetingId ? (
-    //     <MeetingProvider
-    //         config={{
-    //             meetingId,
-    //             micEnabled: true,
-    //             webcamEnabled: true,
-    //             name: "C.V. Raman",
-    //         }}
-    //         token={authToken}
-    //     >
-    //         <MeetingConsumer>
-    //             {() => (
-    //                 <MeetingView
-    //                     meetingId={meetingId}
-    //                     onMeetingLeave={onMeetingLeave}
-    //                 />
-    //             )}
-    //         </MeetingConsumer>
-    //     </MeetingProvider>
-    // ) : (
-    //     <JoinScreen getMeetingAndToken={getMeetingAndToken} />
-    // );
 };
 
 export default VideoCall_Content;
