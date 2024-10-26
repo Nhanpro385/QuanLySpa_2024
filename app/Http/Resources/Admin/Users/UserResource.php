@@ -18,7 +18,11 @@ class UserResource extends JsonResource
     {
         return [
             'id' => (string) $this->id,
-            'position' => $this->relationLoaded('position') ? new PositionResource($this->position) : $this->position->name ?? null,
+            'position' => $this->position_id ? [
+                'id' => $this->position->id,
+                'name' => $this->position->name,
+                'wage' => $this->position->wage
+            ] : null,
             'role' => $this->roleName($this->role),
             'full_name' => $this->full_name,
             'gender' => $this->genderName($this->gender),
@@ -28,8 +32,19 @@ class UserResource extends JsonResource
             'date_of_birth' => $this->date_of_birth,
             'note' => $this->note,
             'status' => $this->status,
-            'created_by' => $this->created_by ? $this->createdBy->full_name ?? null : $this->created_by,
-            'updated_by' => $this->updated_by ? $this->updatedBy->full_name ?? null : $this->updated_by,
+            'created_by' => $this->created_by ? [
+                'id' => (string) $this->createdBy->id,
+                'fullname' => $this->createdBy->full_name,
+                'role' => $this->roleName($this->createdBy->role)
+            ] : null,
+            'updated_by' => $this->updated_by ? [
+                'id' => (string) $this->updatedBy->id ?? null,
+                'fullname' => $this->updatedBy->full_name,
+                'role' => $this->roleName($this->updatedBy->role)
+            ] : null,
+            'created_at' =>
+                $this->created_at->format('Y-m-d'),
+            'updated_at' => $this->updated_at->format('Y-m-d')
         ];
     }
 

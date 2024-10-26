@@ -17,7 +17,7 @@ class ServiceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $productServices = $this->whenLoaded('productServices') ? $this->productServices : [];
+        $products = $this->whenLoaded('products') ? $this->products : [];
         $serviceImages = $this->whenLoaded('serviceImages') ? $this->serviceImages : [];
         return [
             'id' => (string) $this->id,
@@ -41,12 +41,11 @@ class ServiceResource extends JsonResource
             'created_at' =>
                 $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            'productServices' => $productServices ? $productServices->map(function ($productService) {
+            'products' => $products ? $products->map(function ($product) {
                 return [
-                    'id' => $productService->id,
-                    'product_id' => $productService->product_id,
-                    'service_id' => $productService->service_id,
-                    'quantity_used' => $productService->quantity_used
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'quantity_used' => $product->pivot->quantity_used
                 ];
             }) : [],
             'serviceImages' => $serviceImages ? $serviceImages->map(function ($serviceImage) {
