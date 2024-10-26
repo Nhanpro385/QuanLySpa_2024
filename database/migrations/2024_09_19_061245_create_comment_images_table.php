@@ -10,30 +10,19 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('consulations', function (Blueprint $table) {
+        Schema::create('comment_images', function (Blueprint $table) {
             $table->string('id', 20)->primary();
-            $table->string('customer_id', 20)->nullable();
-            $table->string('staff_id', 20)->nullable();
-            $table->string('consulation');
-            $table->string('skin_condition');
-            $table->string('treatment_plan');
-            $table->boolean('status')->default(true);
+            $table->string('comment_id', 20)->nullable();
+            $table->string('image_url');
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
-
-        Schema::table('consulations', function (Blueprint $table) {
-
-            $table->foreign('customer_id')
+        Schema::table('comment_images', function (Blueprint $table) {
+            $table->foreign('comment_id')
                 ->references('id')
-                ->on('customers')
-                ->onDelete('set null');
-
-            $table->foreign('staff_id')
-                ->references('id')
-                ->on('users')
+                ->on('comments')
                 ->onDelete('set null');
             $table->foreign('created_by')
                 ->references('id')
@@ -51,6 +40,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('consulations');
+        Schema::dropIfExists('comment_images');
     }
 };

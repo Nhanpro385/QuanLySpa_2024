@@ -13,12 +13,11 @@ return new class extends Migration {
         Schema::create('users', function (Blueprint $table) {
             $table->string('id', 20)->primary();
             $table->string('position_id', 20)->nullable();
-            $table->string('name')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['supper', 'advice', 'staff'])->default('staff');
+            $table->tinyInteger('role')->default(1);
             $table->string('full_name');
-            $table->enum('gender', ['male', 'female'])->default('female');
+            $table->tinyInteger('gender')->default(1);
             $table->string('phone', 20)->unique();
             $table->string('address');
             $table->date('date_of_birth');
@@ -28,6 +27,7 @@ return new class extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->softDeletes();
             $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->timestamps();
         });
 
@@ -38,6 +38,10 @@ return new class extends Migration {
                 ->onDelete('set null');
 
             $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('no action');
+            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('no action');

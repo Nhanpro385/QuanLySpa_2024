@@ -12,10 +12,12 @@ return new class extends Migration {
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->string('id', 20)->primary();
+            $table->string('parent_id', 20)->nullable();
             $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->boolean('status')->default(true);
-            $table->string('created_by')->nullable();
+            $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -23,6 +25,14 @@ return new class extends Migration {
             $table->foreign('created_by')
                 ->references('id')
                 ->on('users')
+                ->onDelete('set null');
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('categories')
                 ->onDelete('set null');
         });
     }

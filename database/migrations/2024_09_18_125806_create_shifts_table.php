@@ -18,13 +18,18 @@ return new class extends Migration {
             $table->integer('max_customers')->default(8);
             $table->string('note')->nullable();
             $table->boolean('status')->default(true);
-            $table->string('created_by')->nullable();
+            $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::table('shifts', function (Blueprint $table) {
             $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+            $table->foreign('updated_by')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');

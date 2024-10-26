@@ -16,10 +16,12 @@ return new class extends Migration {
             $table->string('name')->unique();
             $table->decimal('price', 10, 2);
             $table->text('description');
-            $table->string('image_url');
+            $table->string('image_url')->default('default.jpg');
             $table->integer('duration');
+            $table->tinyInteger('priority')->default(1);
             $table->boolean('status')->default(true);
             $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,7 +31,10 @@ return new class extends Migration {
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null');
-
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
             $table->foreign('service_category_id')
                 ->references('id')
                 ->on('service_categories')
