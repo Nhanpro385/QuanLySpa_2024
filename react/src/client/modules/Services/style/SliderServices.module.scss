@@ -1,0 +1,85 @@
+
+.boxBannerLeft {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    z-index: 10;
+
+    @media (max-width: 768px) {
+        top: 15%;
+        left: 3%;
+        font-size: 14px;
+    }
+
+    @media (max-width: 576px) {
+        top: 10%;
+        left: 2%;
+        font-size: 12px;
+    }
+}
+
+.boxBannerLeftTitle {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.boxBannerLeftText {
+    font-size: 50px;
+    font-weight: 500;
+}
+
+.boxBannerLeftBtn {
+    background-color: white;
+    border-radius: 10px;
+    min-height: 55px;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 0 20px 0px 20px;
+    border: none;
+    transition: all, 0.5s;
+
+}
+
+
+.boxBannerLeftBtn:hover {
+    background-color: black;
+    color: white;
+}
+
+.boxBannerRight {
+    width: 500px;
+    position: absolute;
+    top: 50px;
+    right: 150px;
+
+    // Khi màn hình nhỏ hơn 768px (tablet)
+    @media (max-width: 768px) {
+        width: 350px; // Điều chỉnh kích thước nhỏ hơn
+        top: auto; // Đặt lại giá trị top để tránh vị trí cố định
+        bottom: 20px; // Di chuyển xuống gần dưới cùng
+        right: 20px; // Giảm khoảng cách từ bên phải
+    }
+
+    // Khi màn hình nhỏ hơn 576px (điện thoại)
+    @media (max-width: 576px) {
+        width: 250px; // Giảm kích thước hình ảnh hơn nữa
+        bottom: 10px; // Đưa hình ảnh sát dưới cùng
+        right: 10px; // Đưa hình ảnh sát góc phải
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+
+
+.banner {
+    height: calc(100vh - 64px); // Chiều cao toàn màn hình trừ đi 64px (ví dụ cho header)
+    background-color: #FFDCDC;
+
+    @media (max-width: 768px) {
+        height: calc(100vh - 48px); // Điều chỉnh cho màn hình nhỏ hơn
+    }
+}
