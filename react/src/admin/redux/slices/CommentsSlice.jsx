@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 export const commentsGet = createAsyncThunk("comments/get", async () => {
-    const response = await axios.get(endpoints.comments.list);
+    const response = await axiosInstance.get(endpoints.comments.list);
+
     return response.data;
 });
 
@@ -11,7 +12,7 @@ export const commentsAdd = createAsyncThunk(
     "comments/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 endpoints.comments.create,
                 data
             );
@@ -30,7 +31,7 @@ export const commentsDelete = createAsyncThunk(
     "comments/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.comments.delete(id));
+            await axiosInstance.delete(endpoints.comments.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -48,7 +49,7 @@ export const commentsUpdate = createAsyncThunk(
         try {
             console.log("data", data);
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.comments.update(data.id),
                 data
             );
@@ -66,13 +67,31 @@ export const commentsUpdate = createAsyncThunk(
 export const commentsGetById = createAsyncThunk(
     "comments/getById",
     async (id) => {
-        const response = await axios.get(
-            endpoints.comments.detail(id)
-        );
+        const response = await axiosInstance.get(endpoints.comments.detail(id));
         return response.data;
     }
 );
-
+export const replyComment = createAsyncThunk(
+    "comments/reply",
+    async (data, { rejectWithValue }) => {
+   
+        
+        try {
+            const response = await axiosInstance.post(
+                endpoints.comments.reply(data.parent_comment_id),
+                data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi trả lời",
+            });
+        }
+    }
+);
 const initialState = {
     comments: {
         data: [],
@@ -157,6 +176,18 @@ const commentsSlice = createSlice({
             .addCase(commentsGetById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(replyComment.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(replyComment.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(replyComment.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error = action;
             });
     },
 });

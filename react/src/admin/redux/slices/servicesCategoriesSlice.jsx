@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 export const ServiceCategoriesGet = createAsyncThunk(
     "ServiceCategories/get",
     async () => {
-        const response = await axios.get(endpoints.ServiceCategories.list);
+        const response = await axiosInstance.get(endpoints.ServiceCategories.list);
         return response.data;
     }
 );
@@ -14,7 +14,7 @@ export const ServiceCategoriesAdd = createAsyncThunk(
     "ServiceCategories/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 endpoints.ServiceCategories.create,
                 data
             );
@@ -33,7 +33,7 @@ export const ServiceCategoriesDelete = createAsyncThunk(
     "ServiceCategories/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.ServiceCategories.delete(id));
+            await axiosInstance.delete(endpoints.ServiceCategories.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -51,7 +51,7 @@ export const ServiceCategoriesUpdate = createAsyncThunk(
         try {
             console.log("data", data);
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.ServiceCategories.update(data.id),
                 data
             );
@@ -69,7 +69,7 @@ export const ServiceCategoriesUpdate = createAsyncThunk(
 export const ServiceCategoriesGetById = createAsyncThunk(
     "ServiceCategories/getById",
     async (id) => {
-        const response = await axios.get(
+        const response = await axiosInstance.get(
             endpoints.ServiceCategories.detail(id)
         );
         return response.data;

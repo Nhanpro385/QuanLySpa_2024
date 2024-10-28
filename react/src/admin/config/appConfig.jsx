@@ -62,11 +62,12 @@ const endpoints = {
         delete: (id) => `${API_BASE_URL}/products/${id}`,
     },
     comments: {
-        list: `${API_BASE_URL}/comments`,
-        detail: (id) => `${API_BASE_URL}/comments/${id}`,
-        create: `${API_BASE_URL}/comments`,
-        update: (id) => `${API_BASE_URL}/comments/${id}`,
-        delete: (id) => `${API_BASE_URL}/comments/${id}`,
+        list: `${API_BASE_URL}/comment`,
+        detail: (id) => `${API_BASE_URL}/comment/${id}`,
+        create: `${API_BASE_URL}/comment`,
+        update: (id) => `${API_BASE_URL}/comment/${id}`,
+        delete: (id) => `${API_BASE_URL}/comment/${id}`,
+        reply: (id) => `${API_BASE_URL}/comment/${id}/reply`,
     },
     services: {
         list: `${API_BASE_URL}/services`,

@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import endpoints from "../../config/appConfig";
-
+import axiosInstance from "../../config/axiosInstance";
 export const appointmentsGet = createAsyncThunk(
     "appointments/get",
     async () => {
-        const response = await axios.get(endpoints.appointments.list);
+        const response = await axiosInstance.get(endpoints.appointments.list);
         return response.data;
     }
 );
@@ -14,7 +14,7 @@ export const appointmentsAdd = createAsyncThunk(
     "appointments/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 endpoints.appointments.create,
                 data
             );
@@ -33,7 +33,7 @@ export const appointmentsDelete = createAsyncThunk(
     "appointments/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.appointments.delete(id));
+            await axiosInstance.delete(endpoints.appointments.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -51,7 +51,7 @@ export const appointmentsUpdate = createAsyncThunk(
         try {
             console.log("data", data);
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.appointments.update(data.id),
                 data
             );
@@ -69,7 +69,7 @@ export const appointmentsUpdate = createAsyncThunk(
 export const appointmentsGetById = createAsyncThunk(
     "appointments/getById",
     async (id) => {
-        const response = await axios.get(endpoints.appointments.detail(id));
+        const response = await axiosInstance.get(endpoints.appointments.detail(id));
         return response.data;
     }
 );

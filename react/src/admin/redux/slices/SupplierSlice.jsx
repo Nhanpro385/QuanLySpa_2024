@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 // AsyncThunk for fetching Suppliers list
@@ -7,7 +7,7 @@ export const SupplierGet = createAsyncThunk(
     "Supplier/get",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Suppliers.list);
+            const response = await axiosInstance.get(endpoints.Suppliers.list);
 
             return response.data;
         } catch (error) {
@@ -25,7 +25,7 @@ export const SupplierAdd = createAsyncThunk(
     "Supplier/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(endpoints.Suppliers.create, data);
+            const response = await axiosInstance.post(endpoints.Suppliers.create, data);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -42,7 +42,7 @@ export const SupplierDelete = createAsyncThunk(
     "Supplier/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.Suppliers.delete(id));
+            await axiosInstance.delete(endpoints.Suppliers.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -60,7 +60,7 @@ export const SupplierUpdate = createAsyncThunk(
     "Supplier/update",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.Suppliers.update(data.id),
                 data
             );
@@ -82,7 +82,7 @@ export const SupplierGetbyId = createAsyncThunk(
     "Supplier/getbyid",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Suppliers.detail(id));
+            const response = await axiosInstance.get(endpoints.Suppliers.detail(id));
             return response.data;
         } catch (error) {
             return rejectWithValue({

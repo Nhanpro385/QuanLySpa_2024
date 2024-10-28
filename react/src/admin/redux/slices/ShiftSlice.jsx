@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 export const shiftsGet = createAsyncThunk("shifts/get", async () => {
-    const response = await axios.get(endpoints.shifts.list);
+    const response = await axiosInstance.get(endpoints.shifts.list);
     return response.data;
 });
 
@@ -11,7 +11,7 @@ export const shiftsAdd = createAsyncThunk(
     "shifts/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(endpoints.shifts.create, data);
+            const response = await axiosInstance.post(endpoints.shifts.create, data);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -27,7 +27,7 @@ export const shiftsDelete = createAsyncThunk(
     "shifts/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.shifts.delete(id));
+            await axiosInstance.delete(endpoints.shifts.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -45,7 +45,7 @@ export const shiftsUpdate = createAsyncThunk(
         try {
             console.log("data", data);
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.shifts.update(data.id),
                 data
             );
@@ -61,7 +61,7 @@ export const shiftsUpdate = createAsyncThunk(
     }
 );
 export const shiftsGetById = createAsyncThunk("shifts/getById", async (id) => {
-    const response = await axios.get(endpoints.shifts.detail(id));
+    const response = await axiosInstance.get(endpoints.shifts.detail(id));
     return response.data;
 });
 

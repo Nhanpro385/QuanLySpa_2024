@@ -1,19 +1,27 @@
 import axios from "axios";
 import { API_BASE_URL } from "./appConfig";
-import { notification } from "antd"; // Corrected import for notification
-
+import { notification } from "antd";
 import { logout } from "../redux/slices/authSlice";
+
+// Lấy CSRF token từ thẻ meta
+const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    ?.getAttribute("content");
+
 const axiosInstance = axios.create({
-    baseURL: API_BASE_URL, // Set your base API URL here
+    baseURL: API_BASE_URL,
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-CSRF-TOKEN": csrfToken, // Thêm CSRF token vào header
     },
 });
 
-// Interceptor to add token to each request if available
+// Interceptor để thêm token vào mỗi yêu cầu
 axiosInstance.interceptors.request.use(
     (config) => {
-        const accessToken = localStorage.getItem("token"); // Retrieve token if available
+        const accessToken = localStorage.getItem("token");
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
@@ -22,7 +30,7 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle errors
+// Interceptor để xử lý lỗi
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -33,8 +41,7 @@ axiosInstance.interceptors.response.use(
             });
             logout();
             localStorage.removeItem("token");
-            window.location.href = "/dangnhap";
-     
+         
         }
         return Promise.reject(error);
     }

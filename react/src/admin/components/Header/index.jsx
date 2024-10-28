@@ -20,10 +20,11 @@ import {
 import styles from "@admin/modules/Notification/notification.module.scss";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-// import { logoutAction } from "@admin/modules/authen/actions/authActions";
+// import useAuthActions from "@admin/modules/Auth/hooks/useAuthActions";
 const { Header } = Layout;
 
 const HeaderAdmin = () => {
+    // const {authLogout} = useAuthActions();
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const showDrawer = () => {
@@ -230,7 +231,7 @@ const HeaderAdmin = () => {
             onClick: () => {
                 // const logout = async () => {
                 //     try {
-                //         const res = await logoutAction();
+                //         const res = await authLogout();
                 //         if (res.success) {
                 //             notification.success({
                 //                 message: "Đăng xuất thành công",

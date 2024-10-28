@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Col, Form, Input, Row, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -6,9 +6,13 @@ import styles from "@admin/modules/authen/styles/LoginPage.module.scss";
 import useAuthActions from "../../modules/authen/hooks/useAuth";
 import Wellcome from "../../assets/images/loginimg.jpg";
 import clsx from "clsx";
+import axios from "axios";
 const LoginPage = () => {
-    console.log(123);
-
+    useEffect(() => {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        console.log("đây là token", csrfToken);
+        axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+    }, []);
     const { authLogin } = useAuthActions();
     const [loading, setLoading] = React.useState(false);
     const {
@@ -27,11 +31,10 @@ const LoginPage = () => {
     };
 
     const onSubmit = async (data) => {
-        
         const { email, password } = data;
         const res = await authLogin(email, password);
         console.log(res);
-        
+
         if (res.meta.requestStatus === "fulfilled") {
             openNotification(
                 "success",
@@ -43,12 +46,7 @@ const LoginPage = () => {
                 navigate("/admin");
             }, 1000);
         } else {
-            openNotification(
-                "error",
-                "Đăng nhập thất bại",
-            
-            );
-           
+            openNotification("error", "Đăng nhập thất bại");
         }
     };
 

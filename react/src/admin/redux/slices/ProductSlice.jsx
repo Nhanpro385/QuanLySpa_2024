@@ -1,13 +1,13 @@
 // Product Slice
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 export const productGet = createAsyncThunk(
     "product/get",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Products.list);
+            const response = await axiosInstance.get(endpoints.Products.list);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -23,7 +23,7 @@ export const productAdd = createAsyncThunk(
     "product/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(endpoints.Products.create, data,{
+            const response = await axiosInstance.post(endpoints.Products.create, data,{
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -44,7 +44,7 @@ export const productDelete = createAsyncThunk(
     "product/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.Products.delete(id));
+            await axiosInstance.delete(endpoints.Products.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -60,7 +60,7 @@ export const productUpdate = createAsyncThunk(
     "product/update",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.Products.update(data.id),
                 data
             );
@@ -80,7 +80,7 @@ export const productGetById = createAsyncThunk(
     "product/getById",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Products.detail(id));
+            const response = await axiosInstance.get(endpoints.Products.detail(id));
             return response.data;
         } catch (error) {
             return rejectWithValue({

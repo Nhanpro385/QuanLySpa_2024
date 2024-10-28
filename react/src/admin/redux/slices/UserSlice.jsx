@@ -1,13 +1,13 @@
 // User Slice
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 export const usersGet = createAsyncThunk(
     "users/get",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Users.list);
+            const response = await axiosInstance.get(endpoints.Users.list);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -23,7 +23,7 @@ export const usersAdd = createAsyncThunk(
     "users/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(endpoints.Users.create, data);
+            const response = await axiosInstance.post(endpoints.Users.create, data);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -38,7 +38,7 @@ export const usersDelete = createAsyncThunk(
     "users/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.Users.delete(id));
+            await axiosInstance.delete(endpoints.Users.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -54,7 +54,7 @@ export const usersUpdate = createAsyncThunk(
     "users/update",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.Users.update(data.id),
                 data
             );
@@ -74,7 +74,7 @@ export const usersGetById = createAsyncThunk(
     "users/getById",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Users.detail(id));
+            const response = await axiosInstance.get(endpoints.Users.detail(id));
             return response.data;
         } catch (error) {
             return rejectWithValue({

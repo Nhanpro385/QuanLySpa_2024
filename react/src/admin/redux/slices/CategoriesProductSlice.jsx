@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 export const categoriesGet = createAsyncThunk("categories/get", async () => {
-    const response = await axios.get(endpoints.ProductsCategories.list);
+    const response = await axiosInstance.get(endpoints.ProductsCategories.list);
     return response.data;
 });
 
@@ -11,7 +11,7 @@ export const categoriesAdd = createAsyncThunk(
     "categories/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 endpoints.ProductsCategories.create,
                 data
             );
@@ -30,7 +30,7 @@ export const categoriesDelete = createAsyncThunk(
     "categories/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.ProductsCategories.delete(id));
+            await axiosInstance.delete(endpoints.ProductsCategories.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -48,7 +48,7 @@ export const categoriesUpdate = createAsyncThunk(
         try {
             console.log("data", data);
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.ProductsCategories.update(data.id),
                 data
             );
@@ -66,7 +66,7 @@ export const categoriesUpdate = createAsyncThunk(
 export const categoriesGetById = createAsyncThunk(
     "categories/getById",
     async (id) => {
-        const response = await axios.get(
+        const response = await axiosInstance.get(
             endpoints.ProductsCategories.detail(id)
         );
         return response.data;

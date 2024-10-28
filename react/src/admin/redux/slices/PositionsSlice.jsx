@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
 export const PositionsGet = createAsyncThunk("Positions/get", async () => {
-    const response = await axios.get(endpoints.Positions.list);
+    const response = await axiosInstance.get(endpoints.Positions.list);
     return response.data;
 });
 
@@ -11,7 +11,7 @@ export const PositionsAdd = createAsyncThunk(
     "Positions/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(endpoints.Positions.create, data);
+            const response = await axiosInstance.post(endpoints.Positions.create, data);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -27,7 +27,7 @@ export const PositionsDelete = createAsyncThunk(
     "Positions/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.Positions.delete(id));
+            await axiosInstance.delete(endpoints.Positions.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -45,7 +45,7 @@ export const PositionsUpdate = createAsyncThunk(
         try {
             console.log("data", data);
 
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.Positions.update(data.id),
                 data
             );
@@ -63,7 +63,7 @@ export const PositionsUpdate = createAsyncThunk(
 export const PositionsGetById = createAsyncThunk(
     "Positions/getById",
     async (id) => {
-        const response = await axios.get(endpoints.Positions.detail(id));
+        const response = await axiosInstance.get(endpoints.Positions.detail(id));
         return response.data;
     }
 );

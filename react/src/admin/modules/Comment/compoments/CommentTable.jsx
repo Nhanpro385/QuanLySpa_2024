@@ -1,6 +1,8 @@
 import React from "react";
-import { Table, Avatar, Rate, Button, Space, Dropdown } from "antd";
+import { Table, Avatar, Rate, Button, Space, Dropdown, Typography } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
+
+const { Text } = Typography;
 
 const CommentTable = ({
     dataSource,
@@ -16,25 +18,19 @@ const CommentTable = ({
             key: "key",
         },
         {
-            title: "Ảnh đại diện",
-            dataIndex: "avatar",
-            key: "avatar",
-            render: (avatar) => <Avatar src={avatar} icon={<UserOutlined />} />,
-        },
-        {
             title: "Tên người dùng",
-            dataIndex: "username",
-            key: "username",
+            dataIndex: "customer_id",
+            key: "customer_id",
         },
         {
             title: "Sản phẩm bình luận",
-            dataIndex: "product",
-            key: "product",
+            dataIndex: "service_id",
+            key: "service_id",
         },
         {
             title: "Nội dung",
-            dataIndex: "content",
-            key: "content",
+            dataIndex: "comment",
+            key: "comment",
         },
         {
             title: "Đánh giá",
@@ -43,9 +39,14 @@ const CommentTable = ({
             render: (rate) => <Rate value={rate} disabled />,
         },
         {
-            title: "Thời gian",
-            dataIndex: "time",
-            key: "time",
+            title: "Trạng thái",
+            dataIndex: "admin_reply",
+            key: "admin_reply",
+            render: (admin_reply) => (
+                <Text type={admin_reply ? "success" : "danger"}>
+                    {admin_reply ? "Đã trả lời" : "Chưa trả lời"}
+                </Text> 
+            ),
         },
         {
             title: "Hành động",
@@ -81,9 +82,11 @@ const CommentTable = ({
                                 label: (
                                     <Button
                                         block
-                                        onClick={() => handleReplyClick(record.key)}
+                                        onClick={() =>
+                                            handleReplyClick(record)
+                                        }
                                     >
-                                        Trả lời 
+                                        Trả lời
                                     </Button>
                                 ),
                             },

@@ -18,7 +18,7 @@ use App\Http\Controllers\Auth\Admin\AuthController;
 // use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PromotionController;
-
+use App\Http\Controllers\Admin\ServiceController;
 require __DIR__ . '/auth.php';
 
 // Route Users

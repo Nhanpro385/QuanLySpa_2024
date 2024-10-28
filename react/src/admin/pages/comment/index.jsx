@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Typography } from "antd";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CommentDetailModal from "../../modules/Comment/compoments/CommentDetailModal";
 import CommentTable from "../../modules/Comment/compoments/CommentTable";
 import ReplyComment from "../../modules/Comment/compoments/ReplyComment";
+import { useSelector } from "react-redux";
+import usecommentsActions from "../../modules/Comment/hooks/usecomment";
 
 const { Text } = Typography;
 
 const CommentManagement = () => {
+    const { getcomments, replycomments } = usecommentsActions();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const [selectedComment, setSelectedComment] = useState(null); // State to hold selected comment details
     const [isReplyModalOpen, setReplyModalOpen] = useState(false); // State for reply modal
+
+    const { comments } = useSelector((state) => state.comments);
+    useEffect(() => {
+        getcomments();
+    }, []);
+    console.log(comments);
 
     const handleViewDetail = (comment) => {
         setSelectedComment(comment); // Set selected comment details
@@ -28,48 +37,27 @@ const CommentManagement = () => {
     };
 
     const handleReplyClick = (comment) => {
+        console.log("Replying to comment:", comment);
+
         setSelectedComment(comment); // Set selected comment for reply
         setReplyModalOpen(true); // Open reply modal
     };
 
-    const handleReplySubmit = (commentKey, replyContent) => {
-        console.log("Replying to comment with ID:", commentKey);
-        console.log("Reply content:", replyContent);
-        // Implement the functionality to save the reply
-        setReplyModalOpen(false); // Close reply modal
-        setSelectedComment(null); // Clear selected comment
+    const handleReplySubmit = async (replyContent) => {
+        try {
+            const response = await replycomments(replyContent);
+        } catch (error) {
+            console.error("Reply error:", error);
+        }
+        // setReplyModalOpen(false); // Close reply modal
+        // setSelectedComment(null); // Clear selected comment
     };
 
-    const dataSource = [
-        {
-            key: "1",
-            avatar: "https://example.com/avatar1.jpg",
-            username: "Trịnh Trần Phương Tuấn",
-            product: "Sản phẩm A",
-            content: "Rất hài lòng với sản phẩm này!",
-            rate: 5,
-            time: "2 giờ trước",
-            replies: [
-                {
-                    key: "1-1",
-                    username: "Admin",
-                    content: "Cảm ơn bạn đã phản hồi!",
-                    time: "1 giờ trước",
-                },
-            ],
-        },
-        {
-            key: "2",
-            avatar: "https://example.com/avatar2.jpg",
-            username: "Nguyễn Văn B",
-            product: "Sản phẩm B",
-            content: "Sản phẩm tốt nhưng cần cải thiện đóng gói.",
-            rate: 4,
-            time: "5 giờ trước",
-            replies: [],
-        },
-    ];
-
+    const dataSource =
+        comments.data.map((comment, index) => ({
+            key: index + 1,
+            ...comment,
+        })) || [];
     return (
         <div>
             <h1 className="text-center">Quản lý bình luận</h1>

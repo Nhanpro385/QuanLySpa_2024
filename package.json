@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "js-cookie": "^3.0.5",
     "quanlyspa_2024": "file:"
   }
 }

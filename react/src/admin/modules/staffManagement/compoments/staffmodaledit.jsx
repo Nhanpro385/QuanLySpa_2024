@@ -19,18 +19,18 @@ const ModalEditStaff = ({
         setValue,
         formState: { errors },
     } = useForm();
+    console.log(staff);
 
     useEffect(() => {
         if (staff) {
-            setValue("name", staff.name);
             setValue("full_name", staff.full_name);
             setValue("email", staff.email);
             setValue("phone", staff.phone);
             setValue("address", staff.address);
             setValue("date_of_birth", dayjs(staff.date_of_birth));
-            setValue("gender", staff.gender);
+            setValue("gender", staff.gender === "nam" ? 0 : 1);
             setValue("note", staff.note);
-            setValue("role", staff.role);
+            setValue("role", staff.role === "Nhân viên tư vấn và chăm sóc khách hàng" ? 2 : staff.role === "Nhân viên" ? 1 : 0);
         }
     }, [staff, setValue]);
 
@@ -49,28 +49,6 @@ const ModalEditStaff = ({
             footer={null}
         >
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-                <Form.Item label="Tên">
-                    <Controller
-                        name="name"
-                        control={control}
-                        rules={{
-                            required: "Tên là bắt buộc",
-                            pattern: {
-                                value: /^[^\d]+$/,
-                                message: "Tên không được chứa số",
-                            },
-                            maxLength: {
-                                value: 50,
-                                message: "Tên không được vượt quá 50 ký tự",
-                            },
-                        }}
-                        render={({ field }) => <Input {...field} />}
-                    />
-                    {errors.name && (
-                        <p style={{ color: "red" }}>{errors.name.message}</p>
-                    )}
-                </Form.Item>
-
                 <Form.Item label="Họ và tên">
                     <Controller
                         name="full_name"
@@ -83,13 +61,16 @@ const ModalEditStaff = ({
                             },
                             maxLength: {
                                 value: 50,
-                                message: "Họ và tên không được vượt quá 50 ký tự",
+                                message:
+                                    "Họ và tên không được vượt quá 50 ký tự",
                             },
                         }}
                         render={({ field }) => <Input {...field} />}
                     />
                     {errors.full_name && (
-                        <p style={{ color: "red" }}>{errors.full_name.message}</p>
+                        <p style={{ color: "red" }}>
+                            {errors.full_name.message}
+                        </p>
                     )}
                 </Form.Item>
 
@@ -122,13 +103,16 @@ const ModalEditStaff = ({
                             },
                             maxLength: {
                                 value: 20,
-                                message: "Mật khẩu không được vượt quá 20 ký tự",
+                                message:
+                                    "Mật khẩu không được vượt quá 20 ký tự",
                             },
                         }}
                         render={({ field }) => <Input.Password {...field} />}
                     />
                     {errors.password && (
-                        <p style={{ color: "red" }}>{errors.password.message}</p>
+                        <p style={{ color: "red" }}>
+                            {errors.password.message}
+                        </p>
                     )}
                 </Form.Item>
 
@@ -165,8 +149,8 @@ const ModalEditStaff = ({
                         rules={{ required: "Giới tính là bắt buộc" }}
                         render={({ field }) => (
                             <Select {...field}>
-                                <Option value="male">Nam</Option>
-                                <Option value="female">Nữ</Option>
+                                <Option value={0}>Nam</Option>
+                                <Option value={1}>Nữ</Option>
                             </Select>
                         )}
                     />
@@ -174,7 +158,23 @@ const ModalEditStaff = ({
                         <p style={{ color: "red" }}>{errors.gender.message}</p>
                     )}
                 </Form.Item>
-
+                <Form.Item label="Chức vụ">
+                    <Controller
+                        name="role"
+                        control={control}
+                        rules={{ required: "Chức vụ là bắt buộc" }}
+                        render={({ field }) => (
+                            <Select {...field}>
+                                <Option value={0}>Quản trị viên</Option>
+                                <Option value={1}>Nhân viên</Option>
+                                <Option value={2}>Nhân viên tư vấn và chăm sóc khách hàng</Option>
+                            </Select>
+                        )}
+                    />
+                    {errors.gender && (
+                        <p style={{ color: "red" }}>{errors.gender.message}</p>
+                    )}
+                </Form.Item>
                 <Form.Item label="Ngày sinh">
                     <Controller
                         name="date_of_birth"
@@ -185,7 +185,9 @@ const ModalEditStaff = ({
                         )}
                     />
                     {errors.date_of_birth && (
-                        <p style={{ color: "red" }}>{errors.date_of_birth.message}</p>
+                        <p style={{ color: "red" }}>
+                            {errors.date_of_birth.message}
+                        </p>
                     )}
                 </Form.Item>
 

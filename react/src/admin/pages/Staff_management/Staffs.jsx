@@ -20,11 +20,14 @@ import "@schedule-x/theme-default/dist/index.css";
 import StaffTable from "../../modules/staffManagement/compoments/StaffTable";
 import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
 import { useSelector } from "react-redux";
+import ModalEditStaff from "../../modules/staffManagement/compoments/staffmodaledit";
+import useModal from "../../modules/appointments/hooks/openmodal";
 function Staffs() {
-    const { addusers, getusers, updateusers, deleteusers, getusersById } =
+    const {  getusers, updateusers, deleteusers, getusersById } =
         useUsersActions();
     const navigate = useNavigate();
-    const { users } = useSelector((state) => state.user);
+    const { users, user } = useSelector((state) => state.user);
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     useEffect(() => {
         getusers();
     }, []);
@@ -40,9 +43,26 @@ function Staffs() {
         })) || [];
 
     const handleEdit = (key) => {
-        console.log("Edit", key);
+        getusersById(key);
+        showModal();
     };
+    const handleEditSubmit = async  (values) => {
+            try{
+                const res = await updateusers(values);
+                if(res.meta.requestStatus === "fulfilled"){
+                    getusers();
+                    message.success("Cập nhật thành công");
+                    handleCancel();
+                }else{
+                    message.error("Cập nhật thất bại");
 
+                }
+
+            } catch(err){
+                message.error("Cập nhật thất bại");
+            }
+            
+    };
     const handleDelete = async (key) => {
         try {
             const res = await deleteusers(key);
@@ -56,7 +76,7 @@ function Staffs() {
     };
 
     const handleAdd = () => {
-        console.log("Add");
+        navigate("/admin/nhanvien/them");
     };
 
     const onSearch = (value) => {};
@@ -153,7 +173,13 @@ function Staffs() {
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
             />
-
+            <ModalEditStaff
+                isModalOpen={isModalOpen}
+                handleOk={handleOk}
+                handleCancel={handleCancel}
+                staff={user.data}
+                handleEditSubmit={handleEditSubmit}
+            />
             <Col>
                 <ScheduleXCalendar calendarApp={calendar} />
             </Col>
