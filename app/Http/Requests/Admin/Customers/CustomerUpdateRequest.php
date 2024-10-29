@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\Customers;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Str;
 
 class CustomerUpdateRequest extends FormRequest
 {
@@ -17,14 +18,14 @@ class CustomerUpdateRequest extends FormRequest
     {
         return [
             'full_name' => 'required|string|max:255|regex:/^[\p{L} ]+$/u',
-            'name' => 'required|string|max:255|regex:/^[\p{L} ]+$/u',
             'note' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:customers,email,' . $this->route('id'),
             'phone' => 'required|digits_between:10,15|unique:customers,phone,' . $this->route('id') . '|regex:/^(0[3,5,7,8,9][0-9]{8})$/',
-            'gender' => 'required|string|in:male,female,other',
+            'gender' => 'required|string|in:Nam,Nữ,Khác',
             'address' => 'nullable|string|max:255',
             'date_of_birth' => 'nullable|date',
             'status' => 'required|boolean',
+            'password' => 'nullable|string|min:8|max:255', 
         ];
     }
 
@@ -34,9 +35,6 @@ class CustomerUpdateRequest extends FormRequest
             'full_name.required' => 'Họ và tên không được bỏ trống!',
             'full_name.max' => 'Họ và tên không được vượt quá 255 ký tự.',
             'full_name.regex' => 'Họ và tên chỉ được phép chứa chữ cái.',
-            'name.required' => 'Tên không được bỏ trống!',
-            'name.max' => 'Tên không được vượt quá 255 ký tự.',
-            'name.regex' => 'Tên chỉ được phép chứa chữ cái.',
             'note.max' => 'Ghi chú không được vượt quá 255 ký tự.',
             'email.required' => 'Email không được bỏ trống!',
             'email.email' => 'Định dạng email không hợp lệ.',
@@ -52,6 +50,8 @@ class CustomerUpdateRequest extends FormRequest
             'date_of_birth.date' => 'Định dạng ngày sinh không hợp lệ.',
             'status.required' => 'Trạng thái không được bỏ trống!',
             'status.boolean' => 'Trạng thái phải là true hoặc false.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.max' => 'Mật khẩu không được vượt quá 255 ký tự.',
         ];
     }
 
@@ -66,11 +66,16 @@ class CustomerUpdateRequest extends FormRequest
         );
     }
 
-
     protected function prepareForValidation()
     {
         $this->merge([
             'id' => $this->route('id'),
+            'password' => $this->generateRandomPassword(),
         ]);
+    }
+
+    private function generateRandomPassword($length = 8)
+    {
+        return Str::random($length);
     }
 }

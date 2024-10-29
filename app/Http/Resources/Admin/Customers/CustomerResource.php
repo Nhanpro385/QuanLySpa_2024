@@ -11,19 +11,27 @@ class CustomerResource extends JsonResource
         return [
             'id' => $this->id,
             'full_name' => $this->full_name,
-            'name' => $this->name,
-            'password' => $this->password, 
-            'email' => $this->email,
-            'phone' => $this->phone,
             'gender' => $this->gender,
+            'email' => $this->email ,
+            'phone' => $this->phone ,
             'address' => $this->address,
-            'date_of_birth' => $this->date_of_birth,
-            'note' => $this->note,
-            'status' => $this->status,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'created_by' => $this->createdBy ? [
+                'id' => $this->createdBy->id,
+                'full_name' => $this->createdBy->full_name,
+                'role' => $this->getRoleName($this->createdBy->role),
+            ] : null,
+            'updated_by' => $this->updatedBy ? [
+                'id' => $this->updatedBy->id,
+                'full_name' => $this->updatedBy->full_name,
+                'role' => $this->getRoleName($this->updatedBy->role),
+            ] : null,
+            'created_at' => $this->created_at->format('d-m-Y H:i'),
+            'updated_at' => $this->updated_at ? $this->updated_at->format('d-m-Y H:i') : null,
         ];
+    }
+
+    private function getRoleName($role)
+    {
+        return $role === 0 ? 'Quản trị viên' : 'Nhân viên';
     }
 }

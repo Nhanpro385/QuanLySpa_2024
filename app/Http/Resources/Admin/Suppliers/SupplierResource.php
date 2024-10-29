@@ -14,10 +14,23 @@ class SupplierResource extends JsonResource
             'country' => $this->country,
             'contact_email' => $this->contact_email,
             'code' => $this->code,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at, 
+            'created_by' => $this->createdBy ? [
+                'id' => $this->createdBy->id,
+                'full_name' => $this->createdBy->full_name,
+                'role' => $this->getRoleName($this->createdBy->role),
+            ] : null,
+            'updated_by' => $this->updatedBy ? [
+                'id' => $this->updatedBy->id,
+                'full_name' => $this->updatedBy->full_name,
+                'role' => $this->getRoleName($this->updatedBy->role),
+            ] : null,
+            'created_at' => $this->created_at->format('d-m-Y H:i'),
+            'updated_at' => $this->updated_at ? $this->updated_at->format('d-m-Y H:i') : null,
         ];
+    }
+
+    private function getRoleName($role)
+    {
+        return $role === 0 ? 'Quản trị viên' : 'Nhân viên';
     }
 }

@@ -16,8 +16,21 @@ class CategoryController extends Controller
     {
         try {
 
-            $categories = Category::with('subcategories')->paginate(5);
-            return new CategoryCollection($categories);
+            $categories = Category::with(['createdByUser', 'updatedByUser', 'parentCategory'])->paginate(5);
+
+            $user = Auth::user();
+            $userData = [
+                'id' => $user->id,
+                'full_name' => $user->full_name,
+                'role' => $user->role,
+            ];
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Danh sách danh mục',
+                'user' => $userData,
+                'data' => new CategoryCollection($categories),
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -31,7 +44,7 @@ class CategoryController extends Controller
     {
         try {
 
-            $category = Category::with('subcategories')->find($id);
+            $category = Category::with(['createdByUser', 'updatedByUser', 'parentCategory'])->find($id);
 
             if (!$category) {
                 return response()->json([
@@ -57,15 +70,16 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         try {
-
             $validatedData = $request->validated();
 
 
             $validatedData['created_by'] = Auth::id();
-            $validatedData['updated_by'] = Auth::id();
-
+            $validatedData['updated_by'] = null;
 
             $category = Category::create($validatedData);
+
+
+            $category->load(['createdByUser', 'updatedByUser', 'parentCategory']);
 
             return response()->json([
                 'status' => 'success',
@@ -84,15 +98,15 @@ class CategoryController extends Controller
     public function update(CategoryUpdateRequest $request, $id)
     {
         try {
-
             $category = Category::findOrFail($id);
-
 
             $validatedData = $request->validated();
             $validatedData['updated_by'] = Auth::id();
 
-
             $category->update($validatedData);
+
+
+            $category->load(['createdByUser', 'updatedByUser', 'parentCategory']);
 
             return response()->json([
                 'status' => 'success',
@@ -116,13 +130,19 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
+            $category = Category::with('children')->findOrFail($id);
 
-            $category = Category::findOrFail($id);
+
+            foreach ($category->children as $child) {
+                $child->delete();
+            }
+
+            
             $category->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Danh mục đã được xóa thành công.'
+                'message' => 'Danh mục và danh mục con đã được xóa thành công.'
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([

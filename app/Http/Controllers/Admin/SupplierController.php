@@ -15,8 +15,19 @@ class SupplierController extends Controller
     public function index()
     {
         try {
-            $suppliers = Supplier::paginate(5);
-            return new SupplierCollection($suppliers);
+            $suppliers = Supplier::with(['createdBy', 'updatedBy'])->paginate(5);
+            $user = Auth::user();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Danh sách nhà cung cấp',
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'role' => $user->role,
+                ],
+                'data' => new SupplierCollection($suppliers),
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -29,7 +40,7 @@ class SupplierController extends Controller
     public function show($id)
     {
         try {
-            $supplier = Supplier::find($id);
+            $supplier = Supplier::with(['createdBy', 'updatedBy'])->find($id);
 
             if (!$supplier) {
                 return response()->json([
@@ -56,15 +67,15 @@ class SupplierController extends Controller
     {
         try {
             $validatedData = $request->validated();
-            $validatedData['created_by'] = Auth::id(); 
-            $validatedData['updated_by'] = Auth::id();
+            $validatedData['created_by'] = Auth::id();
+            $validatedData['updated_by'] = null;
 
             $supplier = Supplier::create($validatedData);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thêm mới nhà cung cấp thành công.',
-                'data' => new SupplierResource($supplier)
+                'data' => new SupplierResource($supplier),
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
@@ -78,16 +89,21 @@ class SupplierController extends Controller
     public function update(SupplierUpdateRequest $request, $id)
     {
         try {
-            $supplier = Supplier::findOrFail($id);
+            $supplier = Supplier::with(['createdBy', 'updatedBy'])->findOrFail($id);
             $validatedData = $request->validated();
             $validatedData['updated_by'] = Auth::id();
 
             $supplier->update($validatedData);
 
+            
+            $updatedByUser = $supplier->updatedBy;
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Cập nhật nhà cung cấp thành công!',
-                'data' => new SupplierResource($supplier),
+                'data' => [
+                    'supplier' => new SupplierResource($supplier),
+                ],
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
@@ -103,15 +119,18 @@ class SupplierController extends Controller
         }
     }
 
+
     public function destroy($id)
     {
         try {
             $supplier = Supplier::findOrFail($id);
+
+
             $supplier->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Nhà cung cấp đã được xóa thành công'
+                'message' => 'Nhà cung cấp đã được xóa thành công.',
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([

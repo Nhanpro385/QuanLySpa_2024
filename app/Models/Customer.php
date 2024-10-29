@@ -27,7 +27,7 @@ class Customer extends Model
         'note',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $attributes = [
@@ -35,10 +35,10 @@ class Customer extends Model
         'gender' => 1,
     ];
 
-
     protected static function boot()
     {
         parent::boot();
+
 
         static::creating(function ($customer) {
             if (isset($customer->password)) {
@@ -47,18 +47,31 @@ class Customer extends Model
         });
     }
 
-    public function consulation()
+
+    public function createdBy()
     {
-        return $this->hasMany(Customer::class, 'customer_id', 'id');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function appointment()
+
+    public function updatedBy()
     {
-        return $this->hasMany(Customer::class, 'customer_id', 'id');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function treatmentHistory()
+    
+
+
+
+
+    public function appointments()
     {
-        return $this->hasMany(Customer::class, 'customer_id', 'id');
+        return $this->hasMany(Appointment::class, 'customer_id', 'id');
+    }
+
+
+    public function treatmentHistories()
+    {
+        return $this->hasMany(TreatmentHistory::class, 'customer_id', 'id');
     }
 }

@@ -9,6 +9,7 @@ use Kra8\Snowflake\HasSnowflakePrimary;
 class Supplier extends Model
 {
     use HasFactory, HasSnowflakePrimary;
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -23,8 +24,24 @@ class Supplier extends Model
         'created_by',
         'updated_by',
     ];
+
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    
     public function inboundInvoice()
     {
-        return $this->hasMany(Supplier::class, 'suppliers_id', 'id');
+        return $this->hasMany(InboundInvoice::class, 'supplier_id', 'id');
     }
+
+
 }
