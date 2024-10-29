@@ -19,6 +19,7 @@ use App\Http\Controllers\Auth\Admin\AuthController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
+
 require __DIR__ . '/auth.php';
 
 // Route Users
@@ -59,7 +60,8 @@ Route::group([
     Route::post('/services', [ServiceController::class, 'store']);
     Route::post('/services/{id}', [ServiceController::class, 'update']);
     Route::delete('/services/{id}', [ServiceController::class, 'destroy']);
-
+    Route::post('/services/products/{id}', [ServiceController::class, 'serviceProducts']);
+    Route::put('/services/products/{id}', [ServiceController::class, 'serviceUpdateProducts']);
 });
 //End
 

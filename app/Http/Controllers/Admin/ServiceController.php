@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Filters\Admin\ServiceFilter;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Services\ServiceProductsRequest;
+use App\Http\Requests\Admin\Services\ServiceProductsUpdateRequest;
 use App\Http\Requests\Admin\Services\ServiceRequest;
 use App\Http\Requests\Admin\Services\ServiceUpdateRequest;
 use App\Http\Resources\Admin\Services\ServiceCollection;
 use App\Http\Resources\Admin\Services\ServiceResource;
+use App\Models\ProductService;
 use App\Models\Service;
 use App\Models\ServiceImage;
 use Illuminate\Http\Request;
@@ -214,6 +217,97 @@ class ServiceController extends Controller
             return response()->json($response, 500);
         }
 
+
+    }
+
+
+    public function serviceProducts(string $id, ServiceProductsRequest $request)
+    {
+        try {
+            $validateData = $request->validated();
+            $service = Service::find($id);
+            if (!$service) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy dữ liệu',
+                ], 404);
+            }
+            foreach ($validateData['products'] as $product) {
+                $existingProduct = ProductService::where('service_id', $id)
+                    ->where('product_id', $product['product_id'])
+                    ->first();
+
+                if ($existingProduct) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Sản phẩm đã có trong dịch vụ.',
+                    ], 404);
+                }
+
+                ProductService::create([
+                    'id' => app(Snowflake::class)->next(),
+                    'product_id' => $product['product_id'],
+                    'quantity_used' => $product['quantity_used'],
+                    'service_id' => $id
+                ]);
+
+
+            }
+            $service->update([
+                'updated_by' => auth('api')->user()->id
+            ]);
+            $response = [
+                'status' => 'success',
+                'message' => 'Thêm sản phẩm dịch vụ thành công.',
+                'data' => new ServiceResource($service)
+            ];
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình.',
+            ];
+            return response()->json($response, 500);
+        }
+
+    }
+
+    public function serviceUpdateProducts(string $id, ServiceProductsRequest $request)
+    {
+        $validateData = $request->validated();
+        $service = Service::find($id);
+        if (!$service) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy dữ liệu',
+            ], 404);
+        }
+
+        foreach ($validateData['products'] as $productData) {
+            $productService = ProductService::where('service_id', $id)
+                ->where('product_id', $productData['product_id'])
+                ->first();
+
+            if ($productService) {
+                $productService->update(['quantity_used' => $productData['quantity_used']]);
+            } else {
+                ProductService::create([
+                    'id' => app(Snowflake::class)->next(),
+                    'product_id' => $productData['product_id'],
+                    'quantity_used' => $productData['quantity_used'],
+                    'service_id' => $id
+                ]);
+            }
+        }
+        $service->update([
+            'updated_by' => auth('api')->user()->id
+        ]);
+        $response = [
+            'status' => 'success',
+            'message' => 'Cập nhật sản phẩm dịch vụ thành công.',
+            'data' => new ServiceResource($service)
+        ];
+        return response()->json($response);
 
     }
 
