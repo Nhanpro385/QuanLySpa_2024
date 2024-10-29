@@ -1,0 +1,53 @@
+.facilities-section {
+  background-repeat: no-repeat;
+  background-image: url("https://img.freepik.com/free-vector/chinese-traditional-background-with-decorative-frame-clouds_1017-35909.jpg");
+  background-color: lightgray;
+  background-position: 50% 50%;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+}
+
+.facilities-title {
+  font-size: 24px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: rgb(2, 64, 79);
+  text-transform: capitalize;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.slider-container {
+  width: 100%;
+  text-align: center;
+}
+
+.facility-image {
+  flex-shrink: 0;
+  padding: 10px;
+  width: 100%;
+}
+
+.slider-controls {
+  margin-top: 20px;
+}
+
+.slider-button {
+  font-size: 20px;
+  background-color: rgb(2, 64, 79);
+  color: #fff;
+}
+
+.view-more-button {
+  padding: 20px;
+  margin-top: 20px;
+  background-color: rgb(2, 64, 79);
+  color: #fff;
+}/*# sourceMappingURL=Home_facilities.css.map */

@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+.login_wrapper,
+.forgot_wrapper {
+  padding: 20px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #f8b0c2, #f48bb1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  background-color: #fff;
+  width: 100%;
+  border-radius: 10px;
+  padding: 20px;
+  height: 100%;
+}
+
+.overlay_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #fffdfd;
+  background: linear-gradient(145deg, #f8b0c2, #f48bb1);
+}
+
+.form_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.login_form,
+.forgot_form {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+  .overlay-container,
+  .form-container {
+    padding: 20px;
+    height: auto;
+  }
+}
+.title {
+  font-family: "Anton", sans-serif;
+  color: #d16b79;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.forgotlink {
+  color: #ff6b6b;
+  text-decoration: none;
+  font-size: 1rem;
+  margin-top: 10px;
+  display: block;
+  text-align: right;
+}/*# sourceMappingURL=LoginPage.module.css.map */

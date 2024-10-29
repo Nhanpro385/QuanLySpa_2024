@@ -1,0 +1,40 @@
+.container {
+  background-color: #ffdcdc;
+  padding: 20px 0;
+}
+
+.divider {
+  border-color: #000;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.card {
+  width: 300px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.cardImage {
+  border-radius: 8px;
+  width: 100%;
+}
+
+.cardContent {
+  min-height: 60px;
+}
+
+.tooltipButton {
+  width: 100%;
+  color: #e05265;
+  margin-bottom: 10px;
+}
+
+.showMoreButton {
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
+}/*# sourceMappingURL=HomeService.module.css.map */

@@ -1,0 +1,47 @@
+.container {
+  background-color: #ffdcdc;
+  min-height: 374px;
+  padding: 10px 50px;
+}
+
+.quoteText {
+  font-size: 20px;
+  font-weight: 500;
+  font-style: Mulish;
+  margin-bottom: 20px;
+}
+
+.statisticItem {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  height: 140px;
+}
+.statisticItem h1 {
+  font-size: 32px;
+  color: #e05265;
+}
+.statisticItem p {
+  margin: 0;
+}
+
+.imgContainer {
+  text-align: center;
+}
+.imgContainer img {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  .quoteText {
+    font-size: 18px;
+  }
+  .statisticItem {
+    height: auto;
+    margin-bottom: 16px;
+  }
+}/*# sourceMappingURL=HomeQuote.module.css.map */

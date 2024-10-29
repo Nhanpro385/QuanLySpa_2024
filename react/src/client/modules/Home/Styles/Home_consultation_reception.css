@@ -1,0 +1,52 @@
+.consultation-section {
+  padding: 50px;
+  background-color: #fff;
+}
+
+.section-title {
+  text-align: center;
+  color: #132d2e;
+  font-size: 36px;
+  font-family: "Mulish", sans-serif;
+  font-weight: 700;
+  text-transform: capitalize;
+  margin-bottom: 30px;
+}
+
+.form-title {
+  text-align: center;
+  color: #3b3b3b;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.form-description {
+  text-align: center;
+  color: #3a3a3a;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.checkbox-video-call {
+  margin-top: 20px;
+}
+
+.submit-button {
+  background-color: #e05265;
+  color: #fff;
+  font-size: 18px;
+  padding: 10px;
+}
+.submit-button:hover {
+  background-color: #d04358;
+}
+
+.ant-card {
+  border-radius: 10px;
+}
+
+.ant-card-cover img {
+  border-radius: 10px 10px 0 0;
+}/*# sourceMappingURL=Home_consultation_reception.css.map */
