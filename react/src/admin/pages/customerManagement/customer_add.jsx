@@ -8,9 +8,9 @@ import {
     Col,
     DatePicker,
     Select,
-    Alert,
+
     notification,
-    Space,
+ 
 } from "antd";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,12 +50,21 @@ const CustomersAdd = () => {
             if (CustomerAdd.fulfilled.match(response)) {
                 reset();
                 setSuccess("Thêm người dùng thành công");
+                api.success({
+                    message: "Thêm khách hàng thành công",
+                    placement: "topRight",
+                });
+
             } else if (CustomerAdd.rejected.match(response)) {
                 Object.keys(response.payload.errors).forEach((key) => {
                     setError(key, {
                         type: "manual",
                         message: response.payload.errors[key][0],
                     });
+                });
+                api.error({
+                    message: "Thêm khách hàng thất bại",
+                    placement: "topRight",
                 });
             }
         } catch (error) {
@@ -69,18 +78,7 @@ const CustomersAdd = () => {
             Thêm khách hàng
             </h1>
         <Card >
-            {success && (
-                <Alert
-                    message={success}
-                    type="success"
-                    showIcon
-                    closable
-                    afterClose={() => setSuccess(null)}
-                />
-            )}
-            {error && (
-                <Alert message={<span>{error.message}</span>} type="error" />
-            )}
+           
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
                     <Col xl={12} lg={12} md={12} sm={24} xs={24}>
@@ -238,8 +236,9 @@ const CustomersAdd = () => {
                                 rules={{ required: "Giới tính là bắt buộc" }}
                                 render={({ field }) => (
                                     <Select size="large" {...field}>
-                                        <Option value="male">Nam</Option>
-                                        <Option value="female">Nữ</Option>
+                                        <Option value={2}>Nam</Option>
+                                        <Option value={1}>Nữ</Option>
+                                        <Option value={0}>Khác</Option>
                                     </Select>
                                 )}
                             />

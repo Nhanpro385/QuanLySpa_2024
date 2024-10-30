@@ -19,7 +19,8 @@ const ModalEditCustomer = ({
         setError,
         formState: { errors },
     } = useForm();
-
+    console.log(customer);
+    
     useEffect(() => {
         if (customer) {
             setValue("name", customer.name);
@@ -29,7 +30,7 @@ const ModalEditCustomer = ({
             setValue("phone", customer.phone);
             setValue("address", customer.address);
             setValue("date_of_birth", dayjs(customer.date_of_birth));
-            setValue("gender", customer.gender);
+            setValue("gender", customer.gender+"");
             setValue("note", customer.note);
             setValue("role", customer.role);
         }
@@ -180,8 +181,9 @@ const ModalEditCustomer = ({
                         rules={{ required: "Giới tính là bắt buộc" }}
                         render={({ field }) => (
                             <Select {...field}>
-                                <Option value="male">Nam</Option>
-                                <Option value="female">Nữ</Option>
+                                <Option value="2">Nam</Option>z
+                                <Option value="1">Nữ</Option>
+                                <Option value="0">Khác</Option>
                             </Select>
                         )}
                     />

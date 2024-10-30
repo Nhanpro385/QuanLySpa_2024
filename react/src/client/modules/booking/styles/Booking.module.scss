@@ -1,0 +1,9 @@
+.active {
+    background-color: rgb(224, 82, 101);
+    color: white;
+
+    cursor: pointer;
+    
+    transform: translateY(-5px) scale(1.05);
+    transition: all 0.5s;
+}

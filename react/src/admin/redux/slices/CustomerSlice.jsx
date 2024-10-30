@@ -26,7 +26,7 @@ export const CustomerAdd = createAsyncThunk(
     "Customer/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.post(endpoints.Customers.create, data);
+            const response = await axiosInstance.post(endpoints.Customers.create, data);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -43,7 +43,7 @@ export const CustomerDelete = createAsyncThunk(
     "Customer/delete",
     async (id, { rejectWithValue }) => {
         try {
-            await axios.delete(endpoints.Customers.delete(id));
+            await axiosInstance.delete(endpoints.Customers.delete(id));
             return id;
         } catch (error) {
             return rejectWithValue({
@@ -61,7 +61,7 @@ export const CustomerUpdate = createAsyncThunk(
     "Customer/update",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 endpoints.Customers.update(data.id),
                 data
             );
@@ -83,7 +83,7 @@ export const CustomerGetbyId = createAsyncThunk(
     "Customer/getbyid",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axios.get(endpoints.Customers.detail(id));
+            const response = await axiosInstance.get(endpoints.Customers.detail(id));
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -133,11 +133,15 @@ const CustomerSlice = createSlice({
             })
             // Customer Add
             .addCase(CustomerAdd.pending, (state) => {
+              
+                
                 state.loading = true;
                 state.error = null;
             })
             .addCase(CustomerAdd.fulfilled, (state, action) => {
-                state.customers.push(action.payload);
+                console.log(action.payload);        
+                
+                state.customers.data.push(action.payload);
                 state.loading = false;
             })
             .addCase(CustomerAdd.rejected, (state, action) => {

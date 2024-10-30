@@ -10,7 +10,7 @@ const csrfToken = document
 
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -22,6 +22,8 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const accessToken = localStorage.getItem("token");
+        console.log(accessToken);
+        
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
@@ -41,7 +43,7 @@ axiosInstance.interceptors.response.use(
             });
             logout();
             localStorage.removeItem("token");
-         
+            window.location.href = "/admin/dangnhap";
         }
         return Promise.reject(error);
     }

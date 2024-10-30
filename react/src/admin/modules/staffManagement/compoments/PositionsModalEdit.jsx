@@ -20,20 +20,28 @@ const PositionsModalEdit = ({
     useEffect(() => {
         if (Position.data) {
             setValue("name", Position.data.name);
-            setValue("wage", Position.data.wage);
+            setValue("wage", ()=>{
+                if (typeof Position.data.wage === "number") {
+                    return Position.data.wage;
+                } else {
+                    return Position.data.wage.replace(/\$\s?|(,*)/g, "");
+                }
+            });
             setValue("note", Position.data.note);
         }
     }, [Position.data, setValue]);
 
     const onSubmit = (data) => {
-    
+        console.log("wage", data.wage);
+
         if (typeof data.wage !== "number") {
-            data.wage = parseFloat(data.wage); // Ensures wage is treated as a number
+            data.wage = data.wage.replace(/\$\s?|(,*)/g, "");
+            console.log(data.wage);
+            
         }
 
-        console.log("data", data);
 
-       
+
         handleEditSubmit({ ...data, id: Position.data.id });
     };
 
@@ -88,6 +96,10 @@ const PositionsModalEdit = ({
                                 parser={(value) =>
                                     value?.replace(/\$\s?|(,*)/g, "")
                                 }
+                               onChange={(value) => {
+                                field.onChange(value);
+                               }
+                            }
                             />
                         )}
                     />

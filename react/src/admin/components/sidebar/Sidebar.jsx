@@ -31,10 +31,10 @@ function getItem(label, key, icon, children) {
 const items = [
     getItem(
         <Link
-            className="text-decoration-none text-black fs-2 text-center"
+            className="text-decoration-none text-black fs-4"
             to="/admin"
         >
-            
+            Trang chủ
         </Link>,
         "1",
         <HomeFilled />

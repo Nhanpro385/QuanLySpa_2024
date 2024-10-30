@@ -20,11 +20,11 @@ import {
 import styles from "@admin/modules/Notification/notification.module.scss";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-// import useAuthActions from "@admin/modules/Auth/hooks/useAuthActions";
+import useAuthActions from "../../modules/authen/hooks/useAuth";
 const { Header } = Layout;
 
 const HeaderAdmin = () => {
-    // const {authLogout} = useAuthActions();
+    const {authLogout} = useAuthActions();
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const showDrawer = () => {
@@ -229,37 +229,39 @@ const HeaderAdmin = () => {
             icon: <SettingOutlined />,
             label: "Đăng xuất",
             onClick: () => {
-                // const logout = async () => {
-                //     try {
-                //         const res = await authLogout();
-                //         if (res.success) {
-                //             notification.success({
-                //                 message: "Đăng xuất thành công",
-                //                 description:
-                //                     "Chuyển hướng đến trang đăng nhập...",
-                //                 placement: "topRight",
-                //             });
-                //             // Redirect to login page after logout
-                //             setTimeout(() => {
-                //                 window.location.href = "/admin/dangnhap";
-                //             }, 1000);
-                //         } else {
-                //             notification.error({
-                //                 message: "Đăng xuất thất bại",
-                //                 description: "Đã xảy ra lỗi. Vui lòng thử lại.",
-                //                 placement: "topRight",
-                //             });
-                //         }
-                //     } catch (error) {
-                //         notification.error({
-                //             message: "Lỗi hệ thống",
-                //             description:
-                //                 "Không thể đăng xuất. Vui lòng thử lại sau.",
-                //             placement: "topRight",
-                //         });
-                //     }
-                // };
-                // logout();
+                const logout = async () => {
+                    try {
+                        const res = await authLogout();
+                        console.log(res)
+                        
+                        if (res.meta.requestStatus === "fulfilled") {
+                            notification.success({
+                                message: "Đăng xuất thành công",
+                                description:
+                                    "Chuyển hướng đến trang đăng nhập...",
+                                placement: "topRight",
+                            });
+                            // Redirect to login page after logout
+                            setTimeout(() => {
+                                window.location.href = "/admin/dangnhap";
+                            }, 1000);
+                        } else {
+                            notification.error({
+                                message: "Đăng xuất thất bại",
+                                description: "Đã xảy ra lỗi. Vui lòng thử lại.",
+                                placement: "topRight",
+                            });
+                        }
+                    } catch (error) {
+                        notification.error({
+                            message: "Lỗi hệ thống",
+                            description:
+                                "Không thể đăng xuất. Vui lòng thử lại sau.",
+                            placement: "topRight",
+                        });
+                    }
+                };
+                logout();
             },
         },
     ];

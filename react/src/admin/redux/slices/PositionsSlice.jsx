@@ -43,7 +43,7 @@ export const PositionsUpdate = createAsyncThunk(
     "Positions/update",
     async (data, { rejectWithValue }) => {
         try {
-            console.log("data", data);
+           
 
             const response = await axiosInstance.put(
                 endpoints.Positions.update(data.id),
