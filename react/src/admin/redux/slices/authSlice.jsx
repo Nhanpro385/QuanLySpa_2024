@@ -36,7 +36,42 @@ export const logoutAdmin = createAsyncThunk(
         }
     }
 );
+export const forgotpassword = createAsyncThunk(
+    "auth/forgotpassword",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.Auth.forgotpassword,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
+export const resetpassword = createAsyncThunk(
+    "auth/resetpassword",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.Auth.resetpassword,
+                data
+            );
 
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                error: error.response?.data?.errors || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
 const initialState = {
     token: null,
     user: null,
@@ -53,6 +88,7 @@ const authSlice = createSlice({
         logout: (state) => {
             state.token = null;
             state.user = null;
+            localStorage.removeItem("token");
         },
     },
     extraReducers: (builder) => {
@@ -79,6 +115,34 @@ const authSlice = createSlice({
             })
             .addCase(logoutAdmin.rejected, (state, action) => {
                 state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(forgotpassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(forgotpassword.fulfilled, (state, action) => {
+                state.user = action.payload;
+                console.log(action.payload);
+
+                state.loading = false;
+            })
+            .addCase(forgotpassword.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error = action.payload;
+            })
+            .addCase(resetpassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(resetpassword.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.loading = false;
+            })
+            .addCase(resetpassword.rejected, (state, action) => {
+                state.loading = false;
+
                 state.error = action.payload;
             });
     },

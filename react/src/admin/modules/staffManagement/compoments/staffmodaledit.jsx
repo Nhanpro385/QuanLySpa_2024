@@ -12,14 +12,16 @@ const ModalEditStaff = ({
     handleCancel,
     staff,
     handleEditSubmit,
+    errorForm,
 }) => {
     const {
         control,
         handleSubmit,
         setValue,
+        setError,
+        reset,
         formState: { errors },
     } = useForm();
-    console.log(staff);
 
     useEffect(() => {
         if (staff) {
@@ -30,16 +32,33 @@ const ModalEditStaff = ({
             setValue("date_of_birth", dayjs(staff.date_of_birth));
             setValue("gender", staff.gender === "nam" ? 0 : 1);
             setValue("note", staff.note);
-            setValue("role", staff.role === "Nhân viên tư vấn và chăm sóc khách hàng" ? 2 : staff.role === "Nhân viên" ? 1 : 0);
+            setValue(
+                "role",
+                staff.role === "Nhân viên tư vấn và chăm sóc khách hàng"
+                    ? 2
+                    : staff.role === "Nhân viên"
+                    ? 1
+                    : 0
+            );
         }
     }, [staff, setValue]);
+    useEffect(() => {
+        if (errorForm) {
+            Object.keys(errorForm).forEach((key) => {
+                setError(key, { type: "manual", message: errorForm[key] });
+            });
+        }
+    }, [errorForm]);
 
     const onSubmit = (data) => {
         data.date_of_birth = formatDate(data.date_of_birth);
 
         handleEditSubmit({ ...data, id: staff.id, status: staff.status });
     };
-
+    const onCancel = () => {
+        reset(); // Clear form when modal is closed
+        handleCancel(); // Close the modal
+    };
     return (
         <Modal
             title="Chỉnh sửa nhân viên"
@@ -167,7 +186,9 @@ const ModalEditStaff = ({
                             <Select {...field}>
                                 <Option value={0}>Quản trị viên</Option>
                                 <Option value={1}>Nhân viên</Option>
-                                <Option value={2}>Nhân viên tư vấn và chăm sóc khách hàng</Option>
+                                <Option value={2}>
+                                    Nhân viên tư vấn và chăm sóc khách hàng
+                                </Option>
                             </Select>
                         )}
                     />
@@ -204,7 +225,7 @@ const ModalEditStaff = ({
                         <Button type="primary" htmlType="submit">
                             Lưu
                         </Button>
-                        <Button onClick={handleCancel}>Hủy</Button>
+                        <Button onClick={onCancel}>Hủy</Button>
                     </Space>
                 </Form.Item>
             </Form>

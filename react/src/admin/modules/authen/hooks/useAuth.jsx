@@ -1,5 +1,10 @@
 import { useDispatch } from "react-redux";
-import { loginAdmin, logoutAdmin } from "@admin/redux/slices/authSlice";
+import {
+    loginAdmin,
+    logoutAdmin,
+    forgotpassword,
+    resetpassword,
+} from "@admin/redux/slices/authSlice";
 const useAuthActions = () => {
     const dispatch = useDispatch();
 
@@ -10,10 +15,17 @@ const useAuthActions = () => {
     const authLogout = async () => {
         return await dispatch(logoutAdmin());
     };
-
+    const authForgot = async (data) => {
+        return await dispatch(forgotpassword(data));
+    };
+    const authReset = async (data) => {
+        return await dispatch(resetpassword(data));
+    };
     return {
         authLogin,
         authLogout,
+        authForgot,
+        authReset,
     };
 };
 

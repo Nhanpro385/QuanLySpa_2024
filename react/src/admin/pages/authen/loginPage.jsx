@@ -8,11 +8,11 @@ import Wellcome from "../../assets/images/loginimg.jpg";
 import clsx from "clsx";
 import axios from "axios";
 const LoginPage = () => {
-    useEffect(() => {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        console.log("đây là token", csrfToken);
-        axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
-    }, []);
+    // useEffect(() => {
+    //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    //     console.log("đây là token", csrfToken);
+    //     axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+    // }, []);
     const { authLogin } = useAuthActions();
     const [loading, setLoading] = React.useState(false);
     const {

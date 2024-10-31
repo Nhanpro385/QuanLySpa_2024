@@ -9,7 +9,6 @@ const ModalEditCustomer = ({
     handleOk,
     handleCancel,
     customer,
-
     formErrors,
 }) => {
     const {
@@ -19,7 +18,7 @@ const ModalEditCustomer = ({
         setError,
         formState: { errors },
     } = useForm();
-    console.log(customer);
+   
     
     useEffect(() => {
         if (customer) {

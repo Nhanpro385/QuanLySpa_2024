@@ -3,7 +3,7 @@
 export const API_BASE_URL = "http://127.0.0.1:8000/api/v0.0.1/admin";
 
 const API_AUTH_URL = "http://127.0.0.1:8000/api/auth"; // Thay đổi theo URL API của bạn
-
+const API_AUTH_URL2 = "http://127.0.0.1:8000/api";
 const endpoints = {
     ServiceCategories: {
         list: `${API_BASE_URL}/serviceCategories`,
@@ -52,7 +52,8 @@ const endpoints = {
         logout: `${API_AUTH_URL}/logout`,
         refresh: `${API_AUTH_URL}/refresh`,
         me: `${API_AUTH_URL}/me`,
-        resetPassword: `${API_AUTH_URL}/me/resetPassword`,
+        forgotpassword: `${API_AUTH_URL2}/forgot-password`,
+        resetpassword: `${API_AUTH_URL2}/reset-password`,
     },
     Products: {
         list: `${API_BASE_URL}/products`,

@@ -23,9 +23,11 @@ import { useSelector } from "react-redux";
 import ModalEditStaff from "../../modules/staffManagement/compoments/staffmodaledit";
 import useModal from "../../modules/appointments/hooks/openmodal";
 function Staffs() {
-    const {  getusers, updateusers, deleteusers, getusersById } =
+    const { getusers, updateusers, deleteusers, getusersById } =
         useUsersActions();
     const navigate = useNavigate();
+    const [errorForm, setErrorForm] = React.useState(null);
+    const [userEdit, setUserEdit] = React.useState(null);
     const { users, user } = useSelector((state) => state.user);
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     useEffect(() => {
@@ -42,26 +44,31 @@ function Staffs() {
             role: user.role,
         })) || [];
 
-    const handleEdit = (key) => {
-        getusersById(key);
-        showModal();
+    const handleEdit = async (key) => {
+        try {
+            const res = await getusersById(key);
+            if (res.meta.requestStatus === "fulfilled") {
+                setUserEdit(res.payload.data);
+                showModal();
+            }
+        } catch (err) {
+            message.error("Lỗi");
+        }
     };
-    const handleEditSubmit = async  (values) => {
-            try{
-                const res = await updateusers(values);
-                if(res.meta.requestStatus === "fulfilled"){
-                    getusers();
-                    message.success("Cập nhật thành công");
-                    handleCancel();
-                }else{
-                    message.error("Cập nhật thất bại");
-
-                }
-
-            } catch(err){
+    const handleEditSubmit = async (values) => {
+        try {
+            const res = await updateusers(values);
+            if (res.meta.requestStatus === "fulfilled") {
+                getusers();
+                message.success("Cập nhật thành công");
+                handleCancel();
+            } else {
+                setErrorForm((prev) => res.payload.errors);
                 message.error("Cập nhật thất bại");
             }
-            
+        } catch (err) {
+            message.error("Cập nhật thất bại");
+        }
     };
     const handleDelete = async (key) => {
         try {
@@ -179,6 +186,7 @@ function Staffs() {
                 handleCancel={handleCancel}
                 staff={user.data}
                 handleEditSubmit={handleEditSubmit}
+                errorForm={errorForm}
             />
             <Col>
                 <ScheduleXCalendar calendarApp={calendar} />

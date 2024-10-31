@@ -13,7 +13,7 @@ import AdminApp from "./admin/app"; // Ứng dụng admin
 
 
 import { ConfigProvider } from "antd";
-import ForgotPage from "./admin/modules/authen/compoment/forgotPage";
+
 
 const App = () => {
     return (
@@ -33,7 +33,6 @@ const App = () => {
                 {/* Routes cho admin */}
                 <Route path="/admin/*" element={<AdminApp />} />
               
-                <Route path="/admin/quenmatkhau" element={<ForgotPage />} />
                 
           
             

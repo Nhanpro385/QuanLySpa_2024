@@ -1,12 +1,15 @@
 import React from "react";
 import { Button, Col, Form, Input, Row, Spin, notification } from "antd";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styles from "@admin/modules/authen/styles/LoginPage.module.scss";
 
 // import { loginAction } from "../actions/authActions";
 import Wellcome from "../../../assets/images/rb_1123.png";
+import useAuthActions from "../hooks/useAuth";
 const ForgotPage = () => {
+    const { authForgot } = useAuthActions();
+    const [error, setError] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const {
         control,
@@ -25,7 +28,33 @@ const ForgotPage = () => {
     };
 
     const onSubmit = async (data) => {
-        setLoading(true);
+        try {
+            setLoading(true);
+            const res = await authForgot(data);
+
+            if (res.meta.requestStatus == "rejected") {
+                if (res.payload.status == 422) {
+                    setError("Vui lòng đợi và thử lại");
+                    setLoading(false);
+                }
+            } else if (res.meta.requestStatus == "fulfilled") {
+                if (res.payload.status == "error") {
+                    setError(res.payload.messages);
+                    setLoading(false);
+                } else {
+                    openNotification(
+                        "success",
+                        "Gửi yêu cầu thành công",
+                        "Vui lòng kiểm tra email để lấy lại mật khẩu"
+                    );
+                    setError(null);
+                    setLoading(false);
+                }
+            }
+        } catch (err) {
+            console.log(err);
+        }
+
         // const { email, password } = data;
         // const res = await loginAction(email, password);
         // console.log(res);
@@ -52,7 +81,7 @@ const ForgotPage = () => {
 
     return (
         <div className={styles.forgot_wrapper}>
-            <Row className={styles.container}> 
+            <Row className={styles.container}>
                 <Col xs={24} md={12} className={styles.overlay_container}>
                     <div className={styles.overlay_panel}>
                         <img
@@ -66,8 +95,23 @@ const ForgotPage = () => {
                     </div>
                 </Col>
                 <Col xs={24} md={12} className={styles.form_container}>
-                    <Form onFinish={handleSubmit(onSubmit)}  className={styles.forgot_form}>
-                        <h1>Quên mật khẩu</h1>
+                    <Form
+                        onFinish={handleSubmit(onSubmit)}
+                        className={styles.forgot_form}
+                    >
+                        <h1
+                          className="text-center"
+                        >Quên mật khẩu</h1>
+                        {error && (
+                            <p style={{ color: "red", textAlign: "center" }}>
+                                {error}
+                            </p>
+                        )}
+                        {loading && (
+                            <div className="text-center mb-3">
+                                <Spin />
+                            </div>
+                        )}
                         <Form.Item>
                             <Controller
                                 name="email"
@@ -89,8 +133,33 @@ const ForgotPage = () => {
                                     {errors.email.message}
                                 </p>
                             )}
+                        </Form.Item>{" "}
+                        <Form.Item>
+                            <Controller
+                                name="phone"
+                                control={control}
+                                rules={{
+                                    required: "Vui lòng nhập số điện thoại",
+                                    pattern: {
+                                        value: /^[0-9\b]+$/,
+                                        message: "Số điện thoại không hợp lệ",
+                                    },
+                                }}
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="Số điện thoại"
+                                        className="w-100"
+                                    />
+                                )}
+                            />
+                            {errors.phone && (
+                                <p style={{ color: "red" }}>
+                                    {errors.phone.message}
+                                </p>
+                            )}
                         </Form.Item>
-
                         <a
                             style={{
                                 fontSize: "17px",
@@ -106,6 +175,7 @@ const ForgotPage = () => {
                             htmlType="submit"
                             className="buttonlogin"
                             block
+                            
                         >
                             Gửi yêu cầu
                         </Button>

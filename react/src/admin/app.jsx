@@ -7,7 +7,8 @@ import AuthMiddleware from "@/authMiddleware";
 import AdminLayout from "@admin/components/layout/AdminLayout";
 import { Button, Result } from "antd";
 import LoginPage from "./pages/authen/loginPage";
-
+import ForgotPage from "./modules/authen/compoment/forgotPage";
+import Newpassword from "./modules/authen/compoment/newpassPage";
 const AppAdmin = () => {
     return (
         <Provider store={store}>
@@ -27,6 +28,8 @@ const AppAdmin = () => {
                 {/* Route 404 */}
                 <Route path="*" element={<NotFound />} />
                 <Route path="/dangnhap" element={<LoginPage />} />
+                <Route path="/quenmatkhau" element={<ForgotPage />} />
+                <Route path="/matkhaumoi" element={<Newpassword />} />
             </Routes>
         </Provider>
     );

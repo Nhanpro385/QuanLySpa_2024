@@ -22,8 +22,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const accessToken = localStorage.getItem("token");
-        console.log(accessToken);
-        
+
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
@@ -31,19 +30,18 @@ axiosInstance.interceptors.request.use(
     },
     (error) => Promise.reject(error)
 );
-
-// Interceptor để xử lý lỗi
+// nếu token hết hạn thì tự động logout
 axiosInstance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        return response;
+    },
     (error) => {
-        if (error.response?.status === 401) {
+        if (error.response.status === 401) {
             notification.error({
                 message: "Phiên đăng nhập hết hạn",
                 description: "Vui lòng đăng nhập lại",
             });
-            logout();
             localStorage.removeItem("token");
-            window.location.href = "/admin/dangnhap";
         }
         return Promise.reject(error);
     }
