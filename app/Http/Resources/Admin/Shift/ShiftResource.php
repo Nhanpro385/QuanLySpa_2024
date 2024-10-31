@@ -16,10 +16,19 @@ class ShiftResource extends JsonResource
             'max_customers' => $this->max_customers,
             'note' => $this->note,
             'status' => $this->status,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
+            'created_by' => $this->createdBy ? [
+                'id' => $this->createdBy->id,
+                'name' => $this->createdBy->name,
+                'role' => $this->createdBy->role,
+            ] : null,
+            'updated_by' => $this->updatedBy ? [
+                'id' => $this->updatedBy->id,
+                'name' => $this->updatedBy->name,
+                'role' => $this->updatedBy->role,
+            ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }
+    
 }

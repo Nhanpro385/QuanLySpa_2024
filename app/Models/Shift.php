@@ -45,4 +45,14 @@ class Shift extends Model
     {
         return $this->belongsToMany(Staff::class, 'shift_staff', 'shift_id', 'staff_id');
     }
+    public function createdBy()
+{
+    return $this->belongsTo(User::class, 'created_by', 'id');
+}
+
+public function updatedBy()
+{
+    return $this->belongsTo(User::class, 'updated_by', 'id');
+}
+
 }
