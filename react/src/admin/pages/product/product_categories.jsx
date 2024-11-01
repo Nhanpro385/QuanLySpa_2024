@@ -26,7 +26,7 @@ const ProductCategories = () => {
         getcategories();
     }, []);
 
-    const dataSource = categories.data || [];
+    const dataSource = Array.isArray(categories?.data) ? categories.data : [];
 
     const handleFormSubmit = async (data) => {
         const payload = {
@@ -46,11 +46,16 @@ const ProductCategories = () => {
         }
     };
 
-    const editCate = (id) => {
-        const result = getcategoriesById(id);
-        if (result.meta.requestStatus === "fulfilled") {
-            showModal();
-        } else {
+    const editCate = async (id) => {
+        try {
+            const result = await getcategoriesById(id);
+
+            if (result.meta.requestStatus === "fulfilled") {
+                showModal();
+            } else {
+                messageApi.error("Có lỗi xảy ra khi lấy danh mục.");
+            }
+        } catch (error) {
             messageApi.error("Có lỗi xảy ra khi lấy danh mục.");
         }
     };

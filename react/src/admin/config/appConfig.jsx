@@ -84,6 +84,12 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/shifts/${id}`,
         delete: (id) => `${API_BASE_URL}/shifts/${id}`,
     },
+    warehouse: {
+        import: `${API_BASE_URL}/warehouse/import`,
+        export: `${API_BASE_URL}/warehouse/export`,
+        inventory: `${API_BASE_URL}/warehouse/inventory`,
+        getwarehouse: `${API_BASE_URL}/warehouse`,
+    },
 };
 
 export default endpoints;

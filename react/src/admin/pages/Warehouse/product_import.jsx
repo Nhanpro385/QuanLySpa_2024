@@ -2,332 +2,214 @@ import {
     Button,
     Card,
     Col,
-    Divider,
     Form,
     Input,
     InputNumber,
     Row,
     Select,
     Table,
-    Empty,
-    Typography,
 } from "antd";
 import React, { useState } from "react";
 import "./../../modules/warehouse/styles/ProductImport.scss";
 
 const WarehouseImport = () => {
-    const [products, setProducts] = useState([
-        { quantity: 0, cost: 0, total: 0 },
-    ]);
+    const [products, setProducts] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
 
-    // Hàm tính tổng tiền cho từng sản phẩm
-    const handleTotalAmount = (index, quantity, cost) => {
-        const newProducts = [...products];
-        newProducts[index].total = quantity * cost;
-        setProducts(newProducts);
+    const addProduct = () => {
+        setProducts([
+            ...products,
+            {
+                key: products.length + 1,
+                id: "",
+                name: "",
+                quantity: 1,
+                cost: 0,
+                total: 0,
+            },
+        ]);
     };
 
-    // Hàm thêm sản phẩm mới
-    const handleAddProduct = () => {
-        setProducts([...products, { quantity: 0, cost: 0, total: 0 }]);
+    const searchProduct = (value) => {
+        const datafakeapi = [
+            { id: 1, name: "Sản phẩm 1" },
+            { id: 2, name: "Sản phẩm 2" },
+            { id: 3, name: "Sản phẩm 3" },
+        ];
+        const data = datafakeapi.filter((item) =>
+            item.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setSearchResults(data);
     };
 
+    const updateProduct = (index, fieldValues) => {
+        const updatedProducts = [...products];
+        const { id, name, quantity, cost } = fieldValues;
+
+        const existingProductIndex = products.findIndex(
+            (product) => product.id === id
+        );
+
+        if (
+            id &&
+            existingProductIndex !== -1 &&
+            existingProductIndex !== index
+        ) {
+            updatedProducts[existingProductIndex].quantity += quantity || 1;
+            updatedProducts[existingProductIndex].total =
+                updatedProducts[existingProductIndex].quantity *
+                (updatedProducts[existingProductIndex].cost || 0);
+            updatedProducts.splice(index, 1);
+        } else {
+            updatedProducts[index] = {
+                ...updatedProducts[index],
+                ...fieldValues,
+            };
+            updatedProducts[index].total =
+                (updatedProducts[index].quantity || 1) *
+                (updatedProducts[index].cost || 0);
+        }
+        setProducts(updatedProducts);
+    };
+
+    const removeProduct = (index) => {
+        const newProducts = products.filter((_, idx) => idx !== index);
+        const updatedProducts = newProducts.map((product, idx) => ({
+            ...product,
+            key: idx + 1,
+        }));
+        setProducts(updatedProducts);
+    };
+    const submitProduct = () => {
+        const payload = {
+            id_User: 13123123213,
+            description: "Nhập hàng",
+            total: products
+                .reduce((acc, curr) => acc + curr.total, 0)
+                .toLocaleString(),
+            products: products || [],
+        };
+        console.log(payload);
+        
+    };
     const columns = [
-        {
-            title: "STT",
-            dataIndex: "key",
-            key: "key",
-        },
+        { title: "STT", dataIndex: "key", key: "key" },
         {
             title: "Tên Sản Phẩm",
             dataIndex: "name",
             key: "name",
+            render: (_, product, index) => (
+                <Select
+                    className="w-100"
+                    size="large"
+                    showSearch
+                    placeholder="Nhập tên sản phẩm"
+                    filterOption={false}
+                    options={searchResults.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                    }))}
+                    onChange={(value, option) =>
+                        updateProduct(index, {
+                            id: value,
+                            name: option.label,
+                            quantity: 1,
+                        })
+                    }
+                    onSearch={searchProduct}
+                />
+            ),
         },
         {
             title: "Số lượng",
             dataIndex: "quantity",
             key: "quantity",
+            render: (_, product, index) => (
+                <InputNumber
+                    min={1}
+                    size="large"
+                    value={product.quantity}
+                    onChange={(value) =>
+                        updateProduct(index, { quantity: value })
+                    }
+                />
+            ),
         },
         {
             title: "Giá nhập",
             dataIndex: "cost",
             key: "cost",
+            render: (_, product, index) => (
+                <InputNumber
+                    min={1}
+                    size="large"
+                    value={product.cost}
+                    onChange={(value) => updateProduct(index, { cost: value })}
+                />
+            ),
         },
         {
             title: "Thành tiền",
             dataIndex: "total",
             key: "total",
+            render: (_, product) => product.total.toLocaleString(),
         },
         {
             title: "Hành động",
             key: "action",
-            render: (text, record) => <Button danger>Xóa</Button>,
+            render: (_, product, index) => (
+                <Button danger onClick={() => removeProduct(index)}>
+                    Xóa
+                </Button>
+            ),
         },
     ];
-
-    const dataSource = products.map((product, index) => ({
-        key: index + 1,
-        name: `Sản phẩm ${index + 1}`,
-        quantity: product.quantity,
-        cost: product.cost,
-        total: product.total,
-    }));
-
-    const removeitem = (index) => {
-        const newProducts = [...products];
-        newProducts.splice(index, 1);
-        setProducts(newProducts);
-    };
 
     return (
         <div className="warehouse-import">
             <h1 className="text-center">Nhập hàng</h1>
-            {/* Apply the CSS class here */}
             <Card title="Nhập sản phẩm : #123456789">
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
-                        <Col  xl={16} md={16} sm={24} xs={24}>
-                            <Row gutter={[16, 16]}>
-                                {products.length === 0 ? (
-                                    <Col xl={24} md={24} sm={24} xs={24}>
-                                        <Empty
-                                            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                            imageStyle={{
-                                                height: 60,
-                                            }}
-                                            description={
-                                                <Typography.Text>
-                                                    Không có sản phẩm nào
-                                                </Typography.Text>
-                                            }
-                                        >
-                                            <Button
-                                                type="primary"
-                                                className="mt-3"
-                                                onClick={handleAddProduct}
-                                            >
-                                                Thêm sản phẩm
-                                            </Button>
-                                        </Empty>
-                                    </Col>
-                                ) : (
-                                    products.map((product, index) => (
-                                        <Col xl={24} md={24} sm={24} xs={24} index={index}>
-                                            <Card
-                                                title={`Sản phẩm ${index + 1}`}
-                                                className="bg-light"
-                                            >
-                                                <Row gutter={[16, 16]}>
-                                                    <Col xl={12} md={12} sm={24} xs={24}>
-                                                        <Form.Item label="Sản phẩm">
-                                                            <Select
-                                                                size="large"
-                                                                showSearch
-                                                                placeholder="Chọn sản phẩm"
-                                                                filterOption={(
-                                                                    input,
-                                                                    option
-                                                                ) =>
-                                                                    (
-                                                                        option?.label ??
-                                                                        ""
-                                                                    )
-                                                                        .toLowerCase()
-                                                                        .includes(
-                                                                            input.toLowerCase()
-                                                                        )
-                                                                }
-                                                                options={[
-                                                                    {
-                                                                        value: "1",
-                                                                        label: "Sản phẩm 1",
-                                                                    },
-                                                                    {
-                                                                        value: "2",
-                                                                        label: "Sản phẩm 2",
-                                                                    },
-                                                                ]}
-                                                            />
-                                                        </Form.Item>
-                                                    </Col>
-
-                                                    <Col xl={12} md={12} sm={24} xs={24}>
-                                                        <Form.Item label="Nhà phân phối">
-                                                            <Select
-                                                                size="large"
-                                                                showSearch
-                                                                placeholder="Chọn nhà phân phối"
-                                                                filterOption={(
-                                                                    input,
-                                                                    option
-                                                                ) =>
-                                                                    (
-                                                                        option?.label ??
-                                                                        ""
-                                                                    )
-                                                                        .toLowerCase()
-                                                                        .includes(
-                                                                            input.toLowerCase()
-                                                                        )
-                                                                }
-                                                                options={[
-                                                                    {
-                                                                        value: "1",
-                                                                        label: "Nhà phân phối 1",
-                                                                    },
-                                                                    {
-                                                                        value: "2",
-                                                                        label: "Nhà phân phối 2",
-                                                                    },
-                                                                ]}
-                                                            />
-                                                        </Form.Item>
-                                                    </Col>
-
-                                                    <Col xl={12} md={12} sm={24} xs={24}>
-                                                        <Form.Item label="Số lượng">
-                                                            <InputNumber
-                                                                className="w-100"
-                                                                size="large"
-                                                                min={1}
-                                                                value={
-                                                                    product.quantity
-                                                                }
-                                                                onChange={(
-                                                                    value
-                                                                ) => {
-                                                                    const newProducts =
-                                                                        [
-                                                                            ...products,
-                                                                        ];
-                                                                    newProducts[
-                                                                        index
-                                                                    ].quantity =
-                                                                        value;
-                                                                    setProducts(
-                                                                        newProducts
-                                                                    );
-                                                                    handleTotalAmount(
-                                                                        index,
-                                                                        value,
-                                                                        product.cost
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </Form.Item>
-                                                    </Col>
-
-                                                    <Col xl={12} md={12} sm={24} xs={24}>
-                                                        <Form.Item label="Giá nhập">
-                                                            <InputNumber
-                                                                className="w-100"
-                                                                size="large"
-                                                                min={0}
-                                                                value={
-                                                                    product.cost
-                                                                }
-                                                                formatter={(
-                                                                    value
-                                                                ) =>
-                                                                    `₫ ${value}`.replace(
-                                                                        /\B(?=(\d{3})+(?!\d))/g,
-                                                                        ","
-                                                                    )
-                                                                }
-                                                                parser={(
-                                                                    value
-                                                                ) =>
-                                                                    value.replace(
-                                                                        /\₫\s?|(,*)/g,
-                                                                        ""
-                                                                    )
-                                                                }
-                                                                onChange={(
-                                                                    value
-                                                                ) => {
-                                                                    const newProducts =
-                                                                        [
-                                                                            ...products,
-                                                                        ];
-                                                                    newProducts[
-                                                                        index
-                                                                    ].cost =
-                                                                        value;
-                                                                    setProducts(
-                                                                        newProducts
-                                                                    );
-                                                                    handleTotalAmount(
-                                                                        index,
-                                                                        product.quantity,
-                                                                        value
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </Form.Item>
-                                                    </Col>
-
-                                                    <Button
-                                                        danger
-                                                        onClick={() =>
-                                                            removeitem(index)
-                                                        }
-                                                    >
-                                                        Xóa
-                                                    </Button>
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                    ))
-                                )}
-                            </Row>
-
-                            <Divider />
-                            {products.length > 0 && (
-                                <Form.Item>
-                                    <Button
-                                        type="primary"
-                                        className="mt-3"
-                                        onClick={handleAddProduct}
-                                    >
+                        <Col xl={16} md={16} sm={24} xs={24}>
+                            <Card
+                                title="Danh sách nhập hàng"
+                                className="mt-3 bg-light"
+                                extra={
+                                    <Button type="primary" onClick={addProduct}>
                                         Thêm sản phẩm
                                     </Button>
-                                </Form.Item>
-                            )}
-
-                            <Card title="Danh sách nhập hàng" className="mt-3 bg-light">
+                                }
+                            >
                                 <Table
                                     columns={columns}
-                                    dataSource={dataSource}
+                                    dataSource={products}
+                                    pagination={false}
                                 />
                             </Card>
                         </Col>
-
                         <Col xl={8} md={8} sm={24} xs={24}>
                             <Card className="bg-light">
-                                <Col xl={24} md={24} sm={24} xs={24}>
-                                    <Form.Item label="Nhân viên nhập">
-                                        <Input
-                                            size="large"
-                                            value={"Trần Phi Hào"}
-                                            disabled
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col xl={24} md={24} sm={24} xs={24}>
-                                    <Form.Item label="Mô tả">
-                                        <Input.TextArea />
-                                    </Form.Item>
-                                </Col>
+                                <Form.Item label="Nhân viên nhập">
+                                    <Input
+                                        size="large"
+                                        value={"Trần Phi Hào"}
+                                        disabled
+                                    />
+                                </Form.Item>
+                                <Form.Item label="Mô tả">
+                                    <Input.TextArea />
+                                </Form.Item>
                                 <h3>
                                     Tổng tiền :{" "}
-                                    {`${products
+                                    {products
                                         .reduce(
                                             (acc, curr) => acc + curr.total,
                                             0
                                         )
-                                        .toLocaleString()}`}
+                                        .toLocaleString()}
                                 </h3>
-                                <Button type="primary" className="w-100 mt-3">
+                                <Button type="primary" className="w-100 mt-3" onClick={submitProduct}>
                                     Nhập hàng
                                 </Button>
                             </Card>
