@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
@@ -62,6 +62,14 @@ Route::group([
     Route::delete('/services/{id}', [ServiceController::class, 'destroy']);
     Route::post('/services/products/{id}', [ServiceController::class, 'serviceProducts']);
     Route::put('/services/products/{id}', [ServiceController::class, 'serviceUpdateProducts']);
+
+    //Appointment
+
+    Route::get('/appointments', [AppointmentController::class, 'index']);
+    Route::get('/appointments/{id}', [AppointmentController::class, 'show']);
+    Route::post('/appointments', [AppointmentController::class, 'store']);
+    Route::put('/appointments/{id}', [AppointmentController::class, 'update']);
+    Route::delete('/appointments/{id}', [AppointmentController::class, 'destroy']);
 });
 //End
 

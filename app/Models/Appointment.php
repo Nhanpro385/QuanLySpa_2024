@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kra8\Snowflake\HasSnowflakePrimary;
 
@@ -31,7 +33,7 @@ class Appointment extends Model
 
     public function shift()
     {
-        return $this->belongsTo(Shift::class, 'shifts_id', 'id');
+        return $this->belongsTo(Shift::class, 'shift_id', 'id');
     }
     public function customer()
     {
@@ -49,10 +51,25 @@ class Appointment extends Model
     {
         return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
     }
-    public function appointmentStaffs()
+
+    public function createdBy(): BelongsTo
     {
-        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'appointment_staffs', 'appointment_id', 'staff_id');
+    }
+
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'appointment_services', 'appointment_id', 'service_id')->withPivot('quantity', 'price');
+    }
 
 }

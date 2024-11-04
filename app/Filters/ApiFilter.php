@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Filters;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 class ApiFilter
 {
@@ -12,6 +14,7 @@ class ApiFilter
 
     protected $sortParams = [];
 
+    protected $relationMap = [];
 
     public function transform(Request $request)
     {
@@ -32,9 +35,29 @@ class ApiFilter
                 }
             }
         }
+
+        $relations = $this->getRelationFilters($request);
         $sorts = $this->getSorting($request);
 
-        return ['filter' => $eloQuery, 'sorts' => $sorts];
+        return ['filter' => $eloQuery, 'relations' => $relations, 'sorts' => $sorts];
+    }
+
+    protected function getRelationFilters(Request $request)
+    {
+        $relationFilters = [];
+
+        foreach ($this->relationMap as $relation => $fields) {
+            foreach ($fields as $field => $operator) {
+                $query = $request->query($field);
+
+                if ($query) {
+                    $value = $operator === 'like' ? $query : $query;
+                    $relationFilters[] = [$relation, $field, $operator, $value];
+                }
+            }
+        }
+
+        return $relationFilters;
     }
 
     protected function getSorting(Request $request)
@@ -46,5 +69,14 @@ class ApiFilter
         }
 
         return [$sortBy, $sortOrder];
+    }
+
+    public function RelationFilters($query, $relation, $column, $value)
+    {
+        $query->whereHas($relation, function (Builder $q) use ($column, $value) {
+            $q->orWhere($column, 'like', '%' . $value . '%');
+        });
+
+        return $query;
     }
 }

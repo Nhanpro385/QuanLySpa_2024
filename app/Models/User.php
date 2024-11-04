@@ -112,11 +112,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 
     public function staffShifts()
     {
-        return $this->hasMany(User::class, 'user_id', 'id');
+        return $this->hasMany(User::class, 'staff_id', 'id');
     }
-    public function appointmentStaff()
+    public function appointments()
     {
-        return $this->hasMany(User::class, 'user_id', 'id');
+        return $this->belongsToMany(Appointment::class, 'appointment_staffs', 'staff_id', 'appointment_id');
     }
 
     public function treatmentHistory()
