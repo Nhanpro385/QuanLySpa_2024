@@ -1,13 +1,36 @@
 // src/pages/Appointments.js
-import React from "react";
-import { Button, Card, Col, Row,Tag } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Col, Row, Tag, Spin } from "antd";
 import ModalAppointment from "../../modules/appointments/compoments/appoitnmentsAddmodal";
 import ModalAppointmentEdit from "../../modules/appointments/compoments/appoitnmentsAddmodalEdit";
 import AppointmentsTable from "../../modules/appointments/compoments/AppointmentsTable";
 import AppointmentsCalendar from "../../modules/appointments/compoments/AppointmentsCalendar";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import { Link, useNavigate } from "react-router-dom";
+import useappointmentsActions from "../../modules/appointments/hooks/useappointments";
+import { useSelector } from "react-redux";
+import debounce from "lodash/debounce";
 function Appointments() {
+    const {
+        addappointments,
+        getappointments,
+        updateappointments,
+        deleteappointments,
+        getappointmentsById,
+    } = useappointmentsActions();
+    const { appointments } = useSelector((state) => state.appointments);
+
+    const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+
+    useEffect(() => {
+        const fetchAppointments = async () => {
+            setLoading(true); // Bắt đầu tải
+            await getappointments();
+            setLoading(false); // Kết thúc tải
+        };
+        fetchAppointments();
+    }, []);
+
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const {
@@ -20,47 +43,30 @@ function Appointments() {
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10);
 
-    const dataSource = [
-        {
-            key: "1",
-            id: "1",
-            service_id: "Trị mụn",
-            title: "Tuấn trị mụn",
-            customer_id: "Trịnh Trần Phương Tuấn",
-            employee_id: "Nguyễn Văn A",
-            start: "2024-09-19 00:00",
-            end: "2024-09-19 02:00",
-            date: "12/09/2024",
-            status: <Tag color="green">Đã chấp nhận</Tag>,
-        },
-        {
-            key: "2",
-            id: "2",
-            title: "Tuấn trị mụn",
-            service_id: "Trị mụn",
-            customer_id: "Trịnh Trần Phương Tuấn",
-            employee_id: "Nguyễn Văn A",
-            start: "2024-09-19 00:00",
-            end: "2024-09-19 02:00",
-            status: <Tag color="red">Từ chối</Tag>,
-            date: "14/09/2024",
-        },
-        {
-            id: "3",
-            key: "3",
-            title: "Tuấn trị mụn",
-            service_id: "Trị mụn",
-            customer_id: "Trịnh Trần Phương Tuấn",
-            employee_id: "Nguyễn Văn A",
-            start: "2024-09-19 00:00",
-            end: "2024-09-19 02:00",
-            status: <Tag color="warning">Đang đợi</Tag>,
-            date: "13/09/2024",
-        },
-    ];
+    const dataSource =
+        appointments.data.map((item) => {
+            return {
+                key: item.id,
+                id: item.id,
+                title: item.title,
+                service_name: item.services
+                    .map((service) => service.name)
+                    .join(", "),
+                customer_id: item.customer.full_name,
+                employee_name: item.users
+                    .map((user) => user.full_name)
+                    .join(", "),
+                start: item.start_time,
+                end: item.end,
+                status: item.status,
+                date: item.appointment_date,
+            };
+        }) || [];
+
     const handleEdit = (id) => {
         console.log("Edit", id);
-    }
+    };
+
     return (
         <>
             <h1 className="text-center">Quản lý lịch hẹn</h1>
@@ -83,19 +89,38 @@ function Appointments() {
                                 handleCancel={handleCancel2}
                             />
                         </Row>
-                        <AppointmentsTable
-                            dataSource={dataSource}
-                            onEdit={(id) => {
-                                showModal2();
-                            }}
-                            onViewDetail={(id) => {
-                                navigate("/admin/appointments/detail/" + id);
-                            }}
-                        />
+                        {loading ? ( // Hiển thị spinner khi loading
+                            <Row justify="center">
+                                <Spin
+                                    spinning={loading}
+                                    tip="Đang tải dữ liệu..."
+                                >
+                                    {!loading && (
+                                        <AppointmentsTable
+                                            dataSource={dataSource}
+                                        />
+                                    )}
+                                </Spin>
+                            </Row>
+                        ) : (
+                            <AppointmentsTable
+                                dataSource={dataSource}
+                                onEdit={(id) => {
+                                    showModal2();
+                                }}
+                                onViewDetail={(id) => {
+                                    navigate(
+                                        "/admin/appointments/detail/" + id
+                                    );
+                                }}
+                            />
+                        )}
                     </Card>
                 </Col>
                 <Col span={24}>
-                    <AppointmentsCalendar formattedDate={formattedDate} />
+                    {dataSource.length > 0 && (
+                        <AppointmentsCalendar data={appointments.data} />
+                    )}
                 </Col>
             </Row>
         </>

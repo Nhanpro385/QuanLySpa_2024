@@ -31,8 +31,8 @@ const AppointmentsTable = ({ dataSource, onEdit, onViewDetail }) => {
         },
         {
             title: "Tên Dịch Vụ",
-            dataIndex: "service_id",
-            key: "service_id",
+            dataIndex: "service_name",
+            key: "service_name",
         },
         {
             title: "Tên Khách Hàng",
@@ -41,8 +41,8 @@ const AppointmentsTable = ({ dataSource, onEdit, onViewDetail }) => {
         },
         {
             title: "Tên Nhân Viên",
-            dataIndex: "employee_id",
-            key: "employee_id",
+            dataIndex: "employee_name",
+            key: "employee_name",
         },
         {
             title: "Thời Gian Bắt Đầu",

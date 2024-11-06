@@ -1,12 +1,77 @@
-import React from "react";
-import { Modal, Form, Col, Row, Input, Select, DatePicker, Button } from "antd";
-import "dayjs/locale/vi";
+import React, { useMemo, useRef, useState, useEffect } from "react";
+
+import {
+    Modal,
+    Form,
+    Col,
+    Row,
+    Input,
+    Select,
+    DatePicker,
+    Button,
+    Table,
+    InputNumber,
+} from "antd";
 import { useForm, Controller } from "react-hook-form";
+import { useSelector } from "react-redux";
+import "dayjs/locale/vi";
+import debounce from "lodash/debounce";
+
+import useCustomerActions from "../../Customer/hooks/useCustomerActions";
+import useUsersActions from "../../staffManagement/hooks/useUserAction";
+import { generateSnowflakeId } from "../../../utils/snowflakeID";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const options = [{ label: "Dịch vụ 1", value: "a10" }];
+const serviceOptions = [
+    { label: "Dịch vụ 1", value: "a10", key: "a10" },
+    { label: "Dịch vụ 2", value: "a11", key: "a11" },
+];
+
+function DebounceSelect({
+    fetchOptions,
+    debounceTimeout = 800,
+    defauldOptions,
+    ...props
+}) {
+    const [fetching, setFetching] = useState(false);
+    const [options, setOptions] = useState(defauldOptions);
+    const fetchRef = useRef(0);
+    const debounceFetcher = useMemo(() => {
+        const loadOptions = (value) => {
+            fetchRef.current += 1;
+            const fetchId = fetchRef.current;
+            setOptions([]);
+            setFetching(true);
+            if (value === "") {
+                setOptions(defauldOptions);
+                setFetching(false);
+                return;
+            }
+            fetchOptions(value).then((newOptions) => {
+                if (fetchId !== fetchRef.current) {
+                    // for fetch callback order
+                    return;
+                }
+
+                setOptions(newOptions);
+                setFetching(false);
+            });
+        };
+        return debounce(loadOptions, debounceTimeout);
+    }, [fetchOptions, debounceTimeout]);
+    return (
+        <Select
+            labelInValue
+            filterOption={false}
+            onSearch={debounceFetcher}
+            notFoundContent={fetching ? <Spin size="small" /> : null}
+            {...props}
+            options={options}
+        />
+    );
+}
 
 function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
     const {
@@ -14,23 +79,91 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
         handleSubmit,
         formState: { errors },
     } = useForm();
+    const { getCustomer } = useCustomerActions();
+    const { getusers, searchusers } = useUsersActions();
+    const { customers } = useSelector((state) => state.customers);
+    const { users } = useSelector((state) => state.user);
+
+    const [selectedServices, setSelectedServices] = useState([]);
+    const [value, setValue] = useState([]);
+    useEffect(() => {
+        getCustomer();
+        getusers();
+    }, [isModalOpen]);
+
+    const userOptions = users.data.map((user) => ({
+        label: `${user.full_name} - ${user.role}`,
+        value: user.id,
+    }));
 
     const onSubmit = (data) => {
-        console.log("Submitted data: ", data);
+        const payload = {
+            id: generateSnowflakeId(),
+            shift_id: data.shift,
+            customer_id: generateSnowflakeId(),
+            users: data.employee.map((employee) => ({ staff_id: employee })),
+            services: selectedServices,
+        };
+        console.log("Submitted data:", payload);
     };
 
+    const handleServiceChange = (selected) => {
+        const newServices = selected.map((service) => {
+            const existing = selectedServices.find(
+                (item) => item.key === service
+            );
+            return (
+                existing || {
+                    key: service,
+                    name: serviceOptions.find((opt) => opt.value === service)
+                        ?.label,
+                    quantity: 1,
+                }
+            );
+        });
+        setSelectedServices(newServices);
+    };
+
+    const handleQuantityChange = (value, key) => {
+        setSelectedServices((prevServices) =>
+            prevServices.map((service) =>
+                service.key === key ? { ...service, quantity: value } : service
+            )
+        );
+    };
+
+    const columns = [
+        { title: "Dịch vụ", dataIndex: "name", key: "name" },
+        {
+            title: "Số lượng",
+            dataIndex: "quantity",
+            key: "quantity",
+            render: (text, record) => (
+                <InputNumber
+                    min={1}
+                    value={record.quantity}
+                    onChange={(value) =>
+                        handleQuantityChange(value, record.key)
+                    }
+                />
+            ),
+        },
+    ];
+    async function fetchUserList(username) {
+        console.log("fetching user", username);
+    }
     return (
         <Modal
             title="Thêm lịch hẹn"
             open={isModalOpen}
-            onOk={handleOk}
             onCancel={handleCancel}
             footer={null}
+            width={1200}
         >
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item label="Họ và tên">
+                    <Col span={6}>
+                        <Form.Item label="Họ và tên" required>
                             <Controller
                                 name="fullname"
                                 control={control}
@@ -51,14 +184,17 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                             )}
                         </Form.Item>
                     </Col>
-
-                    <Col span={12}>
-                        <Form.Item label="Số điện thoại">
+                    <Col span={6}>
+                        <Form.Item label="Số điện thoại" required>
                             <Controller
                                 name="phone"
                                 control={control}
                                 rules={{
                                     required: "Vui lòng nhập số điện thoại",
+                                    pattern: {
+                                        value: /^[0-9]{10,11}$/,
+                                        message: "Số điện thoại không hợp lệ",
+                                    },
                                 }}
                                 render={({ field }) => (
                                     <Input
@@ -74,78 +210,44 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                             )}
                         </Form.Item>
                     </Col>
-
-                    <Col span={12}>
-                        <Form.Item label="Giới tính">
+                    <Col span={6}>
+                        <Form.Item label="Thời gian hẹn" required>
                             <Controller
-                                name="gender"
+                                name="appointment_date"
                                 control={control}
-                                rules={{ required: "Vui lòng chọn giới tính" }}
+                                rules={{
+                                    required: "Vui lòng chọn thời gian hẹn",
+                                }}
                                 render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        placeholder="Chọn giới tính"
-                                    >
-                                        <Select.Option value="NAM">
-                                            Nam
-                                        </Select.Option>
-                                        <Select.Option value="NU">
-                                            Nữ
-                                        </Select.Option>
-                                    </Select>
+                                    <RangePicker {...field} className="w-100" />
                                 )}
                             />
-                            {errors.gender && (
+                            {errors.appointment_date && (
                                 <p style={{ color: "red" }}>
-                                    {errors.gender.message}
+                                    {errors.appointment_date.message}
                                 </p>
                             )}
                         </Form.Item>
                     </Col>
-
-                    <Col span={12}>
-                        <Form.Item label="Dịch vụ">
-                            <Controller
-                                name="service"
-                                control={control}
-                                rules={{ required: "Vui lòng chọn dịch vụ" }}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        mode="multiple"
-                                        allowClear
-                                        style={{ width: "100%" }}
-                                        placeholder="Chọn dịch vụ"
-                                        options={options}
-                                    />
-                                )}
-                            />
-                            {errors.service && (
-                                <p style={{ color: "red" }}>
-                                    {errors.service.message}
-                                </p>
-                            )}
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={12}>
-                        <Form.Item label="Ca làm">
+                    <Col span={6}>
+                        <Form.Item label="Ca làm việc" required>
                             <Controller
                                 name="shift"
                                 control={control}
-                                rules={{ required: "Vui lòng chọn ca làm" }}
+                                rules={{
+                                    required: "Vui lòng chọn ca làm việc",
+                                }}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        placeholder="Chọn Ca làm"
-                                    >
-                                        <Select.Option value="1">
-                                            Ca 1
-                                        </Select.Option>
-                                        <Select.Option value="2">
-                                            Ca 2
-                                        </Select.Option>
-                                    </Select>
+                                        allowClear
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn ca làm việc"
+                                        options={[
+                                            { label: "Ca 1", value: "a10" },
+                                            { label: "Ca 2", value: "a11" },
+                                        ]}
+                                    />
                                 )}
                             />
                             {errors.shift && (
@@ -155,103 +257,87 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                             )}
                         </Form.Item>
                     </Col>
-
                     <Col span={12}>
-                        <Form.Item label="Chọn Nhân viên">
+                        <Form.Item label="Dịch vụ">
                             <Controller
-                                name="staff"
+                                name="service"
                                 control={control}
-                                rules={{ required: "Vui lòng chọn nhân viên" }}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        placeholder="Chọn nhân viên"
-                                    >
-                                        <Select.Option value="1">
-                                            Nhân viên 1
-                                        </Select.Option>
-                                        <Select.Option value="2">
-                                            Nhân viên 2
-                                        </Select.Option>
-                                    </Select>
-                                )}
-                            />
-                            {errors.staff && (
-                                <p style={{ color: "red" }}>
-                                    {errors.staff.message}
-                                </p>
-                            )}
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                        <Form.Item label="Thời Gian Lịch Hẹn">
-                            <Controller
-                                name="DateTime"
-                                control={control}
-                                rules={{ required: "Vui lòng chọn thời gian" }}
-                                render={({ field }) => (
-                                    <RangePicker
-                                        {...field}
+                                        mode="multiple"
+                                        allowClear
                                         style={{ width: "100%" }}
-                                        showTime={{ format: "HH:mm" }}
-                                        format="YYYY-MM-DD HH:mm"
+                                        placeholder="Chọn dịch vụ"
+                                        options={serviceOptions}
+                                        onChange={handleServiceChange}
                                     />
                                 )}
                             />
-                            {errors.DateTime && (
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item label="Chọn nhân viên" required>
+                            <Controller
+                                name="employee"
+                                control={control}
+                                rules={{ required: "Vui lòng chọn nhân viên" }}
+                                render={({ field }) => (
+                                    // <Select
+                                    //     {...field}
+                                    //     mode="multiple"
+                                    //     allowClear
+                                    //     style={{ width: "100%" }}
+                                    //     placeholder="Chọn nhân viên"
+                                    //     options={userOptions}
+                                    // />
+                                    <DebounceSelect
+                                        mode="multiple"
+                                        value={value}
+                                        placeholder="Select users"
+                                        fetchOptions={fetchUserList}
+                                        defauldOptions={userOptions}
+                                        onChange={(newValue) => {
+                                            setValue(newValue);
+                                        }}
+                                        style={{
+                                            width: "100%",
+                                        }}
+                                    />
+                                )}
+                            />
+                            {errors.employee && (
                                 <p style={{ color: "red" }}>
-                                    {errors.DateTime.message}
+                                    {errors.employee.message}
                                 </p>
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={24}>
-                        <Form.Item label="Trạng Thái">
+                    <Col span={12}>
+                        <Form.Item label="Ghi chú">
                             <Controller
-                                name="Status"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        placeholder="Chọn trạng thái"
-                                    >
-                                        <Select.Option value="datlich">
-                                            Đặt Lịch
-                                        </Select.Option>
-                                        <Select.Option value="xacnhan">
-                                            Xác nhận
-                                        </Select.Option>
-                                        <Select.Option value="dangthuchien">
-                                            Đang Thực hiện
-                                        </Select.Option>
-                                        <Select.Option value="dahoanthanh">
-                                            Đã hoàn thành
-                                        </Select.Option>
-                                    </Select>
-                                )}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item label="Ghi chú Lịch hẹn">
-                            <Controller
-                                name="Note"
+                                name="note"
                                 control={control}
                                 render={({ field }) => (
                                     <TextArea
                                         {...field}
+                                        placeholder="Ghi chú"
                                         rows={4}
-                                        placeholder="Nhập ghi chú"
                                     />
                                 )}
                             />
                         </Form.Item>
                     </Col>
-
-                  
                 </Row>
-
+                <Form.Item>
+                    <Table
+                        columns={columns}
+                        dataSource={selectedServices}
+                        pagination={false}
+                        style={{ marginTop: "20px" }}
+                        rowKey="key"
+                    />
+                </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
                         Thêm Lịch Hẹn

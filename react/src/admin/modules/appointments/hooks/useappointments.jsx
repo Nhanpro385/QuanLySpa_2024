@@ -5,12 +5,12 @@ import {
     appointmentsUpdate,
     appointmentsDelete,
     appointmentsGetById
-} from "@admin/redux/slices/appointments";
+} from "@admin/redux/slices/appointmentsSlice";
 const useappointmentsActions = () => {
     const dispatch = useDispatch();
 
     const addappointments = async (data) => {
-        return await dispatch(appointmentsAdd(data)); // Trả về kết quả dispatch
+        return await dispatch(appointmentsAdd(data)); 
     };
 
     const getappointments = async () => {

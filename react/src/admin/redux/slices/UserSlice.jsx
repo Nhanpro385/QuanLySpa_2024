@@ -23,7 +23,10 @@ export const usersAdd = createAsyncThunk(
     "users/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(endpoints.Users.create, data);
+            const response = await axiosInstance.post(
+                endpoints.Users.create,
+                data
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -74,7 +77,9 @@ export const usersGetById = createAsyncThunk(
     "users/getById",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Users.detail(id));
+            const response = await axiosInstance.get(
+                endpoints.Users.detail(id)
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -86,6 +91,35 @@ export const usersGetById = createAsyncThunk(
         }
     }
 );
+export const userSearch = createAsyncThunk(
+    "users/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            const query = Object.keys(data).map((key) => {
+                if (key === "id") {
+                    return `id[eq]=${data[key]}`;
+                }
+                if (key === "full_name") {
+                    return `full_name[like]=${data[key]}`;
+                }
+                return `${key}[like]=${data[key]}`;
+            });
+            const response = await axiosInstance.get(
+                `${endpoints.Users.search}?${query.join("&")}`
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm người dùng",
+            });
+        }
+    }
+);
+
 const initialState = {
     users: {
         data: [],
@@ -113,8 +147,6 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(usersGet.fulfilled, (state, action) => {
-                console.log(action.payload.data);
-
                 state.users = action.payload;
                 state.loading = false;
             })
@@ -142,7 +174,6 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(usersDelete.fulfilled, (state, action) => {
-           
                 state.users.data = state.users.data.filter(
                     (cate) => cate.id !== action.payload
                 );
@@ -179,6 +210,18 @@ const userSlice = createSlice({
                 state.loading = false;
             })
             .addCase(usersGetById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(userSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(userSearch.fulfilled, (state, action) => {
+                state.users = action.payload;
+                state.loading = false;
+            })
+            .addCase(userSearch.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

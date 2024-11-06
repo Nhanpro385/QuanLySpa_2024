@@ -11,6 +11,7 @@ const endpoints = {
         create: `${API_BASE_URL}/serviceCategories`,
         update: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         delete: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
+        search: `${API_BASE_URL}/serviceCategories`,
     },
     Customers: {
         list: `${API_BASE_URL}/customer`,
@@ -32,6 +33,7 @@ const endpoints = {
         create: `${API_BASE_URL}/users`,
         update: (id) => `${API_BASE_URL}/users/${id}`,
         delete: (id) => `${API_BASE_URL}/users/${id}`,
+        search: `${API_BASE_URL}/users`,
     },
     Positions: {
         list: `${API_BASE_URL}/positions`,
@@ -89,6 +91,13 @@ const endpoints = {
         export: `${API_BASE_URL}/warehouse/export`,
         inventory: `${API_BASE_URL}/warehouse/inventory`,
         getwarehouse: `${API_BASE_URL}/warehouse`,
+    },
+    appointments: {
+        list: `${API_BASE_URL}/appointments`,
+        detail: (id) => `${API_BASE_URL}/appointments/${id}`,
+        create: `${API_BASE_URL}/appointments`,
+        update: (id) => `${API_BASE_URL}/appointments/${id}`,
+        delete: (id) => `${API_BASE_URL}/appointments/${id}`,
     },
 };
 

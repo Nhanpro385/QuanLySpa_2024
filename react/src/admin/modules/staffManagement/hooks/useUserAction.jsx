@@ -5,6 +5,7 @@ import {
     usersUpdate,
     usersDelete,
     usersGetById,
+    userSearch,
 } from "@admin/redux/slices/UserSlice";
 const useUsersActions = () => {
     const dispatch = useDispatch();
@@ -28,6 +29,9 @@ const useUsersActions = () => {
     const getusersById = async (id) => {
         return await dispatch(usersGetById(id));
     };
+    const searchusers = async (data) => {
+        return await dispatch(userSearch(data));
+    }
 
     return {
         addusers,
@@ -35,6 +39,7 @@ const useUsersActions = () => {
         updateusers,
         deleteusers,
         getusersById,
+        searchusers,
     };
 };
 

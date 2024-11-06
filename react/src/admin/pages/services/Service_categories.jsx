@@ -1,6 +1,5 @@
-// ServiceCategories.jsx
-import React, { useEffect, useState } from "react"; // Added useState
-import { Card, Col, Row, Alert, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Card, Col, Row, Alert, message, Input, Select } from "antd";
 import { useSelector } from "react-redux";
 import {
     ServiceCategoriesAdd,
@@ -10,11 +9,12 @@ import {
 } from "../../redux/slices/servicesCategoriesSlice";
 import { Snowflake } from "@theinternetfolks/snowflake";
 import useModal from "../../modules/appointments/hooks/openmodal";
-import ServiceCategoryForm from "../../modules/services/compoments/ServiceCategoryForm"; // Adjust path as necessary
-import ServiceCategoryTable from "./../../modules/services/compoments/ServiceCategoryTable"; // Adjust path as necessary
+import ServiceCategoryForm from "../../modules/services/compoments/ServiceCategoryForm";
+import ServiceCategoryTable from "./../../modules/services/compoments/ServiceCategoryTable";
 import ModalEditServiceCategory from "../../modules/services/compoments/ServiceCategoriesEditModal";
-import { useForm } from "react-hook-form"; // Import useForm
+import { useForm } from "react-hook-form";
 import useServiceCategoriesActions from "../../modules/services/hooks/useServiceCategories";
+import debounce from "lodash/debounce";
 
 const ServiceCategories = () => {
     const {
@@ -23,18 +23,17 @@ const ServiceCategories = () => {
         updateServiceCategories,
         deleteServiceCategories,
         getServiceCategoriesById,
+        searchServiceCategories,
     } = useServiceCategoriesActions();
-    
+
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const { ServiceCategories, loading, error, category } = useSelector(
         (state) => state.ServiceCategories
     );
 
-    // State to track submission status
     const [submissionStatus, setSubmissionStatus] = useState(null);
 
-    // Initialize the form
     const {
         control,
         handleSubmit,
@@ -43,19 +42,25 @@ const ServiceCategories = () => {
         formState: { errors },
     } = useForm();
 
+    const [searchQuery, setSearchQuery] = useState({
+        name: "",
+        sort_order: "desc",
+        page: 1,
+
+    });
+
     useEffect(() => {
         getServiceCategories();
     }, []);
 
-    // Effect to show messages based on submission status
     useEffect(() => {
-        if (submissionStatus === 'success') {
+        if (submissionStatus === "success") {
             messageApi.success("Thêm mới thành công");
             reset();
-            setSubmissionStatus(null); // Reset submission status
-        } else if (submissionStatus === 'error') {
+            setSubmissionStatus(null);
+        } else if (submissionStatus === "error") {
             messageApi.error("Thêm mới thất bại");
-            setSubmissionStatus(null); // Reset submission status
+            setSubmissionStatus(null);
         }
     }, [submissionStatus, messageApi, reset]);
 
@@ -69,9 +74,9 @@ const ServiceCategories = () => {
 
         const resultAction = await addServiceCategories(payload);
         if (resultAction.meta.requestStatus === "fulfilled") {
-            setSubmissionStatus('success'); // Update submission status to success
+            setSubmissionStatus("success");
         } else {
-            setSubmissionStatus('error'); // Update submission status to error
+            setSubmissionStatus("error");
         }
     });
 
@@ -87,35 +92,89 @@ const ServiceCategories = () => {
         }
     };
 
-    const dataSource = (ServiceCategories.data || []).map((item) => ({
-        ...item,
-        key: item.id,
-    }));
+    // Combined search and sort effect
+    useEffect(() => {
+        // Fetch categories based on current searchQuery state
+        searchServiceCategories(searchQuery);
+    }, [searchQuery]);
 
+    const handleSearchChange = debounce((value) => {
+        setSearchQuery((prev) => ({
+            ...prev,
+            name: value,
+        }));
+    }, 500); // Debounce to reduce rapid calls
+
+    const handleSortChange = (value) => {
+        setSearchQuery((prev) => ({
+            ...prev,
+            sort_order: value,
+        }));
+    };
+    const handlePageChange = (page) => {
+        setSearchQuery((prev) => ({
+            ...prev,
+            page: page,
+        }));
+    };
+
+    const dataSource = ServiceCategories.data || [];
+    const pagination = ServiceCategories.meta || {};
     return (
         <>
-        <h1 className="text-center">Danh mục Loại Dịch Vụ</h1>
+            <h1 className="text-center">Danh mục Loại Dịch Vụ</h1>
             {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col span={24}>
                     <Card title="Danh mục Loại Dịch Vụ">
                         {error && (
-                            <Alert message={<span>{error.message}</span>} type="error" />
+                            <Alert
+                                message={<span>{error.message}</span>}
+                                type="error"
+                            />
                         )}
                         <ServiceCategoryForm
                             onSubmit={onSubmit}
                             errors={errors}
-                            control={control} // Pass control to form
+                            control={control}
                         />
                     </Card>
                 </Col>
                 <Col span={24}>
                     <Card title="Danh sách danh mục sản phẩm">
+                        <Row className="mb-2" gutter={[16, 16]}>
+                            <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
+                                <Input.Search
+                                    placeholder="Tìm kiếm"
+                                    onSearch={handleSearchChange}
+                                    onChange={(e) =>
+                                        handleSearchChange(e.target.value)
+                                    }
+                                />
+                            </Col>
+                            <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
+                                <Select
+                                    placeholder="Sắp xếp"
+                                    style={{ width: "100%" }}
+                                    onChange={handleSortChange}
+                                    value={searchQuery.sort_order}
+                                >
+                                    <Select.Option value="desc">
+                                        Mới nhất
+                                    </Select.Option>
+                                    <Select.Option value="asc">
+                                        Cũ nhất
+                                    </Select.Option>
+                                </Select>
+                            </Col>
+                        </Row>
                         <ServiceCategoryTable
                             dataSource={dataSource}
                             loading={loading}
                             editCate={editCate}
                             deleteCate={deleteCate}
+                            pagination={pagination}
+                            handlePageChange={handlePageChange}
                         />
                     </Card>
                     <ModalEditServiceCategory

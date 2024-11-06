@@ -10,6 +10,7 @@ import commentsSlice from "../slices/CommentsSlice";
 import ServiceSlice from "../slices/serviceSlice";
 import authSlice from "../slices/authSlice";
 import warehouseSlice from "../slices/warehouseSlice";
+import appointmentsSlice from "../slices/appointmentsSlice";
 const store = configureStore({
     reducer: {
         ServiceCategories: ServiceCategoriesSlice,
@@ -23,6 +24,7 @@ const store = configureStore({
         services: ServiceSlice,
         auth: authSlice,
         warehouse: warehouseSlice,
+        appointments: appointmentsSlice,
 
     },
 });

@@ -5,7 +5,9 @@ import endpoints from "../../config/appConfig";
 export const ServiceCategoriesGet = createAsyncThunk(
     "ServiceCategories/get",
     async () => {
-        const response = await axiosInstance.get(endpoints.ServiceCategories.list);
+        const response = await axiosInstance.get(
+            endpoints.ServiceCategories.list
+        );
         return response.data;
     }
 );
@@ -66,6 +68,38 @@ export const ServiceCategoriesUpdate = createAsyncThunk(
         }
     }
 );
+export const ServiceCategoriesSearch = createAsyncThunk(
+    "ServiceCategories/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            const query = Object.keys(data).map((key) => {
+                if (key === "id") {
+                    return `id[eq]=${data[key]}`;
+                }
+                if (key === "name") {
+                    return `name[like]=${data[key]}`;
+                }
+                if (key ==="page") {
+                    return `page=${data[key]}`;
+                    
+                }
+                return `${key}[like]=${data[key]}`;
+            });
+            const response = await axiosInstance.get(
+                `${endpoints.ServiceCategories.search}?${query.join("&")}`
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm",
+            });
+        }
+    }
+);
 export const ServiceCategoriesGetById = createAsyncThunk(
     "ServiceCategories/getById",
     async (id) => {
@@ -77,7 +111,7 @@ export const ServiceCategoriesGetById = createAsyncThunk(
 );
 
 const initialState = {
-    ServiceCategories:  {
+    ServiceCategories: {
         data: [],
     },
     category: {},
@@ -162,7 +196,20 @@ const ServiceCategoriesSlice = createSlice({
             .addCase(ServiceCategoriesGetById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(ServiceCategoriesSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(ServiceCategoriesSearch.fulfilled, (state, action) => {
+                state.ServiceCategories = action.payload;
+                state.loading = false;
+            })
+            .addCase(ServiceCategoriesSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
+            
     },
 });
 
