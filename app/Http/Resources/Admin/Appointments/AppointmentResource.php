@@ -22,6 +22,8 @@ class AppointmentResource extends JsonResource
                 'id' => (string) $this->shift_id,
                 'max_customers' => (int) $this->shift->max_customers,
                 'status' => $this->shift->status,
+                'start_time' => $this->shift->start_time,
+                'end_time' => $this->shift->end_time,
                 'shift_date' => $this->shift->shift_date
             ] : null,
             'customer' => $this->customer_id ? [
@@ -37,7 +39,12 @@ class AppointmentResource extends JsonResource
                     'role' => $this->roleName($user->role)
                 ];
             }) : [],
-            'services' => $services ? $services->map(function ($service) {
+            'services' => $services ? $services->map(function ($service) use (&$totalDuration, &$totalPrice) {
+                $duration = $service->duration;
+                $totalDuration += $duration;
+                $quantity = $service->pivot->quantity;
+                $price = $service->pivot->price;
+                $totalPrice += $price * $quantity;
                 return [
                     'id' => (string) $service->id,
                     'serviceCategory' => $service->service_category_id ? [
@@ -46,10 +53,13 @@ class AppointmentResource extends JsonResource
                     ] : null,
                     'name' => $service->name,
                     'quantity' => $service->pivot->quantity,
-                    'price' => $service->pivot->price
+                    'price' => $service->pivot->price,
+                    'duration' => $this->convertMinutesToTime($service->duration)
                 ];
             }) : [],
             'start_time' => $this->start_time,
+            'expected_time' => $this->addTime($this->start_time, $this->convertMinutesToTime($totalDuration)),
+            'total_price_services' => $totalPrice,
             'note' => $this->note,
             'appointment_date' => $this->appointment_date,
             'status' => $this->statusValue($this->status),
@@ -63,6 +73,9 @@ class AppointmentResource extends JsonResource
                 'fullname' => $this->updatedBy->full_name,
                 'role' => $this->roleName($this->updatedBy->role)
             ] : null,
+            'created_at' => $this->created_at ?
+                $this->created_at : null,
+            'updated_at' => $this->updated_at ? $this->updated_at : null,
         ];
     }
 
@@ -90,4 +103,34 @@ class AppointmentResource extends JsonResource
 
         return $value;
     }
+
+
+    public function convertMinutesToTime($minutes)
+    {
+        $hours = floor($minutes / 60);
+        $minutes = $minutes % 60;
+        return sprintf("%02d:%02d:00", $hours, $minutes, );
+    }
+
+    public function addTime($startTime, $expectedTime)
+    {
+        // Chuyển start_time thành giây
+        list($startHours, $startMinutes, $startSeconds) = explode(':', $startTime);
+        $startInSeconds = $startHours * 3600 + $startMinutes * 60 + $startSeconds;
+
+        // Chuyển expected_time thành giây
+        list($expectedHours, $expectedMinutes, $expectedSeconds) = explode(':', $expectedTime);
+        $expectedInSeconds = $expectedHours * 3600 + $expectedMinutes * 60 + $expectedSeconds;
+
+        // Tính tổng thời gian
+        $totalSeconds = $startInSeconds + $expectedInSeconds;
+
+        // Chuyển đổi tổng giây trở lại thành định dạng hh:mm:ss
+        $hours = floor($totalSeconds / 3600) % 24;  // % 24 để giới hạn trong ngày hiện tại (nếu cần)
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+
+        return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
+    }
+
 }

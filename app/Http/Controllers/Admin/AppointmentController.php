@@ -21,6 +21,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Kra8\Snowflake\Snowflake;
 
+use function Laravel\Prompts\select;
+
 class AppointmentController extends Controller
 {
     /**
@@ -38,14 +40,18 @@ class AppointmentController extends Controller
                 $perPage = 5;
             }
 
-            $query = Appointment::where($queryItems);
+            $selectedColumns = ['id', 'customer_id', 'appointment_date', 'start_time', 'shift_id', 'status'];
+
+            $query = Appointment::select($selectedColumns)->where($queryItems);
             if ($request['search']) {
                 $value = $request['search'];
                 $query->whereHas('customer', function (Builder $query) use ($value) {
-                    $query->where('full_name', 'like', '%' . $value . '%')->orWhere('phone', 'like', '%' . $value . '%')->orWhere('email', 'like', '%' . $value . '%');
-                });
-
-
+                    $query->where('full_name', 'like', '%' . $value . '%')
+                        ->orWhere('phone', 'like', '%' . $value . '%')
+                        ->orWhere('email', 'like', '%' . $value . '%');
+                })
+                    ->orWhere('appointment_date', 'like', '%' . $value . '%')
+                ;
             }
             foreach ($queryResult['relations'] as $relationFilter) {
                 [$relation, $column, $operator, $value] = $relationFilter;
@@ -54,9 +60,8 @@ class AppointmentController extends Controller
                 });
             }
 
-            if ($sorts) {
-                $query = $query->orderBy($sorts[0], $sorts[1]);
-            }
+
+            $query = $query->orderBy($sorts[0], $sorts[1]);
             if (count($query->paginate($perPage)) == 0) {
                 return response()->json([
                     "status" => true,
