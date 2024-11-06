@@ -29,7 +29,7 @@ class ServiceResource extends JsonResource
             'price' => $this->price,
             'description' => $this->description,
             'image_url' => $this->image_url,
-            'duration' => $this->duration,
+            'duration' => $this->convertMinutesToTime($this->duration),
             'status' => $this->status,
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
@@ -41,9 +41,9 @@ class ServiceResource extends JsonResource
                 'fullname' => $this->updatedBy->full_name,
                 'role' => $this->roleName($this->updatedBy->role)
             ] : null,
-            'created_at' =>
-                $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at ?
+                $this->created_at->format('Y-m-d') : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
             'products' => $products ? $products->map(function ($product) {
                 return [
                     'id' => $product->id,
@@ -61,6 +61,13 @@ class ServiceResource extends JsonResource
         ];
     }
 
+
+    public function convertMinutesToTime($minutes)
+    {
+        $hours = floor($minutes / 60);
+        $minutes = $minutes % 60;
+        return sprintf("%02d:%02d:00", $hours, $minutes, );
+    }
     public function roleName($role)
     {
         $name = 'Nhân viên';

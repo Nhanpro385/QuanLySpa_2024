@@ -30,7 +30,7 @@ class ServiceFilter extends ApiFilter
 
 
     protected $sortParams = [
-        'sort_by' => 'id',
-        'sort_order' => 'asc'
+        'sort_by' => 'created_at',
+        'sort_order' => 'desc'
     ];
 }

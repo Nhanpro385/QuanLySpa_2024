@@ -13,6 +13,7 @@ use App\Http\Resources\Admin\Services\ServiceResource;
 use App\Models\ProductService;
 use App\Models\Service;
 use App\Models\ServiceImage;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Kra8\Snowflake\Snowflake;
@@ -33,7 +34,19 @@ class ServiceController extends Controller
             if ($perPage < 1 || $perPage > 100) {
                 $perPage = 5;
             }
-            $query = Service::where($queryItems);
+
+            $selectedColumns = ['id', 'name', 'price', 'service_category_id', 'status', 'duration'];
+            $query = Service::select($selectedColumns)->where($queryItems);
+
+            if ($request['search']) {
+                $value = $request['search'];
+                $query->whereHas('serviceCategory', function (Builder $query) use ($value) {
+                    $query->where('name', 'like', '%' . $value . '%');
+                })
+                    ->orWhere('name', 'like', '%' . $value . '%')
+                    ->orWhere('id', 'like', '%' . $value . '%')
+                ;
+            }
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
             }
@@ -337,6 +350,8 @@ class ServiceController extends Controller
             }
 
             $service->delete();
+
+            $serviceProducts = ProductService::where('service_id', $id)->delete();
 
             $response = [
                 'status' => 'success',
