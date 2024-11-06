@@ -29,8 +29,17 @@ class UserController extends Controller
             if ($perPage < 1 || $perPage > 100) {
                 $perPage = 5;
             }
-            $query = User::where($queryItems);
 
+            $selectedColumns = ['id', 'full_name', 'address', 'position_id', 'phone', 'status', 'email'];
+            $query = User::select($selectedColumns)->where($queryItems);
+            if ($request['search']) {
+                $value = $request['search'];
+                $query
+                    ->where('full_name', 'like', '%' . $value . '%')
+                    ->orWhere('phone', 'like', '%' . $value . '%')
+                    ->orWhere('email', 'like', '%' . $value . '%');
+                ;
+            }
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
             }

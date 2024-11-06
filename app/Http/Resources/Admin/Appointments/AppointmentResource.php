@@ -74,8 +74,8 @@ class AppointmentResource extends JsonResource
                 'role' => $this->roleName($this->updatedBy->role)
             ] : null,
             'created_at' => $this->created_at ?
-                $this->created_at : null,
-            'updated_at' => $this->updated_at ? $this->updated_at : null,
+                $this->created_at->format('Y-m-d') : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
         ];
     }
 

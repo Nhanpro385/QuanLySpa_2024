@@ -42,9 +42,9 @@ class UserResource extends JsonResource
                 'fullname' => $this->updatedBy->full_name,
                 'role' => $this->roleName($this->updatedBy->role)
             ] : null,
-            'created_at' =>
-                $this->created_at->format('Y-m-d'),
-            'updated_at' => $this->updated_at->format('Y-m-d')
+            'created_at' => $this->created_at ?
+                $this->created_at->format('Y-m-d') : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
         ];
     }
 
