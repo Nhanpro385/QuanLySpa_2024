@@ -20,8 +20,8 @@ class ProductResource extends JsonResource
         return [
             'id' => (string) $this->id,
             'category_id' => $this->category_id ? [
-                'id' => (string) $this->category_id,
-                'name' => $this->name
+                'id' => (string) $this->category->id,
+                'name' => $this->category->name
             ] : null,
             'name' => $this->name,
             'price' => $this->price,
@@ -59,9 +59,9 @@ class ProductResource extends JsonResource
                 'fullname' => $this->updatedBy->full_name,
                 'role' => $this->roleName($this->updatedBy->role)
             ] : null,
-            'created_at' =>
-                $this->created_at->format('Y-m-d'),
-            'updated_at' => $this->updated_at->format('Y-m-d')
+            'created_at' => $this->created_at ?
+                $this->created_at->format('Y-m-d') : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
         ];
     }
 

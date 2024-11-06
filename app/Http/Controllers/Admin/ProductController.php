@@ -12,6 +12,7 @@ use App\Http\Resources\Admin\Products\ProductResource;
 use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\ProductImage;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Kra8\Snowflake\Snowflake;
@@ -32,8 +33,18 @@ class ProductController extends Controller
             if ($perPage < 1 || $perPage > 100) {
                 $perPage = 5;
             }
-            $query = Product::where($queryItems);
-
+            $selectedColumns = ['id', 'name', 'price', 'date', 'status', 'cost', 'category_id'];
+            $query = Product::select($selectedColumns)->where($queryItems);
+            if ($request['search']) {
+                $value = $request['search'];
+                $query->whereHas('category', function (Builder $query) use ($value) {
+                    $query->where('name', 'like', '%' . $value . '%');
+                })
+                    ->orWhere('name', 'like', '%' . $value . '%')
+                    ->orWhere('id', 'like', '%' . $value . '%')
+                    ->orWhere('date', 'like', '%' . $value . '%');
+                ;
+            }
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
             }
