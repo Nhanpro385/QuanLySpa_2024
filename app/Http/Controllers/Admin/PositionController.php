@@ -28,6 +28,13 @@ class PositionController extends Controller
                 $perPage = 5;
             }
             $query = Position::where($queryItems);
+
+            if ($request['search']) {
+                $value = $request['search'];
+                $query
+                    ->orWhere('name', 'like', '%' . $value . '%')
+                    ->orWhere('id', 'like', '%' . $value . '%');
+            }
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
             }
