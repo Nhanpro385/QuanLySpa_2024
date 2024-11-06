@@ -48,9 +48,9 @@ class ServiceCategoryResource extends JsonResource
                 'fullname' => $this->updatedBy->full_name,
                 'role' => $this->roleName($this->updatedBy->role)
             ] : null,
-            'created_at' =>
-                $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at ?
+                $this->created_at->format('Y-m-d') : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
 
         ];
     }

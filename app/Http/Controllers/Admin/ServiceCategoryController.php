@@ -27,7 +27,16 @@ class ServiceCategoryController extends Controller
             if ($perPage < 1 || $perPage > 100) {
                 $perPage = 5;
             }
-            $query = ServiceCategory::where($queryItems);
+            $selectedColumns = ['id', 'name', 'description', 'status', 'parent_id'];
+            $query = ServiceCategory::select($selectedColumns)->where($queryItems);
+
+            if ($request['search']) {
+                $value = $request['search'];
+                $query
+                    ->orWhere('name', 'like', '%' . $value . '%')
+                    ->orWhere('id', 'like', '%' . $value . '%')
+                ;
+            }
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
             }
