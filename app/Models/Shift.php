@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,18 +13,8 @@ class Shift extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'shifts';
-
     protected $fillable = [
-        'id',
-        'start_time',
-        'end_time',
-        'shift_date',
-        'max_customers',
-        'note',
-        'status',
-        'created_by',
-        'updated_by',
+        'id', 'start_time', 'end_time', 'shift_date', 'max_customers', 'note', 'status', 'created_by', 'updated_by',
     ];
 
     protected $attributes = [
@@ -35,24 +24,32 @@ class Shift extends Model
         'max_customers' => 6,
     ];
 
-    // Relationships
-    public function appointments()
+    protected static function boot()
     {
-        return $this->hasMany(Appointment::class, 'shift_id', 'id');
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->created_by = auth()->id();
+                $model->created_at = now();
+            }
+        });
+
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->updated_by = auth()->id();
+                $model->updated_at = now();
+            }
+        });
     }
 
-    public function staffs()
-    {
-        return $this->belongsToMany(Staff::class, 'shift_staff', 'shift_id', 'staff_id');
-    }
     public function createdBy()
-{
-    return $this->belongsTo(User::class, 'created_by', 'id');
-}
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 
-public function updatedBy()
-{
-    return $this->belongsTo(User::class, 'updated_by', 'id');
-}
-
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
 }

@@ -2,31 +2,12 @@
 
 namespace App\Http\Requests\Admin\TreatmentHistory;
 
-
+use App\Http\Requests\Admin\BaseRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreTreatmentHistoryRequest extends FormRequest
+class StoreTreatmentHistoryRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(
-            response()->json([
-                'status' => 'error',
-                'message' => 'Dữ liệu đầu vào không hợp lệ.',
-                'errors' => $validator->errors()
-            ], 422)
-        );
-    }
-    
     public function rules(): array
     {
         return [
@@ -44,4 +25,22 @@ class StoreTreatmentHistoryRequest extends FormRequest
             'updated_by' => 'nullable|string|exists:users,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'service_id.exists' => 'Dịch vụ không tồn tại.',
+            'customer_id.exists' => 'Khách hàng không tồn tại.',
+            'appointment_id.exists' => 'Cuộc hẹn không tồn tại.',
+            'staff_id.exists' => 'Nhân viên không tồn tại.',
+            'image_before.required' => 'Ảnh trước khi điều trị là bắt buộc.',
+            'image_after.required' => 'Ảnh sau khi điều trị là bắt buộc.',
+            'feedback.required' => 'Phản hồi là bắt buộc.',
+            'evaluete.integer' => 'Đánh giá phải là số nguyên.',
+            'evaluete.min' => 'Đánh giá phải ít nhất là 1.',
+            'evaluete.max' => 'Đánh giá tối đa là 5.',
+            'status.boolean' => 'Trạng thái phải là true hoặc false.',
+        ];
+    }
+    
 }

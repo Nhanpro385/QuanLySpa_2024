@@ -1,56 +1,81 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kra8\Snowflake\HasSnowflakePrimary;
+
+
+
 
 class TreatmentHistory extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, HasSnowflakePrimary;
+
     protected $keyType = 'string';
     public $incrementing = false;
-
     protected $table = 'treatment_histories';
 
     protected $fillable = [
-        'id',
-        'service_id',
-        'customer_id',
-        'appointment_id',
-        'staff_id',
-        'image_before',
-        'image_after',
-        'feedback',
-        'note',
-        'status',
-        'created_by',
-        'updated_by',
+       'service_id', 'customer_id', 'appointment_id', 'staff_id',
+        'image_before', 'image_after', 'feedback', 'note', 
+        'status', 'created_by', 'updated_at',
     ];
 
-    protected $attribute = [
-        'status' => true
+    protected $attributes = [
+        'status' => true,
     ];
+
+    // Relationships
     public function appointment()
     {
         return $this->belongsTo(Appointment::class, 'appointment_id', 'id');
     }
+
     public function service()
     {
-        return $this->belongsTo(Service::class, 'services_id', 'id');
+        return $this->belongsTo(Service::class, 'service_id', 'id');
     }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
-    public function user()
+
+    // For the user who created the record
+    public function createdBy()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
-    public function treatmentProduct()
+
+    // For the user who last updated the record
+    public function updatedBy()
     {
-        return $this->hasMany(TreatmentHistory::class, 'treatment_historie_id', 'id');
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
+
+    // Example for treatment products, assuming it's a related model
+    public function treatmentProducts()
+    {
+        return $this->hasMany(TreatmentProduct::class, 'treatment_history_id', 'id');
+    }
+
+    // Auto-assign created_by and updated_by on create and update
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->created_by = auth()->id();
+            }
+        });
+
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->updated_by = auth()->id();
+            }
+        });
     }
 }
