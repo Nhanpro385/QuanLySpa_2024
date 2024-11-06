@@ -1,7 +1,7 @@
-import React from 'react';
-import { Table, Button, Dropdown, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Table, Button, Dropdown, Space } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const items = [
     {
@@ -26,7 +26,13 @@ const items = [
     },
 ];
 
-const StaffTable = ({ dataSource, handleEdit, handleDelete }) => {
+const StaffTable = ({
+    dataSource,
+    handleEdit,
+    handleDelete,
+    pagination,
+    handlePageChange,
+}) => {
     const navigate = useNavigate(); // Ensure `useNavigate` is called correctly
 
     const onClick = ({ key, record }) => {
@@ -98,10 +104,20 @@ const StaffTable = ({ dataSource, handleEdit, handleDelete }) => {
 
     return (
         <Table
-        style={{ overflowX: "auto" }}
+            style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
             rowKey={(record) => record.key} // Use rowKey to ensure unique keys for each row
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showSizeChanger: true,
+
+                showQuickJumper: true,
+                showTotal: (total) => `Tổng ${total} mục`,
+                onChange: handlePageChange,
+            }}
         />
     );
 };

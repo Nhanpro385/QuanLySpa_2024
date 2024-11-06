@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Col, Row, Select, Input, message } from "antd";
 const { Search } = Input;
 import { Dropdown, Space } from "antd";
@@ -22,18 +22,25 @@ import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
 import { useSelector } from "react-redux";
 import ModalEditStaff from "../../modules/staffManagement/compoments/staffmodaledit";
 import useModal from "../../modules/appointments/hooks/openmodal";
+import debounce from "lodash/debounce";
 function Staffs() {
-    const { getusers, updateusers, deleteusers, getusersById } =
+    const { getusers, updateusers, deleteusers, getusersById, searchusers } =
         useUsersActions();
+    const { Option } = Select;
     const navigate = useNavigate();
     const [errorForm, setErrorForm] = React.useState(null);
     const [userEdit, setUserEdit] = React.useState(null);
+    const [searchquery, setSearchQuery] = useState({
+        page: 1,
+    });
+    const [searchType, setSearchType] = useState("full_name");
     const { users, user } = useSelector((state) => state.user);
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     useEffect(() => {
         getusers();
     }, []);
-
+    console.log(users);
+    
     const dataSource =
         users.data.map((user) => ({
             key: user.id,
@@ -43,7 +50,7 @@ function Staffs() {
             address: user.address,
             role: user.role,
         })) || [];
-
+    const pagination = users.meta || {};
     const handleEdit = async (key) => {
         try {
             const res = await getusersById(key);
@@ -85,8 +92,26 @@ function Staffs() {
     const handleAdd = () => {
         navigate("/admin/nhanvien/them");
     };
+    useEffect(() => {
+        searchusers(searchquery);
+    }, [searchquery]);
 
-    const onSearch = (value) => {};
+    const onSearch = debounce((value) => {
+        if (searchType === "full_name") {
+            setSearchQuery({ ...searchquery, full_name: value });
+        }
+        if (searchType === "phone") {
+            setSearchQuery({ ...searchquery, phone: value });
+        }
+        if (searchType === "id") {
+            setSearchQuery({ ...searchquery, id: value });
+        }
+    }, 500);
+    const handlePageChange = (page) => {
+        setSearchQuery({ ...searchquery, page: page });
+    };
+    console.log(searchquery);
+    
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10);
     const calendar = useCalendarApp({
@@ -127,51 +152,24 @@ function Staffs() {
             </Row>
 
             <Row className="mb-3" gutter={[16, 16]}>
-                <Col xl={3} lg={3} md={6} sm={6} xs={24}>
-                    <Select
-                        className="w-100"
-                        placeholder="Chức Vụ"
-                        style={{
-                            width: 120,
-                        }}
-                        options={[
-                            {
-                                value: "1",
-                                label: "Nhân viên",
-                            },
-                            {
-                                value: "2",
-                                label: "Bảo vệ",
-                            },
-                        ]}
-                    />
-                </Col>{" "}
-                <Col xl={3} lg={3} md={6} sm={6} xs={24}>
-                    <Select
-                        className="w-100"
-                        placeholder="Giơi tính"
-                        style={{
-                            width: 120,
-                        }}
-                        options={[
-                            {
-                                value: "1",
-                                label: "Nam",
-                            },
-                            {
-                                value: "2",
-                                label: "Nu",
-                            },
-                        ]}
-                    />
-                </Col>
-                <Col xl={6} lg={6} md={12} sm={12} xs={24}>
+                <Col xxl={8} xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Search
-                        placeholder="Tìm theo Tên hoặc số điện thoại"
+                        placeholder="Tìm theo Tên hoặc số điện thoại và ID"
                         allowClear
                         enterButton="Tìm kiếm"
                         size="middle"
+                        addonBefore={
+                            <Select
+                                defaultValue="full_name"
+                                onChange={(value) => setSearchType(value)}
+                            >
+                                <Option value="id">ID</Option>
+                                <Option value="full_name">Tên</Option>
+                                <Option value="phone">Số điện thoại</Option>
+                            </Select>
+                        }
                         onSearch={onSearch}
+                        onChange={(e) => onSearch(e.target.value)}
                     />
                 </Col>
             </Row>
@@ -179,6 +177,8 @@ function Staffs() {
                 dataSource={dataSource}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
+                pagination={pagination}
+                handlePageChange={handlePageChange}
             />
             <ModalEditStaff
                 isModalOpen={isModalOpen}

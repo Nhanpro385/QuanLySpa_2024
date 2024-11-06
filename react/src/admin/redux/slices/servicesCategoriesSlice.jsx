@@ -72,19 +72,32 @@ export const ServiceCategoriesSearch = createAsyncThunk(
     "ServiceCategories/search",
     async (data, { rejectWithValue }) => {
         try {
-            const query = Object.keys(data).map((key) => {
+            // Filter 
+            const filteredData = Object.fromEntries(
+                Object.entries(data).filter(([_, value]) => value !== "")
+            );
+
+            // Check if filteredData is empty
+            if (Object.keys(filteredData).length === 0) {
+                return rejectWithValue({
+                    status: 400,
+                    message: "Không có điều kiện tìm kiếm",
+                });
+            }
+
+            const query = Object.keys(filteredData).map((key) => {
                 if (key === "id") {
-                    return `id[eq]=${data[key]}`;
+                    return `id[eq]=${filteredData[key]}`;
                 }
                 if (key === "name") {
-                    return `name[like]=${data[key]}`;
+                    return `name[like]=${filteredData[key]}`;
                 }
-                if (key ==="page") {
-                    return `page=${data[key]}`;
-                    
+                if (key === "page") {
+                    return `page=${filteredData[key]}`;
                 }
-                return `${key}[like]=${data[key]}`;
+                return `${key}[like]=${filteredData[key]}`;
             });
+
             const response = await axiosInstance.get(
                 `${endpoints.ServiceCategories.search}?${query.join("&")}`
             );
@@ -100,6 +113,7 @@ export const ServiceCategoriesSearch = createAsyncThunk(
         }
     }
 );
+
 export const ServiceCategoriesGetById = createAsyncThunk(
     "ServiceCategories/getById",
     async (id) => {
@@ -209,7 +223,6 @@ const ServiceCategoriesSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             });
-            
     },
 });
 
