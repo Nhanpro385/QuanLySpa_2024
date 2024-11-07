@@ -95,23 +95,8 @@ export const userSearch = createAsyncThunk(
     "users/search",
     async (data, { rejectWithValue }) => {
         try {
-            const query = Object.keys(data).map((key) => {
-                if (key === "id") {
-                    return `id[eq]=${data[key]}`;
-                }
-                if (key === "full_name") {
-                    return `full_name[like]=${data[key]}`;
-                }
-                if (key === "phone") {
-                    return `phone[like]=${data[key]}`;
-                }
-                if (key === "page") {
-                    return `page=${data[key]}`;
-                }
-                return "";
-            });
             const response = await axiosInstance.get(
-                `${endpoints.Users.search}?${query.join("&")}`
+                `${endpoints.Users.search}?search=${data.search}&page=${data.page}`
             );
 
             return response.data;
@@ -228,12 +213,10 @@ const userSlice = createSlice({
                     state.users = {
                         data: [],
                     };
-                  
-                }else{
+                } else {
                     state.users = action.payload;
                 }
 
-               
                 state.loading = false;
             })
             .addCase(userSearch.rejected, (state, action) => {

@@ -30,6 +30,8 @@ const useproductActions = () => {
         return await dispatch(productGetById(id));
     };
     const searchproduct = async (data) => {
+       
+        
         return await dispatch(productSearch(data));
     }
     return {

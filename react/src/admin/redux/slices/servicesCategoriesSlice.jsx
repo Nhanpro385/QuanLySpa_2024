@@ -72,34 +72,10 @@ export const ServiceCategoriesSearch = createAsyncThunk(
     "ServiceCategories/search",
     async (data, { rejectWithValue }) => {
         try {
-            // Filter 
-            const filteredData = Object.fromEntries(
-                Object.entries(data).filter(([_, value]) => value !== "")
-            );
-
-            // Check if filteredData is empty
-            if (Object.keys(filteredData).length === 0) {
-                return rejectWithValue({
-                    status: 400,
-                    message: "Không có điều kiện tìm kiếm",
-                });
-            }
-
-            const query = Object.keys(filteredData).map((key) => {
-                if (key === "id") {
-                    return `id[eq]=${filteredData[key]}`;
-                }
-                if (key === "name") {
-                    return `name[like]=${filteredData[key]}`;
-                }
-                if (key === "page") {
-                    return `page=${filteredData[key]}`;
-                }
-                return `${key}[like]=${filteredData[key]}`;
-            });
+            console.log("data", data);
 
             const response = await axiosInstance.get(
-                `${endpoints.ServiceCategories.search}?${query.join("&")}`
+                `${endpoints.ServiceCategories.search}?search=${data.search}&page=${data.page}`
             );
 
             return response.data;
@@ -216,7 +192,13 @@ const ServiceCategoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(ServiceCategoriesSearch.fulfilled, (state, action) => {
-                state.ServiceCategories = action.payload;
+                if (action.payload.data == undefined) {
+                    state.ServiceCategories = {
+                        data: [],
+                    };
+                } else {
+                    state.ServiceCategories = action.payload;
+                }
                 state.loading = false;
             })
             .addCase(ServiceCategoriesSearch.rejected, (state, action) => {

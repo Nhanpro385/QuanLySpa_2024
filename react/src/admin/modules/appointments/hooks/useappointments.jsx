@@ -4,13 +4,14 @@ import {
     appointmentsAdd,
     appointmentsUpdate,
     appointmentsDelete,
-    appointmentsGetById
+    appointmentsGetById,
+    appointmentsSearch,
 } from "@admin/redux/slices/appointmentsSlice";
 const useappointmentsActions = () => {
     const dispatch = useDispatch();
 
     const addappointments = async (data) => {
-        return await dispatch(appointmentsAdd(data)); 
+        return await dispatch(appointmentsAdd(data));
     };
 
     const getappointments = async () => {
@@ -28,13 +29,16 @@ const useappointmentsActions = () => {
     const getappointmentsById = async (id) => {
         return await dispatch(appointmentsGetById(id));
     };
-
+    const searchappointments = async (data)=>{
+        return await dispatch(appointmentsSearch(data))
+    }
     return {
         addappointments,
         getappointments,
         updateappointments,
         deleteappointments,
         getappointmentsById,
+        searchappointments
     };
 };
 

@@ -43,10 +43,8 @@ const ServiceCategories = () => {
     } = useForm();
 
     const [searchQuery, setSearchQuery] = useState({
-        name: "",
-        sort_order: "desc",
+        search: "",
         page: 1,
-
     });
 
     useEffect(() => {
@@ -100,21 +98,15 @@ const ServiceCategories = () => {
 
     const handleSearchChange = debounce((value) => {
         setSearchQuery((prev) => ({
-            ...prev,
-            name: value,
+            page: 1,
+            search: value,
         }));
     }, 500); // Debounce to reduce rapid calls
 
-    const handleSortChange = (value) => {
-        setSearchQuery((prev) => ({
-            ...prev,
-            sort_order: value,
-        }));
-    };
     const handlePageChange = (page) => {
         setSearchQuery((prev) => ({
             ...prev,
-            page: page,
+            page,
         }));
     };
 
@@ -143,29 +135,23 @@ const ServiceCategories = () => {
                 <Col span={24}>
                     <Card title="Danh sách danh mục sản phẩm">
                         <Row className="mb-2" gutter={[16, 16]}>
-                            <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
+                            <Col
+                                xxl={12}
+                                xl={12}
+                                lg={12}
+                                md={24}
+                                sm={24}
+                                xs={24}
+                            >
                                 <Input.Search
-                                    placeholder="Tìm kiếm"
+                                    placeholder="Tìm kiếm theo : tên , id và danh mục dịch vụ   "
                                     onSearch={handleSearchChange}
                                     onChange={(e) =>
                                         handleSearchChange(e.target.value)
                                     }
+                                    allowClear
+                                    enterButton="Tìm kiếm"
                                 />
-                            </Col>
-                            <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
-                                <Select
-                                    placeholder="Sắp xếp"
-                                    style={{ width: "100%" }}
-                                    onChange={handleSortChange}
-                                    value={searchQuery.sort_order}
-                                >
-                                    <Select.Option value="desc">
-                                        Mới nhất
-                                    </Select.Option>
-                                    <Select.Option value="asc">
-                                        Cũ nhất
-                                    </Select.Option>
-                                </Select>
                             </Col>
                         </Row>
                         <ServiceCategoryTable

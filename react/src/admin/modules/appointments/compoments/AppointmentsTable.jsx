@@ -3,15 +3,29 @@ import React from "react";
 import { Table, Button, Dropdown, Space, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
-const AppointmentsTable = ({ dataSource, onEdit, onViewDetail }) => {
+const AppointmentsTable = ({
+    dataSource,
+    onEdit,
+    onViewDetail,
+    pagination,
+    handlePageChange
+}) => {
     const items = [
         {
             key: "1",
-            label: <Button block onClick={onEdit}>Sửa</Button>,
+            label: (
+                <Button block onClick={onEdit}>
+                    Sửa
+                </Button>
+            ),
         },
         {
             key: "2",
-            label: <Button block onClick={onViewDetail}>Chi tiết</Button>,
+            label: (
+                <Button block onClick={onViewDetail}>
+                    Chi tiết
+                </Button>
+            ),
         },
         {
             key: "4",
@@ -95,6 +109,16 @@ const AppointmentsTable = ({ dataSource, onEdit, onViewDetail }) => {
             style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showSizeChanger: true,
+
+                showQuickJumper: true,
+                showTotal: (total) => `Tổng ${total} mục`,
+                onChange: handlePageChange,
+            }}
         />
     );
 };

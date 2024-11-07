@@ -31,16 +31,16 @@ function Staffs() {
     const [errorForm, setErrorForm] = React.useState(null);
     const [userEdit, setUserEdit] = React.useState(null);
     const [searchquery, setSearchQuery] = useState({
+        search: "",
         page: 1,
     });
-    const [searchType, setSearchType] = useState("full_name");
+
     const { users, user } = useSelector((state) => state.user);
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     useEffect(() => {
         getusers();
     }, []);
-    console.log(users);
-    
+
     const dataSource =
         users.data.map((user) => ({
             key: user.id,
@@ -97,21 +97,13 @@ function Staffs() {
     }, [searchquery]);
 
     const onSearch = debounce((value) => {
-        if (searchType === "full_name") {
-            setSearchQuery({ ...searchquery, full_name: value });
-        }
-        if (searchType === "phone") {
-            setSearchQuery({ ...searchquery, phone: value });
-        }
-        if (searchType === "id") {
-            setSearchQuery({ ...searchquery, id: value });
-        }
+        setSearchQuery({ page: 1, search: value });
     }, 500);
     const handlePageChange = (page) => {
-        setSearchQuery({ ...searchquery, page: page });
+        setSearchQuery({ ...searchquery, page });
     };
     console.log(searchquery);
-    
+
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10);
     const calendar = useCalendarApp({
@@ -158,16 +150,6 @@ function Staffs() {
                         allowClear
                         enterButton="Tìm kiếm"
                         size="middle"
-                        addonBefore={
-                            <Select
-                                defaultValue="full_name"
-                                onChange={(value) => setSearchType(value)}
-                            >
-                                <Option value="id">ID</Option>
-                                <Option value="full_name">Tên</Option>
-                                <Option value="phone">Số điện thoại</Option>
-                            </Select>
-                        }
                         onSearch={onSearch}
                         onChange={(e) => onSearch(e.target.value)}
                     />

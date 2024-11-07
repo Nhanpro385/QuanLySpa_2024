@@ -99,6 +99,7 @@ const endpoints = {
         create: `${API_BASE_URL}/appointments`,
         update: (id) => `${API_BASE_URL}/appointments/${id}`,
         delete: (id) => `${API_BASE_URL}/appointments/${id}`,
+        search: `${API_BASE_URL}/appointments`,
     },
 };
 

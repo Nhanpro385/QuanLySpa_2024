@@ -1,6 +1,16 @@
 // src/pages/Appointments.js
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Row, Tag, Spin } from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    Row,
+    Tag,
+    Spin,
+    Input,
+    Select,
+    DatePicker,
+} from "antd";
 import ModalAppointment from "../../modules/appointments/compoments/appoitnmentsAddmodal";
 import ModalAppointmentEdit from "../../modules/appointments/compoments/appoitnmentsAddmodalEdit";
 import AppointmentsTable from "../../modules/appointments/compoments/AppointmentsTable";
@@ -17,10 +27,15 @@ function Appointments() {
         updateappointments,
         deleteappointments,
         getappointmentsById,
+        searchappointments,
     } = useappointmentsActions();
     const { appointments } = useSelector((state) => state.appointments);
 
     const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+    const [searchQuery, setSearchQuery] = useState({
+        page: 1,
+        search: "",
+    });
 
     useEffect(() => {
         const fetchAppointments = async () => {
@@ -39,9 +54,6 @@ function Appointments() {
         handleOk: handleOk2,
         handleCancel: handleCancel2,
     } = useModal();
-
-    const today = new Date();
-    const formattedDate = today.toISOString().slice(0, 10);
 
     const dataSource =
         appointments.data.map((item) => {
@@ -62,11 +74,19 @@ function Appointments() {
                 date: item.appointment_date,
             };
         }) || [];
-
+    const pagination = appointments.meta || {};
     const handleEdit = (id) => {
         console.log("Edit", id);
     };
-
+    useEffect(() => {
+        searchappointments(searchQuery);
+    }, [searchQuery]);
+    const handleInputChange = debounce((value) => {
+        setSearchQuery({ page: 1, search: value });
+    }, 500);
+    const handlePageChange = (page) => {
+        setSearchQuery({ ...searchQuery, page });
+    };
     return (
         <>
             <h1 className="text-center">Quản lý lịch hẹn</h1>
@@ -90,30 +110,66 @@ function Appointments() {
                             />
                         </Row>
                         {loading ? ( // Hiển thị spinner khi loading
-                            <Row justify="center">
-                                <Spin
-                                    spinning={loading}
-                                    tip="Đang tải dữ liệu..."
+                            <Row justify="center" className="p-5">
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
                                 >
-                                    {!loading && (
-                                        <AppointmentsTable
-                                            dataSource={dataSource}
-                                        />
-                                    )}
-                                </Spin>
+                                    <Spin
+                                        spinning={loading}
+                                        tip="Đang tải dữ liệu..."
+                                    >
+                                        {!loading && (
+                                            <AppointmentsTable
+                                                dataSource={dataSource}
+                                            />
+                                        )}
+                                    </Spin>
+                                </Col>
                             </Row>
                         ) : (
-                            <AppointmentsTable
-                                dataSource={dataSource}
-                                onEdit={(id) => {
-                                    showModal2();
-                                }}
-                                onViewDetail={(id) => {
-                                    navigate(
-                                        "/admin/appointments/detail/" + id
-                                    );
-                                }}
-                            />
+                            <>
+                                <Row gutter={[16, 16]} className="mb-3">
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                    >
+                                        <Input.Search
+                                            placeholder="Tìm kiếm sản phẩm theo : tên, số điện thoại, email, ngày"
+                                            allowClear
+                                            enterButton="Tìm kiếm"
+                                            size="middle"
+                                            onSearch={handleInputChange}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </Col>
+                                </Row>
+                                <AppointmentsTable
+                                    dataSource={dataSource}
+                                    onEdit={(id) => {
+                                        showModal2();
+                                    }}
+                                    onViewDetail={(id) => {
+                                        navigate(
+                                            "/admin/appointments/detail/" + id
+                                        );
+                                    }}
+                                    pagination={pagination}
+                                    handlePageChange={handlePageChange}
+                                />
+                            </>
                         )}
                     </Card>
                 </Col>

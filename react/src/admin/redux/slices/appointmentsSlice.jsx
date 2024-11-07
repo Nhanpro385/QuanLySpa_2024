@@ -69,11 +69,33 @@ export const appointmentsUpdate = createAsyncThunk(
 export const appointmentsGetById = createAsyncThunk(
     "appointments/getById",
     async (id) => {
-        const response = await axiosInstance.get(endpoints.appointments.detail(id));
+        const response = await axiosInstance.get(
+            endpoints.appointments.detail(id)
+        );
         return response.data;
     }
 );
+export const appointmentsSearch = createAsyncThunk(
+    "appointments/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            console.log("data", data);
 
+            const response = await axiosInstance.get(
+                `${endpoints.appointments.search}?search=${data.search}&page=${data.page}`
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm lịch hẹn",
+            });
+        }
+    }
+);
 const initialState = {
     appointments: {
         data: [],
@@ -156,6 +178,24 @@ const appointmentsSlice = createSlice({
                 state.loading = false;
             })
             .addCase(appointmentsGetById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(appointmentsSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(appointmentsSearch.fulfilled, (state, action) => {
+                if (action.payload.data == undefined) {
+                    state.appointments = {
+                        data: [],
+                    };
+                } else {
+                    state.appointments = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(appointmentsSearch.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

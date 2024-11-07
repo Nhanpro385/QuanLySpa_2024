@@ -102,40 +102,8 @@ export const productSearch = createAsyncThunk(
     "product/search",
     async (data, { rejectWithValue }) => {
         try {
-            // Filter
-            const filteredData = Object.fromEntries(
-                Object.entries(data).filter(([_, value]) => value !== "")
-            );
-
-            // Check if filteredData is empty
-            if (Object.keys(filteredData).length === 0) {
-                return rejectWithValue({
-                    status: 400,
-                    message: "Không có điều kiện tìm kiếm",
-                });
-            }
-
-            const query = Object.keys(filteredData).map((key) => {
-                if (key === "id") {
-                    return `id[eq]=${filteredData[key]}`;
-                }
-                if (key === "name") {
-                    return `name[like]=${filteredData[key]}`;
-                }
-                if (key === "category") {
-                    return `category[like]=${filteredData[key]}`;
-                }
-                if (key === "date") {
-                    return `Date[eq]=${filteredData[key]}`;
-                }
-                if (key === "page") {
-                    return `page=${filteredData[key]}`;
-                }
-                return "";
-            });
-
             const response = await axiosInstance.get(
-                `${endpoints.Products.search}?${query.join("&")}`
+                `${endpoints.Products.search}?search=${data.search}&page=${data.page}`
             );
 
             return response.data;
@@ -245,8 +213,6 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productSearch.fulfilled, (state, action) => {
-                console.log(action.payload);
-
                 if (action.payload.data == undefined) {
                     state.product = {
                         data: [],
