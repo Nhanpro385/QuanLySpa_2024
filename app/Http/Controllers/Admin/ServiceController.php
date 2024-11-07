@@ -192,18 +192,17 @@ class ServiceController extends Controller
                 'updated_by' => auth('api')->user()->id
             ]);
 
-
             if ($request->hasFile('image_url')) {
+                $oldImages = ServiceImage::where('service_id', $id)->get();
+                foreach ($oldImages as $image) {
+                    Storage::delete('public/uploads/services/' . $image->image_url);
+                }
+                $oldImages = ServiceImage::where('service_id', $id)->delete();
                 foreach ($request->file('image_url') as $index => $file) {
                     if ($index > 0) {
-                        $oldImage = ServiceImage::where('service_id', $id)->skip($index - 1)->first();
-                        if ($oldImage) {
-                            Storage::delete('public/uploads/services/' . $oldImage->image_url);
-                            $oldImage->delete();
-                        }
                         $fileName = time() . '_' . $index . '_' . $file->getClientOriginalName();
                         $filePath = $file->storeAs('public/uploads/services', $fileName);
-                        ServiceImage::updateOrCreate(
+                        ServiceImage::create(
                             [
                                 'id' => app(Snowflake::class)->next(),
                                 'service_id' => $id,
