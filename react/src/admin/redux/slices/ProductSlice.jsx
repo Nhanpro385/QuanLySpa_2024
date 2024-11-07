@@ -23,13 +23,17 @@ export const productAdd = createAsyncThunk(
     "product/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(endpoints.Products.create, data,{
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+            const response = await axiosInstance.post(
+                endpoints.Products.create,
+                data,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
                 }
-            });
+            );
             console.log(response);
-            
+
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -80,7 +84,9 @@ export const productGetById = createAsyncThunk(
     "product/getById",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Products.detail(id));
+            const response = await axiosInstance.get(
+                endpoints.Products.detail(id)
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -88,6 +94,57 @@ export const productGetById = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi lấy thông tin sản phẩm",
+            });
+        }
+    }
+);
+export const productSearch = createAsyncThunk(
+    "product/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            // Filter
+            const filteredData = Object.fromEntries(
+                Object.entries(data).filter(([_, value]) => value !== "")
+            );
+
+            // Check if filteredData is empty
+            if (Object.keys(filteredData).length === 0) {
+                return rejectWithValue({
+                    status: 400,
+                    message: "Không có điều kiện tìm kiếm",
+                });
+            }
+
+            const query = Object.keys(filteredData).map((key) => {
+                if (key === "id") {
+                    return `id[eq]=${filteredData[key]}`;
+                }
+                if (key === "name") {
+                    return `name[like]=${filteredData[key]}`;
+                }
+                if (key === "category") {
+                    return `category[like]=${filteredData[key]}`;
+                }
+                if (key === "date") {
+                    return `Date[eq]=${filteredData[key]}`;
+                }
+                if (key === "page") {
+                    return `page=${filteredData[key]}`;
+                }
+                return "";
+            });
+
+            const response = await axiosInstance.get(
+                `${endpoints.Products.search}?${query.join("&")}`
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm sản phẩm",
             });
         }
     }
@@ -119,8 +176,6 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productGet.fulfilled, (state, action) => {
-                
-
                 state.product = action.payload;
                 state.loading = false;
             })
@@ -148,7 +203,6 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productDelete.fulfilled, (state, action) => {
-
                 state.product.data = state.product.data.filter(
                     (prod) => prod.id !== action.payload
                 );
@@ -163,8 +217,6 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productUpdate.fulfilled, (state, action) => {
-               
-
                 state.product.data = state.product.data.map((prod) =>
                     prod.id === action.payload.data.id
                         ? action.payload.data
@@ -185,6 +237,26 @@ const productSlice = createSlice({
                 state.loading = false;
             })
             .addCase(productGetById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(productSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(productSearch.fulfilled, (state, action) => {
+                console.log(action.payload);
+
+                if (action.payload.data == undefined) {
+                    state.product = {
+                        data: [],
+                    };
+                } else {
+                    state.product = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(productSearch.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

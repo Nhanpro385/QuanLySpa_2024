@@ -93,7 +93,7 @@ const categoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(categoriesGet.fulfilled, (state, action) => {
-                state.categories = action.payload;
+                state.categories = action.payload.data;
                 state.loading = false;
             })
             .addCase(categoriesGet.rejected, (state, action) => {

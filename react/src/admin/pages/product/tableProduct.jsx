@@ -1,8 +1,17 @@
-import React from 'react';
-import { Table, Button, Dropdown, Space ,Popconfirm  } from 'antd';
+import React from "react";
+import { Table, Button, Dropdown, Space, Popconfirm } from "antd";
 
-import { DownOutlined } from '@ant-design/icons';
-const TableProduct = ({ dataSource, handleEdit, handleDelete }) => {
+import { DownOutlined } from "@ant-design/icons";
+const TableProduct = ({
+    dataSource,
+    handleEdit,
+    handleDelete,
+    pagination,
+    handlePageChange,
+    loading
+}) => {
+    
+    
     const items = [
         {
             key: "1",
@@ -15,7 +24,6 @@ const TableProduct = ({ dataSource, handleEdit, handleDelete }) => {
         {
             key: "4",
             label: (
-                
                 <Button block danger>
                     Xóa
                 </Button>
@@ -31,7 +39,6 @@ const TableProduct = ({ dataSource, handleEdit, handleDelete }) => {
                 navigate("/admin/appointments/detail/" + record.key);
                 break;
             case "3":
-                    
                 break;
             case "4":
                 handleDelete(record.key);
@@ -81,7 +88,6 @@ const TableProduct = ({ dataSource, handleEdit, handleDelete }) => {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            
         },
         {
             title: "Hành động",
@@ -110,9 +116,22 @@ const TableProduct = ({ dataSource, handleEdit, handleDelete }) => {
         },
     ];
     return (
-        <Table 
-        style={{overflowX:"auto"}}
-        dataSource={dataSource} columns={columns} />
+        <Table
+            style={{ overflowX: "auto" }}
+            dataSource={dataSource}
+            columns={columns}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showSizeChanger: true,
+
+                showQuickJumper: true,
+                showTotal: (total) => `Tổng ${total} mục`,
+                onChange: handlePageChange,
+            }}
+            loading={loading}
+        />
     );
-}
+};
 export default TableProduct;

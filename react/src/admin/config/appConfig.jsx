@@ -63,6 +63,7 @@ const endpoints = {
         create: `${API_BASE_URL}/products`,
         update: (id) => `${API_BASE_URL}/products/${id}`,
         delete: (id) => `${API_BASE_URL}/products/${id}`,
+        search: `${API_BASE_URL}/products`,
     },
     comments: {
         list: `${API_BASE_URL}/comment`,

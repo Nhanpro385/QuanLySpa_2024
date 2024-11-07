@@ -4,7 +4,8 @@ import {
     productAdd,
     productUpdate,
     productDelete,
-    productGetById
+    productGetById,
+    productSearch
 } from "@admin/redux/slices/ProductSlice";
 const useproductActions = () => {
     const dispatch = useDispatch();
@@ -28,13 +29,16 @@ const useproductActions = () => {
     const getproductById = async (id) => {
         return await dispatch(productGetById(id));
     };
-
+    const searchproduct = async (data) => {
+        return await dispatch(productSearch(data));
+    }
     return {
         addproduct,
         getproduct,
         updateproduct,
         deleteproduct,
         getproductById,
+        searchproduct
     };
 };
 
