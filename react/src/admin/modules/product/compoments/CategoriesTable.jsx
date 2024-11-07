@@ -4,7 +4,14 @@ import React from "react";
 import { Table, Button, Space } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const CategoriesTable = ({ dataSource, loading, editCate, deleteCate }) => {
+const CategoriesTable = ({
+    dataSource,
+    loading,
+    editCate,
+    deleteCate,
+    pagination,
+    handlePageChange,
+}) => {
     const columns = [
         {
             title: "STT",
@@ -31,10 +38,7 @@ const CategoriesTable = ({ dataSource, loading, editCate, deleteCate }) => {
                     <Button type="primary" onClick={() => editCate(record.id)}>
                         <EditOutlined />
                     </Button>
-                    <Button
-                        type="danger"
-                        onClick={() => deleteCate(record.id)}
-                    >
+                    <Button type="danger" onClick={() => deleteCate(record.id)}>
                         <DeleteOutlined />
                     </Button>
                 </Space>
@@ -48,6 +52,15 @@ const CategoriesTable = ({ dataSource, loading, editCate, deleteCate }) => {
             columns={columns}
             loading={loading}
             rowKey="id" // Use the unique id for rowKey
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showQuickJumper: true,
+                showSizeChanger: true,
+                onChange: handlePageChange,
+                showTotal: (total) => `Tổng ${total} danh mục`,
+            }}
         />
     );
 };

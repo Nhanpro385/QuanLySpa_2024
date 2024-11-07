@@ -10,7 +10,7 @@ import {
     Dropdown,
     Space,
 } from "antd";
-import React, { useEffect, useState,useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Snowflake } from "@theinternetfolks/snowflake";
 
@@ -21,6 +21,7 @@ import { DownOutlined } from "@ant-design/icons";
 import SupplierForm from "../../modules/SuppliersManagement/compoment/SupplierForm";
 import SupplierTable from "../../modules/SuppliersManagement/compoment/SupplierTable";
 import useSupplierActions from "../../modules/SuppliersManagement/hooks/useSupplierActions";
+import debounce from "lodash/debounce";
 const SupplierManagement = () => {
     const {
         addSupplier,
@@ -28,12 +29,16 @@ const SupplierManagement = () => {
         updateSupplier,
         deleteSupplier,
         getSupplierById,
+        searchSupplier,
     } = useSupplierActions();
 
     const { Suppliers, loading, error, Supplier } = useSelector(
         (state) => state.Suppliers
     );
-
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+    });
     // Modal handling
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
@@ -51,16 +56,18 @@ const SupplierManagement = () => {
     useEffect(() => {
         getSupplier();
     }, []);
-
+    useEffect(() => {
+        searchSupplier(searchQuery);
+    }, [searchQuery]);
     // Prepare data for table
-    const dataSource = (Suppliers.data || []).map((supplier) => ({
+    const dataSource = (Suppliers.data.data || []).map((supplier) => ({
         id: supplier.id,
         name: supplier.name,
         country: supplier.country,
         contact_email: supplier.contact_email,
         code: supplier.code,
     }));
-
+    const pagination = Suppliers.data.meta || {};
     // Define table columns
     const columns = [
         {
@@ -141,7 +148,7 @@ const SupplierManagement = () => {
 
         try {
             const response = await addSupplier(payload);
-          
+
             if (response.meta.requestStatus === "fulfilled") {
                 messageApi.success("Thêm nhà cung cấp thành công!");
                 reset();
@@ -177,12 +184,10 @@ const SupplierManagement = () => {
     const handleSubmitEdit = async (data) => {
         try {
             const resultAction = await updateSupplier(data);
-            
-            
+
             if (resultAction.meta.requestStatus === "fulfilled") {
                 messageApi.success("Cập nhật nhà cung cấp thành công!");
                 handleCancel();
-                
             } else {
                 setErrorEdit(resultAction.payload);
                 console.log(resultAction.payload);
@@ -224,10 +229,15 @@ const SupplierManagement = () => {
                 break;
         }
     };
-
+    const onSearch = debounce((value) => {
+        setSearchQuery({ ...searchQuery, search: value });
+    }, 500);
+    const handlePageChange = (page) => {
+        setSearchQuery({ ...searchQuery, page });
+    };
     return (
         <>
-        <h1 className="text-center">Quản Lý Nhà Cung Cấp</h1>
+            <h1 className="text-center">Quản Lý Nhà Cung Cấp</h1>
             {contextHolder} {/* Message context holder */}
             <Row gutter={[16, 16]}>
                 <Col span={24}>
@@ -238,15 +248,34 @@ const SupplierManagement = () => {
                             onSubmit={onSubmit}
                             errors={errors}
                         />
-                      
                     </Card>
                 </Col>
                 <Col span={24}>
                     <Card title="Danh sách Nhà cung cấp">
+                        <Row className="mb-2">
+                            <Col
+                                xxl={12}
+                                xl={12}
+                                lg={12}
+                                md={12}
+                                sm={12}
+                                xs={24}
+                            >
+                                <Input.Search
+                                    placeholder="Tìm kiếm nhà cung cấp theo : tên, số điện thoại, email, ngày"
+                                    allowClear
+                                    enterButton="Tìm kiếm"
+                                    onSearch={onSearch}
+                                    onChange={(e) => onSearch(e.target.value)}
+                                />
+                            </Col>
+                        </Row>
                         <SupplierTable
                             dataSource={dataSource}
                             columns={columns}
                             loading={loading}
+                            pagination={pagination}
+                            handlePageChange={handlePageChange}
                         />
                     </Card>
                 </Col>

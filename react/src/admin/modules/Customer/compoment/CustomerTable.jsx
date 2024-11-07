@@ -2,8 +2,14 @@ import React from "react";
 import { Table, Button, Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
-const CustomerTable = ({ customers, onClick, loading }) => {
-    const dataSource = (customers.data || []).map((item) => ({
+const CustomerTable = ({
+    customers,
+    onClick,
+    loading,
+    handlePageChange,
+    pagination,
+}) => {
+    const dataSource = (customers.data.data || []).map((item) => ({
         ...item,
         key: item.id,
     }));
@@ -78,11 +84,19 @@ const CustomerTable = ({ customers, onClick, loading }) => {
 
     return (
         <Table
-        style={{ overflowX: "auto" }}
+            style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
             loading={loading}
-            pagination={{ pageSize: 10 }}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showQuickJumper: true,
+                showSizeChanger: true,
+                onChange: handlePageChange,
+                showTotal: (total) => `Tổng ${total} khách hàng`,
+            }}
         />
     );
 };

@@ -25,7 +25,10 @@ export const SupplierAdd = createAsyncThunk(
     "Supplier/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(endpoints.Suppliers.create, data);
+            const response = await axiosInstance.post(
+                endpoints.Suppliers.create,
+                data
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -82,7 +85,9 @@ export const SupplierGetbyId = createAsyncThunk(
     "Supplier/getbyid",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Suppliers.detail(id));
+            const response = await axiosInstance.get(
+                endpoints.Suppliers.detail(id)
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -94,10 +99,28 @@ export const SupplierGetbyId = createAsyncThunk(
         }
     }
 );
+export const SupplierSearch = createAsyncThunk(
+    "Supplier/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.Suppliers.search}?search=${data.search}&page=${data.page}`
+            );
 
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm nhà cung cấp",
+            });
+        }
+    }
+);
 // Initial state for Suppliers slice
 const initialState = {
-    Suppliers:  {
+    Suppliers: {
         data: [],
     },
     Supplier: {}, // Single Supplier detail
@@ -194,6 +217,26 @@ const SupplierSlice = createSlice({
                 state.loading = false;
                 state.error =
                     action.payload?.message || "Failed to get Supplier details";
+            })
+            .addCase(SupplierSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(SupplierSearch.fulfilled, (state, action) => {
+                if (action.payload.data == undefined) {
+                    state.Suppliers = {
+                        data: [],
+                    };
+                } else {
+                    state.Suppliers = action.payload;
+                }
+
+                state.loading = false;
+            })
+            .addCase(SupplierSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error =
+                    action.payload?.message || "Failed to search Suppliers";
             });
     },
 });

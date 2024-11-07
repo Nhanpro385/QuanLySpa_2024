@@ -17,7 +17,7 @@ import ModalEditCustomer from "../../modules/Customer/compoment/CustomerModalEdi
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CustomerTable from "../../modules/Customer/compoment/CustomerTable";
 import useCustomerActions from "../../modules/Customer/hooks/useCustomerActions";
-
+import debounce from "lodash/debounce";
 function Customer() {
     const {
         addCustomer,
@@ -25,19 +25,26 @@ function Customer() {
         updateCustomer,
         deleteCustomer,
         getCustomerById,
+        searchCustomer,
     } = useCustomerActions(); // Use the customer actions hook
 
     const { customers, loading } = useSelector((state) => state.customers);
-    
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+    });
+
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleCancel } = useModal();
     const [currentCustomer, setCurrentCustomer] = useState(null);
     const [formErrors, setFormErrors] = useState({});
-
+    const pagination = customers.meta || {};
     useEffect(() => {
         getCustomer(); // Fetch customers when the component mounts
     }, []);
-
+    useEffect(() => {
+        searchCustomer(searchQuery); // Search customers when the searchQuery changes
+    }, [searchQuery]);
     const onClick = ({ key, record }) => {
         switch (key) {
             case "1":
@@ -61,7 +68,12 @@ function Customer() {
         setCurrentCustomer(record);
         showModal();
     };
-
+    const onSearch = (value) => {
+        setSearchQuery((prev) => ({ ...prev, search: value }));
+    };
+    const handelPageChange = (page) => {
+        setSearchQuery((prev) => ({ ...prev, page }));
+    };
     const handleEditSubmit = async (updatedCustomer) => {
         try {
             const resultAction = await updateCustomer(updatedCustomer); // Use customer update action
@@ -113,9 +125,7 @@ function Customer() {
 
     return (
         <Card>
-            <h1 className="text-center mb-4">
-                Quản lý khách hàng
-            </h1>
+            <h1 className="text-center mb-4">Quản lý khách hàng</h1>
             <Row gutter={[16, 16]} className="mb-3">
                 <Col xl={21} md={18} sm={12} xs={24}>
                     <h2>Danh Sách Người Dùng</h2>
@@ -131,14 +141,15 @@ function Customer() {
             </Row>
 
             <Row gutter={[16, 16]}>
-                <Col xl={4} md={6} sm={12} xs={24}>
-                    <Select className="mb-3 w-100" placeholder="Giới tính">
-                        <Select.Option value="nam">Nam</Select.Option>
-                        <Select.Option value="nu">Nữ</Select.Option>
-                    </Select>
-                </Col>
-                <Col xl={4} md={6} sm={12} xs={24}>
-                    <Input.Search placeholder="Tìm kiếm......" />
+                <Col xl={12} md={12} sm={12} xs={24}>
+                    <Input.Search
+                        placeholder="Tìm kiếm......"
+                        allowClear
+                        enterButton="Tìm kiếm"
+                        size="middle"
+                        onSearch={onSearch}
+                        onChange={(e) => onSearch(e.target.value)}
+                    />
                 </Col>
             </Row>
 
@@ -146,6 +157,8 @@ function Customer() {
                 customers={customers}
                 onClick={onClick}
                 loading={loading}
+                handelPageChange={handelPageChange}
+                pagination={pagination}
             />
 
             <ModalEditCustomer

@@ -72,7 +72,25 @@ export const categoriesGetById = createAsyncThunk(
         return response.data;
     }
 );
+export const categoriesSearch = createAsyncThunk(
+    "categories/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.ProductsCategories.search}?search=${data.search}&page=${data.page}`
+            );
 
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm danh mục",
+            });
+        }
+    }
+);
 const initialState = {
     categories: {
         data: [],
@@ -157,6 +175,24 @@ const categoriesSlice = createSlice({
             .addCase(categoriesGetById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(categoriesSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(categoriesSearch.fulfilled, (state, action) => {
+                if (action.payload.data == undefined) {
+                    state.categories = {
+                        data: [],
+                    };
+                } else {
+                    state.categories = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(categoriesSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
             });
     },
 });

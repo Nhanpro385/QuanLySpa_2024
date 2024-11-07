@@ -26,7 +26,10 @@ export const CustomerAdd = createAsyncThunk(
     "Customer/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(endpoints.Customers.create, data);
+            const response = await axiosInstance.post(
+                endpoints.Customers.create,
+                data
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -83,7 +86,9 @@ export const CustomerGetbyId = createAsyncThunk(
     "Customer/getbyid",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Customers.detail(id));
+            const response = await axiosInstance.get(
+                endpoints.Customers.detail(id)
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -95,7 +100,25 @@ export const CustomerGetbyId = createAsyncThunk(
         }
     }
 );
+export const CustomerSearch = createAsyncThunk(
+    "Customer/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.Customers.search}?search=${data.search}&page=${data.page}`
+            );
 
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm khách hàng",
+            });
+        }
+    }
+);
 // Initial state for customers slice
 const initialState = {
     customers: {
@@ -133,14 +156,12 @@ const CustomerSlice = createSlice({
             })
             // Customer Add
             .addCase(CustomerAdd.pending, (state) => {
-              
-                
                 state.loading = true;
                 state.error = null;
             })
             .addCase(CustomerAdd.fulfilled, (state, action) => {
-                console.log(action.payload);        
-                
+                console.log(action.payload);
+
                 state.customers.data.push(action.payload);
                 state.loading = false;
             })
@@ -200,8 +221,27 @@ const CustomerSlice = createSlice({
                 state.loading = false;
                 state.error =
                     action.payload?.message || "Failed to get customer details";
+            })
+            .addCase(CustomerSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(CustomerSearch.fulfilled, (state, action) => {
+                if (action.payload.data == undefined) {
+                    state.customers = {
+                        data: [],
+                    };
+                } else {
+                    state.customers = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(CustomerSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error =
+                    action.payload?.message || "Failed to search customers";
             });
     },
 });
-    
+
 export default CustomerSlice.reducer;

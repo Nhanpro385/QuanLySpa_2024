@@ -4,7 +4,8 @@ import {
     categoriesAdd,
     categoriesUpdate,
     categoriesDelete,
-    categoriesGetById
+    categoriesGetById,
+    categoriesSearch,
 } from "@admin/redux/slices/CategoriesProductSlice";
 const usecategoriesActions = () => {
     const dispatch = useDispatch();
@@ -28,13 +29,16 @@ const usecategoriesActions = () => {
     const getcategoriesById = async (id) => {
         return await dispatch(categoriesGetById(id));
     };
-
+    const searchcategories = async (data) => {
+        return await dispatch(categoriesSearch(data));
+    };
     return {
         addcategories,
         getcategories,
         updatecategories,
         deletecategories,
         getcategoriesById,
+        searchcategories,
     };
 };
 

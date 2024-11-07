@@ -5,6 +5,7 @@ import {
     SupplierUpdate,
     SupplierDelete,
     SupplierGetbyId,
+    SupplierSearch,
 } from "@admin/redux/slices/SupplierSlice";
 const useSupplierActions = () => {
     const dispatch = useDispatch();
@@ -18,7 +19,6 @@ const useSupplierActions = () => {
     };
 
     const updateSupplier = async (data) => {
-    
         return await dispatch(SupplierUpdate(data));
     };
 
@@ -29,13 +29,16 @@ const useSupplierActions = () => {
     const getSupplierById = async (id) => {
         return await dispatch(SupplierGetbyId(id));
     };
-
+    const searchSupplier = async (data) => {
+        return await dispatch(SupplierSearch(data));
+    };
     return {
         addSupplier,
         getSupplier,
         updateSupplier,
         deleteSupplier,
         getSupplierById,
+        searchSupplier,
     };
 };
 

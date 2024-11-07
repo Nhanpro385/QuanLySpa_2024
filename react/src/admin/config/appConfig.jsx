@@ -19,6 +19,7 @@ const endpoints = {
         create: `${API_BASE_URL}/customer`,
         update: (id) => `${API_BASE_URL}/customer/${id}`,
         delete: (id) => `${API_BASE_URL}/customer/${id}`,
+        search: `${API_BASE_URL}/customer`,
     },
     ProductsCategories: {
         list: `${API_BASE_URL}/category`,
@@ -26,6 +27,7 @@ const endpoints = {
         create: `${API_BASE_URL}/category`,
         update: (id) => `${API_BASE_URL}/category/${id}`,
         delete: (id) => `${API_BASE_URL}/category/${id}`,
+        search: `${API_BASE_URL}/category`,
     },
     Users: {
         list: `${API_BASE_URL}/users`,
@@ -48,6 +50,7 @@ const endpoints = {
         create: `${API_BASE_URL}/supplier`,
         update: (id) => `${API_BASE_URL}/supplier/${id}`,
         delete: (id) => `${API_BASE_URL}/supplier/${id}`,
+        search: `${API_BASE_URL}/supplier`,
     },
     Auth: {
         login: `${API_AUTH_URL}/login`,

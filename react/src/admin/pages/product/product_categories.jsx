@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row, message } from "antd";
+import { Card, Col, Input, Row, message } from "antd";
 import { useSelector } from "react-redux";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CategoriesForm from "../../modules/product/compoments/CategoriesForm";
@@ -7,6 +7,7 @@ import CategoriesTable from "../../modules/product/compoments/CategoriesTable";
 import ModalEditCategory from "../../modules/product/compoments/categoriesEditModal";
 import { Snowflake } from "@theinternetfolks/snowflake";
 import usecategoriesActions from "../../modules/product/hooks/useCategoriesProduct";
+import debounce from "lodash/debounce";
 const ProductCategories = () => {
     const {
         addcategories,
@@ -14,6 +15,7 @@ const ProductCategories = () => {
         updatecategories,
         deletecategories,
         getcategoriesById,
+        searchcategories,
     } = usecategoriesActions();
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
@@ -21,13 +23,25 @@ const ProductCategories = () => {
     const { categories, loading, error, category } = useSelector(
         (state) => state.categories
     );
-
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+    });
+    useEffect(() => {
+        searchcategories(searchQuery);
+    }, [searchQuery]);
     useEffect(() => {
         getcategories();
     }, []);
 
     const dataSource = Array.isArray(categories?.data) ? categories.data : [];
-
+    const pagination = categories.meta || {};
+    const onSearch = (value) => {
+        setSearchQuery((prev) => ({ ...prev, search: value }));
+    };
+    const handlePageChange = (page) => {
+        setSearchQuery((prev) => ({ ...prev, page }));
+    };
     const handleFormSubmit = async (data) => {
         const payload = {
             id: Snowflake.generate(),
@@ -86,11 +100,31 @@ const ProductCategories = () => {
                 </Col>
                 <Col span={24}>
                     <Card title="Danh sách danh mục sản phẩm">
+                        <Row className="m-2" justify={"space-between"}>
+                            <Col
+                                xxl={12}
+                                xl={12}
+                                lg={12}
+                                md={12}
+                                sm={12}
+                                xs={24}
+                            >
+                                <Input.Search
+                                    placeholder="Tìm kiếm"
+                                    onSearch={onSearch}
+                                    enterButton="Tìm kiếm"
+                                    allowClear
+                                    onChange={(e) => onSearch(e.target.value)}
+                                />
+                            </Col>
+                        </Row>
                         <CategoriesTable
                             dataSource={dataSource}
                             loading={loading}
                             editCate={editCate}
                             deleteCate={deleteCate}
+                            pagination={pagination}
+                            handlePageChange={handlePageChange}
                         />
                     </Card>
                     <ModalEditCategory

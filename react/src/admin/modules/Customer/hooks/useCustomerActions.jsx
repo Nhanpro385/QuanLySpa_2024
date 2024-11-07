@@ -5,6 +5,7 @@ import {
     CustomerUpdate,
     CustomerDelete,
     CustomerGetbyId,
+    CustomerSearch,
 } from "@admin/redux/slices/CustomerSlice";
 const useCustomerActions = () => {
     const dispatch = useDispatch();
@@ -28,13 +29,16 @@ const useCustomerActions = () => {
     const getCustomerById = async (id) => {
         return await dispatch(CustomerGetbyId(id));
     };
-
+    const searchCustomer = async (data) => {
+        return await dispatch(CustomerSearch(data));
+    };
     return {
         addCustomer,
         getCustomer,
         updateCustomer,
         deleteCustomer,
         getCustomerById,
+        searchCustomer,
     };
 };
 
