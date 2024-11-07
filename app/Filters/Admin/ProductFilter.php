@@ -7,14 +7,15 @@ class ProductFilter extends ApiFilter
 {
     protected $safeParams = [
         'id' => ['eq', 'like'],
-        'position_id' => ['eq'],
-        'role' => ['eq'],
+        'category_id' => ['eq', 'like'],
         'name' => ['eq', 'like'],
-        'full_name' => ['eq', 'like'],
-        'gender' => ['like'],
-        'phone' => ['eq', 'like'],
-        'email' => ['eq', 'like'],
-        'status' => ['eq'],
+        'price' => ['eq', 'like'],
+        'cost' => ['eq', 'like'],
+        'capacity' => ['eq', 'like'],
+        'bar_code' => ['eq', 'like'],
+        'date' => ['eq', 'like'],
+        'priority' => ['eq', 'like'],
+        'status' => ['eq', 'like'],
     ];
 
     protected $columnMap = [

@@ -9,7 +9,6 @@ class UserFilter extends ApiFilter
         'id' => ['eq'],
         'position_id' => ['eq'],
         'role' => ['eq'],
-        'name' => ['eq', 'like'],
         'full_name' => ['eq', 'like'],
         'gender' => ['like'],
         'phone' => ['eq', 'like'],
