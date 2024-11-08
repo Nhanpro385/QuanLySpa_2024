@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Payment extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -19,7 +19,9 @@ class Payment extends Model
         'id',
         'promotion_id',
         'appointment_id',
-        'pay',
+        'service_total',
+        'product_total',
+        'subtotal',
         'reduce',
         'total_amount',
         'payment_type',

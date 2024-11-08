@@ -21,14 +21,19 @@ class PaymentFactory extends Factory
      */
     public function definition(): array
     {
+        $product_total = $this->faker->numberBetween(10000, 1000000);
+        $service_total = $this->faker->numberBetween(10000, 1000000);
+        $reduce = $this->faker->numberBetween(10000, 100000);
         return [
             'id' => app(Snowflake::class)->next(),
             'promotion_id' => $this->faker->randomElement(Promotion::pluck('id')->toArray()),
             'appointment_id' => $this->faker->randomElement(Appointment::pluck('id')->toArray()),
-            'pay' => $this->faker->numberBetween(10000, 100000000),
-            'reduce' => $this->faker->numberBetween(10000, 100000),
-            'total_amount' => $this->faker->numberBetween(10000, 100000000),
-            'payment_type' => $this->faker->randomElement(['cash', 'transfer']),
+            'service_total' => $service_total,
+            'product_total' => $product_total,
+            'subtotal' => $service_total + $product_total,
+            'reduce' => $reduce,
+            'total_amount' => ($service_total + $product_total) - $reduce,
+            'payment_type' => $this->faker->numberBetween(0, 1),
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
     }

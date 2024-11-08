@@ -19,6 +19,7 @@ use App\Models\Notification;
 use App\Models\OutboundInvoice;
 use App\Models\OutboundInvoiceDetail;
 use App\Models\Payment;
+use App\Models\PaymentProducts;
 use App\Models\Position;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -66,6 +67,7 @@ class DatabaseSeeder extends Seeder
         ProductService::factory(10)->create();
         Comment::factory(10)->create();
         Payment::factory(10)->create();
+        PaymentProducts::factory(10)->create();
         Inventory::factory(10)->create();
         ServiceImage::factory(10)->create();
         ProductImage::factory(10)->create();
