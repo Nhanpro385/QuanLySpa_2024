@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('treatment_histories', function (Blueprint $table) {
             $table->string('id', 20)->primary();
-            $table->string('service_id', 20)->nullable();
             $table->string('customer_id', 20)->nullable();
             $table->string('appointment_id', 20)->nullable();
             $table->string('staff_id', 20)->nullable();
@@ -28,11 +27,6 @@ return new class extends Migration {
             $table->timestamps();
         });
         Schema::table('treatment_histories', function (Blueprint $table) {
-            $table->foreign('service_id')
-                ->references('id')
-                ->on('services')
-                ->onDelete('set null');
-
             $table->foreign('customer_id')
                 ->references('id')
                 ->on('customers')

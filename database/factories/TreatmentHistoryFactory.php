@@ -24,7 +24,6 @@ class TreatmentHistoryFactory extends Factory
     {
         return [
             'id' => app(Snowflake::class)->next(),
-            'service_id' => $this->faker->randomElement(Service::pluck('id')->toArray()),
             'customer_id' => $this->faker->randomElement(Customer::pluck('id')->toArray()),
             'appointment_id' => $this->faker->randomElement(Appointment::pluck('id')->toArray()),
             'staff_id' => $this->faker->randomElement(User::pluck('id')->toArray()),

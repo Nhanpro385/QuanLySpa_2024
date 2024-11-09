@@ -18,9 +18,17 @@ class TreatmentHistory extends Model
     protected $table = 'treatment_histories';
 
     protected $fillable = [
-       'service_id', 'customer_id', 'appointment_id', 'staff_id',
-        'image_before', 'image_after', 'feedback', 'note', 
-        'status', 'created_by', 'updated_at',
+        'id',
+        'customer_id',
+        'appointment_id',
+        'staff_id',
+        'image_before',
+        'image_after',
+        'feedback',
+        'note',
+        'status',
+        'created_by',
+        'updated_at',
     ];
 
     protected $attributes = [

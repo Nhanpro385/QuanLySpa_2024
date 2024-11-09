@@ -72,7 +72,6 @@ class DatabaseSeeder extends Seeder
         ServiceImage::factory(10)->create();
         ProductImage::factory(10)->create();
         CommentImage::factory(10)->create();
-        TreatmentProduct::factory(10)->create();
         InboundInvoice::factory(10)->create();
         OutboundInvoice::factory(10)->create();
         InboundInvoiceDetail::factory(10)->create();
