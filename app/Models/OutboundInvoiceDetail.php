@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class OutboundInvoiceDetail extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $keyType = 'string';
     public $incrementing = false;
 

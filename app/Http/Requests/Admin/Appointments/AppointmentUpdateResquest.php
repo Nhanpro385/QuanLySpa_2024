@@ -25,7 +25,7 @@ class AppointmentUpdateResquest extends FormRequest
     {
         return [
             'note' => 'nullable',
-            'status' => 'required|numeric',
+            'status' => 'required|numeric|min:1',
             'services' => 'nullable|array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|numeric|min:1',
@@ -39,6 +39,7 @@ class AppointmentUpdateResquest extends FormRequest
         return [
             'status.required' => 'Trạng thái là bắt buộc.',
             'status.numeric' => 'Trạng thái phải là số.',
+            'status.min' => 'Trạng thái không hợp lệ.',
             'services.array' => 'Danh sách dịch vụ phải là một mảng.',
             'services.*.service_id.required' => 'Mã dịch vụ là bắt buộc.',
             'services.*.service_id.exists' => 'Mã dịch vụ không hợp lệ.',

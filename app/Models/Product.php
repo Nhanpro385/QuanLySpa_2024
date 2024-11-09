@@ -71,9 +71,9 @@ class Product extends Model
     {
         return $this->hasMany(Product::class, 'products_id', 'id');
     }
-    public function productService()
+    public function services()
     {
-        return $this->hasMany(ProductService::class, 'product_id', 'id');
+        return $this->belongsToMany(Service::class, 'product_services', 'product_id', 'service_id')->withPivot('quantity_used')->withTimestamps();
     }
     public function treatmentProduct()
     {

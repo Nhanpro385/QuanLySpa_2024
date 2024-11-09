@@ -43,9 +43,9 @@ class Appointment extends Model
     {
         return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
     }
-    public function payment()
+    public function payments()
     {
-        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
+        return $this->hasMany(Payment::class, 'appointment_id', 'id');
     }
     public function treatmentHistory()
     {
