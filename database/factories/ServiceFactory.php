@@ -24,7 +24,7 @@ class ServiceFactory extends Factory
             'id' => app(Snowflake::class)->next(),
             'service_category_id' => $this->faker->randomElement(ServiceCategory::pluck('id')->toArray()),
             'name' => $this->faker->name(),
-            'price' => $this->faker->numberBetween(1000, 99999999),
+            'price' => $this->faker->numberBetween(1000, 1000000),
             'description' => $this->faker->text(),
             'priority' => $this->faker->numberBetween(0, 10),
             'duration' => $this->faker->numberBetween(10, 120),

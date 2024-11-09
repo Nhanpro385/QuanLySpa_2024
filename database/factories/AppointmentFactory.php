@@ -27,7 +27,7 @@ class AppointmentFactory extends Factory
             'customer_id' => $this->faker->randomElement(Customer::pluck('id')->toArray()),
             'start_time' => $this->faker->time(),
             'note' => $this->faker->text(),
-            'status' => $this->faker->numberBetween(0, 4),
+            'status' => $this->faker->numberBetween(0, 3),
             'appointment_date' => $this->faker->unique()->dateTimeBetween('now', '+10 days')->format('Y-m-d'),
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())

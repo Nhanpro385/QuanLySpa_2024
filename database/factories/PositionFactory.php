@@ -21,7 +21,7 @@ class PositionFactory extends Factory
         return [
             'id' => app(Snowflake::class)->next(),
             'name' => $this->faker->name(),
-            'wage' => $this->faker->randomFloat(2, 1000, 100000000),
+            'wage' => $this->faker->randomFloat(2, 1000, 10000000),
             'note' => $this->faker->sentence(),
         ];
     }

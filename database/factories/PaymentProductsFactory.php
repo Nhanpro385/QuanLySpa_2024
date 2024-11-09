@@ -24,8 +24,8 @@ class PaymentProductsFactory extends Factory
             'product_id' => $this->faker->randomElement(Product::pluck('id')->toArray()),
             'payment_id' => $this->faker->randomElement(Payment::pluck('id')->toArray()),
             'quantity' => $this->faker->numberBetween(1, 10),
-            'unit_price' => $this->faker->numberBetween(10000, 100000000),
-            'total_price' => $this->faker->numberBetween(10000, 100000000),
+            'unit_price' => $this->faker->numberBetween(10000, 1000000),
+            'total_price' => $this->faker->numberBetween(10000, 1000000),
         ];
     }
 }

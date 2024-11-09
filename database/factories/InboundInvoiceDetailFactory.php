@@ -27,7 +27,7 @@ class InboundInvoiceDetailFactory extends Factory
             'quantity_import' => 2,
             'cost_import' => $this->faker->numberBetween(10000, 100000),
             'cost_olded' => $this->faker->numberBetween(10000, 100000),
-            'unit_price' => $this->faker->numberBetween(10000, 1000000),
+            'unit_price' => $this->faker->numberBetween(10000, 100000),
         ];
     }
 }

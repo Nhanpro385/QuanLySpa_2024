@@ -24,7 +24,7 @@ class OutboundInvoiceFactory extends Factory
             'staff_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'note' => null,
             'outbound_invoice_type' => $this->faker->randomElement(['service', 'use']),
-            'total_amount' => $this->faker->numberBetween(100000, 100000),
+            'total_amount' => $this->faker->numberBetween(100000, 1000000),
         ];
     }
 }

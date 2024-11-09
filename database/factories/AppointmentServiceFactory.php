@@ -24,7 +24,7 @@ class AppointmentServiceFactory extends Factory
             'appointment_id' => $this->faker->randomElement(Appointment::pluck('id')->toArray()),
             'service_id' => $this->faker->randomElement(Service::pluck('id')->toArray()),
             'quantity' => 1,
-            'price' => $this->faker->numberBetween(10000, 10000000)
+            'price' => $this->faker->numberBetween(10000, 1000000)
         ];
     }
 }
