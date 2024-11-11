@@ -17,6 +17,10 @@ return new class extends Migration {
             $table->dateTime('end_date');
             $table->tinyInteger('promotion_type')->default(1);
             $table->decimal('discount_percent', 10, 2);
+            $table->text('description')->nullable();
+            $table->decimal('min_order_amount');
+            $table->integer('min_quantity')->default(1);
+            $table->string('image_url')->nullable();
             $table->boolean('status')->default(true);
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();

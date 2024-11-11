@@ -26,6 +26,9 @@ class PromotionFactory extends Factory
             'end_date' => $this->faker->date(),
             'promotion_type' => $this->faker->numberBetween(0, 2),
             'discount_percent' => $this->faker->numberBetween(10000, 100000),
+            'description' => $this->faker->text(),
+            'min_order_amount' => $this->faker->numberBetween(10000, 100000),
+            'min_quantity' => $this->faker->numberBetween(0, 1),
             'created_by' => $this->faker->randomElement(User::pluck('id')->toArray()),
             'updated_by' => $this->faker->randomElement(User::pluck('id')->toArray())
         ];
