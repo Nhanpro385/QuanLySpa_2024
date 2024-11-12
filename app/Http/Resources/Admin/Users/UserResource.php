@@ -16,6 +16,8 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $shifts = $this->whenLoaded('shifts') ? $this->shifts : [];
+        $treatmentHistories = $this->whenLoaded('treatmentHistories') ? $this->treatmentHistories : [];
         return [
             'id' => (string) $this->id,
             'position' => $this->position_id ? [
@@ -32,6 +34,8 @@ class UserResource extends JsonResource
             'date_of_birth' => $this->date_of_birth,
             'note' => $this->note,
             'status' => $this->status,
+            'shifts' => $shifts,
+            'treatmentHistories' => $treatmentHistories,
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
                 'fullname' => $this->createdBy->full_name,

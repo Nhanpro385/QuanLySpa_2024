@@ -64,26 +64,26 @@ class TreatmentHistory extends Model
     }
 
     // Example for treatment products, assuming it's a related model
-    public function treatmentProducts()
-    {
-        return $this->hasMany(TreatmentProduct::class, 'treatment_history_id', 'id');
-    }
+    // public function treatmentProducts()
+    // {
+    //     return $this->hasMany(TreatmentProduct::class, 'treatment_history_id', 'id');
+    // }
 
     // Auto-assign created_by and updated_by on create and update
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        static::creating(function ($model) {
-            if (auth()->check()) {
-                $model->created_by = auth()->id();
-            }
-        });
+    //     static::creating(function ($model) {
+    //         if (auth()->check()) {
+    //             $model->created_by = auth()->id();
+    //         }
+    //     });
 
-        static::updating(function ($model) {
-            if (auth()->check()) {
-                $model->updated_by = auth()->id();
-            }
-        });
-    }
+    //     static::updating(function ($model) {
+    //         if (auth()->check()) {
+    //             $model->updated_by = auth()->id();
+    //         }
+    //     });
+    // }
 }

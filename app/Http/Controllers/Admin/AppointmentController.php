@@ -11,26 +11,22 @@ use App\Http\Resources\Admin\Appointments\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\AppointmentService;
 use App\Models\AppointmentStaff;
-use App\Models\Customer;
-use App\Models\InboundInvoice;
-use App\Models\InboundInvoiceDetail;
 use App\Models\Inventory;
 use App\Models\OutboundInvoice;
 use App\Models\OutboundInvoiceDetail;
 use App\Models\Payment;
 use App\Models\PaymentProducts;
 use App\Models\Product;
-use App\Models\ProductService;
 use App\Models\Service;
 use App\Models\Shift;
 use App\Models\StaffShift;
+use App\Models\TreatmentHistory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Kra8\Snowflake\Snowflake;
 
-use function Laravel\Prompts\select;
+
 
 class AppointmentController extends Controller
 {
@@ -89,14 +85,6 @@ class AppointmentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(AppointmentResquest $request)
@@ -108,7 +96,11 @@ class AppointmentController extends Controller
             $shift = Shift::where('id', '=', $validateData['shift_id'])->where('shift_date', '=', $validateData['appointment_date'])->first();
 
             if (!$shift) {
-                return response()->json(['error' => 'Shift not found'], 404);
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Dữ liệu đầu vào không hợp lệ.",
+                    'error' => 'Ca làm hiện tại và lịch hẹn không hợp lệ.'
+                ], 404);
             }
 
             // 2. Kiểm tra nhân viên trong ca làm
@@ -214,20 +206,21 @@ class AppointmentController extends Controller
                 }
             }
 
-            foreach ($products_out_of_stock as $index => $product) {
+            foreach ($products_out_of_stock as $product) {
                 $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
-                if ($inventory->quantity < $product['quantity']) {
+                if (!$inventory || $inventory->quantity < $product['quantity'] || $inventory->quantity <= 0) {
+                    DB::rollBack();
                     return response()->json([
                         "status" => "error",
                         "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm trong kho không đáp ứng đc yêu cầu.'
+                        'error' => 'Số lượng sản phẩm: ' . $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
                     ], 400);
                 }
             }
 
 
 
-            if ($appointment->status >= 2) {
+            if ($appointment->status == 3) {
                 //Them hoa don xuat hang khoi kho
                 $outbountInvoice = OutboundInvoice::create([
                     'id' => app(Snowflake::class)->next(),
@@ -241,6 +234,14 @@ class AppointmentController extends Controller
                 $total_amount = 0;
                 foreach ($products_out_of_stock as $product) {
                     $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
+                    if (!$inventory || $inventory->quantity <= 0) {
+                        DB::rollBack();
+                        return response()->json([
+                            "status" => "error",
+                            "message" => "Hết hàng trong kho.",
+                            'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                        ], 400);
+                    }
                     $pr = Product::find($product['product_id']);
 
                     $outbountInvoiceDetail = OutboundInvoiceDetail::create([
@@ -280,6 +281,21 @@ class AppointmentController extends Controller
                         'total_amount' => $service_total,
                         'created_by' => auth('api')->user()->id,
                     ]);
+
+                    $treatment_history = TreatmentHistory::create([
+                        'id' => app(Snowflake::class)->next(),
+                        'appointment_id' => $appointment->id,
+                        'customer_id' => $appointment->customer_id,
+                        'staff_id' => auth('api')->user()->id,
+                        'image_before' => 'Ảnh trước',
+                        'image_after' => 'Ảnh sau',
+                        'feedback' => 'Nhận xét của khách hàng: ',
+                        'note' => 'Ghi chú cho lịch hẹn: ' . $appointment->id,
+                        'status' => true,
+                        'created_by' => auth('api')->user()->id,
+                        'updated_by' => auth('api')->user()->id,
+                    ]);
+
                 }
             }
 
@@ -304,6 +320,7 @@ class AppointmentController extends Controller
             ];
             return response()->json($response);
         } catch (\Throwable $th) {
+            DB::rollBack();
             $arr = [
                 'status' => 'error',
                 'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
@@ -470,7 +487,7 @@ class AppointmentController extends Controller
                     $productId = $product->id;
                     $quantity_needed = $product->pivot->quantity_used * $productService['quantity'];
                     array_push($products_out_of_stock, [
-                        'product_id' => $productId,
+                        'product_id' => (string) $productId,
                         'quantity' => $quantity_needed
                     ]);
                 }
@@ -478,17 +495,18 @@ class AppointmentController extends Controller
 
             foreach ($products_out_of_stock as $index => $product) {
                 $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
-                if ($inventory->quantity < $product['quantity']) {
+                if ($inventory == null || $inventory->quantity < $product['quantity'] || $inventory->quantity <= 0) {
+                    DB::rollBack();
                     return response()->json([
                         "status" => "error",
                         "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm trong kho không đáp ứng đc yêu cầu.'
+                        'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
                     ], 400);
                 }
             }
 
 
-            if ($appointment->status > 2) {
+            if ($appointment->status == 3) {
                 $outbound_invoice_id = OutboundInvoice::where('note', 'LIKE', 'Sử dụng trong lịch hẹn: ' . $appointment->id)->exists();
 
                 if (!$outbound_invoice_id) {
@@ -505,6 +523,15 @@ class AppointmentController extends Controller
                     $total_amount = 0;
                     foreach ($products_out_of_stock as $product) {
                         $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
+                        if (!$inventory || $inventory->quantity <= 0 || $inventory->quantity < $product['quantity']) {
+                            DB::rollBack();
+                            return response()->json([
+                                "status" => "error",
+                                "message" => "Hết hàng trong kho.",
+                                'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                            ], 400);
+                        }
+
                         $pr = Product::find($product['product_id']);
 
                         $outbountInvoiceDetail = OutboundInvoiceDetail::create([
@@ -545,6 +572,20 @@ class AppointmentController extends Controller
                         'subtotal' => $service_total,
                         'total_amount' => $service_total,
                         'created_by' => auth('api')->user()->id,
+                    ]);
+
+                    $treatment_history = TreatmentHistory::create([
+                        'id' => app(Snowflake::class)->next(),
+                        'appointment_id' => $appointment->id,
+                        'customer_id' => $appointment->customer_id,
+                        'staff_id' => auth('api')->user()->id,
+                        'image_before' => 'Ảnh trước',
+                        'image_after' => 'Ảnh sau',
+                        'feedback' => 'Nhận xét của khách hàng: ',
+                        'note' => 'Ghi chú cho lịch hẹn: ' . $appointment->id,
+                        'status' => true,
+                        'created_by' => auth('api')->user()->id,
+                        'updated_by' => auth('api')->user()->id,
                     ]);
                 }
             }

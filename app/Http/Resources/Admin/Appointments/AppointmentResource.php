@@ -45,6 +45,7 @@ class AppointmentResource extends JsonResource
                 $quantity = $service->pivot->quantity;
                 $price = $service->pivot->price;
                 $totalPrice += $price * $quantity;
+                $products = $service->products ?? [];
                 return [
                     'id' => (string) $service->id,
                     'serviceCategory' => $service->service_category_id ? [
@@ -54,7 +55,14 @@ class AppointmentResource extends JsonResource
                     'name' => $service->name,
                     'quantity' => $service->pivot->quantity,
                     'price' => $service->pivot->price,
-                    'duration' => $this->convertMinutesToTime($service->duration)
+                    'duration' => $this->convertMinutesToTime($service->duration),
+                    'products' => $products ? $products->map(function ($product) {
+                        return [
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'quantity_used' => $product->pivot->quantity_used
+                        ];
+                    }) : [],
                 ];
             }) : [],
             'start_time' => $this->start_time,

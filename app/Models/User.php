@@ -110,19 +110,20 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(User::class, 'user_id', 'id');
     }
 
-    public function staffShifts()
+    public function shifts()
     {
-        return $this->hasMany(User::class, 'staff_id', 'id');
+        return $this->belongsToMany(Shift::class, 'staff_shifts', 'staff_id', 'shift_id')->orderBy('shifts.shift_date', 'desc');
     }
     public function appointments()
     {
         return $this->belongsToMany(Appointment::class, 'appointment_staffs', 'staff_id', 'appointment_id');
     }
 
-    public function treatmentHistory()
+    public function treatmentHistories()
     {
-        return $this->hasMany(User::class, 'user_id', 'id');
+        return $this->hasMany(TreatmentHistory::class, 'staff_id', 'id')->orderBy('treatment_histories.created_at', 'desc');
     }
+
     public function notification()
     {
         return $this->hasMany(User::class, 'user_id', 'id');
