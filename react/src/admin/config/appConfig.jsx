@@ -89,6 +89,7 @@ const endpoints = {
         create: `${API_BASE_URL}/shifts`,
         update: (id) => `${API_BASE_URL}/shifts/${id}`,
         delete: (id) => `${API_BASE_URL}/shifts/${id}`,
+        search: `${API_BASE_URL}/shifts`,
     },
     warehouse: {
         import: `${API_BASE_URL}/warehouse/import`,

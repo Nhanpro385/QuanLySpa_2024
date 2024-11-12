@@ -11,7 +11,10 @@ export const shiftsAdd = createAsyncThunk(
     "shifts/add",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(endpoints.shifts.create, data);
+            const response = await axiosInstance.post(
+                endpoints.shifts.create,
+                data
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -26,7 +29,9 @@ export const shiftsAdd = createAsyncThunk(
 export const shiftsDelete = createAsyncThunk(
     "shifts/delete",
     async (id, { rejectWithValue }) => {
+        
         try {
+        
             await axiosInstance.delete(endpoints.shifts.delete(id));
             return id;
         } catch (error) {
@@ -43,19 +48,20 @@ export const shiftsUpdate = createAsyncThunk(
     "shifts/update",
     async (data, { rejectWithValue }) => {
         try {
-            console.log("data", data);
-
             const response = await axiosInstance.put(
                 endpoints.shifts.update(data.id),
                 data
             );
             return response.data;
         } catch (error) {
+            console.log("error", error);
+
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
+                errors: error.response?.data?.errors || [],
             });
         }
     }
@@ -65,6 +71,25 @@ export const shiftsGetById = createAsyncThunk("shifts/getById", async (id) => {
     return response.data;
 });
 
+export const shiftsSearch = createAsyncThunk(
+    "shifts/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.shifts.search}?shift_date=${data.search}&status=${data.status}&page=${data.page}`
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm ca làm việc",
+            });
+        }
+    }
+);
 const initialState = {
     shifts: {
         data: [],
@@ -78,6 +103,7 @@ const shiftsSlice = createSlice({
     name: "shifts",
     initialState,
     reducers: {},
+
     extraReducers: (builder) => {
         builder
             .addCase(shiftsGet.pending, (state) => {
@@ -97,7 +123,7 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsAdd.fulfilled, (state, action) => {
-                state.shifts.data.push(action.payload.data);
+                state.shifts.data.push(action.payload);
                 state.loading = false;
             })
             .addCase(shiftsAdd.rejected, (state, action) => {
@@ -125,8 +151,6 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsUpdate.fulfilled, (state, action) => {
-                console.log(action.payload.data.id);
-
                 state.shifts.data = state.shifts.data.map((cate) =>
                     cate.id === action.payload.data.id
                         ? action.payload.data
@@ -136,7 +160,7 @@ const shiftsSlice = createSlice({
             })
             .addCase(shiftsUpdate.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message; // Nhận thông báo lỗi
+                state.error = action.payload;
             })
             .addCase(shiftsGetById.pending, (state) => {
                 state.loading = true;
@@ -149,6 +173,30 @@ const shiftsSlice = createSlice({
             .addCase(shiftsGetById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(shiftsSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(shiftsSearch.fulfilled, (state, action) => {
+                console.log(action);
+
+                if (action.payload.data == undefined) {
+                    state.shifts = {
+                        data: [],
+                    };
+                } else {
+                    state.shifts = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(shiftsSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.shifts = {
+                    data: [],
+                };
+                
+                state.error = action.payload.message;
             });
     },
 });

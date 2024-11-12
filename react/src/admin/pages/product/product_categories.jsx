@@ -28,7 +28,9 @@ const ProductCategories = () => {
         page: 1,
     });
     useEffect(() => {
-        searchcategories(searchQuery);
+        if (searchQuery.search || searchQuery.page !== 1) {
+            searchcategories(searchQuery);
+        }
     }, [searchQuery]);
     useEffect(() => {
         getcategories();

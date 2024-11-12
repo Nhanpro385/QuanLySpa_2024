@@ -11,6 +11,7 @@ import ServiceSlice from "../slices/serviceSlice";
 import authSlice from "../slices/authSlice";
 import warehouseSlice from "../slices/warehouseSlice";
 import appointmentsSlice from "../slices/appointmentsSlice";
+import shiftsSlice from "../slices/ShiftSlice";
 const store = configureStore({
     reducer: {
         ServiceCategories: ServiceCategoriesSlice,
@@ -25,7 +26,7 @@ const store = configureStore({
         auth: authSlice,
         warehouse: warehouseSlice,
         appointments: appointmentsSlice,
-
+        shifts: shiftsSlice,
     },
 });
 

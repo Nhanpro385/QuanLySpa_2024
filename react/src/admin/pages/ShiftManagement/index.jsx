@@ -1,45 +1,49 @@
-import React from "react";
-import { Table, Button, Col, Row, Select, Input } from "antd";
-const { Search } = Input;
-import { Dropdown, Space } from "antd";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import React, { useEffect } from "react";
+import {
+    Button,
+    Col,
+    Row,
+    Select,
+    Input,
+    notification,
+    DatePicker,
+} from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-import { useCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
-import {
-    createCalendar,
-    viewDay,
-    viewMonthAgenda,
-    viewMonthGrid,
-    viewWeek,
-} from "@schedule-x/calendar";
-import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
-import { createEventModalPlugin } from "@schedule-x/event-modal";
-import { createResizePlugin } from "@schedule-x/resize";
-import "@schedule-x/theme-default/dist/index.css";
+import ShiftTable from "../../modules/ShiftManagement/compoments/ShiftTable";
+import ShiftActions from "../../modules/ShiftManagement/compoments/ShiftActions";
 
-const items = [
-    {
-        key: "1",
-        label: <Button block>Sửa Ca Làm</Button>,
-    },
-    {
-        key: "2",
-        label: <Button block>Chi tiết Ca</Button>,
-    },
-    {
-        key: "4",
-        label: (
-            <Button block danger>
-                Xóa Ca
-            </Button>
-        ),
-    },
-];
+import ShiftCalendar from "../../modules/ShiftManagement/compoments/ShiftCalendar";
+
 import useModal from "../../modules/appointments/hooks/openmodal";
 import ModalAddShift from "../../modules/ShiftManagement/compoments/Modal_add";
 import ModalAddShiftEdit from "../../modules/ShiftManagement/compoments/ModalEditShif";
+
+import { useSelector } from "react-redux";
+import useShiftAction from "../../modules/ShiftManagement/hooks/useShiftAction";
+
+import debounce from "lodash/debounce";
 const ShiftManagement = () => {
+    const [api, contextHolder] = notification.useNotification();
+    const { shifts, shift, loading, error } = useSelector(
+        (state) => state.shifts
+    );
+    const [errorEdit, setErrorEdit] = React.useState(null);
+    const {
+        getshifts,
+        getshiftsById,
+        shiftupdate,
+        shiftadd,
+        searchshifts,
+        shiftdelete,
+    } = useShiftAction();
+    useEffect(() => {
+        getshifts();
+    }, []);
+
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const {
@@ -48,43 +52,107 @@ const ShiftManagement = () => {
         handleCancel: handleCancel2,
         showModal: showModal2,
     } = useModal();
-    const onClick = ({ key, record }) => {
-        switch (key) {
-            case "1":
-                handleEdit(record.key);
-                break;
-            case "2":
-                navigate(`/admin/staffs/${record.key}`);
-                break;
-            case "3":
-                navigate("/admin/user/history/4");
-                break;
-            case "4":
-                handleDelete(record.key);
-                break;
-            default:
-                break;
+    const [searchquery, setSearchQuery] = React.useState({
+        search: "",
+        page: 1,
+        status: 1,
+    });
+    const handleSearch = debounce((value) => {
+        if (value === "Invalid Date") {
+            const date = dayjs(new Date()).format("YYYY-MM-DD");
+            value = date;
+        }
+
+        setSearchQuery((prev) => ({ ...prev, search: value }));
+        console.log(searchquery);
+    }, 300);
+    const pagnation = shifts.meta || {};
+    const handleDelete = async (id) => {
+        try {
+            const res = await shiftdelete(id);
+            if (res.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Xóa ca làm việc thành công",
+                });
+            } else if (res.meta.requestStatus === "rejected") {
+                api.error({
+                    message: "Xóa ca làm việc thất bại",
+                    description: res.payload.message,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        if (searchquery.search || searchquery.page !== 1) {
+            searchshifts(searchquery);
+        }
+    }, [searchquery]);
+
+    const handlechangePage = (page) => {
+        setSearchQuery((prev) => ({ ...prev, page: page }));
+    };
+
+    const handleAddShift = async (value) => {
+        try {
+            const res = await shiftadd(value);
+            if (res.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Thêm ca làm việc thành công",
+                });
+                handleCancel();
+            } else if (res.meta.requestStatus === "rejected") {
+                api.error({
+                    message: "Thêm ca làm việc thất bại",
+                    description: res.payload.message,
+                });
+
+                setErrorEdit((prev) => res.payload);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
-    const dataSource = [
-        {
-            key: "1",
-            fullname: "Trịnh Trần Phương Tuấn",
-            shift: "Ca Sáng",
-            startTime: "08:00",
-            endTime: "12:00",
-            role: "Quản lý",
-        },
-        {
-            key: "2",
-            fullname: "Nguyễn Văn A",
-            shift: "Ca Chiều",
-            startTime: "13:00",
-            endTime: "17:00",
-            role: "Nhân viên",
-        },
-    ];
+    const handleEdit = async (id) => {
+        try {
+            const res = await getshiftsById(id);
+            if (res.meta.requestStatus === "fulfilled") {
+                showModal2();
+            }
+        } catch (error) {}
+    };
+    const handleEditSubmit = async (values) => {
+        try {
+            const res = await shiftupdate(values);
+
+            if (res.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Cập nhật ca làm việc thành công",
+                });
+                handleCancel2();
+            } else if (res.meta.requestStatus === "rejected") {
+                api.error({
+                    message: "Cập nhật ca làm việc thất bại",
+                    description: res.payload.message,
+                });
+
+                setErrorEdit((prev) => res.payload);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const dataSource =
+        shifts.data.map((shift) => ({
+            key: shift.id,
+            shift_date: shift.shift_date,
+            start_time: shift.start_time,
+            end_time: shift.end_time,
+            max_customers: shift.max_customers,
+        })) || [];
 
     const columns = [
         {
@@ -93,85 +161,64 @@ const ShiftManagement = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: "Họ và tên",
-            dataIndex: "fullname",
-            key: "fullname",
+            title: "Tên Ca",
+            dataIndex: "start_time",
+            key: "name_shift",
+            render: (text) => (
+                <span>
+                    {text === "08:00:00"
+                        ? "Ca Sáng"
+                        : text === "14:00:00"
+                        ? "Ca Chiều"
+                        : "Ca Tối"}
+                </span>
+            ),
         },
         {
-            title: "Ca Làm Việc",
-            dataIndex: "shift",
-            key: "shift",
+            title: "ngày tháng",
+            dataIndex: "shift_date",
+            key: "shift_date",
         },
         {
-            title: "Thời Gian Bắt Đầu",
-            dataIndex: "startTime",
-            key: "startTime",
+            title: "Thời gian bắt đầu",
+            dataIndex: "start_time",
+            key: "start_time",
         },
         {
-            title: "Thời Gian Kết Thúc",
-            dataIndex: "endTime",
-            key: "endTime",
+            title: "Thời gian kết thúc",
+            dataIndex: "end_time",
+            key: "end_time",
         },
         {
-            title: "Vai trò",
-            dataIndex: "role",
-            key: "role",
+            title: "tối đa",
+            dataIndex: "max_customers",
+            key: "max_customers",
+            render: (text) => <span>{text} Người</span>,
         },
         {
-            title: "Action",
+            title: "Hành Động",
             key: "action",
             render: (text, record) => (
-                <Dropdown
-                    menu={{
-                        items,
-                        onClick: (e) => onClick({ key: e.key, record }),
-                    }}
-                    trigger={["click"]}
-                >
-                    <Button type="primary">
-                        <Space>
-                            Hành động
-                            <DownOutlined />
-                        </Space>
-                    </Button>
-                </Dropdown>
+                <ShiftActions record={record} onClick={handleActionClick} />
             ),
         },
     ];
 
-    const handleAddShift = () => {
-        console.log("Thêm Ca Mới");
+    const handleActionClick = (key, record) => {
+        switch (key.key) {
+            case "1":
+                handleEdit(record.key);
+                break;
+            case "2":
+                navigate(`/admin/staffs/${record.key}`);
+                break;
+            case "4":
+                handleDelete(record.key);
+                break;
+            default:
+                break;
+        }
     };
-    const handleEdit = (id) => {
-        showModal2();
-        console.log("Edit", id);
-    };
-    const today = new Date();
-    const formattedDate = today.toISOString().slice(0, 10);
-    const calendar = useCalendarApp({
-        views: [viewMonthGrid, viewMonthAgenda, viewWeek, viewDay],
-        selectedDate: formattedDate,
-        defaultView: viewWeek.name,
-        events: [
-            {
-                id: "3",
-                title: "Ca Sáng - Trần Phi Hào",
-                start: "2024-09-19 08:00",
-                end: "2024-09-19 12:00",
-            },
-            {
-                id: "4",
-                title: "Ca Chiều - Trần Phi Hào",
-                start: "2024-09-19 13:00",
-                end: "2024-09-19 17:00",
-            },
-        ],
-        plugins: [
-            createDragAndDropPlugin(),
-            createEventModalPlugin(),
-            createResizePlugin(),
-        ],
-    });
 
     return (
         <div>
@@ -187,57 +234,51 @@ const ShiftManagement = () => {
                 </Col>
                 <Col xl={4} md={4} sm={24} xs={24}>
                     <Button type="primary" onClick={showModal} block>
-                        <PlusOutlined></PlusOutlined>
-                        Thêm Ca Mới
+                        <PlusOutlined /> Thêm Ca Mới
                     </Button>
                     <ModalAddShift
                         isModalOpen={isModalOpen}
                         handleOk={handleOk}
                         handleCancel={handleCancel}
+                        loading={loading}
+                        handleAddShift={handleAddShift}
+                        error={error}
                     />
                 </Col>
             </Row>
-
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-                <Col xl={3} md={6} xs={24}>
-                    <Select
-                        className="w-100"
-                        placeholder="Chức Vụ"
-                        options={[
-                            { value: "1", label: "Nhân viên" },
-                            { value: "2", label: "Quản lý" },
-                        ]}
-                    />
-                </Col>
-                <Col xl={3} md={6} xs={24}>
-                    <Select
-                        className="w-100"
-                        placeholder="Ca Làm Việc"
-                        options={[
-                            { value: "1", label: "Ca Sáng" },
-                            { value: "2", label: "Ca Chiều" },
-                            { value: "3", label: "Ca Tối" },
-                        ]}
-                    />
+                <Col xl={2} md={2} xs={24}>
+                    <h3 className="text-center">Tìm kiếm</h3>
                 </Col>
                 <Col xl={6} md={6} xs={24}>
-                    <Search
-                        placeholder="Tìm theo Tên hoặc số điện thoại"
-                        enterButton="Tìm kiếm"
+                    <DatePicker
+                        style={{ width: "100%" }}
+                        format={"DD/MM/YYYY"}
+                        onChange={(date) =>
+                            handleSearch(dayjs(date).format("YYYY-MM-DD"))
+                        }
                     />
                 </Col>
             </Row>
-
-            <Table dataSource={dataSource} columns={columns} />
+            <ShiftTable
+                dataSource={dataSource}
+                columns={columns}
+                onClick={handleActionClick}
+                pagination={pagnation}
+                onChangePage={handlechangePage}
+                loading={loading}
+            />
             <ModalAddShiftEdit
                 isModalOpen={isModalOpen2}
                 handleOk={handleOk2}
                 handleCancel={handleCancel2}
+                loading={loading}
+                data={shift.data}
+                handleEditSubmit={handleEditSubmit}
+                error={errorEdit}
             />
-            <Col>
-                <h2 className="mb-5">Lịch Làm Việc</h2>
-                <ScheduleXCalendar calendarApp={calendar} />
-            </Col>
+            <ShiftCalendar />
+            {contextHolder}
         </div>
     );
 };

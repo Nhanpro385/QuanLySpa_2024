@@ -79,7 +79,9 @@ function Appointments() {
         console.log("Edit", id);
     };
     useEffect(() => {
-        searchappointments(searchQuery);
+        if (searchQuery.search || searchQuery.page !== 1) {
+            searchappointments(searchQuery);
+        }
     }, [searchQuery]);
     const handleInputChange = debounce((value) => {
         setSearchQuery({ page: 1, search: value });

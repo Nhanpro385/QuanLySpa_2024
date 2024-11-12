@@ -43,7 +43,9 @@ function Customer() {
         getCustomer(); // Fetch customers when the component mounts
     }, []);
     useEffect(() => {
-        searchCustomer(searchQuery); // Search customers when the searchQuery changes
+        if (searchQuery.search || searchQuery.page !== 1) {
+            searchCustomer(searchQuery); // Search customers when the searchQuery changes
+        }
     }, [searchQuery]);
     const onClick = ({ key, record }) => {
         switch (key) {

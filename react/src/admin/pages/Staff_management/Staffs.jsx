@@ -93,7 +93,9 @@ function Staffs() {
         navigate("/admin/nhanvien/them");
     };
     useEffect(() => {
-        searchusers(searchquery);
+        if (searchquery.search || searchquery.page !== 1) {
+            searchusers(searchquery);
+        }
     }, [searchquery]);
 
     const onSearch = debounce((value) => {

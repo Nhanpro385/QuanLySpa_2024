@@ -57,7 +57,9 @@ const SupplierManagement = () => {
         getSupplier();
     }, []);
     useEffect(() => {
-        searchSupplier(searchQuery);
+        if (searchQuery.search || searchQuery.page !== 1) {
+            searchSupplier(searchQuery);
+        }
     }, [searchQuery]);
     // Prepare data for table
     const dataSource = (Suppliers.data.data || []).map((supplier) => ({

@@ -42,7 +42,11 @@ function Products() {
     }, []);
 
     useEffect(() => {
-        searchproduct(searchQuery);
+        if (searchQuery.search || searchQuery.page !== 1) {
+            searchproduct(searchQuery);
+            
+        }
+   
     }, [searchQuery]);
 
     const [dataEdit, setDataEdit] = useState({});

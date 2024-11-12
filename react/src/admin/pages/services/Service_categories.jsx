@@ -92,8 +92,9 @@ const ServiceCategories = () => {
 
     // Combined search and sort effect
     useEffect(() => {
-        // Fetch categories based on current searchQuery state
-        searchServiceCategories(searchQuery);
+        if (searchQuery.search || searchQuery.page !== 1) {
+            searchServiceCategories(searchQuery);
+        }
     }, [searchQuery]);
 
     const handleSearchChange = debounce((value) => {
