@@ -17,8 +17,14 @@ class ServiceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $products = $this->whenLoaded('products') ? $this->products : [];
-        $serviceImages = $this->whenLoaded('serviceImages') ? $this->serviceImages : [];
+        $products = $serviceImages = [];
+        if ($request->input('products') === "true") {
+            $products = $this->whenLoaded('products') ? $this->products : [];
+        }
+        if ($request->input('products') === "true") {
+            $serviceImages = $this->whenLoaded('serviceImages') ? $this->serviceImages : [];
+        }
+
         return [
             'id' => (string) $this->id,
             'service_category_id' => $this->service_category_id ? [

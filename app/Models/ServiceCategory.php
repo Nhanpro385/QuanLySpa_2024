@@ -58,4 +58,15 @@ class ServiceCategory extends Model
     {
         return $this->hasMany(ServiceCategory::class, 'parent_id', 'id');
     }
+
+    public function allServices()
+    {
+        $services = $this->services; // Lấy dịch vụ của category hiện tại
+
+        foreach ($this->childrentIds as $child) {
+            $services = $services->merge($child->allServices()); // Đệ quy lấy dịch vụ của danh mục con
+        }
+
+        return $services;
+    }
 }

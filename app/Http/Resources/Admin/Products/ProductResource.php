@@ -15,8 +15,16 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $productImages = $this->whenLoaded('productImages') ? $this->productImages : [];
-        $inventories = $this->whenLoaded('inventories') ? $this->inventories : [];
+        $productImages = $inventories = [];
+
+        if ($request->input('productImages') === "true") {
+            $productImages = $this->whenLoaded('productImages') ? $this->productImages : [];
+        }
+        if ($request->input('inventories') === "true") {
+            $inventories = $this->whenLoaded('inventories') ? $this->inventories : [];
+        }
+
+
         return [
             'id' => (string) $this->id,
             'category_id' => $this->category_id ? [

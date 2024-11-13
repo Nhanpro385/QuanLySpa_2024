@@ -17,8 +17,15 @@ class ServiceCategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $services = $this->whenLoaded('services') ? $this->services : [];
-        $childrentIds = $this->whenLoaded('childrentIds') ? $this->childrentIds : [];
+        $services = $childrentIds = [];
+
+        if ($request->input('services') === 'true') {
+            $services = $this->whenLoaded('services') ? $this->allServices() : [];
+        }
+        if ($request->input('childrentIds') === 'true') {
+            $childrentIds = $this->whenLoaded('childrentIds') ? $this->childrentIds : [];
+        }
+
         return [
             'id' => (string) $this->id,
             'name' => $this->name,

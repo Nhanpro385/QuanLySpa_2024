@@ -45,11 +45,6 @@ class AuthController extends Controller
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
-            $position = $request->query('position');
-
-            if ($position) {
-                $user = User::with('position')->find($id);
-            }
             $response = [
                 'status' => true,
                 'message' => 'Thông tin chi tiết tài khoản: ' . auth('api')->user()->name,
@@ -69,7 +64,10 @@ class AuthController extends Controller
     {
         auth('api')->logout();
 
-        return response()->json(['message' => 'Đăng xuất tài khoản thành công']);
+        return response()->json([
+            'status' => true,
+            'message' => 'Đăng xuất tài khoản thành công'
+        ]);
     }
 
     public function refresh()
@@ -128,7 +126,7 @@ class AuthController extends Controller
             ]);
             $arr = [
                 'status' => 'success',
-                'message' => 'Chỉnh sửa thành công thông tin tài khoản: ' . $user->name,
+                'message' => 'Chỉnh sửa thành công thông tin tài khoản: ' . $user->full_name,
                 'data' => new UserResource(resource: $user)
             ];
             return response()->json($arr);

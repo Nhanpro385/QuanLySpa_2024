@@ -15,8 +15,10 @@ class PositionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $users = $this->whenLoaded('users') ? $this->users : [];
-
+        $users = [];
+        if ($request->input('users') === 'true') {
+            $users = $this->whenLoaded('users') ? $this->users : [];
+        }
         return [
             'id' => (string) $this->id,
             'name' => $this->name,
