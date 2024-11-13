@@ -87,7 +87,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 
     public function sendPasswordResetNotification($token)
     {
-        $url = env('FRONTEND_URL') . '/api/reset-password?token=' . $token;
+        $url = env('FRONTEND_URL') . '/admin/matkhaumoi?token=' . $token;
         $this->notify(new ResetPasswordNotification($url));
     }
 
