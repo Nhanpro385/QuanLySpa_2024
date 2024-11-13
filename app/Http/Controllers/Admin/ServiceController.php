@@ -80,36 +80,39 @@ class ServiceController extends Controller
                 $file = $request->file('image_url')[0];
                 $fileName = time() . '_0_' . $file->getClientOriginalName();
                 $filePath = $file->storeAs('public/uploads/services/special', $fileName);
-                $service = Service::create([
-                    'id' => $validateData['id'],
-                    'name' => $validateData['name'],
-                    'service_category_id' => $validateData['service_category_id'] ?? null,
-                    'price' => $validateData['price'],
-                    'description' => $validateData['description'] ?? 'Mô tả cho dịch vụ',
-                    'image_url' => $fileName,
-                    'duration' => $validateData['duration'],
-                    'priority' => $validateData['priority'],
-                    'created_by' => auth('api')->user()->id
-                ]);
             }
 
-            foreach ($request->file('image_url') as $index => $file) {
-                if ($index > 0) {
-                    $fileName = time() . '_' . $index . '_' . $file->getClientOriginalName();
-                    $filePath = $file->storeAs('public/uploads/services', $fileName);
-                    ServiceImage::create([
-                        'id' => app(Snowflake::class)->next(),
-                        'service_id' => $validateData['id'],
-                        'image_url' => $fileName,
-                        'created_by' => auth('api')->user()->id
-                    ]);
+            $service = Service::create([
+                'id' => $validateData['id'],
+                'name' => $validateData['name'],
+                'service_category_id' => $validateData['service_category_id'] ?? null,
+                'price' => $validateData['price'],
+                'description' => $validateData['description'] ?? 'Mô tả cho dịch vụ',
+                'image_url' => $fileName ?? "default.jpg",
+                'duration' => $validateData['duration'],
+                'priority' => $validateData['priority'],
+                'created_by' => auth('api')->user()->id
+            ]);
+            if ($request->file('image_url')) {
+                foreach ($request->file('image_url') as $index => $file) {
+                    if ($index > 0) {
+                        $fileName = time() . '_' . $index . '_' . $file->getClientOriginalName();
+                        $filePath = $file->storeAs('public/uploads/services', $fileName);
+                        ServiceImage::create([
+                            'id' => app(Snowflake::class)->next(),
+                            'service_id' => $validateData['id'],
+                            'image_url' => $fileName,
+                            'created_by' => auth('api')->user()->id
+                        ]);
+                    }
                 }
             }
+
 
             $response = [
                 'status' => 'success',
                 'message' => 'Thêm mới dịch vụ thành công.',
-                'data' => new ServiceResource($service)
+                'data' => new ServiceResource(resource: $service)
             ];
             return response()->json($response);
         } catch (\Throwable $th) {
