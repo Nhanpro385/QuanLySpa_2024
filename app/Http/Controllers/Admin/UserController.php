@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\Users\UserUpdateRequest;
 use App\Http\Resources\Admin\Users\UserConllection;
 use App\Http\Resources\Admin\Users\UserResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -40,13 +41,18 @@ class UserController extends Controller
                     ->orWhere('email', 'like', '%' . $value . '%');
                 ;
             }
+
+            foreach ($queryResult['relations'] as $relationFilter) {
+                [$relation, $column, $operator, $value] = $relationFilter;
+                $query->whereHas($relation, function (Builder $query) use ($column, $operator, $value) {
+                    $query->where($column, $operator, "%" . $value . "%");
+                });
+            }
+
+
+
             if ($sorts) {
                 $query = $query->orderBy($sorts[0], $sorts[1]);
-            }
-            $position = $request->query('position');
-
-            if ($position) {
-                $query = $query->with('position');
             }
 
             if (count($query->paginate($perPage)) == 0) {

@@ -35,4 +35,14 @@ class UserFilter extends ApiFilter
         'sort_by' => 'created_at',
         'sort_order' => 'desc'
     ];
+
+    protected $relationMap = [
+        'shifts' => [
+            'shift_date' => 'LIKE',
+            'max_customers' => 'LIKE',
+            'status' => 'LIKE',
+            "start_time" => 'LIKE',
+            "end_time" => 'LIKE'
+        ],
+    ];
 }

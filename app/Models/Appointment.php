@@ -39,19 +39,14 @@ class Appointment extends Model
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
-    public function appointmentService()
-    {
-        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
-    }
     public function payments()
     {
         return $this->hasMany(Payment::class, 'appointment_id', 'id');
     }
     public function treatmentHistory()
     {
-        return $this->hasMany(AppointmentService::class, 'appointment_id', 'id');
+        return $this->hasMany(TreatmentHistory::class, 'appointment_id', 'id');
     }
-
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
@@ -71,5 +66,7 @@ class Appointment extends Model
     {
         return $this->belongsToMany(Service::class, 'appointment_services', 'appointment_id', 'service_id')->withPivot('quantity', 'price');
     }
+
+
 
 }

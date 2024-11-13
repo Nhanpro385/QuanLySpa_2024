@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -114,6 +115,17 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->belongsToMany(Shift::class, 'staff_shifts', 'staff_id', 'shift_id')->orderBy('shifts.shift_date', 'desc');
     }
+
+    public function shifts_after()
+    {
+        return $this->belongsToMany(Shift::class, 'staff_shifts', 'staff_id', 'shift_id')->where('shifts.shift_date', '>=', Carbon::now()->format('Y-m-d'))->orderBy('shifts.shift_date', 'desc');
+    }
+
+    public function shifts_before()
+    {
+        return $this->belongsToMany(Shift::class, 'staff_shifts', 'staff_id', 'shift_id')->where('shifts.shift_date', '<=', Carbon::now()->format('Y-m-d'))->orderBy('shifts.shift_date', 'desc');
+    }
+
     public function appointments()
     {
         return $this->belongsToMany(Appointment::class, 'appointment_staffs', 'staff_id', 'appointment_id');

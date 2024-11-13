@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Admin\Users;
 
+use App\Http\Resources\Admin\Appointments\AppointmentCollection;
+use App\Http\Resources\Admin\Appointments\AppointmentResource;
 use App\Http\Resources\Admin\Positions\PositionResource;
 use App\Models\Position;
 use Illuminate\Http\Request;
@@ -16,8 +18,22 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $shifts = $this->whenLoaded('shifts') ? $this->shifts : [];
-        $treatmentHistories = $this->whenLoaded('treatmentHistories') ? $this->treatmentHistories : [];
+        $shifts = [];
+        $shifts_after = [];
+        $shifts_before = [];
+        $treatmentHistories = [];
+        if ($request->input('shifts') === 'true') {
+            $shifts = $this->whenLoaded('shifts') ? $this->shifts : [];
+        }
+        if ($request->input('shifts_after') === 'true') {
+            $shifts_after = $this->whenLoaded('shifts_after') ? $this->shifts_after : [];
+        }
+        if ($request->input('shifts_before') === 'true') {
+            $shifts_before = $this->whenLoaded('shifts_before') ? $this->shifts_before : [];
+        }
+        if ($request->input('treatmentHistories') === 'true') {
+            $treatmentHistories = $this->whenLoaded('treatmentHistories') ? $this->treatmentHistories : [];
+        }
         return [
             'id' => (string) $this->id,
             'position' => $this->position_id ? [
@@ -34,8 +50,53 @@ class UserResource extends JsonResource
             'date_of_birth' => $this->date_of_birth,
             'note' => $this->note,
             'status' => $this->status,
-            'shifts' => $shifts,
-            'treatmentHistories' => $treatmentHistories,
+            'shifts' => $shifts ? $shifts->map(function ($shift) {
+                return [
+                    "id" => $shift->id,
+                    "start_time" => $shift->start_time,
+                    "end_time" => $shift->end_time,
+                    "shift_date" => $shift->shift_date,
+                    "max_customers" => $shift->max_customers,
+                    "note" => $shift->note,
+                    "status" => $shift->status,
+                ];
+            }) : [],
+            'shifts_after' => $shifts_after ? $shifts_after->map(function ($shift) {
+                return [
+                    "id" => $shift->id,
+                    "start_time" => $shift->start_time,
+                    "end_time" => $shift->end_time,
+                    "shift_date" => $shift->shift_date,
+                    "max_customers" => $shift->max_customers,
+                    "note" => $shift->note,
+                    "status" => $shift->status,
+                ];
+            }) : [],
+            'shifts_before' => $shifts_before ? $shifts_before->map(function ($shift) {
+                return [
+                    "id" => $shift->id,
+                    "start_time" => $shift->start_time,
+                    "end_time" => $shift->end_time,
+                    "shift_date" => $shift->shift_date,
+                    "max_customers" => $shift->max_customers,
+                    "note" => $shift->note,
+                    "status" => $shift->status,
+                ];
+            }) : [],
+            'treatmentHistories' => $treatmentHistories ? $treatmentHistories->map(function ($treatmentHistory) {
+                return [
+                    'id' => $treatmentHistory->id,
+                    'customer_id' => $treatmentHistory->customer_id ? [
+                        'id' => $treatmentHistory->customer->id,
+                        'full_name' => $treatmentHistory->customer->full_name
+                    ] : [],
+                    'appointments' => $treatmentHistory->appointment_id ? [
+                        new AppointmentResource($treatmentHistory->appointment)
+                    ] : [],
+                    'feedback' => $treatmentHistory->feedback,
+                    'evaluete' => $treatmentHistory->evaluete
+                ];
+            }) : [],
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
                 'fullname' => $this->createdBy->full_name,
