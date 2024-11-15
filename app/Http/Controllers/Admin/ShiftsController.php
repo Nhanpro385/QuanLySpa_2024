@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Shifts\UpdateShiftRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\Shift\ShiftResource;
 use App\Http\Resources\Admin\Shift\ShiftCollection;
+use App\Filters\Admin\ShiftFilter;
 use Illuminate\Http\Request;
 
 class ShiftsController extends Controller
@@ -15,53 +16,79 @@ class ShiftsController extends Controller
     // Get a paginated list of shifts
     public function index(Request $request)
     {
-        $query = Shift::query();
-    
-        // Search by shift_date
-        if ($request->has('shift_date')) {
-            $query->where('shift_date', $request->input('shift_date'));
-        }
-    
-        // Filter by created_by (ID người tạo)
-        if ($request->has('created_by')) {
-            $query->where('created_by', $request->input('created_by'));
-        }
-    
-        // Search by start_time
-        if ($request->has('start_time')) {
-            $query->where('start_time', $request->input('start_time'));
-        }
-    
-        // Sort by created_at in descending order
-        $query->orderBy('created_at', 'desc');
-    
-        $shifts = $query->paginate(10);
+        try {
+            $filter = new ShiftFilter();
+            $queryResult = $filter->transform($request);
+            $filters = $queryResult['filter'];
+            $relations = $queryResult['relations'];
+            $sorts = $queryResult['sorts'];
 
-        if ($shifts->isEmpty()) {
+            $query = Shift::query();
+
+            // Áp dụng các bộ lọc
+            if (!empty($filters)) {
+                foreach ($filters as $filter) {
+                    [$column, $operator, $value] = $filter;
+                    $query->where($column, $operator, $value);
+                }
+            }
+
+            // Áp dụng các bộ lọc liên quan
+            if (!empty($relations)) {
+                foreach ($relations as $relationFilter) {
+                    [$relation, $column, $operator, $value] = $relationFilter;
+                    $query->whereHas($relation, function ($q) use ($column, $operator, $value) {
+                        $q->where($column, $operator, $value);
+                    });
+                }
+            }
+
+            // Áp dụng sắp xếp
+            [$sortBy, $sortOrder] = $sorts;
+            $query->orderBy($sortBy, $sortOrder);
+
+            // Phân trang
+            $perPage = $request->query('per_page', 5);
+            $shifts = $query->paginate($perPage);
+
+            // Trả về dữ liệu
             return response()->json([
-                'message' => 'Không tìm thấy dữ liệu đáp ứng các tiêu chí tìm kiếm.'
-            ], 404);
+                'status' => true,
+                'data' => $shifts,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-        return new ShiftCollection($shifts);
     }
-    
-    
 
+
+    // Store a new shift
     // Store a new shift
     public function store(StoreShiftRequest $request)
     {
+
+
+
         $data = $request->validated();
+
         $data['created_by'] = auth()->id();
-        $data['start_time'] = '08:00:00';
-        $data['end_time'] = '12:00:00';
+
+        // In dữ liệu để kiểm tra
+
 
         $shift = Shift::create($data);
 
         return response()->json([
             'message' => 'Tạo ca làm việc thành công',
-            'data' => $shift,
+            'data' => new ShiftResource($shift),
         ], 201);
     }
+
+
 
     public function update(UpdateShiftRequest $request, $id)
     {
@@ -75,6 +102,7 @@ class ShiftsController extends Controller
             'message' => 'Cập nhật ca làm việc thành công',
             'data' => $shift,
         ]);
+
     }
 
     // Show a specific shift
