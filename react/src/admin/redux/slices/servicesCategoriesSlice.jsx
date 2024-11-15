@@ -72,7 +72,7 @@ export const ServiceCategoriesSearch = createAsyncThunk(
     "ServiceCategories/search",
     async (data, { rejectWithValue }) => {
         try {
-            console.log("data", data);
+        
 
             const response = await axiosInstance.get(
                 `${endpoints.ServiceCategories.search}?search=${data.search}&page=${data.page}`
@@ -144,7 +144,7 @@ const ServiceCategoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(ServiceCategoriesDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
+
 
                 state.ServiceCategories.data =
                     state.ServiceCategories.data.filter(
@@ -161,7 +161,7 @@ const ServiceCategoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(ServiceCategoriesUpdate.fulfilled, (state, action) => {
-                console.log(action.payload.data.id);
+               
 
                 state.ServiceCategories.data = state.ServiceCategories.data.map(
                     (cate) =>

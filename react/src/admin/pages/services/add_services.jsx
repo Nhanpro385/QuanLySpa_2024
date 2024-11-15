@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Button,
     Form,
@@ -6,150 +6,268 @@ import {
     Row,
     Col,
     Card,
-    Switch,
-    Image,
+    Select,
     Upload,
-    Select
+    Spin,
+    notification,
 } from "antd";
-
-import { PlusOutlined } from "@ant-design/icons";
-const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import useServiceCategoriesActions from "../../modules/services/hooks/useServiceCategories";
+import useServicesActions from "../../modules/services/hooks/useServices";
+import { useSelector } from "react-redux";
+import debounce from "lodash/debounce";
+import { Controller, useForm } from "react-hook-form";
+import { generateSnowflakeId } from "../../utils/snowflakeID";
 const ServicesAdd = () => {
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState("");
-    const [fileList, setFileList] = useState([]);
-    const handlePreview = async (file) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj);
-        }
-        setPreviewImage(file.url || file.preview);
-        setPreviewOpen(true);
-    };
-    const handleChange = ({ fileList: newFileList }) =>
-        setFileList(newFileList);
-    const uploadButton = (
-        <button
-            style={{
-                border: 0,
-                background: "none",
-            }}
-            type="button"
-        >
-            <PlusOutlined />
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Thêm ảnh
-            </div>
-        </button>
+    const [api, contextHolder] = notification.useNotification();
+    const { getServiceCategories, searchServiceCategories } =
+        useServiceCategoriesActions();
+    const { addservices } = useServicesActions();
+    const { ServiceCategories, loading } = useSelector(
+        (state) => state.ServiceCategories
     );
-    const servicesCategories = [
-        {
-            id: 1,
-            name: "Dịch vụ mặt",
-        },
-        {
-            id: 2,
-            name: "Dịch vụ body",
-        },
-    ];
+
+    const [fileList, setFileList] = useState([]);
+    const {
+        control,
+        handleSubmit,
+        setError,
+        reset,
+        formState: { errors },
+    } = useForm();
+
+    useEffect(() => {
+        getServiceCategories();
+    }, []);
+
+    const servicesCategories = ServiceCategories.data.map((category) => ({
+        id: category.id,
+        name: category.name,
+    }));
+
+    const OnSearchServiceCategories = debounce((value) => {
+       
+        searchServiceCategories({
+            page: 1,
+            search: value,
+        });
+    }, 300);
+
+    const onSubmit = async (data) => {
+        try {
+            data.id = generateSnowflakeId();
+            data.image_url = data.image_url.map((file) => file.originFileObj);
+
+            const formData = new FormData();
+            for (let key in data) {
+                formData.append(key, data[key]);
+            }
+            if (fileList.length > 0) {
+                fileList.forEach((file) => {
+                    formData.append("image_url[]", file.originFileObj);
+                });
+            }
+
+            const res = await addservices(formData);
+
+            if (res.payload.status === 422) {
+                Object.keys(res.payload.errors).forEach((key) => {
+                    setError(key, {
+                        type: "manual",
+                        message: res.payload.errors[key][0],
+                    });
+                });
+            } else if (res.payload.status === "success") {
+                api.success({
+                    message: "Thêm dịch vụ thành công",
+                    description: "Bạn đã thêm dịch vụ thành công",
+                    duration: 2,
+                });
+                reset();
+                setFileList([]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
-        <Row gutter={16}>
-            <Col span={15}>
-                <Card title="Thông tin chi tiết">
-                    <Form layout="vertical">
+        <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+            {contextHolder}
+            <Row gutter={16}>
+                <Col span={15}>
+                    <Card title="Thông tin chi tiết">
                         <Row gutter={16}>
                             <Col span={12}>
-                                <Form.Item
-                                    label="Tên dịch vụ"
-                                    name="service_name"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập tên dịch vụ",
-                                        },
-                                    ]}
-                                >
-                                    <Input placeholder="Tên dịch vụ" />
-                                </Form.Item>
+                                <Controller
+                                    name="name"
+                                    control={control}
+                                    rules={{
+                                        required: "Vui lòng nhập tên dịch vụ",
+                                    }}
+                                    render={({ field }) => (
+                                        <Form.Item
+                                            label="Tên dịch vụ"
+                                            validateStatus={
+                                                errors.name && "error"
+                                            }
+                                            help={errors.name?.message}
+                                        >
+                                            <Input
+                                                {...field}
+                                                placeholder="Tên dịch vụ"
+                                            />
+                                        </Form.Item>
+                                    )}
+                                />
+                                {errors.service_name && (
+                                    <p style={{ color: "red" }}>
+                                        {errors.service_name.message}
+                                    </p>
+                                )}
                             </Col>
                             <Col span={12}>
-                                <Form.Item
-                                    label="Giá"
-                                    name="price"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập giá dịch vụ",
-                                        },
-                                    ]}
-                                >
-                                    <Input
-                                        type="number"
-                                        placeholder="Giá dịch vụ"
-                                    />
-                                </Form.Item>
+                                <Controller
+                                    name="service_category_id"
+                                    control={control}
+                                    rules={{
+                                        required: "Vui lòng chọn loại dịch vụ",
+                                    }}
+                                    render={({ field }) => (
+                                        <Form.Item
+                                            label="Loại dịch vụ"
+                                            validateStatus={
+                                                errors.service_category_id &&
+                                                "error"
+                                            }
+                                            help={
+                                                errors.service_category_id
+                                                    ?.message
+                                            }
+                                        >
+                                            <Select
+                                                {...field}
+                                                placeholder="Chọn loại dịch vụ"
+                                                showSearch
+                                                optionFilterProp="children"
+                                                onSearch={
+                                                    OnSearchServiceCategories
+                                                }
+                                                filterOption={false}
+                                                notFoundContent={
+                                                    loading ? (
+                                                        <Spin size="small" />
+                                                    ) : null
+                                                }
+                                            >
+                                                {servicesCategories.map(
+                                                    (category) => (
+                                                        <Select.Option
+                                                            key={category.id}
+                                                            value={category.id}
+                                                        >
+                                                            {category.name}
+                                                        </Select.Option>
+                                                    )
+                                                )}
+                                            </Select>
+                                        </Form.Item>
+                                    )}
+                                />
                             </Col>
                         </Row>
+
+                        <Row gutter={12}>
+                            <Col span={6}>
+                                <Controller
+                                    name="duration"
+                                    control={control}
+                                    rules={{
+                                        required:
+                                            "Vui lòng nhập thời gian dịch vụ",
+                                    }}
+                                    render={({ field }) => (
+                                        <Form.Item
+                                            label="Thời gian (phút)"
+                                            validateStatus={
+                                                errors.duration && "error"
+                                            }
+                                            help={errors.duration?.message}
+                                        >
+                                            <Input
+                                                {...field}
+                                                type="number"
+                                                placeholder="Thời gian (phút)"
+                                            />
+                                        </Form.Item>
+                                    )}
+                                />
+                            </Col>
+                            <Col span={6}>
+                                <Controller
+                                    name="price"
+                                    control={control}
+                                    rules={{
+                                        required: "Vui lòng nhập giá dịch vụ",
+                                    }}
+                                    render={({ field }) => (
+                                        <Form.Item
+                                            label="Giá"
+                                            validateStatus={
+                                                errors.price && "error"
+                                            }
+                                            help={errors.price?.message}
+                                        >
+                                            <Input
+                                                {...field}
+                                                type="number"
+                                                placeholder="Giá dịch vụ"
+                                            />
+                                        </Form.Item>
+                                    )}
+                                />
+                            </Col>
+                            <Col span={12}>
+                                <Controller
+                                    name="priority"
+                                    control={control}
+                                    rules={{
+                                        required: "Vui lòng nhập mức ưu tiên",
+                                    }}
+                                    render={({ field }) => (
+                                        <Form.Item
+                                            label="Mức ưu tiên"
+                                            validateStatus={
+                                                errors.priority && "error"
+                                            }
+                                            help={errors.priority?.message}
+                                        >
+                                            <Input
+                                                {...field}
+                                                type="number"
+                                                placeholder="Mức ưu tiên (1, 2, 3...)"
+                                            />
+                                        </Form.Item>
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+
                         <Row gutter={16}>
                             <Col span={24}>
-                                <Form.Item label="Mô tả" name="description">
-                                    <Input.TextArea
-                                        placeholder="Mô tả dịch vụ"
-                                        rows={4}
-                                    />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Thời gian (phút)"
-                                    name="duration"
-                                >
-                                    <Input
-                                        type="number"
-                                        placeholder="Thời gian (phút)"
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Loại dịch vụ"
-                                    name="services_category_id"
-                                >
-                                   <Select placeholder="Chọn loại dịch vụ">
-                                        {servicesCategories.map((category) => (
-                                            <Option key={category.id} value={category.id}>
-                                                {category.name}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Trạng thái"
-                                    name="status"
-                                    valuePropName="checked"
-                                >
-                                    <Switch
-                                        checkedChildren="Hoạt động"
-                                        unCheckedChildren="Ngừng hoạt động"
-                                    />
-                                </Form.Item>
+                                <Controller
+                                    name="description"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Form.Item label="Mô tả">
+                                            <Input.TextArea
+                                                {...field}
+                                                placeholder="Mô tả dịch vụ"
+                                                rows={4}
+                                            />
+                                        </Form.Item>
+                                    )}
+                                />
                             </Col>
                         </Row>
                         <Form.Item>
@@ -157,38 +275,62 @@ const ServicesAdd = () => {
                                 Thêm dịch vụ
                             </Button>
                         </Form.Item>
-                    </Form>
-                </Card>
-            </Col>
-            <Col span={9}>
-                <Card title="Hình ảnh sản phẩm">
-                    <Upload
-                        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                        listType="picture-card"
-                        fileList={fileList}
-                        onPreview={handlePreview}
-                        onChange={handleChange}
-                    >
-                        {fileList.length >= 8 ? null : uploadButton}
-                    </Upload>
-                    {previewImage && (
-                        <Image
-                            wrapperStyle={{
-                                display: "none",
-                            }}
-                            preview={{
-                                visible: previewOpen,
-                                onVisibleChange: (visible) =>
-                                    setPreviewOpen(visible),
-                                afterOpenChange: (visible) =>
-                                    !visible && setPreviewImage(""),
-                            }}
-                            src={previewImage}
-                        />
-                    )}
-                </Card>
-            </Col>
-        </Row>
+                    </Card>
+                </Col>
+                <Col span={9}>
+                    <Card title="Hình ảnh sản phẩm">
+                        <Form.Item label="Hình ảnh sản phẩm" required>
+                            <span
+                                style={{ display: "block", marginBottom: 10 }}
+                            >
+                                1. ảnh đầu tiên sẽ là ảnh chính
+                            </span>
+                            <span
+                                style={{ display: "block", marginBottom: 10 }}
+                            >
+                                2. tối đa 10 ảnh
+                            </span>
+                            <Controller
+                                name="image_url"
+                                control={control}
+                                rules={{
+                                    required: "Vui lòng chọn ảnh sản phẩm!",
+                                }}
+                                render={({ field }) => (
+                                    <Upload
+                                        {...field}
+                                        listType="picture-card"
+                                        fileList={fileList}
+                                        onChange={({ fileList }) => {
+                                            setFileList(fileList);
+                                            field.onChange(fileList);
+                                        }}
+                                        beforeUpload={() => false}
+                                        name="image_url"
+                                        maxCount={10}
+                                        multiple
+                                    >
+                                        {fileList.length < 10 && (
+                                            <div>
+                                                <UploadOutlined />
+                                                <div style={{ marginTop: 8 }}>
+                                                    Tải ảnh lên
+                                                </div>
+                                            </div>
+                                        )}
+                                    </Upload>
+                                )}
+                            />
+                            {errors.image_url && (
+                                <p style={{ color: "red" }}>
+                                    {errors.image_url.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                    </Card>
+                </Col>
+            </Row>
+        </Form>
     );
 };
 

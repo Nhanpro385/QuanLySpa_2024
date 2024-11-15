@@ -8,7 +8,7 @@ const AppointmentsTable = ({
     onEdit,
     onViewDetail,
     pagination,
-    handlePageChange
+    handlePageChange,
 }) => {
     const items = [
         {
@@ -114,7 +114,6 @@ const AppointmentsTable = ({
                 pageSize: pagination.per_page,
                 total: pagination.total,
                 showSizeChanger: true,
-
                 showQuickJumper: true,
                 showTotal: (total) => `Tổng ${total} mục`,
                 onChange: handlePageChange,

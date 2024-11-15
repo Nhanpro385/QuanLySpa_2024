@@ -43,6 +43,7 @@ const ModalEditServiceCategory = ({
         const formattedData = {
             id: category.data.id,
             ...data,
+            parent_id: "",
             status: data.status ? 1 : 0,
         };
       
@@ -52,7 +53,7 @@ const ModalEditServiceCategory = ({
             const response = await dispatch(
                 ServiceCategoriesUpdate(formattedData)
             );
-            console.log("response", response);
+           
             if (response.error) {
                 api.error({
                     message: "Cập nhật thất bại",
@@ -69,7 +70,7 @@ const ModalEditServiceCategory = ({
             }
         } catch (error) {
             // Show error notification
-            console.log("error", error);
+          
 
             api.error({
                 message: "Cập nhật thất bại",

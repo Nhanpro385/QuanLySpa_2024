@@ -67,6 +67,7 @@ const ServiceCategories = () => {
             id: Snowflake.generate(),
             name: data.name,
             status: 1,
+            parent_id: "",
             description: data.description,
         };
 

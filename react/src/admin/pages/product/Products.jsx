@@ -44,9 +44,7 @@ function Products() {
     useEffect(() => {
         if (searchQuery.search || searchQuery.page !== 1) {
             searchproduct(searchQuery);
-            
         }
-   
     }, [searchQuery]);
 
     const [dataEdit, setDataEdit] = useState({});

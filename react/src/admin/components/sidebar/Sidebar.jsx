@@ -157,6 +157,15 @@ const items = [
                 </Link>,
                 "13"
             ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/services/them"
+                >
+                    Thêm dịch vụ
+                </Link>,
+                "14"
+            ),
         ]
     ),
     getItem(

@@ -8,71 +8,113 @@ import {
     Row,
     Card,
     Select,
-    Upload,
-    Image,
     Switch,
+    Spin,
+    Upload,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useForm, Controller } from "react-hook-form";
-import useServicesActions from "../hooks/useServices";
-const { Option } = Select;
-// const {
-//     addservices,
-//     getservices,
-//     updateservices,
-//     deleteservices,
-//     getservicesById,
-// } = useServicesActions();
+import useServiceCategoriesActions from "../hooks/useServiceCategories";
 import { useSelector } from "react-redux";
-const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
+import debounce from "lodash/debounce";
+
+const { Option } = Select;
+function timeStringToMinutes(timeString) {
+    const [hours, minutes, seconds] = timeString.split(":").map(Number);
+    return hours * 60 + minutes + seconds / 60;
+}
+function ServiceModalEdit({
+    isModalOpen,
+    handleOk,
+    handleCancel,
+    service,
+    handleSubmitEdit,
+    error,
+}) {
     const {
         control,
         handleSubmit,
         formState: { errors },
         setValue,
+        reset,
+        setError,
     } = useForm();
-    // const { service } = useSelector((state) => state.services);
-    // useEffect(() => {
-    //     getservicesById(id);
-    // }, [id]);
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState("");
-    const [fileList, setFileList] = useState([]);
-
-    const getBase64 = (file) =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-
-    const handlePreview = async (file) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj);
-        }
-        setPreviewImage(file.url || file.preview);
-        setPreviewOpen(true);
-    };
-
-    const handleChange = ({ fileList: newFileList }) =>
-        setFileList(newFileList);
-
-    const uploadButton = (
-        <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Thêm ảnh</div>
-        </div>
+    const {
+        getServiceCategories,
+        searchServiceCategories,
+        getServiceCategoriesById,
+    } = useServiceCategoriesActions();
+    const { ServiceCategories, loading, category } = useSelector(
+        (state) => state.ServiceCategories
     );
 
-    const servicesCategories = [
-        { id: 1, name: "Dịch vụ mặt" },
-        { id: 2, name: "Dịch vụ body" },
-    ];
+    const [datacate, setdatacate] = useState([]);
+
+    const [fileList, setFileList] = useState([]);
+
+    useEffect(() => {
+        if (service) {
+            setValue("name", service.name || "");
+            setValue("price", service.price || "");
+            setValue("description", service.description || "");
+            setValue("duration", timeStringToMinutes(service.duration) || "");
+            setValue("status", service.status || false);
+            setValue(
+                "service_category_id",
+                service.service_category_id.id || ""
+            );
+            // Get service categories from API
+            getServiceCategories();
+            getServiceCategoriesById(service.service_category_id.id);
+        }
+    }, [service]);
+    useEffect(() => {
+   
+        
+        
+        if (error) {
+            Object.keys(error).forEach((key) => {
+                setError(key, {
+                    type: "manual",
+                    message: error[key][0],
+                });
+            });
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (ServiceCategories && service) {
+            const data = [
+                ...ServiceCategories.data,
+                service.service_category_id,
+            ].map((item) => {
+                return {
+                    id: item.id,
+                    name: item.name,
+                };
+            });
+            // check trung lap
+            const unique = data.filter(
+                (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+            );
+
+            setdatacate(unique);
+        }
+    }, [ServiceCategories, service]);
+
+    const debouncedSearch = debounce((value) => {
+        searchServiceCategories({ search: value, page: 1 });
+    }, 500); // 300ms debounce
 
     const onSubmit = (data) => {
-        // Process form data here
-        handleOk();
+        const payload = {
+            id: service.id,
+            ...data,
+        };
+        handleSubmitEdit(payload);
+        reset();
+        setFileList([]);
+        
     };
 
     return (
@@ -81,7 +123,7 @@ const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
             open={isModalOpen}
             onCancel={handleCancel}
             footer={null}
-            width={1000}
+            width={1400}
         >
             <Row gutter={16}>
                 <Col span={15}>
@@ -94,7 +136,7 @@ const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
                                 <Col span={12}>
                                     <Form.Item label="Tên dịch vụ">
                                         <Controller
-                                            name="service_name"
+                                            name="name"
                                             control={control}
                                             rules={{
                                                 required:
@@ -149,28 +191,16 @@ const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
                                     </Form.Item>
                                 </Col>
                             </Row>
-                            <Row gutter={16}>
-                                <Col span={24}>
-                                    <Form.Item label="Mô tả">
-                                        <Controller
-                                            name="description"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Input.TextArea
-                                                    {...field}
-                                                    placeholder="Mô tả dịch vụ"
-                                                    rows={4}
-                                                />
-                                            )}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
+
                             <Row gutter={16}>
                                 <Col span={12}>
                                     <Form.Item label="Thời gian (phút)">
                                         <Controller
                                             name="duration"
+                                            rules={{
+                                                required:
+                                                    "Vui lòng nhập thời gian dịch vụ",
+                                            }}
                                             control={control}
                                             render={({ field }) => (
                                                 <Input
@@ -180,22 +210,43 @@ const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
                                                 />
                                             )}
                                         />
+                                        {errors.duration && (
+                                            <span style={{ color: "red" }}>
+                                                {errors.duration.message}
+                                            </span>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item label="Loại dịch vụ">
                                         <Controller
-                                            name="services_category_id"
+                                            name="service_category_id"
                                             control={control}
+                                            rules={{
+                                                required:
+                                                    "Vui lòng chọn loại dịch vụ",
+                                            }}
                                             render={({ field }) => (
                                                 <Select
                                                     {...field}
                                                     placeholder="Chọn loại dịch vụ"
+                                                    showSearch
+                                                    defaultActiveFirstOption={
+                                                        false
+                                                    }
+                                                    optionFilterProp="children"
+                                                    onSearch={debouncedSearch}
+                                                    filterOption={false}
                                                     onChange={(value) =>
                                                         field.onChange(value)
                                                     }
+                                                    notFoundContent={
+                                                        loading ? (
+                                                            <Spin size="small" />
+                                                        ) : null
+                                                    }
                                                 >
-                                                    {servicesCategories.map(
+                                                    {datacate.map(
                                                         (category) => (
                                                             <Option
                                                                 key={
@@ -212,6 +263,14 @@ const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
                                                 </Select>
                                             )}
                                         />
+                                        {errors.service_category_id && (
+                                            <span style={{ color: "red" }}>
+                                                {
+                                                    errors.service_category_id
+                                                        .message
+                                                }
+                                            </span>
+                                        )}
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -232,6 +291,48 @@ const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
                                         />
                                     </Form.Item>
                                 </Col>
+                                <Col span={12}>
+                                    <Form.Item label="mức độ ưu tiên">
+                                        <Controller
+                                            name="priority"
+                                            control={control}
+                                            rules={{
+                                                required:
+                                                    "Vui lòng nhập mức độ ưu tiên",
+                                                valueAsNumber: true,
+                                            }}
+                                            render={({ field }) => (
+                                                <Input
+                                                    {...field}
+                                                    type="number"
+                                                    placeholder="mức độ ưu tiên"
+                                                />
+                                            )}
+                                        />
+                                        {errors.priority && (
+                                            <span style={{ color: "red" }}>
+                                                {errors.priority.message}
+                                            </span>
+                                        )}
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={16}>
+                                <Col span={24}>
+                                    <Form.Item label="Mô tả">
+                                        <Controller
+                                            name="description"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input.TextArea
+                                                    {...field}
+                                                    placeholder="Mô tả dịch vụ"
+                                                    rows={4}
+                                                />
+                                            )}
+                                        />
+                                    </Form.Item>
+                                </Col>
                             </Row>
                             <Form.Item>
                                 <Button type="primary" htmlType="submit">
@@ -243,31 +344,51 @@ const ServiceModalEdit = ({ isModalOpen, handleOk, handleCancel, id }) => {
                 </Col>
                 <Col span={9}>
                     <Card title="Hình ảnh sản phẩm">
-                        <Upload
-                            action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                            listType="picture-card"
-                            fileList={fileList}
-                            onPreview={handlePreview}
-                            onChange={handleChange}
-                        >
-                            {fileList.length >= 8 ? null : uploadButton}
-                        </Upload>
-                        <Modal
-                            visible={previewOpen}
-                            footer={null}
-                            onCancel={() => setPreviewOpen(false)}
-                        >
-                            <Image
-                                alt="preview"
-                                style={{ width: "100%" }}
-                                src={previewImage}
+                        <Form.Item label="Hình ảnh sản phẩm" required>
+                            <span
+                                style={{ display: "block", marginBottom: 10 }}
+                            >
+                                1. ảnh đầu tiên sẽ là ảnh chính
+                            </span>
+                            <span
+                                style={{ display: "block", marginBottom: 10 }}
+                            >
+                                2. tối đa 10 ảnh
+                            </span>
+                            <Controller
+                                name="image_url"
+                                control={control}
+                                defaultValue={[]} // Giá trị mặc định là một mảng rỗng
+                                render={({ field }) => (
+                                    <Upload
+                                        {...field}
+                                        listType="picture-card"
+                                        fileList={fileList}
+                                        onChange={({ fileList }) => {
+                                            setFileList(fileList);
+                                            field.onChange(fileList);
+                                        }}
+                                        beforeUpload={() => false}
+                                        maxCount={10}
+                                        multiple
+                                    >
+                                        {fileList.length < 10 && (
+                                            <div>
+                                                <UploadOutlined />
+                                                <div style={{ marginTop: 8 }}>
+                                                    Tải ảnh lên
+                                                </div>
+                                            </div>
+                                        )}
+                                    </Upload>
+                                )}
                             />
-                        </Modal>
+                        </Form.Item>
                     </Card>
                 </Col>
             </Row>
         </Modal>
     );
-};
+}
 
 export default ServiceModalEdit;

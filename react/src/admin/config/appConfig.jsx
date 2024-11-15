@@ -82,6 +82,7 @@ const endpoints = {
         create: `${API_BASE_URL}/services`,
         update: (id) => `${API_BASE_URL}/services/${id}`,
         delete: (id) => `${API_BASE_URL}/services/${id}`,
+        search: `${API_BASE_URL}/services`,
     },
     shifts: {
         list: `${API_BASE_URL}/shifts`,

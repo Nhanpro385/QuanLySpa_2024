@@ -46,7 +46,7 @@ const LoginPage = () => {
                 navigate("/admin");
             }, 1000);
         } else {
-            openNotification("error", "Đăng nhập thất bại");
+            openNotification("error", "Đăng nhập thất bại do thông tin tài khoản không chính xác.");
         }
     };
 

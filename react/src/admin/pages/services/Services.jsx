@@ -1,56 +1,38 @@
-import React, { useState } from "react";
-import { Table, Button, Input, Modal, Row, Col, Dropdown, Space } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Input, Modal, Row, Col, notification } from "antd";
 import ServicesAdd from "./add_services";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import { DownOutlined, PlusOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ServiceModalEdit from "../../modules/services/compoments/ServiceModalEdit";
-
+import ServiceTable from "../../modules/services/compoments/ServiceTable";
+import { useSelector } from "react-redux";
+import useServicesActions from "../../modules/services/hooks/useServices";
+import debounce from "lodash/debounce";
+import { useNavigate } from "react-router-dom";
+import { set } from "lodash";
 function Services() {
-    const onClick = ({ key, record }) => {
-        switch (key) {
-            case "1":
-                handleEdit(record.key);
-                break;
-            case "2":
-                handleViewDetails(record);
-                break;
-            case "4":
-                handleDelete(record.key);
-                break;
-            default:
-                break;
-        }
-    };
-    const items = [
-        {
-            key: "1",
-            label: <Button block> Sửa </Button>,
-        },
-        {
-            key: "2",
-            label: <Button block> Chi tiết </Button>,
-        },
-        {
-            key: "4",
-            label: (
-                <Button block danger>
-                    Xóa
-                </Button>
-            ),
-        },
-    ];
-    const [dataSource, setDataSource] = useState([
-        {
-            key: "1",
-            name: "Phục hồi da",
-            image_url: "Ảnh 1",
-            price: "500.000",
-            duration: "1 giờ",
-            status: "Đang hoạt động",
-        },
-    ]);
-
+    const {
+        addservices,
+        getservices,
+        updateservices,
+        deleteservices,
+        getservicesById,
+        searchservices,
+    } = useServicesActions();
+    const [api, contextHolder] = notification.useNotification();
+    const Navigate = useNavigate();
+    const { services, loading, error } = useSelector((state) => state.services);
+    const dataSource = services.data.map((service, index) => ({
+        key: index,
+        ...service,
+    }));
+    const [errorEdit, setErrorEdit] = useState(null);
+    const pagination = services.meta || {};
+    const [Searchquery, setSearchquery] = useState({
+        search: "",
+        page: 1,
+    });
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const {
         isModalOpen: isModalOpen2,
@@ -60,87 +42,16 @@ function Services() {
     } = useModal();
     const [editService, setEditService] = useState(null);
 
-    const columns = [
-        {
-            title: "STT",
-            dataIndex: "key",
-            key: "key",
-            render: (text, record, index) => index + 1,
-        },
-        {
-            title: "Tên dịch vụ",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "Ảnh",
-            dataIndex: "image_url",
-            key: "image_url",
-        },
-        {
-            title: "Giá",
-            dataIndex: "price",
-            key: "price",
-        },
-        {
-            title: "Thời gian dự kiến",
-            dataIndex: "duration",
-            key: "duration",
-        },
-        {
-            title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-            render: (status) => (
-                <Button
-                    type="primary"
-                    style={{
-                        backgroundColor: "#52c41a",
-                        borderColor: "#52c41a",
-                        color: "#fff",
-                    }}
-                    disabled
-                >
-                    {status}
-                </Button>
-            ),
-        },
-        {
-            title: "Hành động",
-            key: "action",
-
-            render: (text, record) => (
-                <span>
-                    <Dropdown
-                        menu={{
-                            items,
-                            onClick: (e) => onClick({ key: e.key, record }),
-                        }}
-                        trigger={["click"]}
-                    >
-                        <Button
-                            type="primary"
-                            onClick={(e) => e.preventDefault()}
-                        >
-                            <Space>
-                                Hành động
-                                <DownOutlined />
-                            </Space>
-                        </Button>
-                    </Dropdown>
-                </span>
-            ),
-        },
-    ];
-
-    const handleEdit = (record) => {
-        setEditService(record);
-        showModal2();
-    };
-
-    const handleDelete = (key) => {
-        setDataSource(dataSource.filter((item) => item.key !== key));
-        console.log("Deleted service with key:", key);
+    const handleEdit = async (record) => {
+        try {
+            const res = await getservicesById(record.id);
+            if (res.payload.status === "success") {
+                setEditService(res.payload.data);
+                showModal2();
+            }
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const handleViewDetails = (record) => {
@@ -157,16 +68,85 @@ function Services() {
             onOk() {},
         });
     };
+    const onSearch = debounce((value) => {
+        setSearchquery({ ...Searchquery, search: value });
+    }, 500);
+    const handleChangepage = (page) => {
+        setSearchquery({ ...Searchquery, page });
+    };
 
+    useEffect(() => {
+        getservices();
+    }, []);
+    useEffect(() => {
+        if (Searchquery.search || Searchquery.page !== 1) {
+            searchservices(Searchquery);
+        }else{
+            getservices();
+            
+        }
+    }, [Searchquery]);
+    const handledelete = async (id) => {
+        try {
+            const res = await deleteservices(id);
+            if (res.payload.status === "success") {
+                getservices();
+                api.success({
+                    message: "Xóa dịch vụ thành công",
+                });
+            } else {
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    const handleSubmitEdit = async (data) => {
+        try {
+            console.log(data);
+
+            const formData = new FormData();
+
+            for (let key in data) {
+                formData.append(key, data[key]);
+            }
+            if (data.image_url.length > 0) {
+                data.image_url.forEach((file) => {
+                    formData.append("image_url[]", file.originFileObj);
+                });
+            }
+            const res = await updateservices({ data: formData, id: data.id });
+            if (res.payload.status === "success") {
+                getservices();
+                api.success({
+                    message: "Cập nhật dịch vụ thành công",
+                });
+                handleCancel2();
+            } else {
+                setErrorEdit((prev) => res.payload.errors);
+                api.error({
+                    message: "Cập nhật dịch vụ thất bại",
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
     return (
         <div>
+            {contextHolder}
             <h1 className="text-center">Quản lý dịch vụ</h1>
             <Row gutter={[8, 8]} style={{ marginBottom: 16 }}>
                 <Col xl={16} md={12} sm={24} xs={24}>
                     <h2>Danh Sách Dịch Vụ</h2>
                 </Col>
                 <Col xl={4} md={6} sm={24} xs={24}>
-                    <Button type="primary" onClick={showModal} block>
+                    <Button
+                        type="primary"
+                        onClick={() => {
+                            Navigate("/admin/services/them");
+                        }}
+                        block
+                    >
                         <PlusOutlined />
                         Thêm dịch vụ mới
                     </Button>
@@ -185,29 +165,29 @@ function Services() {
                     <Input.Search
                         className="mb-3 w-100"
                         placeholder="Tìm dịch vụ theo tên..."
-                        onSearch={(value) => console.log(value)}
+                        onSearch={onSearch}
+                        onChange={(e) => onSearch(e.target.value)}
                     />
                 </Col>
             </Row>
 
-            <Table
-                style={{ overflowX: "auto" }}
+            <ServiceTable
                 dataSource={dataSource}
-                columns={columns}
+                onEdit={handleEdit}
+                onDelete={handledelete}
+                onViewDetails={handleViewDetails}
+                pagination={pagination}
+                handleChangepage={handleChangepage}
+                loading={loading}
             />
-            <Modal
-                width={800}
-                title={editService ? "Sửa dịch vụ" : "Thêm dịch vụ"}
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-            >
-                <ServicesAdd service={editService} />
-            </Modal>
+
             <ServiceModalEdit
                 isModalOpen={isModalOpen2}
                 handleOk={handleOk2}
                 handleCancel={handleCancel2}
+                service={editService}
+                handleSubmitEdit={handleSubmitEdit}
+                error={errorEdit}
             />
         </div>
     );

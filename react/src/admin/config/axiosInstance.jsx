@@ -41,6 +41,8 @@ axiosInstance.interceptors.response.use(
                 message: "Phiên đăng nhập hết hạn",
                 description: "Vui lòng đăng nhập lại",
             });
+            logout();
+            window.location.href = "/admin/dangnhap";
             localStorage.removeItem("token");
         }
         return Promise.reject(error);

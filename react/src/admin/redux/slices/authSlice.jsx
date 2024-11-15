@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
-
+import axios from "axios";
 export const loginAdmin = createAsyncThunk(
     "auth/login",
     async (data, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(
+            const response = await axios.post(
                 endpoints.Auth.login,
                 data
             );
