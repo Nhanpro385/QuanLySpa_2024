@@ -38,7 +38,7 @@ class AuthController extends Controller
     {
         try {
             $id = auth('api')->user()->id;
-            $user = User::findOrFail($id);
+            $user = User::find($id);
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
@@ -47,8 +47,8 @@ class AuthController extends Controller
             }
             $response = [
                 'status' => true,
-                'message' => 'Thông tin chi tiết tài khoản: ' . auth('api')->user()->name,
-                'data' => new UserResource($user)
+                'message' => 'Thông tin chi tiết tài khoản: ' . auth('api')->user()->full_name,
+                'data' => new UserResource(resource: $user)
             ];
             return response()->json($response);
         } catch (JWTException $e) {

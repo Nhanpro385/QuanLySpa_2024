@@ -41,7 +41,7 @@ class UserResource extends JsonResource
                 'name' => $this->position->name,
                 'wage' => $this->position->wage
             ] : null,
-            'role' => $this->roleName($this->role),
+            'role' => $this->roleName((int) $this->role),
             'full_name' => $this->full_name,
             'gender' => $this->genderName($this->gender),
             'phone' => $this->phone,
@@ -100,12 +100,12 @@ class UserResource extends JsonResource
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
                 'fullname' => $this->createdBy->full_name,
-                'role' => $this->roleName($this->createdBy->role)
+                'role' => $this->roleName((int) $this->createdBy->role)
             ] : null,
             'updated_by' => $this->updated_by ? [
                 'id' => (string) $this->updatedBy->id ?? null,
                 'fullname' => $this->updatedBy->full_name,
-                'role' => $this->roleName($this->updatedBy->role)
+                'role' => $this->roleName((int) $this->updatedBy->role)
             ] : null,
             'created_at' => $this->created_at ?
                 $this->created_at->format('Y-m-d') : null,
@@ -113,13 +113,17 @@ class UserResource extends JsonResource
         ];
     }
 
-    public function roleName($role)
+    public function roleName(int $role)
     {
-        $name = 'Nhân viên';
-        if ($role == 0) {
+        $name = '';
+        if ($role === 0) {
             $name = 'Quản trị viên';
-        } elseif ($role == 2) {
+        }
+        if ($role === 2) {
             $name = 'Nhân viên tư vấn và chăm sóc khách hàng';
+        }
+        if ($role === 1) {
+            $name = "Nhân viên";
         }
         return $name;
     }

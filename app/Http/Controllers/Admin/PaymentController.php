@@ -130,7 +130,7 @@ class PaymentController extends Controller
 
                 if ($promotion) {
                     $promotionId = $promotion->id;
-                    if ($promotion->promotion_type == 0) {
+                    if ($promotion->promotion_type == 1) {
                         $reduce = ($subtotal * ($promotion->discount_percent / 100));
                     } else {
                         $reduce = $promotion->discount_percent;
@@ -261,7 +261,7 @@ class PaymentController extends Controller
 
                 if ($promotion) {
                     $promotionId = $promotion->id;
-                    if ($promotion->promotion_type == 0) {
+                    if ($promotion->promotion_type == 1) {
                         $reduce = ($subtotal * ($promotion->discount_percent / 100));
                     } else {
                         $reduce = $promotion->discount_percent;

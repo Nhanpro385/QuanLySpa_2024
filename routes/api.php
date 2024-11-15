@@ -20,12 +20,12 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
-
+use App\Http\Middleware\Admin\RoleUserMiddleware;
 require __DIR__ . '/auth.php';
 
 // Route Users
 Route::group([
-    'middleware' => ['api', 'auth:api'],
+    'middleware' => ['api', 'auth:api', 'roleUser'],
     'prefix' => 'v0.0.1/admin',
 ], function () {
     Route::get('/users', [UserController::class, 'index']);
@@ -108,7 +108,7 @@ Route::group([
     Route::put('/contacts/{id}', [ContactsController::class, 'update']);
     Route::delete('/contacts/{id}', [ContactsController::class, 'destroy']);
 
- 
+
 
     Route::get('/treatment-history', [TreatmentHistoryController::class, 'index']);
     Route::post('/treatment-history', [TreatmentHistoryController::class, 'store']);

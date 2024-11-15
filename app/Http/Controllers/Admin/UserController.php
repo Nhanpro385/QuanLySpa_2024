@@ -31,7 +31,7 @@ class UserController extends Controller
                 $perPage = 5;
             }
 
-            $selectedColumns = ['id', 'full_name', 'address', 'position_id', 'phone', 'status', 'email'];
+            $selectedColumns = ['id', 'full_name', 'address', 'position_id', 'phone', 'status', 'email', 'role'];
             $query = User::select($selectedColumns)->where($queryItems);
             if ($request['search']) {
                 $value = $request['search'];
