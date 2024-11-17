@@ -2,45 +2,68 @@
 
 namespace App\Http\Requests\Admin\TreatmentHistory;
 
-use App\Http\Requests\Admin\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreTreatmentHistoryRequest extends BaseRequest
+class StoreTreatmentHistoryRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function rules(): array
     {
         return [
-            'service_id' => 'nullable|string|exists:services,id',
-            'customer_id' => 'nullable|string|exists:customers,id',
-            'appointment_id' => 'nullable|string|exists:appointments,id',
-            'staff_id' => 'nullable|string|exists:users,id',
-            'image_before' => 'required|string',
-            'image_after' => 'required|string',
-            'feedback' => 'required|string',
-            'note' => 'nullable|string',
-            'status' => 'boolean',
-            'evaluete' => 'nullable|integer|min:1|max:5',
-            'created_by' => 'nullable|string|exists:users,id',
-            'updated_by' => 'nullable|string|exists:users,id',
+            'customer_id' => ['required', 'exists:customers,id'],
+            'appointment_id' => ['required', 'exists:appointments,id'],
+            'staff_id' => ['required', 'exists:users,id'],
+            'status' => ['required', 'boolean'],
+            'evaluate' => ['nullable', 'integer', 'min:1', 'max:5'],
+            'image_before' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'image_after' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'feedback' => ['required', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:500'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'service_id.exists' => 'Dịch vụ không tồn tại.',
+            'customer_id.required' => 'Vui lòng chọn khách hàng.',
             'customer_id.exists' => 'Khách hàng không tồn tại.',
+            'appointment_id.required' => 'Vui lòng chọn cuộc hẹn.',
             'appointment_id.exists' => 'Cuộc hẹn không tồn tại.',
+            'staff_id.required' => 'Vui lòng chọn nhân viên.',
             'staff_id.exists' => 'Nhân viên không tồn tại.',
-            'image_before.required' => 'Ảnh trước khi điều trị là bắt buộc.',
-            'image_after.required' => 'Ảnh sau khi điều trị là bắt buộc.',
-            'feedback.required' => 'Phản hồi là bắt buộc.',
-            'evaluete.integer' => 'Đánh giá phải là số nguyên.',
-            'evaluete.min' => 'Đánh giá phải ít nhất là 1.',
-            'evaluete.max' => 'Đánh giá tối đa là 5.',
+            'status.required' => 'Trạng thái là bắt buộc.',
             'status.boolean' => 'Trạng thái phải là true hoặc false.',
+            'evaluate.integer' => 'Đánh giá phải là số nguyên.',
+            'evaluate.min' => 'Đánh giá tối thiểu là 1.',
+            'evaluate.max' => 'Đánh giá tối đa là 5.',
+            'image_before.image' => 'Ảnh trước điều trị phải là tệp hình ảnh.',
+            'image_before.mimes' => 'Ảnh trước điều trị phải có định dạng jpeg, png, jpg, hoặc gif.',
+            'image_before.max' => 'Ảnh trước điều trị không được vượt quá 2MB.',
+            'image_after.image' => 'Ảnh sau điều trị phải là tệp hình ảnh.',
+            'image_after.mimes' => 'Ảnh sau điều trị phải có định dạng jpeg, png, jpg, hoặc gif.',
+            'image_after.max' => 'Ảnh sau điều trị không được vượt quá 2MB.',
+            'feedback.string' => 'Phản hồi phải là một chuỗi ký tự.',
+            'feedback.required' => 'Vui lòng ghi phản hồi.',
+            'feedback.max' => 'Phản hồi không được vượt quá 255 ký tự.',
+            'note.string' => 'Ghi chú phải là một chuỗi ký tự.',
+            'note.max' => 'Ghi chú không được vượt quá 500 ký tự.',
         ];
     }
-    
+
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'status' => 'error',
+                'message' => 'Dữ liệu đầu vào không hợp lệ.',
+                'errors' => $validator->errors(),
+            ], 422)
+        );
+    }
 }

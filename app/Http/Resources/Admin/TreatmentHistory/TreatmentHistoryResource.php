@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Admin\TreatmentHistory;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TreatmentHistoryResource extends JsonResource
@@ -11,7 +10,6 @@ class TreatmentHistoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'service_id' => $this->service_id,
             'customer_id' => $this->customer_id,
             'appointment_id' => $this->appointment_id,
             'staff_id' => $this->staff_id,
@@ -21,8 +19,16 @@ class TreatmentHistoryResource extends JsonResource
             'note' => $this->note,
             'status' => $this->status,
             'evaluete' => $this->evaluete,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
+            'created_by' => $this->created_by ? [
+                'id' => $this->created_by,
+                'full_name' => $this->createdBy->full_name ?? null,
+                'role' => $this->createdBy->role->name ?? null,
+            ] : null,
+            'updated_by' => $this->updated_by ? [
+                'id' => $this->updated_by,
+                'full_name' => $this->updatedBy->full_name ?? null,
+                'role' => $this->updatedBy->role->name ?? null,
+            ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

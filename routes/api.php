@@ -34,6 +34,19 @@ Route::group([
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
+
+    Route::get('/shifts', [ShiftsController::class, 'index']);
+    Route::post('/shifts', [ShiftsController::class, 'store']);
+    Route::get('/shifts/{id}', [ShiftsController::class, 'show']);
+    Route::put('/shifts/{id}', [ShiftsController::class, 'update']);
+    Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
+
+
+    Route::get('/treatment-history', [TreatmentHistoryController::class, 'index']);
+    Route::post('/treatment-history', [TreatmentHistoryController::class, 'store']);
+    Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
+    Route::put('/treatment-history/{id}', [TreatmentHistoryController::class, 'update']);
+    Route::delete('/treatment-history/{id}', [TreatmentHistoryController::class, 'destroy']);
     // Service Categories
     Route::get('/serviceCategories', [ServiceCategoryController::class, 'index']);
     Route::get('/serviceCategories/{id}', [ServiceCategoryController::class, 'show']);
@@ -110,11 +123,6 @@ Route::group([
 
 
 
-    Route::get('/treatment-history', [TreatmentHistoryController::class, 'index']);
-    Route::post('/treatment-history', [TreatmentHistoryController::class, 'store']);
-    Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
-    Route::put('/treatment-history/{id}', [TreatmentHistoryController::class, 'update']);
-    Route::delete('/treatment-history/{id}', [TreatmentHistoryController::class, 'destroy']);
 
     Route::get('/staff-shifts', [StaffShiftController::class, 'index']);
     Route::post('/staff-shifts', [StaffShiftController::class, 'store']);
