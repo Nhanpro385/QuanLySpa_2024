@@ -2,6 +2,17 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import endpoints from "../../config/appConfig";
 import axiosInstance from "../../config/axiosInstance";
+import { logout } from "./authSlice";
+
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const appointmentsGet = createAsyncThunk(
     "appointments/get",
     async () => {
@@ -12,7 +23,15 @@ export const appointmentsGet = createAsyncThunk(
 
 export const appointmentsAdd = createAsyncThunk(
     "appointments/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm lịch hẹn",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.appointments.create,
@@ -31,7 +50,15 @@ export const appointmentsAdd = createAsyncThunk(
 
 export const appointmentsDelete = createAsyncThunk(
     "appointments/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa lịch hẹn",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.appointments.delete(id));
             return id;
@@ -47,10 +74,16 @@ export const appointmentsDelete = createAsyncThunk(
 
 export const appointmentsUpdate = createAsyncThunk(
     "appointments/update",
-    async (data, { rejectWithValue }) => {
-        try {
-            console.log("data", data);
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật lịch hẹn",
+            });
+        }
 
+        try {
             const response = await axiosInstance.put(
                 endpoints.appointments.update(data.id),
                 data

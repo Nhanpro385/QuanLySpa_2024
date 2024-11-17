@@ -19,7 +19,7 @@ import debounce from "lodash/debounce";
 
 import useCustomerActions from "../../Customer/hooks/useCustomerActions";
 import useUsersActions from "../../staffManagement/hooks/useUserAction";
-import { generateSnowflakeId } from "../../../utils/snowflakeID";
+import { generateSnowflakeId } from "../../../utils";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;

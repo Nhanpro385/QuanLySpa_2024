@@ -65,6 +65,10 @@ function Staffs() {
     const handleEditSubmit = async (values) => {
         try {
             const res = await updateusers(values);
+            if (res.payload.status === 403) {
+                message.error(res.payload.message);
+                return;
+            }
             if (res.meta.requestStatus === "fulfilled") {
                 getusers();
                 message.success("Cập nhật thành công");
@@ -80,6 +84,12 @@ function Staffs() {
     const handleDelete = async (key) => {
         try {
             const res = await deleteusers(key);
+            console.log(res);
+            if (res.payload.status === 403) {
+                message.error(res.payload.message);
+                return;
+            }
+
             if (res.meta.requestStatus === "fulfilled") {
                 getusers();
                 message.success("Xóa thành công");
@@ -104,7 +114,6 @@ function Staffs() {
     const handlePageChange = (page) => {
         setSearchQuery({ ...searchquery, page });
     };
-    console.log(searchquery);
 
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10);

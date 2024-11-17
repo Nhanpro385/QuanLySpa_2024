@@ -9,6 +9,9 @@ import { Button, Result } from "antd";
 import LoginPage from "./pages/authen/loginPage";
 import ForgotPage from "./modules/authen/compoment/forgotPage";
 import Newpassword from "./modules/authen/compoment/newpassPage";
+// log role
+
+    
 const AppAdmin = () => {
     return (
         <Provider store={store}>
@@ -18,7 +21,7 @@ const AppAdmin = () => {
                         key={index}
                         path={route.path}
                         element={
-                            <AuthMiddleware requiredRole="admin">
+                            <AuthMiddleware requiredRole={route.requiredRole}>
                                 <AdminLayout>{route.element}</AdminLayout>
                             </AuthMiddleware>
                         }

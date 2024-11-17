@@ -1,15 +1,48 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
 
-export const categoriesGet = createAsyncThunk("categories/get", async () => {
-    const response = await axiosInstance.get(endpoints.ProductsCategories.list);
-    return response.data;
-});
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
+export const categoriesGet = createAsyncThunk(
+    "categories/get",
+    async (config) => {
+        const { page, per_page } = config;
+        console.log("config", config);
+
+        if (page && per_page) {
+            const response = await axiosInstance.get(
+                `${endpoints.ProductsCategories.list}?per_page=${per_page}`
+            );
+            return response.data;
+        }
+
+        const response = await axiosInstance.get(
+            endpoints.ProductsCategories.list
+        );
+        return response.data;
+    }
+);
 
 export const categoriesAdd = createAsyncThunk(
     "categories/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm danh mục",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.ProductsCategories.create,
@@ -28,7 +61,15 @@ export const categoriesAdd = createAsyncThunk(
 
 export const categoriesDelete = createAsyncThunk(
     "categories/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa danh mục",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.ProductsCategories.delete(id));
             return id;
@@ -44,7 +85,15 @@ export const categoriesDelete = createAsyncThunk(
 
 export const categoriesUpdate = createAsyncThunk(
     "categories/update",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật danh mục",
+            });
+        }
+
         try {
             console.log("data", data);
 

@@ -1,7 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
 
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const PositionsGet = createAsyncThunk("Positions/get", async () => {
     const response = await axiosInstance.get(endpoints.Positions.list);
     return response.data;
@@ -9,9 +19,20 @@ export const PositionsGet = createAsyncThunk("Positions/get", async () => {
 
 export const PositionsAdd = createAsyncThunk(
     "Positions/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm vị trí",
+            });
+        }
+
         try {
-            const response = await axiosInstance.post(endpoints.Positions.create, data);
+            const response = await axiosInstance.post(
+                endpoints.Positions.create,
+                data
+            );
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -25,7 +46,15 @@ export const PositionsAdd = createAsyncThunk(
 
 export const PositionsDelete = createAsyncThunk(
     "Positions/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa vị trí",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.Positions.delete(id));
             return id;
@@ -41,10 +70,16 @@ export const PositionsDelete = createAsyncThunk(
 
 export const PositionsUpdate = createAsyncThunk(
     "Positions/update",
-    async (data, { rejectWithValue }) => {
-        try {
-           
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật vị trí",
+            });
+        }
 
+        try {
             const response = await axiosInstance.put(
                 endpoints.Positions.update(data.id),
                 data
@@ -63,13 +98,15 @@ export const PositionsUpdate = createAsyncThunk(
 export const PositionsGetById = createAsyncThunk(
     "Positions/getById",
     async (id) => {
-        const response = await axiosInstance.get(endpoints.Positions.detail(id));
+        const response = await axiosInstance.get(
+            endpoints.Positions.detail(id)
+        );
         return response.data;
     }
 );
 
 const initialState = {
-    Positions:  {
+    Positions: {
         data: [],
     },
     Position: {},

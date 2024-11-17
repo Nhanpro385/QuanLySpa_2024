@@ -1,7 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
 
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 // AsyncThunk for fetching Suppliers list
 export const SupplierGet = createAsyncThunk(
     "Supplier/get",
@@ -23,7 +33,15 @@ export const SupplierGet = createAsyncThunk(
 
 export const SupplierAdd = createAsyncThunk(
     "Supplier/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm nhà cung cấp",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.Suppliers.create,
@@ -43,7 +61,15 @@ export const SupplierAdd = createAsyncThunk(
 // AsyncThunk for deleting a Supplier
 export const SupplierDelete = createAsyncThunk(
     "Supplier/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa nhà cung cấp",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.Suppliers.delete(id));
             return id;
@@ -61,7 +87,15 @@ export const SupplierDelete = createAsyncThunk(
 // AsyncThunk for updating a Supplier
 export const SupplierUpdate = createAsyncThunk(
     "Supplier/update",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật nhà cung cấp",
+            });
+        }
+
         try {
             const response = await axiosInstance.put(
                 endpoints.Suppliers.update(data.id),

@@ -2,6 +2,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
+
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 
 export const usersGet = createAsyncThunk(
     "users/get",
@@ -21,7 +32,15 @@ export const usersGet = createAsyncThunk(
 );
 export const usersAdd = createAsyncThunk(
     "users/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm người dùng",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.Users.create,
@@ -39,7 +58,15 @@ export const usersAdd = createAsyncThunk(
 );
 export const usersDelete = createAsyncThunk(
     "users/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa người dùng",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.Users.delete(id));
             return id;
@@ -55,7 +82,15 @@ export const usersDelete = createAsyncThunk(
 );
 export const usersUpdate = createAsyncThunk(
     "users/update",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật người dùng",
+            });
+        }
+
         try {
             const response = await axiosInstance.put(
                 endpoints.Users.update(data.id),

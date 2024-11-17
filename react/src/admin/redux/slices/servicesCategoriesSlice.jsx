@@ -1,7 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
 
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const ServiceCategoriesGet = createAsyncThunk(
     "ServiceCategories/get",
     async () => {
@@ -14,7 +24,15 @@ export const ServiceCategoriesGet = createAsyncThunk(
 
 export const ServiceCategoriesAdd = createAsyncThunk(
     "ServiceCategories/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm danh mục dịch vụ",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.ServiceCategories.create,
@@ -33,7 +51,15 @@ export const ServiceCategoriesAdd = createAsyncThunk(
 
 export const ServiceCategoriesDelete = createAsyncThunk(
     "ServiceCategories/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa danh mục dịch vụ",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.ServiceCategories.delete(id));
             return id;
@@ -49,10 +75,16 @@ export const ServiceCategoriesDelete = createAsyncThunk(
 
 export const ServiceCategoriesUpdate = createAsyncThunk(
     "ServiceCategories/update",
-    async (data, { rejectWithValue }) => {
-        try {
-            console.log("data", data);
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật danh mục dịch vụ",
+            });
+        }
 
+        try {
             const response = await axiosInstance.put(
                 endpoints.ServiceCategories.update(data.id),
                 data
@@ -72,8 +104,6 @@ export const ServiceCategoriesSearch = createAsyncThunk(
     "ServiceCategories/search",
     async (data, { rejectWithValue }) => {
         try {
-        
-
             const response = await axiosInstance.get(
                 `${endpoints.ServiceCategories.search}?search=${data.search}&page=${data.page}`
             );
@@ -144,8 +174,6 @@ const ServiceCategoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(ServiceCategoriesDelete.fulfilled, (state, action) => {
-
-
                 state.ServiceCategories.data =
                     state.ServiceCategories.data.filter(
                         (cate) => cate.id !== action.payload
@@ -161,8 +189,6 @@ const ServiceCategoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(ServiceCategoriesUpdate.fulfilled, (state, action) => {
-               
-
                 state.ServiceCategories.data = state.ServiceCategories.data.map(
                     (cate) =>
                         cate.id === action.payload.data.id

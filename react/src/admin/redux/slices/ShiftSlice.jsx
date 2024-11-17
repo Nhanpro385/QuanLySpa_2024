@@ -1,7 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
 
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const shiftsGet = createAsyncThunk("shifts/get", async () => {
     const response = await axiosInstance.get(endpoints.shifts.list);
     return response.data;
@@ -9,7 +19,15 @@ export const shiftsGet = createAsyncThunk("shifts/get", async () => {
 
 export const shiftsAdd = createAsyncThunk(
     "shifts/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm ca làm việc",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.shifts.create,
@@ -28,10 +46,16 @@ export const shiftsAdd = createAsyncThunk(
 
 export const shiftsDelete = createAsyncThunk(
     "shifts/delete",
-    async (id, { rejectWithValue }) => {
-        
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa ca làm việc",
+            });
+        }
+
         try {
-        
             await axiosInstance.delete(endpoints.shifts.delete(id));
             return id;
         } catch (error) {
@@ -46,7 +70,15 @@ export const shiftsDelete = createAsyncThunk(
 
 export const shiftsUpdate = createAsyncThunk(
     "shifts/update",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật ca làm việc",
+            });
+        }
+
         try {
             const response = await axiosInstance.put(
                 endpoints.shifts.update(data.id),
@@ -195,7 +227,7 @@ const shiftsSlice = createSlice({
                 state.shifts = {
                     data: [],
                 };
-                
+
                 state.error = action.payload.message;
             });
     },

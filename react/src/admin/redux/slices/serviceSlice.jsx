@@ -1,6 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
+
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 
 export const servicesGet = createAsyncThunk("services/get", async () => {
     const response = await axiosInstance.get(endpoints.services.list);
@@ -9,7 +20,15 @@ export const servicesGet = createAsyncThunk("services/get", async () => {
 
 export const servicesAdd = createAsyncThunk(
     "services/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm dịch vụ",
+            });
+        }
+
         try {
             console.log("data", data);
 
@@ -35,7 +54,14 @@ export const servicesAdd = createAsyncThunk(
 
 export const servicesDelete = createAsyncThunk(
     "services/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa dịch vụ",
+            });
+        }
         try {
             const res = await axiosInstance.delete(
                 endpoints.services.delete(id)
@@ -53,10 +79,17 @@ export const servicesDelete = createAsyncThunk(
 
 export const servicesUpdate = createAsyncThunk(
     "services/update",
-    async ({ data, id }, { rejectWithValue }) => {
-        try {
-            console.log("data", data);
+    async ({ data, id }, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
 
+                message: "Bạn không có quyền cập nhật dịch vụ",
+            });
+        }
+
+        try {
             const response = await axiosInstance.post(
                 endpoints.services.update(id),
                 data,

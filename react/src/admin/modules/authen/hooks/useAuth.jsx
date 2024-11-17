@@ -4,6 +4,7 @@ import {
     logoutAdmin,
     forgotpassword,
     resetpassword,
+    Getme,
 } from "@admin/redux/slices/authSlice";
 const useAuthActions = () => {
     const dispatch = useDispatch();
@@ -21,11 +22,16 @@ const useAuthActions = () => {
     const authReset = async (data) => {
         return await dispatch(resetpassword(data));
     };
+    const authGetme = async () => {
+        return await dispatch(Getme());
+    };
+
     return {
         authLogin,
         authLogout,
         authForgot,
         authReset,
+        authGetme,
     };
 };
 

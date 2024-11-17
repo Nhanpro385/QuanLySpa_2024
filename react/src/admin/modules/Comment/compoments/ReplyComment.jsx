@@ -12,7 +12,7 @@ import {
 } from "antd";
 import JoditEditor from "jodit-react";
 import { Controller, useForm } from "react-hook-form";
-import { generateSnowflakeId } from "../../../utils/snowflakeID";
+import { generateSnowflakeId } from "../../../utils";
 const { Text } = Typography;
 
 const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {

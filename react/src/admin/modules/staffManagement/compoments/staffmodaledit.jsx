@@ -51,6 +51,8 @@ const ModalEditStaff = ({
     }, [errorForm]);
 
     const onSubmit = (data) => {
+        
+        
         data.date_of_birth = formatDate(data.date_of_birth);
 
         handleEditSubmit({ ...data, id: staff.id, status: staff.status });

@@ -13,7 +13,7 @@ const LoginPage = () => {
     //     console.log("đây là token", csrfToken);
     //     axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
     // }, []);
-    const { authLogin } = useAuthActions();
+    const { authLogin, authGetme } = useAuthActions();
     const [loading, setLoading] = React.useState(false);
     const {
         control,
@@ -33,20 +33,23 @@ const LoginPage = () => {
     const onSubmit = async (data) => {
         const { email, password } = data;
         const res = await authLogin(email, password);
-        console.log(res);
-
+        
         if (res.meta.requestStatus === "fulfilled") {
             openNotification(
                 "success",
                 "Đăng nhập thành công",
                 "Chuyển hướng đến trang quản trị..."
             );
+            await authGetme();
             setTimeout(() => {
                 setLoading(false);
                 navigate("/admin");
             }, 1000);
         } else {
-            openNotification("error", "Đăng nhập thất bại do thông tin tài khoản không chính xác.");
+            openNotification(
+                "error",
+                "Đăng nhập thất bại do thông tin tài khoản không chính xác."
+            );
         }
     };
 

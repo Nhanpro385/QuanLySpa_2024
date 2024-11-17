@@ -1,7 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
 
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const commentsGet = createAsyncThunk("comments/get", async () => {
     const response = await axiosInstance.get(endpoints.comments.list);
 
@@ -10,7 +20,15 @@ export const commentsGet = createAsyncThunk("comments/get", async () => {
 
 export const commentsAdd = createAsyncThunk(
     "comments/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm bình luận",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.comments.create,
@@ -29,7 +47,15 @@ export const commentsAdd = createAsyncThunk(
 
 export const commentsDelete = createAsyncThunk(
     "comments/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa bình luận",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.comments.delete(id));
             return id;
@@ -45,10 +71,16 @@ export const commentsDelete = createAsyncThunk(
 
 export const commentsUpdate = createAsyncThunk(
     "comments/update",
-    async (data, { rejectWithValue }) => {
-        try {
-            console.log("data", data);
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật bình luận",
+            });
+        }
 
+        try {
             const response = await axiosInstance.put(
                 endpoints.comments.update(data.id),
                 data
@@ -74,8 +106,6 @@ export const commentsGetById = createAsyncThunk(
 export const replyComment = createAsyncThunk(
     "comments/reply",
     async (data, { rejectWithValue }) => {
-   
-        
         try {
             const response = await axiosInstance.post(
                 endpoints.comments.reply(data.parent_comment_id),

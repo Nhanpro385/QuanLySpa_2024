@@ -1,4 +1,4 @@
-import React from "react";
+import React , {useEffect} from "react";
 import {
     Card,
     Col,
@@ -159,7 +159,9 @@ const appointmentColumns = [
     },
 ];
 const formatter = (value) => <CountUp end={value} separator="," />;
+
 const Dashboard = () => {
+  
     return (
         <div style={{ padding: 20 }}>
             {/* Khu vực tổng quan */}
@@ -317,7 +319,7 @@ const Dashboard = () => {
                         }
                     >
                         <Table
-                             style={{ overflowX: "auto" }}
+                            style={{ overflowX: "auto" }}
                             columns={appointmentColumns}
                             dataSource={appointmentData}
                             pagination={{ pageSize: 5 }}

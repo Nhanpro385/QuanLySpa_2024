@@ -17,7 +17,7 @@ import useServicesActions from "../../modules/services/hooks/useServices";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import { Controller, useForm } from "react-hook-form";
-import { generateSnowflakeId } from "../../utils/snowflakeID";
+import { generateSnowflakeId } from "../../utils";
 const ServicesAdd = () => {
     const [api, contextHolder] = notification.useNotification();
     const { getServiceCategories, searchServiceCategories } =

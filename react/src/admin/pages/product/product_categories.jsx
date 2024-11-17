@@ -27,13 +27,15 @@ const ProductCategories = () => {
         search: "",
         page: 1,
     });
+    console.log(categories);
+    
     useEffect(() => {
         if (searchQuery.search || searchQuery.page !== 1) {
             searchcategories(searchQuery);
         }
     }, [searchQuery]);
     useEffect(() => {
-        getcategories();
+        getcategories({ page: 1 ,per_page: 5});
     }, []);
 
     const dataSource = Array.isArray(categories?.data) ? categories.data : [];
@@ -78,7 +80,7 @@ const ProductCategories = () => {
 
     const deleteCate = async (id) => {
         const result = await deletecategories(id);
-        console.log(result);
+     
 
         if (result.meta.requestStatus === "fulfilled") {
             messageApi.success("Danh mục đã được xóa!");

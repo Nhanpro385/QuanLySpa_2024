@@ -2,7 +2,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
+import { logout } from "./authSlice";
 
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const productGet = createAsyncThunk(
     "product/get",
     async (_, { rejectWithValue }) => {
@@ -21,7 +31,15 @@ export const productGet = createAsyncThunk(
 );
 export const productAdd = createAsyncThunk(
     "product/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm sản phẩm",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.Products.create,
@@ -46,7 +64,15 @@ export const productAdd = createAsyncThunk(
 );
 export const productDelete = createAsyncThunk(
     "product/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa sản phẩm",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.Products.delete(id));
             return id;
@@ -62,7 +88,15 @@ export const productDelete = createAsyncThunk(
 );
 export const productUpdate = createAsyncThunk(
     "product/update",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật sản phẩm",
+            });
+        }
+
         try {
             const response = await axiosInstance.put(
                 endpoints.Products.update(data.id),

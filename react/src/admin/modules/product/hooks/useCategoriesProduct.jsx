@@ -14,8 +14,8 @@ const usecategoriesActions = () => {
         return await dispatch(categoriesAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getcategories = async () => {
-        return await dispatch(categoriesGet());
+    const getcategories = async (config) => {
+        return await dispatch(categoriesGet(config));
     };
 
     const updatecategories = async (data) => {

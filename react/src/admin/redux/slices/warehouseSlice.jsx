@@ -2,9 +2,28 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import endpoints from "../../config/appConfig";
 import axiosInstance from "../../config/axiosInstance";
+import { logout } from "./authSlice";
+
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const warehouseImport = createAsyncThunk(
     "warehouse/import",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền nhập kho",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.warehouse.import,
@@ -22,7 +41,15 @@ export const warehouseImport = createAsyncThunk(
 );
 export const warehouseExport = createAsyncThunk(
     "warehouse/export",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xuất kho",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.warehouse.export,

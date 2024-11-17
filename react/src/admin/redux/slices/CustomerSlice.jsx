@@ -1,8 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import endpoints from "../../config/appConfig";
 import axiosInstance from "../../config/axiosInstance";
-// AsyncThunk for fetching customers list
+import { logout } from "./authSlice";
+
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
+
 export const CustomerGet = createAsyncThunk(
     "Customer/get",
     async (_, { rejectWithValue }) => {
@@ -24,7 +34,15 @@ export const CustomerGet = createAsyncThunk(
 // AsyncThunk for adding a customer
 export const CustomerAdd = createAsyncThunk(
     "Customer/add",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền thêm khách hàng",
+            });
+        }
+
         try {
             const response = await axiosInstance.post(
                 endpoints.Customers.create,
@@ -44,7 +62,15 @@ export const CustomerAdd = createAsyncThunk(
 // AsyncThunk for deleting a customer
 export const CustomerDelete = createAsyncThunk(
     "Customer/delete",
-    async (id, { rejectWithValue }) => {
+    async (id, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền xóa khách hàng",
+            });
+        }
+
         try {
             await axiosInstance.delete(endpoints.Customers.delete(id));
             return id;
@@ -62,7 +88,15 @@ export const CustomerDelete = createAsyncThunk(
 // AsyncThunk for updating a customer
 export const CustomerUpdate = createAsyncThunk(
     "Customer/update",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật khách hàng",
+            });
+        }
+
         try {
             const response = await axiosInstance.put(
                 endpoints.Customers.update(data.id),
@@ -243,5 +277,4 @@ const CustomerSlice = createSlice({
             });
     },
 });
-
 export default CustomerSlice.reducer;

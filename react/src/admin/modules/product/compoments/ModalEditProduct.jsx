@@ -30,8 +30,8 @@ const ModalEditProduct = ({
     const { getcategories } = usecategoriesActions();
     const { categories } = useSelector((state) => state.categories);
     useEffect(() => {
-        getcategories();
-        console.log("Product Data:", productData);
+        getcategories({ page: 1 ,per_page: 5});
+        
         
         if (productData) {
             Object.keys(productData).forEach((key) => {
