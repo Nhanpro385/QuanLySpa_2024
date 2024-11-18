@@ -201,6 +201,14 @@ class UserController extends Controller
                     'message' => 'Không tìm thấy dữ liệu',
                 ], 404);
             }
+
+            if ($user->id === $updated_by) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không thể xóa chính bản thân.',
+                ], 404);
+            }
+
             $user->update([
                 'updated_by' => $updated_by
             ]);

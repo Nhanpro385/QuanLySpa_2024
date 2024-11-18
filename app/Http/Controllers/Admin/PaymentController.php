@@ -146,7 +146,7 @@ class PaymentController extends Controller
                 'product_total' => $product_total,
                 'reduce' => $reduce,
                 'subtotal' => $subtotal,
-                'total_amount' => $subtotal - $reduce,
+                'total_amount' => (($subtotal - $reduce) < 0) ? 0 : $subtotal - $reduce,
             ]);
             DB::commit();
 
@@ -204,19 +204,19 @@ class PaymentController extends Controller
         DB::beginTransaction();
         $validateData = $request->validated();
         $payment = Payment::find($id);
-
-        if ($payment->status == 1) {
-            return response()->json([
-                'status' => 'true',
-                'message' => 'Không thể chỉnh sửa do thanh toán đã hoàn thành.'
-            ], status: 200);
-        }
         if (!$payment) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Không tìm thấy dữ liệu',
             ], 404);
         }
+        if ($payment->status == 1) {
+            return response()->json([
+                'status' => 'true',
+                'message' => 'Không thể chỉnh sửa do thanh toán đã hoàn thành.'
+            ], status: 200);
+        }
+
 
         if ($validateData['products'] != null || $validateData['products'] != []) {
             PaymentProducts::where('payment_id', $payment->id)->delete();
@@ -279,7 +279,7 @@ class PaymentController extends Controller
                 'product_total' => $product_total,
                 'reduce' => $reduce,
                 'subtotal' => $subtotal,
-                'total_amount' => $subtotal - $reduce,
+                'total_amount' => (($subtotal - $reduce) < 0) ? 0 : $subtotal - $reduce,
             ]);
 
             if ($payment->status == 1 || $validateData['status'] == 1) {
