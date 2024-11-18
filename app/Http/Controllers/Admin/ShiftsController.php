@@ -52,10 +52,7 @@ class ShiftsController extends Controller
             $shifts = $query->paginate($perPage);
 
             // Trả về dữ liệu
-            return response()->json([
-                'status' => true,
-                'data' => $shifts,
-            ], 200);
+            return (new ShiftCollection($shifts))->additional(['status' => true]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

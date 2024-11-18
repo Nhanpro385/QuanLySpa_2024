@@ -52,10 +52,7 @@ class TreatmentHistoryController extends Controller
             $treatmentHistories = $query->paginate($perPage);
 
             // Return data
-            return response()->json([
-                'status' => true,
-                'data' => $treatmentHistories,
-            ], 200);
+            return (new TreatmentHistoryCollection($treatmentHistories))->additional(['status' => true]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

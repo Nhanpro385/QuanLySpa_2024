@@ -14,6 +14,7 @@ class ShiftFilter extends ApiFilter
         'max_customers' => ['eq', 'lt', 'gt'],
     ];
 
+
     protected $columnMap = [
         'shift_date' => 'shift_date',
         'start_time' => 'start_time',
