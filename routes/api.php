@@ -17,13 +17,17 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\Admin\AuthController;
 // use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ConsulationController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Middleware\Admin\RoleUserMiddleware;
+use App\Mail\OrderShipped;
+use Illuminate\Support\Facades\Mail;
+
 require __DIR__ . '/auth.php';
 
-// Route Users
+// Route ADMIN Quản trị viên - nhân viên
 Route::group([
     'middleware' => ['api', 'auth:api', 'roleUser'],
     'prefix' => 'v0.0.1/admin',
@@ -98,8 +102,12 @@ Route::group([
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
     Route::put('/payments/{id}', [PaymentController::class, 'update']);
 
+    //Consulations
+    Route::delete('/consulations/{id}', [ConsulationController::class, 'destroy']);
+
 });
-//End
+//End Route ADMIN Quản trị viên - nhân viên
+
 
 //Route JWT
 Route::group([
@@ -192,5 +200,15 @@ Route::group([
 
 
 
+//Route ADMIN Nhân viên chăm sóc khách hàng
+Route::group([
+    'middleware' => ['api', 'auth:api'],
+    'prefix' => 'v0.0.1/admin',
+], function () {
+    Route::get('/consulations', [ConsulationController::class, 'index']);
+    Route::get('/consulations/{id}', [ConsulationController::class, 'show']);
+    Route::put('/consulations/{id}', [ConsulationController::class, 'update']);
+    Route::post('/consulations/{id}/browse', [ConsulationController::class, 'browse']);
+});
 
-
+//END Route ADMIN Nhân viên chăm sóc khách hàng
