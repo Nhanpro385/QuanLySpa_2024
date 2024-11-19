@@ -116,7 +116,12 @@ const AppointmentsTable = ({
                 showSizeChanger: true,
                 showQuickJumper: true,
                 showTotal: (total) => `Tổng ${total} mục`,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                responsive: true,
                 onChange: handlePageChange,
+            }}
+            scroll={{
+                y: 500, //
             }}
         />
     );

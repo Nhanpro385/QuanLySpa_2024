@@ -36,7 +36,7 @@ const TableProduct = ({
                 handleEdit(record.key);
                 break;
             case "2":
-                navigate("/admin/appointments/detail/" + record.key);
+                navigate("/admin/lichhen/chitiet/" + record.key);
                 break;
             case "3":
                 break;

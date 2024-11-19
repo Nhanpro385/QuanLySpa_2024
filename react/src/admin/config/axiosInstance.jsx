@@ -2,9 +2,7 @@ import axios from "axios";
 import { API_BASE_URL } from "./appConfig";
 import { notification } from "antd";
 import { logout } from "../redux/slices/authSlice";
-import { useSelector } from "react-redux";
-import store from "../redux/store/store";
-import useAuthActions from "../modules/authen/hooks/useAuth";
+
 // Lấy CSRF token từ thẻ meta
 const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
@@ -19,7 +17,6 @@ const axiosInstance = axios.create({
         "X-CSRF-TOKEN": csrfToken, // Thêm CSRF token vào header
     },
 });
-
 
 // Interceptor để thêm token vào mỗi yêu cầu
 axiosInstance.interceptors.request.use(
@@ -38,8 +35,6 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
-        console.log("error", error);
-        
         if (error.response.status === 401) {
             notification.error({
                 message: "Phiên đăng nhập hết hạn",

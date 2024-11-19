@@ -52,6 +52,9 @@ import ContactManagement from "@admin/pages/contactmanagement";
 import PaymentManagement from "@admin/pages/paymentManagenment";
 // supplierManagement
 import SupplierManagement from "@admin/pages/supplierManagement";
+import Appointment_Add from "@admin/pages/appointments/Appointments_Add";
+import Appointment_Edit from "@admin/pages/appointments/Appointments_Edit";
+
 const PublicRoutes = [
     // Dashboard
     { path: "/", element: <Dashboard /> },
@@ -63,8 +66,10 @@ const PublicRoutes = [
     { path: "/khachhang/chitiet/:id", element: <CustomerDetail /> },
 
     // Appointments
-    { path: "/appointments", element: <Appointments /> },
-    { path: "/appointments/detail/:id", element: <Appointments_Detail /> },
+    { path: "/lichhen", element: <Appointments /> },
+    { path: "/lichhen/them", element: <Appointment_Add /> },
+    { path: "/lichhen/chinhsua/:id", element: <Appointment_Edit /> },
+    { path: "/lichhen/chitiet/:id", element: <Appointments_Detail /> },
 
     // Personnel Management
     { path: "/nhanvien", element: <Staffs /> },

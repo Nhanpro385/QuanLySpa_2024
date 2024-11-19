@@ -81,9 +81,8 @@ function Services() {
     useEffect(() => {
         if (Searchquery.search || Searchquery.page !== 1) {
             searchservices(Searchquery);
-        }else{
+        } else {
             getservices();
-            
         }
     }, [Searchquery]);
     const handledelete = async (id) => {

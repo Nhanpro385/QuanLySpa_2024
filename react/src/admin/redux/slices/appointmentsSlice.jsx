@@ -115,7 +115,7 @@ export const appointmentsSearch = createAsyncThunk(
             console.log("data", data);
 
             const response = await axiosInstance.get(
-                `${endpoints.appointments.search}?search=${data.search}&page=${data.page}`
+                `${endpoints.appointments.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;
@@ -207,7 +207,7 @@ const appointmentsSlice = createSlice({
                 state.error = null;
             })
             .addCase(appointmentsGetById.fulfilled, (state, action) => {
-                state.category = action.payload;
+                state.appointment = action.payload;
                 state.loading = false;
             })
             .addCase(appointmentsGetById.rejected, (state, action) => {

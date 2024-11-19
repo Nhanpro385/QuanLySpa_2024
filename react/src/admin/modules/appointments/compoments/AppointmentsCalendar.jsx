@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -10,33 +10,34 @@ const localizer = momentLocalizer(moment);
 const now = new Date();
 
 export default function AppointmentsCalendar({ data }) {
-    
+    const [eventsData, setEventsData] = useState([]);
 
-    const initialEvents = data
-        ? data.map((item) => {
-              const startDateTime = new Date(
-                  item.appointment_date + "T" + item.start_time
-              );
-              const endDateTime = new Date(
-                  item.appointment_date + "T" + item.start_time
-              );
+    // useEffect to update eventsData when `data` changes
+    useEffect(() => {
+        if (data) {
+            const updatedEvents = data.map((item) => {
+                const startDateTime = new Date(
+                    item.appointment_date + "T" + item.start_time
+                );
+                const endDateTime = new Date(
+                    item.appointment_date + "T" + item.start_time
+                );
 
-              return {
-                  id: item.id,
-                  title: item.title || "Sự kiện không có tiêu đề", // Default title
-                  start: startDateTime,
-                  end: endDateTime,
-              };
-          })
-        : [];
+                return {
+                    id: item.id,
+                    title: item.title || "Sự kiện không có tiêu đề", // Default title
+                    start: startDateTime,
+                    end: endDateTime,
+                };
+            });
 
-
-    const [eventsData, setEventsData] = useState(initialEvents);
+            setEventsData(updatedEvents);
+        }
+    }, [data]); // Dependency on `data`
 
     return (
         <div className="App">
             <Calendar
-                
                 selectable
                 localizer={localizer}
                 defaultDate={now}

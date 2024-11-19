@@ -1,8 +1,9 @@
-import React from "react";
-import { Card, Col, Row, Form, Input, Button, Checkbox, Image } from "antd";
+import React, { useState } from "react";
+import { Card, Col, Row, Input, Button, Checkbox, Image } from "antd";
 import { UserOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
+import { useForm, Controller } from "react-hook-form";
 import "../styles/Home_consultation_reception.scss"; // Import SCSS
-
+import { createMeeting, VIDEOSDK_TOKEN } from "../../VideoCall/services/API";
 const { Meta } = Card;
 const options = [
     {
@@ -53,6 +54,44 @@ const options = [
 ];
 
 const Home_consultation_reception = () => {
+    const {
+        control,
+        handleSubmit,
+        setError,
+        reset,
+        formState: { errors },
+    } = useForm();
+
+    const onSubmit = async (data) => {
+        try {
+            if (data.issues) {
+                const skinconditions = data.issues.join(", ");
+
+                const meetingId = await createMeeting({
+                    token: VIDEOSDK_TOKEN,
+                });
+                const payload = {
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    description: data.description,
+                    skinconditions,
+                    codemeeting: meetingId,
+                };
+                console.log(payload);
+
+                // reset();
+            } else {
+                setError("issues", {
+                    type: "manual",
+                    message: "Vui lòng chọn ít nhất 1 vấn đề",
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <section className="consultation-section">
             <h1 className="section-title">
@@ -80,7 +119,7 @@ const Home_consultation_reception = () => {
                     </Row>
                 </Col>
                 <Col xs={24} lg={12} className="form-container">
-                    <Form layout="vertical">
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <h3 className="form-title">
                             bạn đang gặp những vấn đề nào ?
                         </h3>
@@ -88,54 +127,179 @@ const Home_consultation_reception = () => {
                             Đừng để những mụn làm bạn mất tự tin. Hãy liên hệ
                             với Sakura Spa để khắc phục ngay.
                         </p>
-                        <Form.Item>
-                            <Checkbox
-                                style={{
-                                    padding: "10px 0",
-                                }}
+
+                        <Row gutter={[16, 16]}>
+                            <Col span={24}>
+                                <Controller
+                                    name="issues"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox.Group {...field}>
+                                            <Row gutter={[16, 16]}>
+                                                {options.map((item) => (
+                                                    <Col
+                                                        xxl={8}
+                                                        xl={12}
+                                                        key={item.value}
+                                                    >
+                                                        <Checkbox
+                                                            key={item.value}
+                                                            value={item.label}
+                                                        >
+                                                            {item.label}
+                                                        </Checkbox>
+                                                    </Col>
+                                                ))}
+                                            </Row>
+                                        </Checkbox.Group>
+                                    )}
+                                />
+                                {errors.issues && (
+                                    <p
+                                        className="error-text"
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        Vui lòng chọn ít nhất 1 vấn đề
+                                    </p>
+                                )}
+                            </Col>
+                            <Col span={12}>
+                                <Controller
+                                    name="name"
+                                    control={control}
+                                    rules={{
+                                        required: "Họ và tên là bắt buộc",
+                                    }}
+                                    render={({ field }) => (
+                                        <Input
+                                            {...field}
+                                            size="large"
+                                            prefix={<UserOutlined />}
+                                            placeholder="Họ và tên của bạn *"
+                                        />
+                                    )}
+                                />
+                                {errors.name && (
+                                    <p
+                                        className="error-text"
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.name.message}
+                                    </p>
+                                )}
+                            </Col>
+                            <Col span={12}>
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    rules={{ required: "Email là bắt buộc" }}
+                                    render={({ field }) => (
+                                        <Input
+                                            {...field}
+                                            size="large"
+                                            prefix={<MailOutlined />}
+                                            placeholder="Email của bạn *"
+                                        />
+                                    )}
+                                />
+                                {errors.email && (
+                                    <p
+                                        className="error-text"
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.email.message}
+                                    </p>
+                                )}
+                            </Col>
+                            <Col span={12}>
+                                <Controller
+                                    name="phone"
+                                    control={control}
+                                    rules={{
+                                        required: "Số điện thoại là bắt buộc",
+                                    }}
+                                    render={({ field }) => (
+                                        <Input
+                                            {...field}
+                                            size="large"
+                                            prefix={<PhoneOutlined />}
+                                            placeholder="Số điện thoại của bạn *"
+                                        />
+                                    )}
+                                />
+                                {errors.phone && (
+                                    <p
+                                        className="error-text"
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        {errors.phone.message}
+                                    </p>
+                                )}
+                            </Col>
+                            <Col span={24}>
+                                <Controller
+                                    name="description"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Input.TextArea
+                                            {...field}
+                                            size="large"
+                                            placeholder="Mô tả vấn đề của bạn *"
+                                        />
+                                    )}
+                                />
+                                {errors.description && (
+                                    <p
+                                        className="error-text"
+                                        style={{
+                                            color: "red",
+                                        }}
+                                    >
+                                        Mô tả vấn đề của bạn là bắt buộc
+                                    </p>
+                                )}
+                            </Col>
+                            {/* <Col
+                                xxl={24}
+                                xl={24}
+                                lg={24}
+                                md={24}
+                                sm={24}
+                                xs={24}
                             >
-                                Mụn đầu đen
-                            </Checkbox>
-                        </Form.Item>
-                        <Form.Item>
-                            <Input
-                                size="large"
-                                prefix={<UserOutlined />}
-                                placeholder="Họ và tên của bạn *"
-                            />
-                        </Form.Item>
-                        <Form.Item>
-                            <Row gutter={16}>
-                                <Col span={12}>
-                                    <Input
-                                        size="large"
-                                        prefix={<MailOutlined />}
-                                        placeholder="Email của bạn *"
-                                    />
-                                </Col>
-                                <Col span={12}>
-                                    <Input
-                                        size="large"
-                                        prefix={<PhoneOutlined />}
-                                        placeholder="Số điện thoại của bạn *"
-                                    />
-                                </Col>
-                            </Row>
-                            <Checkbox className="checkbox-video-call">
-                                Bạn có muốn gọi Video trực tiếp với chuyên gia?
-                            </Checkbox>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button
-                                block
-                                type="primary"
-                                htmlType="submit"
-                                className="submit-button"
-                            >
-                                Đăng ký tư vấn
-                            </Button>
-                        </Form.Item>
-                    </Form>
+                                <Controller
+                                    name="videoCall"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            {...field}
+                                            className="checkbox-video-call"
+                                        >
+                                            Bạn có muốn gọi Video trực tiếp với
+                                            chuyên gia?
+                                        </Checkbox>
+                                    )}
+                                />
+                            </Col> */}
+                        </Row>
+
+                        <Button
+                            block
+                            type="primary"
+                            htmlType="submit"
+                            className="submit-button mt-3"
+                        >
+                            Đăng ký tư vấn qua Video Call
+                        </Button>
+                    </form>
                 </Col>
             </Row>
         </section>

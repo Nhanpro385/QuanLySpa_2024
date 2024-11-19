@@ -15,10 +15,14 @@ const checkRoleAndLogout = (dispatch) => {
 export const ServiceCategoriesGet = createAsyncThunk(
     "ServiceCategories/get",
     async () => {
-        const response = await axiosInstance.get(
-            endpoints.ServiceCategories.list
-        );
-        return response.data;
+        try {
+            const response = await axiosInstance.get(
+                endpoints.ServiceCategories.list
+            );
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
     }
 );
 

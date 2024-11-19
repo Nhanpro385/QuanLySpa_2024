@@ -17,7 +17,6 @@ export const createMeeting = async ({ token }) => {
     return roomId;
 };
 export const getToken = async () => {
-    // Hàm này sẽ trả về mã thông báo từ API hoặc mã thông báo đã được cung cấp
     if (VIDEOSDK_TOKEN && API_AUTH_URL) {
         console.error(
             "Lỗi: Chỉ cung cấp MỘT THÔNG SỐ - API mã thông báo hoặc API xác thực"
@@ -50,7 +49,6 @@ export const validateMeeting = async ({ roomId, token }) => {
 
     if (response.status === 400) {
         const data = await response.text();
-      
 
         return { meetingId: null, err: data };
     }

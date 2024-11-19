@@ -14,8 +14,10 @@ const useServicesActions = () => {
         return await dispatch(servicesAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getservices = async () => {
-        return await dispatch(servicesGet());
+    const getservices = async (config) => {
+        console.log("config", config);
+        
+        return await dispatch(servicesGet(config));
     };
 
     const updateservices = async ({ data, id }) => {

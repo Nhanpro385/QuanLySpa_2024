@@ -11,7 +11,7 @@ import {
     Select,
     DatePicker,
 } from "antd";
-import ModalAppointment from "../../modules/appointments/compoments/appoitnmentsAddmodal";
+
 import ModalAppointmentEdit from "../../modules/appointments/compoments/appoitnmentsAddmodalEdit";
 import AppointmentsTable from "../../modules/appointments/compoments/AppointmentsTable";
 import AppointmentsCalendar from "../../modules/appointments/compoments/AppointmentsCalendar";
@@ -35,6 +35,7 @@ function Appointments() {
     const [searchQuery, setSearchQuery] = useState({
         page: 1,
         search: "",
+        per_page: 5,
     });
 
     useEffect(() => {
@@ -75,20 +76,25 @@ function Appointments() {
             };
         }) || [];
     const pagination = appointments.meta || {};
-    const handleEdit = (id) => {
-        console.log("Edit", id);
-    };
+    const handleEdit = (id) => {};
     useEffect(() => {
-        if (searchQuery.search || searchQuery.page !== 1) {
+        if (
+            searchQuery.search ||
+            searchQuery.page !== 1 ||
+            searchQuery.per_page
+        ) {
             searchappointments(searchQuery);
+        } else {
+            getappointments({ page: 1 });
         }
     }, [searchQuery]);
     const handleInputChange = debounce((value) => {
         setSearchQuery({ page: 1, search: value });
     }, 500);
-    const handlePageChange = (page) => {
-        setSearchQuery({ ...searchQuery, page });
+    const handlePageChange = (page, pagination, filters, sorter) => {
+        setSearchQuery({ ...searchQuery, page, per_page: pagination });
     };
+
     return (
         <>
             <h1 className="text-center">Quản lý lịch hẹn</h1>
@@ -100,16 +106,6 @@ function Appointments() {
                             <Button type="primary" onClick={showModal}>
                                 Thêm lịch hẹn
                             </Button>
-                            <ModalAppointment
-                                isModalOpen={isModalOpen}
-                                handleOk={handleOk}
-                                handleCancel={handleCancel}
-                            />
-                            <ModalAppointmentEdit
-                                isModalOpen={isModalOpen2}
-                                handleOk={handleOk2}
-                                handleCancel={handleCancel2}
-                            />
                         </Row>
                         {loading ? ( // Hiển thị spinner khi loading
                             <Row justify="center" className="p-5">
@@ -161,7 +157,9 @@ function Appointments() {
                                 <AppointmentsTable
                                     dataSource={dataSource}
                                     onEdit={(id) => {
-                                        showModal2();
+                                        navigate(
+                                            "/admin/lichhen/chinhsua/" + id
+                                        );
                                     }}
                                     onViewDetail={(id) => {
                                         navigate(

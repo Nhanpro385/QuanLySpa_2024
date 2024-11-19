@@ -44,9 +44,8 @@ function ServiceModalEdit({
         searchServiceCategories,
         getServiceCategoriesById,
     } = useServiceCategoriesActions();
-    const { ServiceCategories, loading, category } = useSelector(
-        (state) => state.ServiceCategories
-    );
+    const serviceCategories = useSelector((state) => state.serviceCategories);
+    
 
     const [datacate, setdatacate] = useState([]);
 
@@ -69,9 +68,6 @@ function ServiceModalEdit({
         }
     }, [service]);
     useEffect(() => {
-   
-        
-        
         if (error) {
             Object.keys(error).forEach((key) => {
                 setError(key, {
@@ -83,9 +79,9 @@ function ServiceModalEdit({
     }, [error]);
 
     useEffect(() => {
-        if (ServiceCategories && service) {
+        if (serviceCategories.ServiceCategories && service) {
             const data = [
-                ...ServiceCategories.data,
+                ...serviceCategories.ServiceCategories.data,
                 service.service_category_id,
             ].map((item) => {
                 return {
@@ -100,7 +96,7 @@ function ServiceModalEdit({
 
             setdatacate(unique);
         }
-    }, [ServiceCategories, service]);
+    }, [serviceCategories.ServiceCategories, service]);
 
     const debouncedSearch = debounce((value) => {
         searchServiceCategories({ search: value, page: 1 });
@@ -114,7 +110,6 @@ function ServiceModalEdit({
         handleSubmitEdit(payload);
         reset();
         setFileList([]);
-        
     };
 
     return (
@@ -241,7 +236,7 @@ function ServiceModalEdit({
                                                         field.onChange(value)
                                                     }
                                                     notFoundContent={
-                                                        loading ? (
+                                                        serviceCategories.loading ? (
                                                             <Spin size="small" />
                                                         ) : null
                                                     }

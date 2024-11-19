@@ -14,8 +14,12 @@ const useUsersActions = () => {
         return await dispatch(usersAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getusers = async () => {
-        return await dispatch(usersGet());
+    const getusers = async (config) => {
+        if (!config) {
+            return await dispatch(usersGet());
+        }
+
+        return await dispatch(usersGet(config));
     };
 
     const updateusers = async (data) => {
@@ -31,7 +35,7 @@ const useUsersActions = () => {
     };
     const searchusers = async (data) => {
         return await dispatch(userSearch(data));
-    }
+    };
 
     return {
         addusers,

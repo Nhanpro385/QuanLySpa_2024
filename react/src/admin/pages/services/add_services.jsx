@@ -23,9 +23,7 @@ const ServicesAdd = () => {
     const { getServiceCategories, searchServiceCategories } =
         useServiceCategoriesActions();
     const { addservices } = useServicesActions();
-    const { ServiceCategories, loading } = useSelector(
-        (state) => state.ServiceCategories
-    );
+    const ServiceCategories = useSelector((state) => state.serviceCategories);
 
     const [fileList, setFileList] = useState([]);
     const {
@@ -40,13 +38,14 @@ const ServicesAdd = () => {
         getServiceCategories();
     }, []);
 
-    const servicesCategories = ServiceCategories.data.map((category) => ({
-        id: category.id,
-        name: category.name,
-    }));
+    const servicesCategories = ServiceCategories.ServiceCategories.data.map(
+        (category) => ({
+            id: category.id,
+            name: category.name,
+        })
+    );
 
     const OnSearchServiceCategories = debounce((value) => {
-       
         searchServiceCategories({
             page: 1,
             search: value,
@@ -155,7 +154,7 @@ const ServicesAdd = () => {
                                                 }
                                                 filterOption={false}
                                                 notFoundContent={
-                                                    loading ? (
+                                                    ServiceCategories.loading ? (
                                                         <Spin size="small" />
                                                     ) : null
                                                 }

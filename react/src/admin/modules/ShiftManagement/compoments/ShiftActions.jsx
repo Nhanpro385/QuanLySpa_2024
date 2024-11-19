@@ -17,7 +17,10 @@ const ShiftActions = ({ onClick, record }) => {
     ];
 
     return (
-        <Dropdown menu={{ items, onClick: (key) => onClick(key, record) }} trigger={["click"]}>
+        <Dropdown
+            menu={{ items, onClick: (key) => onClick(key, record) }}
+            trigger={["click"]}
+        >
             <Button type="primary">
                 <Space>
                     Hành động

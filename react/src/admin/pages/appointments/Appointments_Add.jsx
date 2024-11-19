@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 
 import {
-    Modal,
     Form,
     Col,
     Row,
@@ -11,90 +10,65 @@ import {
     Button,
     Table,
     InputNumber,
+    Card,
 } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
 import "dayjs/locale/vi";
 import debounce from "lodash/debounce";
 
-import useCustomerActions from "../../Customer/hooks/useCustomerActions";
-import useUsersActions from "../../staffManagement/hooks/useUserAction";
-import { generateSnowflakeId } from "../../../utils";
-
+// import useCustomerActions from "../../Customer/hooks/useCustomerActions";
+import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
+import useServicesActions from "../../modules/services/hooks/useServices";
+import useShiftAction from "../../modules/ShiftManagement/hooks/useShiftAction";
+import { generateSnowflakeId } from "../../utils";
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const serviceOptions = [
-    { label: "Dịch vụ 1", value: "a10", key: "a10" },
-    { label: "Dịch vụ 2", value: "a11", key: "a11" },
-];
+const Appointment_Add = () => {
+    const { getservices } = useServicesActions();
+    const { getusers } = useUsersActions();
+    const { getshifts } = useShiftAction();
+    const service = useSelector((state) => state.services);
+    const users = useSelector((state) => state.user);
+    const shifts = useSelector((state) => state.shifts);
 
-function DebounceSelect({
-    fetchOptions,
-    debounceTimeout = 800,
-    defauldOptions,
-    ...props
-}) {
-    const [fetching, setFetching] = useState(false);
-    const [options, setOptions] = useState(defauldOptions);
-    const fetchRef = useRef(0);
-    const debounceFetcher = useMemo(() => {
-        const loadOptions = (value) => {
-            fetchRef.current += 1;
-            const fetchId = fetchRef.current;
-            setOptions([]);
-            setFetching(true);
-            if (value === "") {
-                setOptions(defauldOptions);
-                setFetching(false);
-                return;
-            }
-            fetchOptions(value).then((newOptions) => {
-                if (fetchId !== fetchRef.current) {
-                    // for fetch callback order
-                    return;
-                }
+    useEffect(() => {
+        getservices(50);
+        getusers(50);
+        getshifts();
+    }, []);
 
-                setOptions(newOptions);
-                setFetching(false);
-            });
-        };
-        return debounce(loadOptions, debounceTimeout);
-    }, [fetchOptions, debounceTimeout]);
-    return (
-        <Select
-            labelInValue
-            filterOption={false}
-            onSearch={debounceFetcher}
-            notFoundContent={fetching ? <Spin size="small" /> : null}
-            {...props}
-            options={options}
-        />
-    );
-}
-
-function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
     const {
         control,
         handleSubmit,
         formState: { errors },
     } = useForm();
-    const { getCustomer } = useCustomerActions();
-    const { getusers, searchusers } = useUsersActions();
-    const { customers } = useSelector((state) => state.customers);
-    const { users } = useSelector((state) => state.user);
 
     const [selectedServices, setSelectedServices] = useState([]);
     const [value, setValue] = useState([]);
-    useEffect(() => {
-        getCustomer();
-        getusers();
-    }, [isModalOpen]);
 
-    const userOptions = users.data.map((user) => ({
-        label: `${user.full_name} - ${user.role}`,
-        value: user.id,
-    }));
+    const userOptions =
+        users.users.data.map((user) => ({
+            label: user.full_name,
+            value: user.id,
+        })) || [];
+
+    const serviceOptions =
+        service.services.data.map((service) => ({
+            label: service.name,
+            value: service.id,
+        })) || [];
+    const { data: shiftsData } = shifts.shifts.data || [];
+    console.log("shiftsData", shiftsData);
+
+    const shiftsOptions =
+        (shiftsData &&
+            shiftsData.map((shift) => ({
+                label: `${shift.shift_date} (${shift.start_time} - ${shift.end_time})`,
+                value: shift.id,
+            }))) ||
+        [];
 
     const onSubmit = (data) => {
         const payload = {
@@ -153,13 +127,7 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
         console.log("fetching user", username);
     }
     return (
-        <Modal
-            title="Thêm lịch hẹn"
-            open={isModalOpen}
-            onCancel={handleCancel}
-            footer={null}
-            width={1200}
-        >
+        <Card title="Thêm lịch hẹn">
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
                     <Col span={6}>
@@ -243,10 +211,7 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                                         allowClear
                                         style={{ width: "100%" }}
                                         placeholder="Chọn ca làm việc"
-                                        options={[
-                                            { label: "Ca 1", value: "a10" },
-                                            { label: "Ca 2", value: "a11" },
-                                        ]}
+                                        options={shiftsOptions}
                                     />
                                 )}
                             />
@@ -271,6 +236,11 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                                         placeholder="Chọn dịch vụ"
                                         options={serviceOptions}
                                         onChange={handleServiceChange}
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? "")
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
                                     />
                                 )}
                             />
@@ -283,26 +253,19 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                                 control={control}
                                 rules={{ required: "Vui lòng chọn nhân viên" }}
                                 render={({ field }) => (
-                                    // <Select
-                                    //     {...field}
-                                    //     mode="multiple"
-                                    //     allowClear
-                                    //     style={{ width: "100%" }}
-                                    //     placeholder="Chọn nhân viên"
-                                    //     options={userOptions}
-                                    // />
-                                    <DebounceSelect
+                                    <Select
+                                        {...field}
                                         mode="multiple"
-                                        value={value}
-                                        placeholder="Select users"
-                                        fetchOptions={fetchUserList}
-                                        defauldOptions={userOptions}
-                                        onChange={(newValue) => {
-                                            setValue(newValue);
-                                        }}
-                                        style={{
-                                            width: "100%",
-                                        }}
+                                        allowClear
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn nhân viên"
+                                        options={userOptions}
+                                        showSearch
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? "")
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
                                     />
                                 )}
                             />
@@ -344,8 +307,8 @@ function ModalAppointment({ isModalOpen, handleOk, handleCancel }) {
                     </Button>
                 </Form.Item>
             </Form>
-        </Modal>
+        </Card>
     );
-}
+};
 
-export default ModalAppointment;
+export default Appointment_Add;

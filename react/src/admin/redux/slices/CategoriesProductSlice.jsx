@@ -16,7 +16,6 @@ export const categoriesGet = createAsyncThunk(
     "categories/get",
     async (config) => {
         const { page, per_page } = config;
-        console.log("config", config);
 
         if (page && per_page) {
             const response = await axiosInstance.get(

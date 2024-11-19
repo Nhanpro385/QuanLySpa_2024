@@ -16,11 +16,20 @@ const checkRoleAndLogout = (dispatch) => {
 
 export const usersGet = createAsyncThunk(
     "users/get",
-    async (_, { rejectWithValue }) => {
+    async (per_page, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Users.list);
+            // Xây dựng query parameters chỉ với `per_page` nếu có
+            const queryParams = per_page ? `?per_page=${per_page}` : "";
+
+            // Gọi API
+            const response = await axiosInstance.get(
+                `${endpoints.Users.list}${queryParams}`
+            );
+
+            // Trả về dữ liệu response
             return response.data;
         } catch (error) {
+            // Trả về lỗi với rejectWithValue
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message:
@@ -30,6 +39,7 @@ export const usersGet = createAsyncThunk(
         }
     }
 );
+
 export const usersAdd = createAsyncThunk(
     "users/add",
     async (data, { dispatch, rejectWithValue }) => {

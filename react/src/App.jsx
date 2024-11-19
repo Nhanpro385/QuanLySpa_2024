@@ -11,34 +11,31 @@ import DefaultLayout from "./client/components/layout/DefaultLayout"; // Layout 
 import AppClient from "./client/app"; // Nội dung định tuyến cho client
 import AdminApp from "./admin/app"; // Ứng dụng admin
 
-
 import { ConfigProvider } from "antd";
 
-
+import { useSelector } from "react-redux";
 const App = () => {
+
     return (
         <ConfigProvider theme={{ token: { colorPrimary: "#E05265" } }}>
-        <Router>
-            <Routes>
-                {/* Routes cho client */}
-                <Route
-                    path="*"
-                    element={
-                        <DefaultLayout>
-                            <AppClient />
-                        </DefaultLayout>
-                    }
-                />
+            <Router>
+                <Routes>
+                    {/* Routes cho client */}
+                    <Route
+                        path="*"
+                        element={
+                            <DefaultLayout>
+                                <AppClient />
+                            </DefaultLayout>
+                        }
+                    />
 
-                {/* Routes cho admin */}
-                <Route path="/admin/*" element={<AdminApp />} />
-              
-                
-          
-            
-                <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-        </Router>
+                    {/* Routes cho admin */}
+                    <Route path="/admin/*" element={<AdminApp />} />
+
+                    <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
+            </Router>
         </ConfigProvider>
     );
 };

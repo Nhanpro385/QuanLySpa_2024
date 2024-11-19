@@ -16,6 +16,7 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
+import { get } from "react-hook-form";
 
 const { Sider } = Layout;
 
@@ -30,10 +31,7 @@ function getItem(label, key, icon, children) {
 
 const items = [
     getItem(
-        <Link
-            className="text-decoration-none text-black fs-4"
-            to="/admin"
-        >
+        <Link className="text-decoration-none text-black fs-4" to="/admin">
             Trang chủ
         </Link>,
         "1",
@@ -72,7 +70,7 @@ const items = [
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
-            to="/admin/appointments"
+            to="/admin/lichhen"
         >
             Quản lý lịch hẹn
         </Link>,
@@ -82,11 +80,20 @@ const items = [
             getItem(
                 <Link
                     className="text-decoration-none text-black fs-4"
-                    to="/admin/appointments"
+                    to="/admin/lichhen"
                 >
                     Danh sách lịch hẹn
                 </Link>,
                 "6"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/lichhen/them"
+                >
+                    Thêm lịch hẹn
+                </Link>,
+                "7"
             ),
         ]
     ),
@@ -378,7 +385,7 @@ const items = [
                     Quản lý Nhà Cung Cấp
                 </Link>,
                 "34"
-            )
+            ),
         ]
     ),
 ];

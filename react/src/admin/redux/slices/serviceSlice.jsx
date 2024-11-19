@@ -13,10 +13,31 @@ const checkRoleAndLogout = (dispatch) => {
     return userRole;
 };
 
-export const servicesGet = createAsyncThunk("services/get", async () => {
-    const response = await axiosInstance.get(endpoints.services.list);
-    return response.data;
-});
+export const servicesGet = createAsyncThunk(
+    "services/get",
+    async (per_page, { rejectWithValue }) => {
+        try {
+            // Xây dựng query parameters chỉ với `per_page` nếu có
+            const queryParams = per_page ? `?per_page=${per_page}` : "";
+
+            // Gọi API
+            const response = await axiosInstance.get(
+                `${endpoints.services.list}${queryParams}`
+            );
+
+            // Trả về dữ liệu response
+            return response.data;
+        } catch (error) {
+            // Trả về lỗi với rejectWithValue
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi lấy danh sách người dùng",
+            });
+        }
+    }
+);
 
 export const servicesAdd = createAsyncThunk(
     "services/add",

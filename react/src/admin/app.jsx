@@ -1,8 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { PublicRoutes } from "./config/routes";
-import { Provider } from "react-redux";
-import store from "@admin/redux/store/store.jsx";
+
 import AuthMiddleware from "@/authMiddleware";
 import AdminLayout from "@admin/components/layout/AdminLayout";
 import { Button, Result } from "antd";
@@ -14,7 +13,7 @@ import Newpassword from "./modules/authen/compoment/newpassPage";
     
 const AppAdmin = () => {
     return (
-        <Provider store={store}>
+   
             <Routes>
                 {PublicRoutes.map((route, index) => (
                     <Route
@@ -34,7 +33,7 @@ const AppAdmin = () => {
                 <Route path="/quenmatkhau" element={<ForgotPage />} />
                 <Route path="/matkhaumoi" element={<Newpassword />} />
             </Routes>
-        </Provider>
+     
     );
 };
 
