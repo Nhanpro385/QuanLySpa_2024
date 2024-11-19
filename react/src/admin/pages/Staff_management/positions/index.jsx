@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Card, Col, Row, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Card, Col, Input, Row, message } from "antd";
 import { useForm } from "react-hook-form";
 import { Snowflake } from "@theinternetfolks/snowflake";
 import useModal from "../../../modules/appointments/hooks/openmodal";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import PositionsForm from "../../../modules/staffManagement/compoments/PositionsForm";
 import PositionsTable from "../../../modules/staffManagement/compoments/PositionsTable";
 import usePositionsActions from "../../../modules/staffManagement/hooks/usePositionsAction";
+import debounce from "lodash/debounce";
 
 const Positions = () => {
     const {
@@ -16,6 +17,7 @@ const Positions = () => {
         updatePositions,
         deletePositions,
         getPositionsById,
+        searchPositions,
     } = usePositionsActions();
 
     const [messageApi, contextHolder] = message.useMessage();
@@ -42,6 +44,9 @@ const Positions = () => {
             note: "",
         },
     });
+    console.log(Positions);
+
+    const pagination = Positions.meta || [];
 
     const dataSource = (Positions && Positions.data) || [];
 
@@ -168,9 +173,36 @@ const Positions = () => {
         }
     };
 
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+        per_page: 5
+    })
+
+    useEffect(() => {
+        if (searchQuery.search || searchQuery.page !== 1 || searchQuery.per_page){
+            searchPositions(searchQuery)
+        } else {
+            console.log(2);
+            
+        }
+    }, [searchQuery])
+    console.log(searchQuery);
+
+
+    const getSearch = (e) => {
+        setSearchQuery({ ...searchQuery, search: e });
+    }
+    console.log(searchQuery);
+
+    const handleChangePage = (page, pagination) => {
+
+        setSearchQuery({ ...searchQuery, page, per_page: pagination })
+    }
+
     return (
         <>
-        <h1 className="text-center">Quản lý chức vụ</h1>
+            <h1 className="text-center">Quản lý chức vụ</h1>
             {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col xl={24} lg={24} md={24} sm={24} xs={24}>
@@ -184,11 +216,24 @@ const Positions = () => {
                 </Col>
                 <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Card title="Danh sách Chức vụ">
+                        <Row>
+                            <Col xs={24} sm={24} xxl={4} xl={4} lg={4} md={12}>
+                                <Input.Search
+                                    placeholder="Tìm kiếm chức vụ"
+                                    type="text"
+                                    name="search"
+                                    onSearch={getSearch}
+                                    onChange={(e) => { getSearch(e.target.value) }}
+                                />
+                            </Col>
+                        </Row>
                         <PositionsTable
                             dataSource={dataSource}
                             loading={loading}
                             editCate={editCate}
                             deleteCate={deleteCate}
+                            pagination={pagination}
+                            onChangePage={handleChangePage}
                         />
                     </Card>
                     <PositionsModalEdit

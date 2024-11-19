@@ -43,6 +43,7 @@ const endpoints = {
         create: `${API_BASE_URL}/positions`,
         update: (id) => `${API_BASE_URL}/positions/${id}`,
         delete: (id) => `${API_BASE_URL}/positions/${id}`,
+        search: `${API_BASE_URL}/positions`,
     },
     Suppliers: {
         list: `${API_BASE_URL}/supplier`,

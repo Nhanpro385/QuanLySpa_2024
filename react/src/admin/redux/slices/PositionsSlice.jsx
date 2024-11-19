@@ -1,17 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
-import { logout } from "./authSlice";
+import { message } from "antd";
 
-const checkRoleAndLogout = (dispatch) => {
-    const userRole = localStorage.getItem("role");
-
-    if (!userRole) {
-        dispatch(logout());
-    }
-
-    return userRole;
-};
 export const PositionsGet = createAsyncThunk("Positions/get", async () => {
     const response = await axiosInstance.get(endpoints.Positions.list);
     return response.data;
@@ -70,16 +61,10 @@ export const PositionsDelete = createAsyncThunk(
 
 export const PositionsUpdate = createAsyncThunk(
     "Positions/update",
-    async (data, { dispatch, rejectWithValue }) => {
-        const userRole = checkRoleAndLogout(dispatch);
-        if (userRole !== "Quản trị viên") {
-            return rejectWithValue({
-                status: 403,
-                message: "Bạn không có quyền cập nhật vị trí",
-            });
-        }
-
+    async (data, { rejectWithValue }) => {
         try {
+
+
             const response = await axiosInstance.put(
                 endpoints.Positions.update(data.id),
                 data
@@ -102,6 +87,29 @@ export const PositionsGetById = createAsyncThunk(
             endpoints.Positions.detail(id)
         );
         return response.data;
+    }
+);
+
+export const PositionsSearch = createAsyncThunk(
+    "Positions/search",
+    async (data, { rejectWithValue }) => {
+        try {
+
+            const response = await axiosInstance.get(
+                `${endpoints.Positions.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
+            );
+            console.log(response.data);
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm",
+            });
+        }
+
     }
 );
 
@@ -187,6 +195,24 @@ const PositionsSlice = createSlice({
                 state.loading = false;
             })
             .addCase(PositionsGetById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(PositionsSearch.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(PositionsSearch.fulfilled, (state, action) => {
+                if (action.payload.data == undefined) {
+                    state.Positions = {
+                        data: [],
+                    }
+                } else {
+                    state.Positions = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(PositionsSearch.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

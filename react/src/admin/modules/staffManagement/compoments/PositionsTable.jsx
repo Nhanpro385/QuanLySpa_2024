@@ -2,7 +2,8 @@ import React from "react";
 import { Table, Button, Space } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const PositionsTable = ({ dataSource, loading, editCate, deleteCate }) => {
+const PositionsTable = ({ dataSource, loading, editCate, deleteCate, pagination, onChangePage }) => {
+
     const columns = [
         {
             title: "STT",
@@ -39,11 +40,22 @@ const PositionsTable = ({ dataSource, loading, editCate, deleteCate }) => {
 
     return (
         <Table
+            loading={loading}
             style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                onChange: onChangePage,
+                pageSizeOptions:['5','10','50','100'],
+                showTotal: (total) => `Tổng ${total} mục`,
+            }}
             rowKey="id"
-            loading={loading}
+
         />
     );
 };
