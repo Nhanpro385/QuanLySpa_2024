@@ -54,6 +54,7 @@ import PaymentManagement from "@admin/pages/paymentManagenment";
 import SupplierManagement from "@admin/pages/supplierManagement";
 import Appointment_Add from "@admin/pages/appointments/Appointments_Add";
 import Appointment_Edit from "@admin/pages/appointments/Appointments_Edit";
+import StreatMents from "../pages/customerManagement/CustomerTreatments";
 
 const PublicRoutes = [
     // Dashboard
@@ -64,7 +65,7 @@ const PublicRoutes = [
     { path: "/khachhang/them", element: <CustomersAdd /> },
     { path: "/khachhang/lichsugiaodich/:id", element: <HistoryService /> },
     { path: "/khachhang/chitiet/:id", element: <CustomerDetail /> },
-
+    { path: "/khachhang/lichsugiaodich", element: <StreatMents /> },
     // Appointments
     { path: "/lichhen", element: <Appointments /> },
     { path: "/lichhen/them", element: <Appointment_Add /> },

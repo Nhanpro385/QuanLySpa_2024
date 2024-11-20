@@ -12,9 +12,9 @@ import {
     SupplierSlice,
     userSlice,
     warehouseSlice,
-    CustomerSlice, 
+    CustomerSlice,
+    streatmentSlice,
 } from "../slices";
-
 
 const store = configureStore({
     reducer: {
@@ -31,6 +31,7 @@ const store = configureStore({
         appointments: appointmentsSlice,
         comments: commentsSlice,
         customers: CustomerSlice,
+        streatments: streatmentSlice,
     },
 });
 

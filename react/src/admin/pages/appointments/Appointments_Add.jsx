@@ -32,6 +32,7 @@ const Appointment_Add = () => {
     const service = useSelector((state) => state.services);
     const users = useSelector((state) => state.user);
     const shifts = useSelector((state) => state.shifts);
+console.log("shifts", shifts);
 
     useEffect(() => {
         getservices(50);

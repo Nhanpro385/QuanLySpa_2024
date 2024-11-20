@@ -107,6 +107,12 @@ const endpoints = {
         delete: (id) => `${API_BASE_URL}/appointments/${id}`,
         search: `${API_BASE_URL}/appointments`,
     },
+    streatments: {
+        list: `${API_BASE_URL}/treatment-history`,
+        create: `${API_BASE_URL}/treatment-history`,
+        update: (id) => `${API_BASE_URL}/treatment-history/${id}`,
+        delete: (id) => `${API_BASE_URL}/treatment-history/${id}`,
+    },
 };
 
 export default endpoints;

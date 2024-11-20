@@ -65,6 +65,15 @@ const items = [
                 </Link>,
                 "4"
             ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/khachhang/lichsugiaodich"
+                >
+                    Lịch sử giao dịch
+                </Link>,
+                "5"
+            ),
         ]
     ),
     getItem(

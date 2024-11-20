@@ -11,3 +11,4 @@ export { default as SupplierSlice } from "./SupplierSlice";
 export { default as userSlice } from "./UserSlice";
 export { default as warehouseSlice } from "./warehouseSlice";
 export { default as CustomerSlice } from "./CustomerSlice";
+export { default as streatmentSlice } from "./strearmentSlice";
