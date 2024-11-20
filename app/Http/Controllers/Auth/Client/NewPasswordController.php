@@ -42,10 +42,8 @@ class NewPasswordController extends Controller
             $errorMessage = $status === Password::INVALID_TOKEN
                 ? 'Token không hợp lệ. Vui lòng thử lại với token hợp lệ.'
                 : 'Đã xảy ra lỗi, vui lòng thử lại sau.';
-            throw ValidationException::withMessages([
-                'email' => [__($status)],
-                'message' => $errorMessage
-            ]);
+
+            return response()->json(['status' => __($status), 'message' => $errorMessage]);
         }
 
         return response()->json(['status' => __($status), 'message' => 'Mật khẩu mới đã được cập nhật thành công vui lòng đến trang đăng nhập.']);
