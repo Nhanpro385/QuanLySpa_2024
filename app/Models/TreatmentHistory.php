@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kra8\Snowflake\HasSnowflakePrimary;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -26,6 +27,7 @@ class TreatmentHistory extends Model
         'image_after',
         'feedback',
         'note',
+        'evalute',
         'status',
         'created_by',
         'updated_at',
@@ -80,10 +82,22 @@ class TreatmentHistory extends Model
     //         }
     //     });
 
-    //     static::updating(function ($model) {
-    //         if (auth()->check()) {
-    //             $model->updated_by = auth()->id();
-    //         }
-    //     });
-    // }
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->updated_by = auth()->id();
+            }
+        });
+
+
+        static::deleting(function ($model) {
+            // Xóa ảnh trước khi xóa bản ghi
+            if ($model->image_before && Storage::disk('public')->exists($model->image_before)) {
+                Storage::disk('public')->delete($model->image_before);
+            }
+
+            if ($model->image_after && Storage::disk('public')->exists($model->image_after)) {
+                Storage::disk('public')->delete($model->image_after);
+            }
+        });
+    }
 }

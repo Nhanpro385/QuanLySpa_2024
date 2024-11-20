@@ -52,4 +52,17 @@ class Shift extends Model
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
     }
+
+
+    public function staffShifts()
+    {
+        return $this->belongsToMany(User::class, 'staff_shifts', 'shift_id', 'staff_id')
+                    ->withTimestamps(); // Nếu bạn muốn quản lý `created_at` và `updated_at` trên bảng trung gian
+    }
+
+    // Hiển thị danh sách nhân viên trong Shift
+    public function getStaffListAttribute()
+    {
+        return $this->staffShifts()->get(['id', 'full_name','role']);
+    }
 }

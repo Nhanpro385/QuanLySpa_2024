@@ -3,28 +3,36 @@
 namespace App\Http\Requests\Admin\TreatmentHistory;
 
 use Illuminate\Foundation\Http\FormRequest;
+
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
-class UpdateTreatmentHistoryRequest extends FormRequest
+class UpdateTreamentHistoryRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
         return [
-            'customer_id' => ['sometimes', 'exists:customers,id'],
-            'appointment_id' => ['sometimes', 'exists:appointments,id'],
-            'staff_id' => ['sometimes', 'exists:users,id'],
-            'status' => ['sometimes', 'boolean'],
-            'evaluate' => ['nullable', 'integer', 'min:1', 'max:5'],
-            'image_before' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'image_after' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'feedback' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string', 'max:500'],
+            'customer_id' => 'exists:customers,id',
+            'appointment_id' => 'exists:appointments,id',
+            'staff_id' => 'exists:users,id',
+            'status' => 'boolean',
+            'evaluate' => 'nullable|integer|min:1|max:5',
+            'image_before' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_after' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'feedback' => 'nullable|string|max:255',
+            'note' => 'nullable|string|max:500',
         ];
     }
 
@@ -55,7 +63,7 @@ class UpdateTreatmentHistoryRequest extends FormRequest
     {
         throw new HttpResponseException(
             response()->json([
-                'status' => 'error',
+                'status' => false,
                 'message' => 'Dữ liệu đầu vào không hợp lệ.',
                 'errors' => $validator->errors(),
             ], 422)

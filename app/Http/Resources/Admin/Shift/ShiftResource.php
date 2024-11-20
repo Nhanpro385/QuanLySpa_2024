@@ -26,9 +26,15 @@ class ShiftResource extends JsonResource
                 'name' => $this->updatedBy->full_name,
                 'role' => $this->updatedBy->role,
             ] : null,
+            'staffs' => $this->staffShifts->map(function ($staff) {
+                return [
+                    'id' => $staff->id,
+                    'name' => $staff->full_name,
+                    'role' => $staff->role,
+                ];
+            }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }
 }
-

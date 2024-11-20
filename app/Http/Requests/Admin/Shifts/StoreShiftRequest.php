@@ -26,17 +26,32 @@ class StoreShiftRequest extends FormRequest
             'status' => 'boolean',
         ];
     }
-
-    // protected function prepareForValidation()
-    // {
-    //     // Kiểm tra nếu start_time và end_time có dữ liệu và chuyển đổi về định dạng H:i:s
-    //     if ($this->has('start_time')) {
-    //         $this->merge(['start_time' => Carbon::parse($this->input('start_time'))->format('H:i:s')]);
-    //     }
-    //     if ($this->has('end_time')) {
-    //         $this->merge(['end_time' => Carbon::parse($this->input('end_time'))->format('H:i:s')]);
-    //     }
-    // }
+    
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $shiftDate = $this->input('shift_date');
+            $startTime = $this->input('start_time');
+            $endTime = $this->input('end_time');
+    
+            $overlapShift = \App\Models\Shift::where('shift_date', $shiftDate)
+                ->where(function ($query) use ($startTime, $endTime) {
+                    $query->whereBetween('start_time', [$startTime, $endTime])
+                          ->orWhereBetween('end_time', [$startTime, $endTime])
+                          ->orWhere(function ($q) use ($startTime, $endTime) {
+                              $q->where('start_time', '<=', $startTime)
+                                ->where('end_time', '>=', $endTime);
+                          });
+                })
+                ->exists();
+    
+            if ($overlapShift) {
+                $validator->errors()->add('shift_time', 'Thời gian của ca làm việc bị trùng lặp với một ca làm việc khác.');
+            }
+        });
+    }
+    
+  
 
     public function messages(): array
     {
@@ -54,8 +69,10 @@ class StoreShiftRequest extends FormRequest
             'note.string' => 'Ghi chú phải là chuỗi ký tự.',
             'note.max' => 'Ghi chú không được vượt quá 255 ký tự.',
             'status.boolean' => 'Trạng thái phải là giá trị boolean.',
+            'shift_time' => 'Thời gian của ca làm việc bị trùng lặp với một ca làm việc khác.',
         ];
     }
+    
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(

@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\StaffShifts\StaffShiftUpdateRequest;
 use App\Http\Resources\Admin\StaffShifts\StaffShiftResource;
 use App\Http\Resources\Admin\StaffShifts\StaffShiftCollection;
 
+
 class StaffShiftController extends Controller
 {
     public function index()

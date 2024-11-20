@@ -47,9 +47,11 @@ Route::group([
 
 
     Route::get('/treatment-history', [TreatmentHistoryController::class, 'index']);
+    Route::get('/customers/{customer_id}/treatment-history', [TreatmentHistoryController::class, 'getByCustomerId']);
+
     Route::post('/treatment-history', [TreatmentHistoryController::class, 'store']);
     Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
-    Route::put('/treatment-history/{id}', [TreatmentHistoryController::class, 'update']);
+    Route::post('/treatment-history/{id}', [TreatmentHistoryController::class, 'update']);
     Route::delete('/treatment-history/{id}', [TreatmentHistoryController::class, 'destroy']);
     // Service Categories
     Route::get('/serviceCategories', [ServiceCategoryController::class, 'index']);

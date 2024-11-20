@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\TreatmentHistory;
 use App\Http\Requests\Admin\TreatmentHistory\StoreTreatmentHistoryRequest as storerq;
-use App\Http\Requests\Admin\TreatmentHistory\UpdateTreatmentHistoryRequest as updaterq;
+use App\Http\Requests\Admin\TreatmentHistory\UpdateTreamentHistoryRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Admin\TreatmentHistory\TreatmentHistoryResource;
 use App\Http\Resources\Admin\TreatmentHistory\TreatmentHistoryCollection;
 use App\Filters\Admin\TreatmentHistoryFilter;
@@ -65,6 +66,7 @@ class TreatmentHistoryController extends Controller
     // Store a new treatment history
     public function store(storerq $request)
     {
+       
         try {
             $data = $request->validated();
     
@@ -98,60 +100,53 @@ class TreatmentHistoryController extends Controller
     }
     
   // Update an existing treatment history
-public function update(updaterq $request, $id)
-{
-    try {
-        // Tìm Treatment History theo ID
-        $treatmentHistory = TreatmentHistory::findOrFail($id);
+  public function update(UpdateTreamentHistoryRequest $request, string $id)
+  {
 
-        // Lấy dữ liệu đã được validate
-        $data = $request->validated();
+      try {
+     
+          // Tìm Treatment History theo ID
+          $treatmentHistory = TreatmentHistory::find($id);
 
-        // Upload và cập nhật image_before nếu có
-        if ($request->hasFile('image_before')) {
-            // Xóa ảnh cũ nếu tồn tại
-            if ($treatmentHistory->image_before && \Storage::disk('public')->exists($treatmentHistory->image_before)) {
-                \Storage::disk('public')->delete($treatmentHistory->image_before);
-            }
+          // Lấy dữ liệu đã được validate
+          $data = $request->validated();
+      
+          // Upload và cập nhật image_before nếu có
+          if ($request->hasFile('image_before')) {
+              if ($treatmentHistory->image_before && Storage::disk('public')->exists($treatmentHistory->image_before)) {
+                  Storage::disk('public')->delete($treatmentHistory->image_before);
+              }
+              $data['image_before'] = $request->file('image_before')->store('uploads/treatment_histories', 'public');
+          }
 
-            // Lưu ảnh mới
-            $imageBeforePath = $request->file('image_before')->store('uploads/treatment_histories', 'public');
-            $data['image_before'] = $imageBeforePath;
-        }
+          // Upload và cập nhật image_after nếu có
+          if ($request->hasFile('image_after')) {
+              if ($treatmentHistory->image_after && Storage::disk('public')->exists($treatmentHistory->image_after)) {
+                  Storage::disk('public')->delete($treatmentHistory->image_after);
+              }
+              $data['image_after'] = $request->file('image_after')->store('uploads/treatment_histories', 'public');
+          }
 
-        // Upload và cập nhật image_after nếu có
-        if ($request->hasFile('image_after')) {
-            // Xóa ảnh cũ nếu tồn tại
-            if ($treatmentHistory->image_after && \Storage::disk('public')->exists($treatmentHistory->image_after)) {
-                \Storage::disk('public')->delete($treatmentHistory->image_after);
-            }
+          // Gán ID người cập nhật
+          $data['updated_by'] = auth()->id();
 
-            // Lưu ảnh mới
-            $imageAfterPath = $request->file('image_after')->store('uploads/treatment_histories', 'public');
-            $data['image_after'] = $imageAfterPath;
-        }
+          // Cập nhật thông tin vào cơ sở dữ liệu
+          $treatmentHistory->update($data);
 
-        // Cập nhật thông tin người sửa
-        $data['updated_by'] = auth()->id();
-
-        // Cập nhật thông tin vào cơ sở dữ liệu
-        $treatmentHistory->update($data);
-
-        // Trả về response thành công
-        return response()->json([
-            'message' => 'Cập nhật Treatment History thành công',
-            'data' => new TreatmentHistoryResource($treatmentHistory),
-        ]);
-    } catch (\Throwable $th) {
-        // Trả về response lỗi
-        return response()->json([
-            'status' => false,
-            'message' => 'Đã xảy ra lỗi khi cập nhật Treatment History.',
-            'error' => $th->getMessage(),
-        ], 500);
-    }
-}
-
+          // Trả về response thành công
+          return response()->json([
+              'message' => 'Cập nhật Treatment History thành công',
+              'data' => new TreatmentHistoryResource($treatmentHistory->refresh()),
+          ]);
+      } catch (\Throwable $th) {
+          // Trả về response lỗi
+          return response()->json([
+              'status' => false,
+              'message' => 'Đã xảy ra lỗi khi cập nhật Treatment History.',
+              'error' => $th->getMessage(),
+          ], 500);
+      }
+  }
 
 
     // Show a specific treatment history
@@ -164,9 +159,41 @@ public function update(updaterq $request, $id)
     // Delete a treatment history
     public function destroy($id)
     {
-        $treatmentHistory = TreatmentHistory::findOrFail($id);
-        $treatmentHistory->delete();
-
-        return response()->json(['message' => 'Xóa lịch sử điều trị thành công']);
+        try {
+            $treatmentHistory = TreatmentHistory::findOrFail($id);
+            $treatmentHistory->delete();
+    
+            return response()->json([
+                'message' => 'Xóa lịch sử điều trị thành công',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Đã xảy ra lỗi khi xóa Treatment History.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
+    public function getByCustomerId($customer_id, Request $request)
+{
+    try {
+        // Áp dụng filter và phân trang (nếu có)
+        $perPage = $request->query('per_page', 10);
+
+        $treatmentHistories = TreatmentHistory::where('customer_id', $customer_id)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        return (new TreatmentHistoryCollection($treatmentHistories))
+            ->additional(['status' => true]);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Đã xảy ra lỗi khi lấy danh sách Treatment Histories.',
+            'error' => $th->getMessage(),
+        ], 500);
+    }
+}
+
+    
 }
