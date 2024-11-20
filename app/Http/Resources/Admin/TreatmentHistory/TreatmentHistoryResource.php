@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 namespace App\Http\Resources\Admin\TreatmentHistory;
 
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,6 +18,29 @@ class TreatmentHistoryResource extends JsonResource
             'note' => $this->note,
             'status' => $this->status,
             'evaluete' => $this->evaluete,
+
+            // Thông tin customer
+            'customer' => [
+                'id' => $this->customer->id ?? null,
+                'name' => $this->customer->name ?? null,
+                'email' => $this->customer->email ?? null,
+            ],
+
+            // Thông tin staff
+            'staff' => [
+                'id' => $this->createdBy->id ?? null,
+                'full_name' => $this->createdBy->full_name ?? null,
+                'role' => $this->createdBy->role->name ?? null,
+            ],
+
+            // Thông tin appointment
+            'appointment' => [
+                'appointment_date' => $this->appointment->appointment_date ?? null,
+            ],
+
+            // Tổng tiền từ payment
+            'payment_total' => $this->appointment->payments->sum('total_amount') ?? 0,
+
             'created_by' => $this->created_by ? [
                 'id' => $this->created_by,
                 'full_name' => $this->createdBy->full_name ?? null,
