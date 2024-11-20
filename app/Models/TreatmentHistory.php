@@ -72,15 +72,15 @@ class TreatmentHistory extends Model
     // }
 
     // Auto-assign created_by and updated_by on create and update
-    // protected static function boot()
-    // {
-    //     parent::boot();
+    protected static function boot()
+    {
+        parent::boot();
 
-    //     static::creating(function ($model) {
-    //         if (auth()->check()) {
-    //             $model->created_by = auth()->id();
-    //         }
-    //     });
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->created_by = auth()->id();
+            }
+        });
 
         static::updating(function ($model) {
             if (auth()->check()) {
