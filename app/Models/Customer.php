@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kra8\Snowflake\HasSnowflakePrimary;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class Customer extends Model
+class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
-    use HasFactory, HasSnowflakePrimary;
+    use HasFactory, HasSnowflakePrimary, Notifiable;
 
     protected $keyType = 'string';
     protected $table = 'customers';
@@ -59,7 +64,7 @@ class Customer extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    
+
 
 
 
@@ -73,5 +78,40 @@ class Customer extends Model
     public function treatmentHistories()
     {
         return $this->hasMany(TreatmentHistory::class, 'customer_id', 'id');
+    }
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = env('FRONTEND_URL') . '/matkhaumoi?token=' . $token;
+        $this->notify(new ResetPasswordNotification($url));
     }
 }
