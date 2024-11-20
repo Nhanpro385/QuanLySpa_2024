@@ -6,6 +6,8 @@ use App\Models\Shift;
 use App\Http\Requests\Admin\Shifts\StoreShiftRequest;
 use App\Http\Requests\Admin\Shifts\UpdateShiftRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use App\Http\Resources\Admin\Shift\ShiftResource;
 use App\Http\Resources\Admin\Shift\ShiftCollection;
 use App\Filters\Admin\ShiftFilter;
@@ -99,7 +101,16 @@ class ShiftsController extends Controller
 
     public function update(UpdateShiftRequest $request, $id)
     {
-        $shift = Shift::findOrFail($id);
+        try {
+            // Tìm bản ghi
+            $shift = Shift::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            // Xử lý khi không tìm thấy
+            return response()->json([
+                'status' => false,
+                'message' => 'Không tìm thấy ca làm việc với ID này.',
+            ], 404);
+        }
         $data = $request->validated();
         $data['updated_by'] = auth()->id();
 
@@ -115,10 +126,16 @@ class ShiftsController extends Controller
     // Show a specific shift
     public function show($id)
     {
-        $shift = Shift::findOrFail($id);
-        return new ShiftResource($shift);
+        try {
+            $shift = Shift::findOrFail($id);
+            return new ShiftResource($shift);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Không tìm thấy ca làm việc với ID này.',
+            ], 404);
+        }
     }
-
     // Update an existing shift
     // public function update(UpdateShiftRequest $request, $id)
     // {
@@ -130,8 +147,23 @@ class ShiftsController extends Controller
     // Delete a shift
     public function destroy($id)
     {
-        $shift = Shift::findOrFail($id);
+        try {
+            // Tìm bản ghi cần xóa
+            $shift = Shift::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            // Trả về lỗi nếu không tìm thấy
+            return response()->json([
+                'status' => false,
+                'message' => 'Không tìm thấy ca làm việc với ID này.',
+            ], 404);
+        }
+    
+        // Nếu tìm thấy, thực hiện xóa
         $shift->delete();
-        return response()->json(['message' => 'Xóa Shift thành công']);
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'Xóa ca làm việc thành công.',
+        ]);
     }
 }
