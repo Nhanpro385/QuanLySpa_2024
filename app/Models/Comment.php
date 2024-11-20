@@ -45,9 +45,22 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'parent_comment_id', 'id');
     }
 
-    // Quan hệ cmt cha
+
     public function parent()
     {
         return $this->belongsTo(Comment::class, 'parent_comment_id', 'id');
     }
+
+
+    public function createdByUser()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+
+    public function updatedByUser()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
 }

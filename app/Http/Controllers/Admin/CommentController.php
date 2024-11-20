@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
-use App\Models\CommentImage; // Đảm bảo đã import model CommentImage
+use App\Models\CommentImage;
 use App\Http\Requests\Admin\Comments\CommentRequest;
 use App\Http\Requests\Admin\Comments\CommentUpdateRequest;
 use App\Http\Resources\Admin\Comments\CommentResource;
 use App\Http\Resources\Admin\Comments\CommentCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Kra8\Snowflake\Snowflake;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
+
 
 class CommentController extends Controller
 {
@@ -64,91 +69,99 @@ class CommentController extends Controller
                     'message' => 'Bạn cần đăng nhập để thêm bình luận.',
                 ], 401);
             }
-
             $validatedData = $request->validated();
-            $validatedData['created_by'] = $userId;
-
-            // Thêm bình luận vào cơ sở dữ liệu
-            $comment = Comment::create($validatedData);
-
-            // Kiểm tra xem có tệp hình ảnh nào được gửi lên không
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-
-                if ($image->isValid()) {
-                    // Lưu tệp hình ảnh vào thư mục public/uploads/comments
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    $imagePath = $image->storeAs('uploads/comments', $imageName, 'public');
-
-                    // Tạo ID tự định nghĩa với chiều dài <= 20 ký tự
-                    $customId = 'cid_' . substr(md5(uniqid()), -8); // Duy trì chiều dài <= 20
-
-                    // Lưu thông tin hình ảnh vào bảng comment_images
-                    CommentImage::create([
-                        'id' => $customId,
-                        'comment_id' => $comment->id,
-                        'image_url' => $imagePath,
-                        'created_by' => $userId,
-                        'updated_by' => $userId, // Hoặc không thiết lập nếu không cần
-                    ]);
-                } else {
+            $parentComment = null;
+            if (!empty($validatedData['parent_comment_id'])) {
+                $parentComment = Comment::find($validatedData['parent_comment_id']);
+                if (!$parentComment) {
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Tệp hình ảnh không hợp lệ.',
-                    ], 400);
+                        'message' => 'Bình luận cha không tồn tại.',
+                    ], 404);
                 }
             }
 
+            $comment = Comment::create([
+                'id' => $validatedData['id'],
+                'parent_comment_id' => $parentComment?->id,
+                'service_id' => $validatedData['service_id'] ?? null,
+                'comment' => $validatedData['comment'],
+                'created_by' => $userId,
+            ]);
+            if ($request->hasFile('image_url')) {
+                $images = $request->file('image_url');
+                if (is_array($images)) {
+                    foreach ($images as $index => $file) {
+
+                        $imageName = time() . '_' . $index . '_' . $file->getClientOriginalName();
+                        $file->storeAs('public/uploads/comments', $imageName);
+
+                        CommentImage::create([
+                            'id' => app(Snowflake::class)->next(),
+                            'comment_id' => $comment->id,
+                            'image_url' => $imageName,
+                            'created_by' => $userId,
+                        ]);
+                    }
+                }
+            }
             return response()->json([
                 'status' => 'success',
-                'message' => 'Thêm mới bình luận thành công.',
-                'data' => new CommentResource($comment),
-            ], 201);
+                'message' => 'Thêm bình luận thành công.',
+                'data' => $comment,
+            ]);
         } catch (\Throwable $th) {
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình thêm mới bình luận.',
+                'message' => 'Đã xảy ra lỗi trong quá trình thêm bình luận.',
                 'error' => $th->getMessage(),
             ], 500);
         }
     }
-
 
     public function update(CommentUpdateRequest $request, $id)
     {
         try {
+
             $comment = Comment::findOrFail($id);
+
             $validatedData = $request->validated();
-            $validatedData['updated_by'] = Auth::id(); // Cập nhật người chỉnh sửa
+            $validatedData['updated_by'] = Auth::id();
 
-            // Cập nhật bình luận
-            $comment->update($validatedData);
-
-            // Kiểm tra xem có tệp hình ảnh nào được gửi lên không
             if ($request->hasFile('image_url')) {
-                $image = $request->file('image_url');
-                if ($image->isValid()) {
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    // Lưu tệp hình ảnh vào thư mục public/uploads/comments
-                    $imagePath = $image->storeAs('uploads/comments', $imageName, 'public');
 
-                    // Lưu thông tin hình ảnh vào bảng comment_images
+                $oldImages = CommentImage::where('comment_id', $comment->id)->get();
+
+                foreach ($oldImages as $oldImage) {
+                    $oldImagePath = 'uploads/comments/' . $oldImage->image_url;
+
+                    if (Storage::disk('public')->exists($oldImagePath)) {
+
+                        Storage::disk('public')->delete($oldImagePath);
+                    }
+                    $oldImage->delete();
+                }
+                $images = $request->file('image_url');
+                $images = is_array($images) ? $images : [$images];
+                foreach ($images as $index => $file) {
+                    $imageName = time() . '_' . $index . '_' . $file->getClientOriginalName();
+                    $file->storeAs('public/uploads/comments', $imageName);
                     CommentImage::create([
+                        'id' => app(Snowflake::class)->next(),
                         'comment_id' => $comment->id,
-                        'image_url' => $imagePath,
+                        'image_url' => $imageName,
                         'created_by' => Auth::id(),
-                        'updated_by' => Auth::id(),
                     ]);
-
-                    // Cập nhật lại trường image_url của comment nếu cần
-                    $comment->update(['image_url' => $imagePath]);
                 }
             }
 
+            $comment->update($validatedData);
+            $comment->load(['service', 'customer', 'parent', 'replies']);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Cập nhật bình luận thành công!',
-                'data' => new CommentResource($comment),
+                'data' => $comment,
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
@@ -158,38 +171,12 @@ class CommentController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật bình luận.',
+                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
                 'error' => $th->getMessage(),
             ], 500);
         }
     }
 
-    public function destroy($id)
-    {
-        try {
-            $comment = Comment::findOrFail($id);
-            $comment->delete();
-
-            // Xóa các hình ảnh liên quan nếu cần thiết (nếu có xóa trong model)
-            CommentImage::where('comment_id', $comment->id)->delete();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Bình luận đã được xóa thành công.'
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Bình luận không tồn tại!',
-            ], 404);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình xóa bình luận.',
-                'error' => $th->getMessage(),
-            ], 500);
-        }
-    }
 
     public function reply(CommentRequest $request, $id)
     {
@@ -199,21 +186,20 @@ class CommentController extends Controller
             $validatedData = $request->validated();
             $validatedData['parent_comment_id'] = $parentComment->id;
             $validatedData['created_by'] = Auth::id();
-            $validatedData['updated_by'] = Auth::id(); // Đảm bảo updated_by không phải null
+            $validatedData['updated_by'] = Auth::id();
 
-            // Thêm bình luận trả lời
             $reply = Comment::create($validatedData);
 
-            // Kiểm tra xem có tệp hình ảnh nào được gửi lên không
+
             if ($request->hasFile('image_url')) {
                 $image = $request->file('image_url');
 
                 if ($image->isValid()) {
                     $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    // Lưu tệp hình ảnh vào thư mục public/uploads/comments
+
                     $imagePath = $image->storeAs('uploads/comments', $imageName, 'public');
 
-                    // Lưu thông tin hình ảnh vào bảng comment_images
+
                     CommentImage::create([
                         'comment_id' => $reply->id,
                         'image_url' => $imagePath,
@@ -241,4 +227,46 @@ class CommentController extends Controller
             ], 500);
         }
     }
+
+    public function destroy($id)
+    {
+        try {
+
+            $comment = Comment::findOrFail($id);
+
+
+            $oldImages = CommentImage::where('comment_id', $comment->id)->get();
+
+            foreach ($oldImages as $oldImage) {
+                $oldImagePath = 'uploads/comments/' . $oldImage->image_url;
+
+
+                if (Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+
+                $oldImage->delete();
+            }
+            $comment->replies()->delete();
+
+            $comment->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Bình luận và tất cả ảnh, bình luận con đã được xóa thành công!',
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bình luận không tồn tại!',
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình xóa.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
 }

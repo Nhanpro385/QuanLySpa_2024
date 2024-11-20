@@ -17,16 +17,20 @@ class PromotionRequest extends FormRequest
     {
         return [
             'id' => 'required|integer|digits_between:10,20|unique:promotions,id',
-            'name' => 'required|string|max:255|unique:promotions,name|regex:/^[\p{L}0-9 ]+$/u',
+            'name' => 'required|string|max:255|regex:/^[\p{L}0-9 ]+$/u',
             'description' => 'nullable|string',
-            'status' => 'required|boolean',
-            'created_by' => 'required|integer|exists:users,id',
+
             'start_date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'end_date' => 'required|date|date_format:Y-m-d|after:start_date',
-            'promotion_type' => 'required|in:cash,percent', 
-            'discount_percent' => 'required_if:promotion_type,percent|numeric|between:1,100',
+
+            'promotion_type' => 'required|in:0,1',
+            'discount_percent' => 'required_if:promotion_type,1|numeric|between:1,100',
+            'min_order_amount' => 'nullable|numeric|min:0',
+            'min_quantity' => 'nullable|integer|min:1',
+            'image_url' => 'nullable',
         ];
     }
+
 
     public function messages()
     {
@@ -37,12 +41,10 @@ class PromotionRequest extends FormRequest
             'id.unique' => 'Id đã tồn tại!',
             'name.required' => 'Tên không được bỏ trống!',
             'name.max' => 'Tên không được vượt quá 255 ký tự.',
-            'name.unique' => 'Tên đã tồn tại!',
+
             'name.regex' => 'Tên chỉ được phép chứa chữ cái và số.',
             'status.required' => 'Trạng thái không được bỏ trống!',
             'status.boolean' => 'Trạng thái phải là true hoặc false.',
-            'created_by.required' => 'Người tạo không được bỏ trống!',
-            'created_by.exists' => 'Người tạo phải là một người dùng hợp lệ.',
             'description.string' => 'Mô tả phải là một chuỗi.',
             'start_date.required' => 'Ngày bắt đầu không được bỏ trống!',
             'start_date.date' => 'Ngày bắt đầu phải là một ngày hợp lệ.',
@@ -57,6 +59,11 @@ class PromotionRequest extends FormRequest
             'discount_percent.required_if' => 'Phần trăm giảm giá không được bỏ trống khi loại khuyến mãi là percent!',
             'discount_percent.numeric' => 'Phần trăm giảm giá phải là số.',
             'discount_percent.between' => 'Phần trăm giảm giá phải nằm trong khoảng từ 1 đến 100.',
+            'min_order_amount.numeric' => 'Số tiền đơn hàng tối thiểu phải là số.',
+            'min_order_amount.min' => 'Số tiền đơn hàng tối thiểu phải lớn hơn hoặc bằng 0.',
+            'min_quantity.integer' => 'Số lượng tối thiểu phải là số nguyên.',
+            'min_quantity.min' => 'Số lượng tối thiểu phải lớn hơn hoặc bằng 1.',
+
         ];
     }
 

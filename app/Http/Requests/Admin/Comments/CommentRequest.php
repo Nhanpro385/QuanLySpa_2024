@@ -18,39 +18,14 @@ class CommentRequest extends FormRequest
     {
         return [
             'id' => 'required|digits_between:10,20|integer|unique:comments,id',
-            'service_id' => 'required|exists:services,id',
-            'customer_id' => [
-                'required',
-                'integer',
-                'exists:customers,id',
-                function ($attribute, $value, $fail) {
-                    $service_id = $this->service_id;
 
 
-                    $hasUsedService = DB::table('appointments')
-                        ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
-
-                        ->exists();
-
-                    if (!$hasUsedService) {
-                        $fail('Khách hàng này chưa sử dụng dịch vụ này, không thể bình luận.');
-                    }
-
-
-                    $hasAppointment = DB::table('appointments')
-                        ->where('customer_id', $value)
-                        ->exists();
-
-                    if (!$hasAppointment) {
-                        $fail('Khách hàng này chưa có cuộc hẹn nào.');
-                    }
-                },
-            ],
-            'parent_comment_id' => 'nullable|exists:comments,id|integer',
+            'parent_comment_id' => 'required|exists:comments,id|integer',
             'comment' => 'required|string|max:500',
-            'rate' => 'integer|min:1|max:5',
+
             // 'status' => 'required|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_urls' => 'nullable|array',
+            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 

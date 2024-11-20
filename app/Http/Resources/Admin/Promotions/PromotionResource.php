@@ -13,8 +13,30 @@ class PromotionResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'start_date' => $this->start_date ? $this->start_date : null,
+            'end_date' => $this->end_date ? $this->end_date : null,
+            'promotion_type' => $this->promotion_type === 1 ? 'Cash' : 'Percent',
+            'discount_percent' => $this->discount_percent,
+            'min_order_amount' => $this->min_order_amount,
+            'min_quantity' => $this->min_quantity,
+            'image_url' => $this->image_url,
+            'created_by' => $this->createdByUser ? [
+                'id' => $this->createdByUser->id,
+                'full_name' => $this->createdByUser->full_name,
+                'role' => $this->getRoleName($this->createdByUser->role),
+            ] : null,
+            'updated_by' => $this->updatedByUser ? [
+                'id' => $this->updatedByUser->id,
+                'full_name' => $this->updatedByUser->full_name,
+                'role' => $this->getRoleName($this->updatedByUser->role),
+            ] : null,
+            'created_at' => $this->created_at ? $this->created_at->format('d-m-Y H:i') : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->format('d-m-Y H:i') : null,
         ];
+    }
+
+    private function getRoleName($role)
+    {
+        return $role === 0 ? 'Quản trị viên' : 'Nhân viên';
     }
 }
