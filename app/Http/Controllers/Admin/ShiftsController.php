@@ -17,22 +17,27 @@ class ShiftsController extends Controller
     public function index(Request $request)
     {
         try {
+            // Áp dụng bộ lọc từ ShiftFilter
             $filter = new ShiftFilter();
-            $queryResult = $filter->transform($request);
+            $queryResult = $filter->transform($request); // Lấy filters, relations, sorts từ request
             $filters = $queryResult['filter'];
             $relations = $queryResult['relations'];
             $sorts = $queryResult['sorts'];
-
+    
+            $perPage = $request->query('per_page', 5); // Chỉ số bản ghi trên mỗi trang
+            $today = now()->toDateString(); // Lấy ngày hôm nay
+    
+            // Tạo query ban đầu
             $query = Shift::query();
-
-            // Áp dụng các bộ lọc
+    
+            // Áp dụng các bộ lọc thông thường
             if (!empty($filters)) {
                 foreach ($filters as $filter) {
                     [$column, $operator, $value] = $filter;
                     $query->where($column, $operator, $value);
                 }
             }
-
+    
             // Áp dụng các bộ lọc liên quan
             if (!empty($relations)) {
                 foreach ($relations as $relationFilter) {
@@ -42,15 +47,19 @@ class ShiftsController extends Controller
                     });
                 }
             }
-
-            // Áp dụng sắp xếp
-            [$sortBy, $sortOrder] = $sorts;
-            $query->orderBy($sortBy, $sortOrder);
-
-            // Phân trang
-            $perPage = $request->query('per_page', 5);
+    
+            // Áp dụng logic sắp xếp: ngày hôm nay lên trước
+            $query->orderByRaw("CASE WHEN shift_date = ? THEN 0 ELSE 1 END", [$today]);
+    
+            // Áp dụng sắp xếp tùy chọn (nếu có)
+            if (!empty($sorts)) {
+                [$sortBy, $sortOrder] = $sorts;
+                $query->orderBy($sortBy, $sortOrder);
+            }
+    
+            // Phân trang kết quả
             $shifts = $query->paginate($perPage);
-
+    
             // Trả về dữ liệu
             return (new ShiftCollection($shifts))->additional(['status' => true]);
         } catch (\Throwable $th) {
@@ -61,6 +70,7 @@ class ShiftsController extends Controller
             ], 500);
         }
     }
+
 
 
     // Store a new shift
