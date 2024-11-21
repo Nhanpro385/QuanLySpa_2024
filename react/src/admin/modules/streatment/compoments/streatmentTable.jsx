@@ -1,15 +1,20 @@
 import React from "react";
-import { Table, Button, Dropdown, Space } from "antd";
+import { Table, Button, Dropdown, Space, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 const StreatmentsTable = ({
-    customers,
+    sreatment,
     onClick,
     loading,
-    handlePageChange,
-    pagination,
+    handelPageChange,
+    pageconfig,
 }) => {
-    const dataSource = [];
+    const dataSource = sreatment.map((item, index) => ({
+        ...item,
+        key: index,
+    }));
+    console.log(dataSource);
+
     const columns = [
         {
             title: "STT",
@@ -18,29 +23,41 @@ const StreatmentsTable = ({
             render: (text, record, index) => index + 1,
         },
         {
-            title: "Họ và tên",
-            dataIndex: "full_name",
-            key: "full_name",
+            title: "Tên khách hàng",
+            dataIndex: "name",
+            key: "name",
+            render: (text, record) => record.customer.name || "Không có",
         },
         {
-            title: "Năm Sinh",
-            dataIndex: "date_of_birth",
-            key: "date_of_birth",
+            title: "Tổng số tiền",
+            dataIndex: "payment_total",
+            key: "payment_total",
+            render: (text, record) =>
+                record.payment_total.toLocaleString() + " VNĐ",
         },
         {
-            title: "Tuổi",
-            dataIndex: "age",
-            key: "age",
+            title: "ngày Điều trị",
+            dataIndex: "appointment_date",
+            key: "appointment_date",
+            render: (text, record) =>
+                record.appointment.appointment_date || "Không có",
         },
         {
-            title: "Số điện thoại",
-            dataIndex: "phone",
-            key: "phone",
+            title: "Phản hồi ",
+            dataIndex: "feedback",
+            key: "feedback",
         },
         {
-            title: "Địa chỉ",
-            dataIndex: "address",
-            key: "address",
+            title: "Trạng thái",
+            dataIndex: "status",
+            key: "status",
+            render: (text, record) => {
+                if (record.status === 1) {
+                    return <Tag color="green">Đã hoàn thành</Tag>;
+                } else {
+                    return <Tag color="red">Chưa hoàn thành</Tag>;
+                }
+            },
         },
         {
             title: "Thao Tác",
@@ -67,9 +84,8 @@ const StreatmentsTable = ({
     const items = [
         { key: "1", label: <Button block> Sửa </Button> },
         { key: "2", label: <Button block> Chi tiết </Button> },
-        { key: "3", label: <Button block> Lịch sử giao dịch </Button> },
         {
-            key: "4",
+            key: "3",
             label: (
                 <Button block danger>
                     Xóa
@@ -85,12 +101,13 @@ const StreatmentsTable = ({
             columns={columns}
             loading={loading}
             pagination={{
-                current: pagination.current_page,
-                pageSize: pagination.per_page,
-                total: pagination.total,
+                current: pageconfig.current_page,
+                pageSize: pageconfig.per_page,
+                total: pageconfig.total,
                 showQuickJumper: true,
                 showSizeChanger: true,
-                onChange: handlePageChange,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                onChange: handelPageChange,
                 showTotal: (total) => `Tổng ${total} khách hàng`,
             }}
         />

@@ -68,11 +68,20 @@ const items = [
             getItem(
                 <Link
                     className="text-decoration-none text-black fs-4"
-                    to="/admin/khachhang/lichsugiaodich"
+                    to="/admin/khachhang/lichsutrilieu"
                 >
                     Lịch sử giao dịch
                 </Link>,
                 "5"
+            ),
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/khachhang/lichsutrilieu/them"
+                >
+                    Thêm lịch sử giao dịch
+                </Link>,
+                "6"
             ),
         ]
     ),
@@ -399,7 +408,7 @@ const items = [
     ),
 ];
 
-function Sidebar() {
+const Sidebar = () => {
     const [collapsed, setCollapsed] = useState(false);
 
     return (

@@ -4,11 +4,11 @@ import axiosInstance from "../../config/axiosInstance";
 import { logout } from "./authSlice";
 const checkRoleAndLogout = (dispatch) => {
     const userRole = localStorage.getItem("role");
-
+    console.log("userRole", userRole);
     if (!userRole) {
         dispatch(logout());
+        return null; // Early return for invalid role
     }
-
     return userRole;
 };
 export const StreatmentGet = createAsyncThunk(
@@ -42,9 +42,15 @@ export const StreatmentAdd = createAsyncThunk(
             });
         }
         try {
+            console.log("data", data);
             const response = await axiosInstance.post(
                 endpoints.streatments.create,
-                data
+                data,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
             );
             return response.data;
         } catch (error) {
@@ -88,9 +94,16 @@ export const StreatmentUpdate = createAsyncThunk(
             });
         }
         try {
-            const response = await axiosInstance.put(
-                endpoints.streatments.update,
-                data
+            console.log("data", data);
+
+            const response = await axiosInstance.post(
+                endpoints.streatments.update(data.id),
+                data.data,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
             );
             return response.data;
         } catch (error) {
@@ -102,6 +115,45 @@ export const StreatmentUpdate = createAsyncThunk(
         }
     }
 );
+export const StreatmentSearch = createAsyncThunk(
+    "streatment/search",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.streatments.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm lịch hẹn",
+            });
+        }
+    }
+);
+export const StreatmentGetById = createAsyncThunk(
+    "streatment/getById",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.streatments.detail(id)
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi lấy thông tin lịch sử trị liệu",
+            });
+        }
+    }
+);
+
 const initialState = {
     streatments: {
         data: [],
@@ -136,7 +188,7 @@ const streatmentSlice = createSlice({
             })
             .addCase(StreatmentAdd.fulfilled, (state, action) => {
                 state.loading = false;
-                state.streament = action.payload;
+                state.streatments.data.push(action.payload.data);
             })
             .addCase(StreatmentAdd.rejected, (state, action) => {
                 state.loading = false;
@@ -163,6 +215,28 @@ const streatmentSlice = createSlice({
                 state.streament = action.payload;
             })
             .addCase(StreatmentUpdate.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(StreatmentSearch.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(StreatmentSearch.fulfilled, (state, action) => {
+                state.loading = false;
+                state.streatments = action.payload;
+            })
+            .addCase(StreatmentSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(StreatmentGetById.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(StreatmentGetById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.streament = action.payload;
+            })
+            .addCase(StreatmentGetById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

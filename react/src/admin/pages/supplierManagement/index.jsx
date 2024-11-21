@@ -222,7 +222,7 @@ const SupplierManagement = () => {
                 navigate(`/admin/user/Detail/${record.id}`);
                 break;
             case "3":
-                navigate(`/admin/khachhang/lichsugiaodich/${record.id}`);
+                navigate(`/admin/khachhang/lichsutrilieu/${record.id}`);
                 break;
             case "4":
                 handleDelete(record.id);

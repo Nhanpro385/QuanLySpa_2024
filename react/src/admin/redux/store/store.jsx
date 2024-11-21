@@ -16,6 +16,7 @@ import {
     streatmentSlice,
 } from "../slices";
 
+
 const store = configureStore({
     reducer: {
         auth: authSlice,

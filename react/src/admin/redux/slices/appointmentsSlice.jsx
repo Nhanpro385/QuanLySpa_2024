@@ -129,6 +129,15 @@ export const appointmentsSearch = createAsyncThunk(
         }
     }
 );
+export const GetAppointmentByStatus = createAsyncThunk(
+    "appointments/getByStatus",
+    async ({ status, per_page }) => {
+        const response = await axiosInstance.get(
+            `${endpoints.appointments.list}?status[eq]=${status}&per_page=${per_page}`
+        );
+        return response.data;
+    }
+);
 const initialState = {
     appointments: {
         data: [],
@@ -229,6 +238,18 @@ const appointmentsSlice = createSlice({
                 state.loading = false;
             })
             .addCase(appointmentsSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(GetAppointmentByStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(GetAppointmentByStatus.fulfilled, (state, action) => {
+                state.appointments = action.payload;
+                state.loading = false;
+            })
+            .addCase(GetAppointmentByStatus.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

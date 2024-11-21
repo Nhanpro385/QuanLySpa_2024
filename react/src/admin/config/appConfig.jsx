@@ -109,9 +109,11 @@ const endpoints = {
     },
     streatments: {
         list: `${API_BASE_URL}/treatment-history`,
+        detail: (id) => `${API_BASE_URL}/treatment-history/${id}`,
         create: `${API_BASE_URL}/treatment-history`,
         update: (id) => `${API_BASE_URL}/treatment-history/${id}`,
         delete: (id) => `${API_BASE_URL}/treatment-history/${id}`,
+        search: `${API_BASE_URL}/treatment-history`,
     },
 };
 

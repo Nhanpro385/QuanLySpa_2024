@@ -55,6 +55,8 @@ import SupplierManagement from "@admin/pages/supplierManagement";
 import Appointment_Add from "@admin/pages/appointments/Appointments_Add";
 import Appointment_Edit from "@admin/pages/appointments/Appointments_Edit";
 import StreatMents from "../pages/customerManagement/CustomerTreatments";
+import StreatmentsAdd from "../pages/customerManagement/TreatmentsAdd";
+import StreatmentsEdit from "../pages/customerManagement/CustomerTreatments_Edit";
 
 const PublicRoutes = [
     // Dashboard
@@ -63,9 +65,15 @@ const PublicRoutes = [
     // User Management
     { path: "/khachhang", element: <Customer /> },
     { path: "/khachhang/them", element: <CustomersAdd /> },
-    { path: "/khachhang/lichsugiaodich/:id", element: <HistoryService /> },
+    { path: "/khachhang/lichsutrilieu/:id", element: <HistoryService /> },
     { path: "/khachhang/chitiet/:id", element: <CustomerDetail /> },
-    { path: "/khachhang/lichsugiaodich", element: <StreatMents /> },
+    { path: "/khachhang/lichsutrilieu", element: <StreatMents /> },
+    { path: "/khachhang/lichsutrilieu/them", element: <StreatmentsAdd /> },
+    {
+        path: "/khachhang/lichsutrilieu/chinhsua/:id",
+        element: <StreatmentsEdit />,
+    },
+
     // Appointments
     { path: "/lichhen", element: <Appointments /> },
     { path: "/lichhen/them", element: <Appointment_Add /> },

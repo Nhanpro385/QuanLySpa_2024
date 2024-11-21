@@ -203,7 +203,7 @@ const servicesSlice = createSlice({
                 state.error = null;
             })
             .addCase(servicesDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
+               
 
                 state.services.data = state.services.data.filter(
                     (cate) => cate.id !== action.payload

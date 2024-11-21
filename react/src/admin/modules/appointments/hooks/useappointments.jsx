@@ -6,6 +6,7 @@ import {
     appointmentsDelete,
     appointmentsGetById,
     appointmentsSearch,
+    GetAppointmentByStatus,
 } from "@admin/redux/slices/appointmentsSlice";
 const useappointmentsActions = () => {
     const dispatch = useDispatch();
@@ -29,16 +30,21 @@ const useappointmentsActions = () => {
     const getappointmentsById = async (id) => {
         return await dispatch(appointmentsGetById(id));
     };
-    const searchappointments = async (data)=>{
-        return await dispatch(appointmentsSearch(data))
-    }
+    const searchappointments = async (data) => {
+        return await dispatch(appointmentsSearch(data));
+    };
+    const getappointmentsByStatus = async (data) => {
+        return await dispatch(GetAppointmentByStatus(data));
+    };
+
     return {
         addappointments,
         getappointments,
         updateappointments,
         deleteappointments,
         getappointmentsById,
-        searchappointments
+        searchappointments,
+        getappointmentsByStatus,
     };
 };
 

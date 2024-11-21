@@ -13,111 +13,100 @@ import {
 import { DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import ModalEditCustomer from "../../modules/Customer/compoment/CustomerModalEdit";
+
 import useModal from "../../modules/appointments/hooks/openmodal";
-import CustomerTable from "../../modules/Customer/compoment/CustomerTable";
+
 import useStreatmentsAction from "../../modules/streatment/hooks/useStreatmentsAction";
 import debounce from "lodash/debounce";
 import StreatmentsTable from "../../modules/streatment/compoments/streatmentTable";
+import ModalStreatmentDetail from "../../modules/streatment/compoments/ModalStreatmentDetail";
 const StreatMents = () => {
-    const { getStreatments } = useStreatmentsAction(); // Use the customer actions hook
+    const {
+        getStreatments,
+        searchStreatment,
+        getStreatmentById,
+        deleteStreatment,
+    } = useStreatmentsAction(); // Use the customer actions hook
 
     const streatments = useSelector((state) => state.streatments);
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
+        per_page: 5,
     });
 
     const navigate = useNavigate();
-    const { isModalOpen, showModal, handleCancel } = useModal();
-    const [currentCustomer, setCurrentCustomer] = useState(null);
-    const [formErrors, setFormErrors] = useState({});
-    const pagination = {};
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+
+    const [streatmentData, setStreatmentData] = useState([]);
+    const [streatmentsDetail, setStreatmentsDetail] = useState({});
+    const [pageconfig, setPageconfig] = useState({});
+
     useEffect(() => {
-        getStreatments(); // Fetch customers when the component mounts
+        getStreatments();
     }, []);
     useEffect(() => {
+        if (
+            !streatments.loading &&
+            streatments.streatments &&
+            streatments.streatments.meta
+        ) {
+            setStreatmentData(streatments.streatments.data);
+            setPageconfig(streatments.streatments.meta);
+        }
+    }, [streatments.streatments]);
+
+    useEffect(() => {
         if (searchQuery.search || searchQuery.page !== 1) {
-            searchCustomer(searchQuery); // Search customers when the searchQuery changes
+            searchStreatment(searchQuery);
+        } else {
+            getStreatments();
         }
     }, [searchQuery]);
     const onClick = ({ key, record }) => {
         switch (key) {
             case "1":
-                handleEdit(record);
+                navigate(`/admin/khachhang/lichsutrilieu/chinhsua/${record.id}`);
                 break;
             case "2":
-                navigate(`/admin/khachhang/chitiet/${record.id}`);
+                handelDetail(record);
                 break;
             case "3":
-                navigate(`/admin/khachhang/lichsugiaodich/${record.id}`);
-                break;
-            case "4":
                 handleDelete(record.id);
                 break;
+
             default:
                 break;
         }
     };
-
-    const handleEdit = (record) => {
-        setCurrentCustomer(record);
-        showModal();
+    const handelDetail = async (record) => {
+        try {
+            await getStreatmentById(record.id);
+            if (streatments.streament && streatments.loading === false) {
+                setStreatmentsDetail(streatments.streament.data);
+            }
+            showModal();
+        } catch (error) {
+            message.error("Đã xảy ra lỗi khi lấy thông tin lịch sử trị liệu");
+        }
     };
+
     const onSearch = (value) => {
         setSearchQuery((prev) => ({ ...prev, search: value }));
     };
-    const handelPageChange = (page) => {
+    const handelPageChange = (page, pagination) => {
         setSearchQuery((prev) => ({ ...prev, page }));
     };
-    const handleEditSubmit = async (updatedCustomer) => {
-        try {
-            const resultAction = await updateCustomer(updatedCustomer); // Use customer update action
-            console.log(resultAction);
-
-            if (resultAction.meta.requestStatus === "fulfilled") {
-                message.success("Khách hàng đã được cập nhật");
-                handleCancel();
-            } else {
-                setFormErrors(resultAction.payload.errors);
-                message.error("Cập nhật khách hàng không thành công");
-            }
-        } catch (error) {
-            message.error("Đã xảy ra lỗi khi cập nhật khách hàng");
-        }
-    };
-
+   
     const handleDelete = async (id) => {
         try {
-            await deleteCustomer(id); // Use customer delete action
-            message.success("Khách hàng đã được xóa");
+           const resultAction = await deleteStreatment(id);
+           getStreatments();
+            message.success("Xóa lịch sử trị liệu thành công");
         } catch (error) {
-            message.error("Đã xảy ra lỗi khi xóa khách hàng");
+            message.error("Đã xảy ra lỗi khi xóa lịch sử trị liệu");
         }
     };
-
-    const items = [
-        {
-            key: "1",
-            label: <Button block> Sửa </Button>,
-        },
-        {
-            key: "2",
-            label: <Button block> Chi tiết </Button>,
-        },
-        {
-            key: "3",
-            label: <Button block> Lịch sử giao dịch </Button>,
-        },
-        {
-            key: "4",
-            label: (
-                <Button block danger>
-                    Xóa
-                </Button>
-            ),
-        },
-    ];
 
     return (
         <Card>
@@ -150,19 +139,18 @@ const StreatMents = () => {
             </Row>
 
             <StreatmentsTable
-                customers={[]}
+                sreatment={streatmentData}
                 onClick={onClick}
-                loading={false}
+                loading={streatments.loading}
                 handelPageChange={handelPageChange}
-                pagination={pagination}
+                pageconfig={pageconfig}
             />
 
-            <ModalEditCustomer
-                isModalOpen={isModalOpen}
-                handleOk={handleEditSubmit}
-                customer={currentCustomer}
-                handleCancel={handleCancel}
-                formErrors={formErrors} // Truyền lỗi tới modal
+            <ModalStreatmentDetail
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                selectStreatment={streatmentsDetail}
             />
         </Card>
     );
