@@ -80,6 +80,11 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(TreatmentHistory::class, 'customer_id', 'id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'customer_id');
+    }
+
     protected $hidden = [
         'password',
         'remember_token',
