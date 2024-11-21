@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\ConsulationController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Client\ClientCustomerAccountController;
+
 
 
 require __DIR__ . '/authCustomer.php';
@@ -195,6 +197,25 @@ Route::group([
 
 
 });
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'v0.0.1/client',
+], function ($router) {
+
+    Route::get('/customers', [ClientCustomerAccountController::class, 'index']);
+
+
+    Route::get('/customer/{id}', [ClientCustomerAccountController::class, 'show']);
+
+
+    Route::post('/customer', [ClientCustomerAccountController::class, 'store']);
+
+
+    Route::put('/customer/{id}', [ClientCustomerAccountController::class, 'update']);
+
+    Route::delete('/customer/{id}', [ClientCustomerAccountController::class, 'destroy']);
+});
+
 
 
 // End
