@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Resources\Admin\StaffShift;
-
+ 
+use App\Http\Resources\Admin\StaffShift\StaffShiftResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -12,8 +13,7 @@ class StaffShiftCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
-    {
-        return parent::toArray($request);
-    }
+   
+        public $collects = StaffShiftResource::class;
+    
 }

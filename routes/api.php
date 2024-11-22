@@ -50,6 +50,15 @@ Route::group([
     Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
 
 
+    
+    Route::get('/staff-shifts', [StaffShiftController::class, 'index']);
+    Route::post('/staff-shifts', [StaffShiftController::class, 'store']);
+    Route::get('/staff-shifts/{id}', [StaffShiftController::class, 'show']);
+    Route::put('/staff-shifts/{id}', [StaffShiftController::class, 'update']);
+    Route::delete('/staff-shifts/{id}', [StaffShiftController::class, 'destroy']);
+
+
+
     Route::get('/treatment-history', [TreatmentHistoryController::class, 'index']);
     Route::get('/customers/{customer_id}/treatment-history', [TreatmentHistoryController::class, 'getByCustomerId']);
 
@@ -141,12 +150,6 @@ Route::group([
     Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
     Route::put('/treatment-history/{id}', [TreatmentHistoryController::class, 'update']);
     Route::delete('/treatment-history/{id}', [TreatmentHistoryController::class, 'destroy']);
-
-    Route::get('/staff-shifts', [StaffShiftController::class, 'index']);
-    Route::post('/staff-shifts', [StaffShiftController::class, 'store']);
-    Route::get('/staff-shifts/{id}', [StaffShiftController::class, 'show']);
-    Route::put('/staff-shifts/{id}', [StaffShiftController::class, 'update']);
-    Route::delete('/staff-shifts/{id}', [StaffShiftController::class, 'destroy']);
 
 });
 

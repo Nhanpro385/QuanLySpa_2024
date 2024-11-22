@@ -6,118 +6,92 @@ use App\Http\Controllers\Controller;
 use App\Models\StaffShift;
 use App\Http\Requests\Admin\StaffShifts\StaffShiftRequest;
 use App\Http\Requests\Admin\StaffShifts\StaffShiftUpdateRequest;
-use App\Http\Resources\Admin\StaffShifts\StaffShiftResource;
-use App\Http\Resources\Admin\StaffShifts\StaffShiftCollection;
+use Illuminate\Http\Request;
+
+use App\Http\Resources\Admin\StaffShift\StaffShiftResource;
+use App\Http\Resources\Admin\StaffShift\StaffShiftCollection;
 
 
 class StaffShiftController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $staffShifts = StaffShift::paginate(5);
-            return new StaffShiftCollection($staffShifts);
-        } catch (\Throwable $th) {
+        $perPage = $request->query('per_page', 10);
+        $shifts = StaffShift::with(['staff', 'shift'])->paginate($perPage);
+
+        if ($shifts->isEmpty()) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình.',
-                'error' => $th->getMessage(),
-            ], 500);
+                'status' => false,
+                'message' => 'Không có dữ liệu trong danh sách phân công ca làm.',
+            ], 404);
         }
-    }
 
-    public function show($id)
-    {
-        try {
-            $staffShift = StaffShift::find($id);
-
-            if (!$staffShift) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Ca làm việc không tồn tại!',
-                ], 404);
-            }
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Chi tiết ca làm việc: ' . $staffShift->id,
-                'data' => new StaffShiftResource($staffShift),
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
-                'error' => $th->getMessage(),
-            ], 500);
-        }
+        return (new StaffShiftCollection($shifts))->additional(['status' => true]);
     }
 
     public function store(StaffShiftRequest $request)
     {
-        try {
-            $validatedData = $request->validated();
-            $staffShift = StaffShift::create($validatedData);
+        $data = $request->validated();
+        $data['created_by'] = auth()->id(); // Lấy ID người dùng đang đăng nhập
+        $shift = StaffShift::create($data);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Thêm mới ca làm việc thành công',
-                'data' => new StaffShiftResource($staffShift),
-            ], 201);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình thêm mới ca làm việc.',
-                'error' => $th->getMessage(),
-            ], 500);
-        }
+        return (new StaffShiftResource($shift))->additional([
+            'status' => true,
+            'message' => 'Tạo mới thành công.',
+        ]);
     }
 
-    public function update(StaffShiftUpdateRequest $request, $id)
+    public function show($id)
     {
-        try {
-            $staffShift = StaffShift::findOrFail($id);
-            $staffShift->update($request->validated());
+        $shift = StaffShift::with(['staff', 'shift'])->find($id);
 
+        if (!$shift) {
             return response()->json([
-                'status' => 'success',
-                'message' => 'Cập nhật ca làm việc thành công!',
-                'data' => new StaffShiftResource($staffShift),
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Ca làm việc không tồn tại!',
+                'status' => false,
+                'message' => 'Không tìm thấy phân công ca làm với ID này.',
             ], 404);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình.',
-                'error' => $th->getMessage(),
-            ], 500);
         }
+
+        return (new StaffShiftResource($shift))->additional(['status' => true]);
+    }
+
+    public function update(StaffShiftRequest $request, $id)
+    {
+        $shift = StaffShift::find($id);
+
+        if (!$shift) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Không tìm thấy phân công ca làm để cập nhật.',
+            ], 404);
+        }
+
+        $data = $request->validated();
+        $data['updated_by'] = auth()->id();
+        $shift->update($data);
+
+        return (new StaffShiftResource($shift))->additional([
+            'status' => true,
+            'message' => 'Cập nhật thành công.',
+        ]);
     }
 
     public function destroy($id)
     {
-        try {
-            $staffShift = StaffShift::findOrFail($id);
-            $staffShift->delete();
+        $shift = StaffShift::find($id);
 
+        if (!$shift) {
             return response()->json([
-                'status' => 'success',
-                'message' => 'Ca làm việc đã được xóa thành công',
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Ca làm việc không tồn tại!',
+                'status' => false,
+                'message' => 'Không tìm thấy phân công ca làm để xóa.',
             ], 404);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình.',
-                'error' => $th->getMessage(),
-            ], 500);
         }
+
+        $shift->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Xóa thành công.',
+        ]);
     }
 }

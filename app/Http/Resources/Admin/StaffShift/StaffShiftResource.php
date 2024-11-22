@@ -8,15 +8,21 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class StaffShiftResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     */
-    public function toArray($request): array
+    public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'staff_id' => $this->staff_id,
-            'shift_id' => $this->shift_id,
+            'staff' => [
+                'id' => $this->staff->id,
+                'name' => $this->staff->full_name,
+                'role' => $this->staff->role,
+            ],
+            'shift' => [
+                'id' => $this->shift->id,
+                'shift_date' => $this->shift->shift_date,
+                'start_time' => $this->shift->start_time,
+                'end_time' => $this->shift->end_time,
+            ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

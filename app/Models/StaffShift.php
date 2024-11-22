@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kra8\Snowflake\HasSnowflakePrimary;
 
 class StaffShift extends Model
 {
-    use HasFactory;
+    use HasFactory,HasSnowflakePrimary;
 
     protected $keyType = 'string';
     public $incrementing = false;
