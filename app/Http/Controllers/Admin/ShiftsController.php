@@ -19,17 +19,15 @@ class ShiftsController extends Controller
     public function index(Request $request)
     {
         try {
-            // Áp dụng bộ lọc từ ShiftFilter
             $filter = new ShiftFilter();
-            $queryResult = $filter->transform($request); // Lấy filters, relations, sorts từ request
+            $queryResult = $filter->transform($request);
             $filters = $queryResult['filter'];
             $relations = $queryResult['relations'];
             $sorts = $queryResult['sorts'];
     
-            $perPage = $request->query('per_page', 5); // Chỉ số bản ghi trên mỗi trang
-            $today = now()->toDateString(); // Lấy ngày hôm nay
+            $perPage = $request->query('per_page', 5);
+            $today = now()->toDateString();
     
-            // Tạo query ban đầu
             $query = Shift::query();
     
             // Áp dụng các bộ lọc thông thường
@@ -50,8 +48,17 @@ class ShiftsController extends Controller
                 }
             }
     
-            // Áp dụng logic sắp xếp: ngày hôm nay lên trước
-            $query->orderByRaw("CASE WHEN shift_date = ? THEN 0 ELSE 1 END", [$today]);
+            // Kiểm tra xem có tham số shift_date không
+            if ($request->has('shift_date')) {
+                $shiftDate = $request->query('shift_date');
+                $query->where('shift_date', '=', $shiftDate);
+            } else {
+                // Nếu không có shift_date, ưu tiên ngày hôm nay lên đầu
+                $query->orderByRaw("CASE WHEN shift_date = ? THEN 0 ELSE 1 END", [$today]);
+            }
+    
+            // Sắp xếp mặc định theo shift_date (mới nhất trước)
+            $query->orderBy('shift_date', 'desc');
     
             // Áp dụng sắp xếp tùy chọn (nếu có)
             if (!empty($sorts)) {
@@ -62,7 +69,6 @@ class ShiftsController extends Controller
             // Phân trang kết quả
             $shifts = $query->paginate($perPage);
     
-            // Trả về dữ liệu
             return (new ShiftCollection($shifts))->additional(['status' => true]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -72,7 +78,7 @@ class ShiftsController extends Controller
             ], 500);
         }
     }
-
+    
 
 
     // Store a new shift
