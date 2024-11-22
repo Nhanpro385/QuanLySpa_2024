@@ -94,7 +94,7 @@ class TreatmentHistory extends Model
             if ($model->image_before && Storage::disk('public')->exists($model->image_before)) {
                 Storage::disk('public')->delete($model->image_before);
             }
-
+    
             if ($model->image_after && Storage::disk('public')->exists($model->image_after)) {
                 Storage::disk('public')->delete($model->image_after);
             }

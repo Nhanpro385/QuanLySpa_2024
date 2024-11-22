@@ -97,8 +97,6 @@ class ShiftsController extends Controller
         ], 201);
     }
 
-
-
     public function update(UpdateShiftRequest $request, $id)
     {
         try {

@@ -18,10 +18,8 @@ class Shift extends Model
     ];
 
     protected $attributes = [
-        'start_time' => '08:00:00',
-        'end_time' => '12:00:00',
-        'status' => true,
-        'max_customers' => 6,
+       
+        'status' => true
     ];
 
     protected static function boot()

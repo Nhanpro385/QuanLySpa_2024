@@ -115,7 +115,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 
     public function shifts()
     {
-        return $this->belongsToMany(Shift::class, 'staff_shifts', 'staff_id', 'shift_id')->orderBy('shifts.shift_date', 'desc');
+        return $this->belongsToMany(User::class,'staff_shifts', 'staff_id', 'shift_id');
     }
 
     public function shifts_after()
@@ -158,6 +158,6 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     }
 
 
-
+   
 
 }
