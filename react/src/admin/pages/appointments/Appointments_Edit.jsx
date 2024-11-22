@@ -32,7 +32,7 @@ const Appointment_Edit = () => {
 
     const { getservices } = useServicesActions();
     const { getusers } = useUsersActions();
-    const { getshifts } = useShiftAction();
+    const { getshiftsById ,searchshifts} = useShiftAction();
     const { getappointmentsById } = useappointmentsActions();
     const service = useSelector((state) => state.services);
     const users = useSelector((state) => state.user);
@@ -48,21 +48,24 @@ const Appointment_Edit = () => {
     useEffect(() => {
         getservices(50);
         getusers(50);
-        getshifts();
         getappointmentsById(id);
     }, []);
     useEffect(() => {
-        console.log(appointments.loading);
-
         if (!appointments.loading && appointments.appointment.data) {
-            console.log(
-                calculateEndTime(
-                    appointments.appointment.data.appointment_date,
-                    appointments.appointment.data.start_time,
-                    appointments.appointment.data.expected_time
-                )
+            console.log(appointments.appointment.data);
+            searchshifts(
+            {
+                search: appointments.appointment.data.shift.shift_date,
+                page: 1,
+                per_page: 50,
+                status: 3,
+            }
+                
             );
-
+        }
+    }, [appointments.appointment.data]);
+    useEffect(() => {
+        if (!appointments.loading && appointments.appointment.data) {
             setValue(
                 "full_name",
                 appointments.appointment.data.customer.full_name || ""
@@ -93,27 +96,29 @@ const Appointment_Edit = () => {
     }, [appointments.appointment.data]);
 
     const [selectedServices, setSelectedServices] = useState([]);
-
-    const userOptions =
-        users.users.data.map((user) => ({
-            label: user.full_name,
-            value: user.id,
-        })) || [];
-
-    const serviceOptions =
-        service.services.data.map((service) => ({
-            label: service.name,
-            value: service.id,
-        })) || [];
-    const { data: shiftsData } = shifts.shifts.data || [];
-
-    const shiftsOptions =
-        (shiftsData &&
-            shiftsData.map((shift) => ({
-                label: `${shift.shift_date} (${shift.start_time} - ${shift.end_time})`,
+    const [serviceOptions, setServiceOptions] = useState([]);
+    const [userOptions, setUserOptions] = useState([]);
+    const [shiftsOptions, setShiftsOptions] = useState([]);
+    useEffect(() => {
+        setServiceOptions(
+            service.services.data.map((service) => ({
+                value: service.id,
+                label: service.name,
+            }))
+        );
+        setUserOptions(
+            users.users.data.map((user) => ({
+                value: user.id,
+                label: user.full_name,
+            }))
+        );
+        setShiftsOptions(
+            shifts.shifts.data.map((shift) => ({
                 value: shift.id,
-            }))) ||
-        [];
+                label: shift.shift_date,
+            }))
+        );
+    }, [service.services, users.users, shifts.shifts]);
 
     const onSubmit = (data) => {
         const payload = {
@@ -242,6 +247,21 @@ const Appointment_Edit = () => {
                                         {...field}
                                         format="DD/MM/YYYY HH:mm"
                                         showTime
+                                        onChange={(date) => {
+                                            setValue(
+                                                "expected_time",
+                                                calculateEndTime(
+                                                    dayjs(date).format(
+                                                        "YYYY-MM-DD"
+                                                    ),
+                                                    dayjs(date).format(
+                                                        "HH:mm:ss"
+                                                    ),
+                                                    appointments.appointment
+                                                        .data.expected_time
+                                                )
+                                            );
+                                        }}
                                     />
                                 )}
                             />

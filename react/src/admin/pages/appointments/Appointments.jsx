@@ -49,12 +49,7 @@ function Appointments() {
 
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-    const {
-        isModalOpen: isModalOpen2,
-        showModal: showModal2,
-        handleOk: handleOk2,
-        handleCancel: handleCancel2,
-    } = useModal();
+  
 
     const dataSource =
         appointments.data.map((item) => {
@@ -76,7 +71,7 @@ function Appointments() {
             };
         }) || [];
     const pagination = appointments.meta || {};
-    const handleEdit = (id) => {};
+   
     useEffect(() => {
         if (
             searchQuery.search ||
@@ -103,7 +98,12 @@ function Appointments() {
                     <Card>
                         <Row className="m-2" justify={"space-between"}>
                             <h2>Danh Sách Đặt Lịch</h2>
-                            <Button type="primary" onClick={showModal}>
+                            <Button type="primary" onClick={
+                                () => {
+                                    navigate("/admin/lichhen/them");
+                                }
+                            } >
+        
                                 Thêm lịch hẹn
                             </Button>
                         </Row>
@@ -157,11 +157,13 @@ function Appointments() {
                                 <AppointmentsTable
                                     dataSource={dataSource}
                                     onEdit={(id) => {
+                                        
                                         navigate(
                                             "/admin/lichhen/chinhsua/" + id
                                         );
                                     }}
                                     onViewDetail={(id) => {
+                                      
                                         navigate(
                                             "/admin/appointments/detail/" + id
                                         );

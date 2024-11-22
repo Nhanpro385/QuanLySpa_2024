@@ -12,8 +12,17 @@ const checkRoleAndLogout = (dispatch) => {
 
     return userRole;
 };
-export const shiftsGet = createAsyncThunk("shifts/get", async () => {
-    const response = await axiosInstance.get(endpoints.shifts.list);
+export const shiftsGet = createAsyncThunk("shifts/get", async (per_page) => {
+    // Xây dựng query parameters chỉ với `per_page` nếu có
+    const queryParams = per_page ? `?per_page=${per_page}` : "";
+    console.log(`${endpoints.shifts.list}${queryParams}`);
+
+    // Gọi API
+    const response = await axiosInstance.get(
+        `${endpoints.shifts.list}${queryParams}`
+    );
+
+    // Trả về dữ liệu response
     return response.data;
 });
 
@@ -108,7 +117,7 @@ export const shiftsSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.shifts.search}?shift_date=${data.search}&status=${data.status}&page=${data.page}`
+                `${endpoints.shifts.search}?shift_date=${data.search}&status=${data.status}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;

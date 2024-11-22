@@ -37,6 +37,8 @@ export const appointmentsAdd = createAsyncThunk(
                 endpoints.appointments.create,
                 data
             );
+            console.log(data);
+
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -170,7 +172,7 @@ const appointmentsSlice = createSlice({
                 state.error = null;
             })
             .addCase(appointmentsAdd.fulfilled, (state, action) => {
-                state.appointments.data.push(action.payload.data);
+                state.appointments.data.push(action.payload);
                 state.loading = false;
             })
             .addCase(appointmentsAdd.rejected, (state, action) => {

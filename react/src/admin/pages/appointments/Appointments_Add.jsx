@@ -11,75 +11,176 @@ import {
     Table,
     InputNumber,
     Card,
+    notification,
+    Tag,
 } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
 import "dayjs/locale/vi";
 import debounce from "lodash/debounce";
 
-// import useCustomerActions from "../../Customer/hooks/useCustomerActions";
+import useappointmentsActions from "../../modules/appointments/hooks/useappointments";
 import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
 import useServicesActions from "../../modules/services/hooks/useServices";
 import useShiftAction from "../../modules/ShiftManagement/hooks/useShiftAction";
-import { generateSnowflakeId } from "../../utils";
+import useCustomerActions from "../../modules/Customer/hooks/useCustomerActions";
+import { generateSnowflakeId, formatDate, formatTime } from "../../utils";
+import {
+    ClockCircleOutlined,
+    ContactsOutlined,
+    UserOutlined,
+} from "@ant-design/icons";
+import { get, set } from "lodash";
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const Appointment_Add = () => {
-    const { getservices } = useServicesActions();
+    const [api, contextHolder] = notification.useNotification();
+    const { getservices, searchservices } = useServicesActions();
     const { getusers } = useUsersActions();
-    const { getshifts } = useShiftAction();
+    const { getshifts, getshiftsById, searchshifts } = useShiftAction();
+    const { addappointments } = useappointmentsActions();
+    const { getCustomer } = useCustomerActions();
     const service = useSelector((state) => state.services);
     const users = useSelector((state) => state.user);
     const shifts = useSelector((state) => state.shifts);
-console.log("shifts", shifts);
-
-    useEffect(() => {
-        getservices(50);
-        getusers(50);
-        getshifts();
-    }, []);
-
+    const customer = useSelector((state) => state.customers);
+    const [serviceOptions, setServiceOptions] = useState([]);
+    const [userOptions, setUserOptions] = useState([]);
+    const [shiftsOptions, setShiftsOptions] = useState([]);
+    const [customerOptions, setCustomerOptions] = useState([]);
+    const [searchService, setSearchService] = useState({
+        search: "",
+        per_page: 50,
+        page: 1,
+    });
     const {
         control,
         handleSubmit,
+        setValue,
+        getValues,
         formState: { errors },
     } = useForm();
+    const [searchShift, setSearchShift] = useState({
+        search: "",
+        per_page: 50,
+        page: 1,
+        status: 1,
+    });
+    useEffect(() => {
+        getservices(50);
+        getusers(50);
+        getshifts(50);
+        getCustomer();
+    }, []);
+    useEffect(() => {
+        if (service.loading === false && service.services) {
+            setServiceOptions(
+                service.services.data.map((service) => ({
+                    value: service.id,
+                    label: service.name,
+                }))
+            );
+        }
+    }, [service.services]);
 
+    useEffect(() => {
+        if (customer.loading === false && customer.customers) {
+            setCustomerOptions(
+                customer.customers.data.map((customer) => ({
+                    value: customer.id,
+                    label: customer.full_name,
+                }))
+            );
+        }
+    }, [customer.customers]);
+
+    useEffect(() => {
+        if (shifts.loading === false && shifts.shifts) {
+            setShiftsOptions(
+                shifts.shifts.data.map((shift) => ({
+                    value: shift.id,
+                    label: (
+                        <>
+                            <Tag color="blue">
+                                <ContactsOutlined /> {shift.shift_date}
+                            </Tag>
+
+                            <Tag color="green">
+                                <ClockCircleOutlined /> {shift.start_time}
+                            </Tag>
+
+                            <Tag color="red">
+                                <ClockCircleOutlined /> {shift.end_time}
+                            </Tag>
+                            <Tag
+                                color={
+                                    shift.staffs.length > 0 ? "green" : "red"
+                                }
+                            >
+                                <UserOutlined /> {shift.staffs.length} nhân viên
+                            </Tag>
+                        </>
+                    ),
+                }))
+            );
+        }
+    }, [shifts.shifts]);
+    useEffect(() => {
+        if (searchService.search) {
+            searchservices(searchService);
+        } else {
+            getservices(50);
+        }
+    }, [searchService]);
+    useEffect(() => {
+        if (searchShift.search) {
+            searchshifts(searchShift);
+        } else {
+            getshifts(50);
+        }
+    }, [searchShift]);
     const [selectedServices, setSelectedServices] = useState([]);
-    const [value, setValue] = useState([]);
 
-    const userOptions =
-        users.users.data.map((user) => ({
-            label: user.full_name,
-            value: user.id,
-        })) || [];
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                id: generateSnowflakeId(),
+                shift_id: data.shift,
+                customer_id: data.customer_id,
+                start_time: formatTime(data.appointment_date),
+                appointment_date: formatDate(data.appointment_date),
+                note: data.note,
+                users: data.employee.map((employee) => ({
+                    key: employee,
+                    staff_id: employee,
+                })),
+                services: selectedServices.map((service) => ({
+                    service_id: service.key,
+                    quantity: service.quantity,
+                })),
+                status: 1,
+            };
+            console.log("payload", payload);
 
-    const serviceOptions =
-        service.services.data.map((service) => ({
-            label: service.name,
-            value: service.id,
-        })) || [];
-    const { data: shiftsData } = shifts.shifts.data || [];
-    console.log("shiftsData", shiftsData);
+            const res = await addappointments(payload);
+            if (res.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Thêm lịch hẹn thành công",
+                    description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
+                    duration: 3,
 
-    const shiftsOptions =
-        (shiftsData &&
-            shiftsData.map((shift) => ({
-                label: `${shift.shift_date} (${shift.start_time} - ${shift.end_time})`,
-                value: shift.id,
-            }))) ||
-        [];
-
-    const onSubmit = (data) => {
-        const payload = {
-            id: generateSnowflakeId(),
-            shift_id: data.shift,
-            customer_id: generateSnowflakeId(),
-            users: data.employee.map((employee) => ({ staff_id: employee })),
-            services: selectedServices,
-        };
-        console.log("Submitted data:", payload);
+                });
+            }else{
+                api.error({
+                    message: "Thêm lịch hẹn thất bại",
+                    description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
+                    duration: 3,
+                });
+            }
+        } catch (error) {
+            console.error("Error in onSubmit:", error);
+        }
     };
 
     const handleServiceChange = (selected) => {
@@ -97,6 +198,7 @@ console.log("shifts", shifts);
             );
         });
         setSelectedServices(newServices);
+        setValue;
     };
 
     const handleQuantityChange = (value, key) => {
@@ -105,6 +207,45 @@ console.log("shifts", shifts);
                 service.key === key ? { ...service, quantity: value } : service
             )
         );
+    };
+
+    const HandleShiftChange = async (value) => {
+        try {
+            const res = await getshiftsById(value);
+            if (res.meta.requestStatus === "fulfilled") {
+                const shift = res.payload.data;
+                setValue("employee", []);
+                // Ánh xạ vai trò
+                const roleMap = {
+                    0: "Quản lý",
+                    1: "Nhân viên",
+                    2: "Nhân viên Chăm sóc khách hàng",
+                    default: "Nhân viên",
+                };
+
+                // Chuẩn bị dữ liệu nhân viên
+                const employees = shift.staffs.map((employee) => ({
+                    value: employee.id,
+                    label: (
+                        <>
+                            <Tag color="blue">
+                                <UserOutlined /> {employee.name}
+                            </Tag>
+                            <Tag color="green">
+                                {roleMap[employee.role] || roleMap.default}
+                            </Tag>
+                        </>
+                    ),
+                }));
+                setUserOptions(employees);
+                setValue("shift", value);
+                console.log(res.payload.data.staffs);
+            } else {
+                console.warn("Failed to fetch shift data:", res);
+            }
+        } catch (error) {
+            console.error("Error in HandleShiftChange:", error);
+        }
     };
 
     const columns = [
@@ -124,9 +265,21 @@ console.log("shifts", shifts);
             ),
         },
     ];
-    async function fetchUserList(username) {
-        console.log("fetching user", username);
-    }
+    const HandleServiceChange = debounce((value) => {
+        setSearchService({ ...searchService, search: value });
+    }, 300);
+
+    const OnsearchShift = debounce((value) => {
+        setSearchShift({ ...searchShift, search: value });
+    }, 300);
+    const handleChangeDate = (value) => {
+        setValue("appointment_date", value);
+        setSearchShift({
+            ...searchShift,
+            search: value.format("YYYY-MM-DD"),
+        });
+    };
+
     return (
         <Card title="Thêm lịch hẹn">
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
@@ -134,15 +287,18 @@ console.log("shifts", shifts);
                     <Col span={6}>
                         <Form.Item label="Họ và tên" required>
                             <Controller
-                                name="fullname"
+                                name="customer_id"
                                 control={control}
                                 rules={{
                                     required: "Vui lòng nhập tên khách hàng",
                                 }}
                                 render={({ field }) => (
-                                    <Input
+                                    <Select
                                         {...field}
-                                        placeholder="Tên khách hàng"
+                                        allowClear
+                                        showSearch
+                                        placeholder="Chọn khách hàng"
+                                        options={customerOptions}
                                     />
                                 )}
                             />
@@ -153,42 +309,24 @@ console.log("shifts", shifts);
                             )}
                         </Form.Item>
                     </Col>
+
                     <Col span={6}>
-                        <Form.Item label="Số điện thoại" required>
-                            <Controller
-                                name="phone"
-                                control={control}
-                                rules={{
-                                    required: "Vui lòng nhập số điện thoại",
-                                    pattern: {
-                                        value: /^[0-9]{10,11}$/,
-                                        message: "Số điện thoại không hợp lệ",
-                                    },
-                                }}
-                                render={({ field }) => (
-                                    <Input
-                                        {...field}
-                                        placeholder="Số điện thoại khách hàng"
-                                    />
-                                )}
-                            />
-                            {errors.phone && (
-                                <p style={{ color: "red" }}>
-                                    {errors.phone.message}
-                                </p>
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item label="Thời gian hẹn" required>
+                        <Form.Item label="ngày hẹn" required>
                             <Controller
                                 name="appointment_date"
                                 control={control}
                                 rules={{
-                                    required: "Vui lòng chọn thời gian hẹn",
+                                    required: "Vui lòng chọn ngày hẹn",
                                 }}
                                 render={({ field }) => (
-                                    <RangePicker {...field} className="w-100" />
+                                    <DatePicker
+                                        showTime={{ format: "HH:mm" }}
+                                        {...field}
+                                        className="w-100"
+                                        onChange={(value) => {
+                                            handleChangeDate(value);
+                                        }}
+                                    />
                                 )}
                             />
                             {errors.appointment_date && (
@@ -199,31 +337,6 @@ console.log("shifts", shifts);
                         </Form.Item>
                     </Col>
                     <Col span={6}>
-                        <Form.Item label="Ca làm việc" required>
-                            <Controller
-                                name="shift"
-                                control={control}
-                                rules={{
-                                    required: "Vui lòng chọn ca làm việc",
-                                }}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        allowClear
-                                        style={{ width: "100%" }}
-                                        placeholder="Chọn ca làm việc"
-                                        options={shiftsOptions}
-                                    />
-                                )}
-                            />
-                            {errors.shift && (
-                                <p style={{ color: "red" }}>
-                                    {errors.shift.message}
-                                </p>
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
                         <Form.Item label="Dịch vụ">
                             <Controller
                                 name="service"
@@ -237,16 +350,57 @@ console.log("shifts", shifts);
                                         placeholder="Chọn dịch vụ"
                                         options={serviceOptions}
                                         onChange={handleServiceChange}
-                                        filterOption={(input, option) =>
-                                            (option?.label ?? "")
-                                                .toLowerCase()
-                                                .includes(input.toLowerCase())
-                                        }
+                                        filterOption={(input, option) => {
+                                            const optionLabel =
+                                                option?.label?.toLowerCase() ||
+                                                "";
+                                            return optionLabel.includes(
+                                                input.toLowerCase()
+                                            );
+                                        }}
+                                        showSearch
+                                        onSearch={(value) => {
+                                            HandleServiceChange(value);
+                                        }}
                                     />
                                 )}
                             />
                         </Form.Item>
                     </Col>
+                    <Col span={12}>
+                        <Form.Item label="Ca làm việc" required>
+                            <Controller
+                                name="shift"
+                                control={control}
+                                rules={{
+                                    required: "Vui lòng chọn ca làm việc",
+                                }}
+                                render={({ field }) => (
+                                    <Select
+                                        onClear={() => {
+                                            console.log("clear");
+                                        }}
+                                        {...field}
+                                        allowClear
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn ca làm việc"
+                                        options={shiftsOptions}
+                                        showSearch
+                                        onChange={(value) => {
+                                            HandleShiftChange(value);
+                                        }}
+                                        onSearch={OnsearchShift}
+                                    />
+                                )}
+                            />
+                            {errors.shift && (
+                                <p style={{ color: "red" }}>
+                                    {errors.shift.message}
+                                </p>
+                            )}
+                        </Form.Item>
+                    </Col>
+
                     <Col span={12}>
                         <Form.Item label="Chọn nhân viên" required>
                             <Controller
@@ -308,6 +462,7 @@ console.log("shifts", shifts);
                     </Button>
                 </Form.Item>
             </Form>
+            {contextHolder}
         </Card>
     );
 };

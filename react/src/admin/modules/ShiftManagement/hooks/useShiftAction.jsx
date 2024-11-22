@@ -7,6 +7,7 @@ import {
     shiftsGetById,
     shiftsSearch,
 } from "@admin/redux/slices/ShiftSlice";
+
 const useShiftAction = () => {
     const dispatch = useDispatch();
 
@@ -26,11 +27,15 @@ const useShiftAction = () => {
         return await dispatch(shiftsGetById(id));
     };
 
-    const searchshifts = async (id) => {
-        return await dispatch(shiftsSearch(id));
+    const searchshifts = async (data) => {
+        return await dispatch(shiftsSearch(data));
     };
-    const getshifts = async (data) => {
-        return await dispatch(shiftsGet(data));
+    const getshifts = async (config) => {
+        if (!config) {
+            return await dispatch(shiftsGet());
+        }
+
+        return await dispatch(shiftsGet(config));
     };
 
     return {
