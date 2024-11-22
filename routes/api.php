@@ -43,11 +43,11 @@ Route::group([
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
 
-    Route::get('/shifts', [ShiftsController::class, 'index']);
-    Route::post('/shifts', [ShiftsController::class, 'store']);
-    Route::get('/shifts/{id}', [ShiftsController::class, 'show']);
-    Route::put('/shifts/{id}', [ShiftsController::class, 'update']);
-    Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
+    // Route::get('/shifts', [ShiftsController::class, 'index']);
+    // Route::post('/shifts', [ShiftsController::class, 'store']);
+    // Route::get('/shifts/{id}', [ShiftsController::class, 'show']);
+    // Route::put('/shifts/{id}', [ShiftsController::class, 'update']);
+    // Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
 
 
     

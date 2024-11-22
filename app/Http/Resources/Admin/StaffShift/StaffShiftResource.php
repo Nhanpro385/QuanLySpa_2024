@@ -11,14 +11,14 @@ class StaffShiftResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' =>(string) $this->id,
             'staff' => [
-                'id' => $this->staff->id,
+                'id' =>(string) $this->staff->id,
                 'name' => $this->staff->full_name,
                 'role' => $this->staff->role,
             ],
             'shift' => [
-                'id' => $this->shift->id,
+                'id' => (string) $this->shift->id,
                 'shift_date' => $this->shift->shift_date,
                 'start_time' => $this->shift->start_time,
                 'end_time' => $this->shift->end_time,

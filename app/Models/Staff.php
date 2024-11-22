@@ -38,4 +38,11 @@ class Staff extends Model
     {
         return $this->belongsTo(Shift::class, 'shifts_id', 'id');
     }
+     // fix id trả về qua js bị 00
+    protected $casts = [
+        'id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+    
 }

@@ -12,6 +12,13 @@ class Shift extends Model
 
     protected $keyType = 'string';
     public $incrementing = false;
+         // fix id trả về qua js bị 00
+    protected $casts = [
+        'id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+    
 
     protected $fillable = [
         'id', 'start_time', 'end_time', 'shift_date', 'max_customers', 'note', 'status', 'created_by', 'updated_by',

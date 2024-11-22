@@ -100,4 +100,11 @@ class TreatmentHistory extends Model
             }
         });
     }
+         // fix id trả về qua js bị 00
+    protected $casts = [
+        'id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+    
 }

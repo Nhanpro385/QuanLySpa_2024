@@ -52,6 +52,8 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      *
      * @var array<int, string>
      */
+
+
     protected $hidden = [
         'password',
         'remember_token',
@@ -157,7 +159,12 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(Product::class, 'created_by', 'id');
     }
 
+     // fix id trả về qua js bị 00
+   protected $casts = [
+    'id' => 'string',
+    'created_by' => 'string',
+    'updated_by' => 'string',
+];
 
-   
 
 }

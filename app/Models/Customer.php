@@ -89,6 +89,8 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
         'password',
         'remember_token',
     ];
+  
+
 
     /**
      * The attributes that should be cast to native types.
@@ -97,6 +99,10 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        // fix id trả về qua js bị 00
+        'id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
     ];
 
     public function getJWTIdentifier()
