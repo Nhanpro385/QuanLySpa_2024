@@ -14,7 +14,6 @@ Route::group([
     Route::get('/me', [AuthCustomerController::class, 'me'])->middleware('auth:customer_api');
     Route::post('/logout', [AuthCustomerController::class, 'logout'])->middleware('auth:customer_api');
     Route::post('/register', [AuthCustomerController::class, 'register']);
-
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store']);
     Route::post('/reset-password', [NewPasswordController::class, 'store']);
 });

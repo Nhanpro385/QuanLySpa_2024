@@ -21,6 +21,9 @@ use App\Http\Controllers\Admin\ConsulationController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Client\ServiceCategoryController as ClientServiceCategoryController;
+use App\Http\Controllers\Client\ServiceController as ClientServiceController;
+use App\Http\Controllers\Client\UserController as ClientUserController;
 use App\Http\Controllers\Client\ClientCustomerAccountController;
 
 
@@ -235,3 +238,18 @@ Route::group([
 
 //END Route ADMIN Nhân viên chăm sóc khách hàng
 
+// Route Client
+Route::group([
+    'middleware' => ['api'],
+    'prefix' => 'v0.0.1/client',
+], function () {
+    Route::get('/serviceCategories', [ClientServiceCategoryController::class, 'index']);
+    Route::get('/serviceCategories/{id}', [ClientServiceCategoryController::class, 'show']);
+
+    Route::get('/staffs', [ClientUserController::class, 'index']);
+    Route::get('/staffs/{id}', [ClientUserController::class, 'show']);
+
+    Route::get('/services', [ClientServiceController::class, 'index']);
+    Route::get('/services/{id}', [ClientServiceController::class, 'show']);
+});
+//END Client
