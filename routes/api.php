@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Client\AppointmentController as ClientAppointmentController;
 use App\Http\Controllers\Client\ServiceCategoryController as ClientServiceCategoryController;
 use App\Http\Controllers\Client\ServiceController as ClientServiceController;
 use App\Http\Controllers\Client\UserController as ClientUserController;
@@ -50,7 +51,7 @@ Route::group([
     // Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
 
 
-    
+
     Route::get('/staff-shifts', [StaffShiftController::class, 'index']);
     Route::post('/staff-shifts', [StaffShiftController::class, 'store']);
     Route::get('/staff-shifts/{id}', [StaffShiftController::class, 'show']);
@@ -265,5 +266,8 @@ Route::group([
     Route::get('/services/{id}', [ClientServiceController::class, 'show']);
 
     Route::post('/consulations', [ClientConsulationController::class, 'store'])->middleware('auth:customer_api');
+
+
+    Route::post('/appointments', [ClientAppointmentController::class, 'store'])->middleware('auth:customer_api');
 });
 //END Client
