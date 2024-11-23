@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\Admin\AuthController;
 // use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ConsulationController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -25,8 +26,7 @@ use App\Http\Controllers\Client\ServiceCategoryController as ClientServiceCatego
 use App\Http\Controllers\Client\ServiceController as ClientServiceController;
 use App\Http\Controllers\Client\UserController as ClientUserController;
 use App\Http\Controllers\Client\ClientCustomerAccountController;
-
-
+use App\Http\Controllers\Client\ConsulationController as ClientConsulationController;
 
 require __DIR__ . '/authCustomer.php';
 require __DIR__ . '/auth.php';
@@ -241,6 +241,11 @@ Route::group([
     Route::get('/consulations/{id}', [ConsulationController::class, 'show']);
     Route::put('/consulations/{id}', [ConsulationController::class, 'update']);
     Route::post('/consulations/{id}/browse', [ConsulationController::class, 'browse']);
+
+    //Notification
+    Route::get('/notifications', [NotificationController::class, 'index']);
+
+
 });
 
 //END Route ADMIN Nhân viên chăm sóc khách hàng
@@ -258,5 +263,7 @@ Route::group([
 
     Route::get('/services', [ClientServiceController::class, 'index']);
     Route::get('/services/{id}', [ClientServiceController::class, 'show']);
+
+    Route::post('/consulations', [ClientConsulationController::class, 'store'])->middleware('auth:customer_api');
 });
 //END Client

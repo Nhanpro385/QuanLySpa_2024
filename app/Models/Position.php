@@ -26,6 +26,10 @@ class Position extends Model
         'note',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+    ];
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'position_id', 'id');

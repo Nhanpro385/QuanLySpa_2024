@@ -26,6 +26,11 @@ class Notification extends Model
         'read_at',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'notifiable_id' => 'string',
+    ];
+
 
     public function user()
     {

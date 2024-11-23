@@ -23,6 +23,14 @@ class ServiceImage extends Model
         'created_by',
         'updated_by'
     ];
+
+    protected $casts = [
+        'id' => 'string',
+        'service_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id', 'id');

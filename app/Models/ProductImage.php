@@ -25,6 +25,13 @@ class ProductImage extends Model
         'updated_by'
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'product_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');

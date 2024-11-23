@@ -35,6 +35,13 @@ class Service extends Model
         'image_url' => 'default.jpg',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'service_category_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');

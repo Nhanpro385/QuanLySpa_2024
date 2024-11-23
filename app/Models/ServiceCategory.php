@@ -31,6 +31,13 @@ class ServiceCategory extends Model
 
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'parent_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     protected $attributes = [
         'status' => true,
 

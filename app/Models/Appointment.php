@@ -30,6 +30,14 @@ class Appointment extends Model
         'updated_by',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'shift_id' => 'string',
+        'customer_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
 
     public function shift()
     {

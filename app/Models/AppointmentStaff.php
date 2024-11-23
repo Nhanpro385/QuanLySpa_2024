@@ -19,6 +19,14 @@ class AppointmentStaff extends Model
         'appointment_id',
         'staff_id'
     ];
+
+    protected $casts = [
+        'id' => 'string',
+        'appointment_id' => 'string',
+        'staff_id' => 'string',
+    ];
+
+
     public function appointment()
     {
         return $this->belongsTo(Appointment::class, 'appointment_id', 'id');

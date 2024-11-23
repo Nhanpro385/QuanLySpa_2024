@@ -72,6 +72,13 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         ];
     }
 
+    protected $casts = [
+        'id' => 'string',
+        'position_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

@@ -22,6 +22,15 @@ class ProductService extends Model
         'service_id',
         'quantity_used'
     ];
+
+    protected $casts = [
+        'id' => 'string',
+        'product_id' => 'string',
+        'service_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id', 'id');

@@ -40,6 +40,15 @@ class Product extends Model
     ];
 
 
+    protected $casts = [
+        'id' => 'string',
+        'category_id' => 'string',
+        'bar_code' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');

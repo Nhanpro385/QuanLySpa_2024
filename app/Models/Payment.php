@@ -33,6 +33,15 @@ class Payment extends Model
     protected $attribute = [
         'status' => true
     ];
+
+    protected $casts = [
+        'id' => 'string',
+        'promotion_id' => 'string',
+        'appointment_id' => 'string',
+        'created_by' => 'string',
+    ];
+
+
     public function appointment()
     {
         return $this->belongsTo(Appointment::class, 'appointment_id', 'id');

@@ -24,5 +24,11 @@ class PaymentProducts extends Model
         'total_price',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'product_id' => 'string',
+        'payment_id' => 'string',
+    ];
+
 
 }

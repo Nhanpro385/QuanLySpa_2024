@@ -21,6 +21,13 @@ class AppointmentService extends Model
         'quantity',
         'price'
     ];
+
+    protected $casts = [
+        'id' => 'string',
+        'service_id' => 'string',
+        'appointment_id' => 'string',
+    ];
+
     public function appointment()
     {
         return $this->belongsTo(Appointment::class, 'appointment_id', 'id');
