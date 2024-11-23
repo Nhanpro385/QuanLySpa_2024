@@ -20,7 +20,7 @@ class CommentUpdateRequest extends FormRequest
             'parent_comment_id' => 'nullable|exists:comments,id|integer',
             'comment' => 'nullable|string|max:500',
             'image_urls' => 'nullable|array',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 

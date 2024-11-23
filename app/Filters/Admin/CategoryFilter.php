@@ -42,10 +42,10 @@ class CategoryFilter extends ApiFilter
         if ($request->has('search')) {
             $search = $request->input('search');
 
-            $query->where(function ($query) use ($search) {
+            $query->where(function($query) use ($search) {
                 $query->where('id', 'LIKE', "%$search%")
-                    ->orWhere('name', 'LIKE', "%$search%")
-                    ->orWhere('description', 'LIKE', "%$search%");
+                      ->orWhere('name', 'LIKE', "%$search%")
+                      ->orWhere('description', 'LIKE', "%$search%");
             });
         }
 

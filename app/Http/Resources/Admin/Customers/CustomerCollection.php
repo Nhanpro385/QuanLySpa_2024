@@ -15,7 +15,7 @@ class CustomerCollection extends ResourceCollection
                     'full_name' => $customer->full_name,
                     'gender' => $customer->gender,
                     'email' => $customer->email ?? 'Chưa có thông tin',
-                    'phone' => $customer->phone ?? 'Chưa có thông tin', 
+                    'phone' => $customer->phone ?? 'Chưa có thông tin',
                     'date_of_birth' => $customer->date_of_birth,
                     'address' => $customer->address,
                     'created_by' => $customer->createdBy ? [

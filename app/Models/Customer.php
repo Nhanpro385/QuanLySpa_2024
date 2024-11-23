@@ -89,7 +89,7 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
         'password',
         'remember_token',
     ];
-  
+
 
 
     /**

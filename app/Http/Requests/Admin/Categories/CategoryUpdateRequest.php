@@ -19,7 +19,7 @@ class CategoryUpdateRequest extends FormRequest
             'name' => 'required|string|max:255|unique:categories,name,' . $this->route('id') . '|regex:/^[\p{L} ]+$/u',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'parent_id' => 'nullable|digits_between:10,20|integer|exists:categories,id', 
+            'parent_id' => 'nullable|digits_between:10,20|integer|exists:categories,id',
         ];
     }
 

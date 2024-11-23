@@ -9,33 +9,37 @@ use App\Http\Requests\Admin\Suppliers\SupplierUpdateRequest;
 use App\Http\Resources\Admin\Suppliers\SupplierResource;
 use App\Http\Resources\Admin\Suppliers\SupplierCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Filters\Admin\SupplierFilter;
 
 class SupplierController extends Controller
 {
-    public function index()
-    {
-        try {
-            $suppliers = Supplier::with(['createdBy', 'updatedBy'])->paginate(5);
-            $user = Auth::user();
+    public function index(Request $request, SupplierFilter $filter)
+{
+    try {
+        $query = Supplier::with(['createdBy', 'updatedBy']);
+        $suppliers = $filter->apply($request, $query)->paginate(5);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Danh sách nhà cung cấp',
-                'user' => [
-                    'id' => $user->id,
-                    'full_name' => $user->full_name,
-                    'role' => $user->role,
-                ],
-                'data' => new SupplierCollection($suppliers),
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình lấy danh sách nhà cung cấp.',
-                'error' => $th->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Danh sách nhà cung cấp',
+            'data' => SupplierResource::collection($suppliers),
+            'meta' => [
+                'current_page' => $suppliers->currentPage(),
+                'last_page' => $suppliers->lastPage(),
+                'per_page' => $suppliers->perPage(),
+                'total' => $suppliers->total(),
+            ],
+        ]);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Đã xảy ra lỗi trong quá trình lấy danh sách nhà cung cấp.',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
+
 
     public function show($id)
     {
@@ -95,15 +99,10 @@ class SupplierController extends Controller
 
             $supplier->update($validatedData);
 
-            
-            $updatedByUser = $supplier->updatedBy;
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Cập nhật nhà cung cấp thành công!',
-                'data' => [
-                    'supplier' => new SupplierResource($supplier),
-                ],
+                'data' => new SupplierResource($supplier),
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
@@ -119,13 +118,10 @@ class SupplierController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         try {
             $supplier = Supplier::findOrFail($id);
-
-
             $supplier->delete();
 
             return response()->json([

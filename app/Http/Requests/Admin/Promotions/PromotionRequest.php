@@ -14,22 +14,22 @@ class PromotionRequest extends FormRequest
     }
 
     public function rules()
-    {
-        return [
-            'id' => 'required|integer|digits_between:10,20|unique:promotions,id',
-            'name' => 'required|string|max:255|regex:/^[\p{L}0-9 ]+$/u',
-            'description' => 'nullable|string',
+{
+    return [
+        'id' => 'required|integer|digits_between:10,20|unique:promotions,id',
+        'name' => 'required|string|max:255|regex:/^[\p{L}0-9 ]+$/u',
+        'description' => 'nullable|string',
 
-            'start_date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
-            'end_date' => 'required|date|date_format:Y-m-d|after:start_date',
+        'start_date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
+        'end_date' => 'required|date|date_format:Y-m-d|after:start_date',
 
-            'promotion_type' => 'required|in:0,1',
-            'discount_percent' => 'required_if:promotion_type,1|numeric|between:1,100',
-            'min_order_amount' => 'nullable|numeric|min:0',
-            'min_quantity' => 'nullable|integer|min:1',
-            'image_url' => 'nullable',
-        ];
-    }
+        'promotion_type' => 'required|in:0,1',
+        'discount_percent' => 'required_if:promotion_type,1|numeric|between:1,100',
+        'min_order_amount' => 'nullable|numeric|min:0',
+        'min_quantity' => 'nullable|integer|min:1',
+        'image_url' => 'nullable',
+    ];
+}
 
 
     public function messages()
@@ -55,8 +55,8 @@ class PromotionRequest extends FormRequest
             'end_date.date_format' => 'Ngày kết thúc phải có định dạng Y-m-d.',
             'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
             'promotion_type.required' => 'Loại khuyến mãi không được bỏ trống!',
-            'promotion_type.in' => 'Loại khuyến mãi phải là "cash" hoặc "percent".',
-            'discount_percent.required_if' => 'Phần trăm giảm giá không được bỏ trống khi loại khuyến mãi là percent!',
+            'promotion_type.in' => 'Loại khuyến mãi phải là "0" (giảm tiền mặt) hoặc "1" (giảm theo %).',
+            'discount_percent.required_if' => 'Phần trăm giảm giá không được bỏ trống khi loại khuyến mãi là giảm giá theo %!',
             'discount_percent.numeric' => 'Phần trăm giảm giá phải là số.',
             'discount_percent.between' => 'Phần trăm giảm giá phải nằm trong khoảng từ 1 đến 100.',
             'min_order_amount.numeric' => 'Số tiền đơn hàng tối thiểu phải là số.',

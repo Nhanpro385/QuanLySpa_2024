@@ -42,7 +42,7 @@ class PromotionFilter extends ApiFilter
 
             $query->where(function ($query) use ($search) {
                 $query->where('id', 'LIKE', "%$search%")
-                    ->orWhere('name', 'LIKE', "%$search%");
+                      ->orWhere('name', 'LIKE', "%$search%");
             });
         }
 

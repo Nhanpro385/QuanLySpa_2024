@@ -42,7 +42,7 @@ class SupplierUpdateRequest extends FormRequest
             'code.unique' => 'Mã đã tồn tại!',
             'created_by.max' => 'Người tạo không được vượt quá 255 ký tự.',
             'status.required' => 'Trạng thái không được bỏ trống!',
-            'status.boolean' => 'Trạng thái phải là true hoặc false.', 
+            'status.boolean' => 'Trạng thái phải là true hoặc false.',
         ];
     }
 

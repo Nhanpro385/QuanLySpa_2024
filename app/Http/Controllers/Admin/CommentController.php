@@ -10,20 +10,37 @@ use App\Http\Requests\Admin\Comments\CommentUpdateRequest;
 use App\Http\Resources\Admin\Comments\CommentResource;
 use App\Http\Resources\Admin\Comments\CommentCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\Snowflake;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Filters\Admin\CommentFilter;
+use Illuminate\Http\Request;
 
 
 
 class CommentController extends Controller
 {
-    public function index()
+    public function index(Request $request, CommentFilter $filter)
     {
         try {
-            $comments = Comment::with('replies.replies')->paginate(5);
-            return new CommentCollection($comments);
+            $query = Comment::with(['createdByUser', 'updatedByUser']);
+
+         
+            $comments = $filter->apply($request, $query)->paginate(5);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Danh sách bình luận',
+                'data' => CommentResource::collection($comments),
+                'meta' => [
+                    'current_page' => $comments->currentPage(),
+                    'last_page' => $comments->lastPage(),
+                    'per_page' => $comments->perPage(),
+                    'total' => $comments->total()
+                ],
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -235,26 +252,28 @@ class CommentController extends Controller
             $comment = Comment::findOrFail($id);
 
 
-            $oldImages = CommentImage::where('comment_id', $comment->id)->get();
-
-            foreach ($oldImages as $oldImage) {
-                $oldImagePath = 'uploads/comments/' . $oldImage->image_url;
-
-
-                if (Storage::disk('public')->exists($oldImagePath)) {
-                    Storage::disk('public')->delete($oldImagePath);
+            if ($comment->image_url) {
+                $oldImagePath = storage_path('app/public/uploads/comments/' . $comment->image_url);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
                 }
-
-                $oldImage->delete();
             }
+
+
             $comment->replies()->delete();
 
-            $comment->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Bình luận và tất cả ảnh, bình luận con đã được xóa thành công!',
-            ]);
+            if ($comment->forceDelete()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Bình luận và ảnh liên quan đã được xóa thành công!',
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không thể xóa bình luận!',
+                ], 500);
+            }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
@@ -263,10 +282,12 @@ class CommentController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình xóa.',
+                'message' => 'Đã xảy ra lỗi trong quá trình xóa bình luận.',
                 'error' => $th->getMessage(),
             ], 500);
         }
     }
+
+
 
 }

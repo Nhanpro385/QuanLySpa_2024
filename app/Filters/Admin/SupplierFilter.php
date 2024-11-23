@@ -8,13 +8,12 @@ use Illuminate\Http\Request;
 class SupplierFilter extends ApiFilter
 {
     protected $safeParams = [
-        'id' => ['eq'],
+        'id' => ['eq', 'like'],
         'name' => ['eq', 'like'],
         'country' => ['eq', 'like'],
         'contact_email' => ['eq', 'like'],
         'code' => ['eq', 'like'],
         'created_by' => ['eq'],
-
     ];
 
     protected $columnMap = [
@@ -47,10 +46,10 @@ class SupplierFilter extends ApiFilter
 
             $query->where(function ($query) use ($search) {
                 $query->where('id', 'LIKE', "%$search%")
-                    ->orWhere('name', 'LIKE', "%$search%")
-                    ->orWhere('country', 'LIKE', "%$search%")
-                    ->orWhere('contact_email', 'LIKE', "%$search%")
-                    ->orWhere('code', 'LIKE', "%$search%");
+                      ->orWhere('name', 'LIKE', "%$search%")
+                      ->orWhere('country', 'LIKE', "%$search%")
+                      ->orWhere('contact_email', 'LIKE', "%$search%")
+                      ->orWhere('code', 'LIKE', "%$search%");
             });
         }
 

@@ -9,27 +9,32 @@ use App\Http\Requests\Admin\Categories\CategoryUpdateRequest;
 use App\Http\Resources\Admin\Categories\CategoryResource;
 use App\Http\Resources\Admin\Categories\CategoryCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Filters\Admin\CategoryFilter;
+
+
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request, CategoryFilter $filter)
     {
         try {
 
-            $categories = Category::with(['createdByUser', 'updatedByUser', 'parentCategory'])->paginate(5);
+            $query = Category::with(['createdByUser', 'updatedByUser', 'parentCategory']);
 
-            $user = Auth::user();
-            $userData = [
-                'id' => $user->id,
-                'full_name' => $user->full_name,
-                'role' => $user->role,
-            ];
+
+            $categories = $filter->apply($request, $query)->paginate(5);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Danh sách danh mục',
-                'user' => $userData,
-                'data' => new CategoryCollection($categories),
+                'data' => CategoryResource::collection($categories),
+                'meta' => [
+                    'current_page' => $categories->currentPage(),
+                    'last_page' => $categories->lastPage(),
+                    'per_page' => $categories->perPage(),
+                    'total' => $categories->total()
+                ],
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -40,10 +45,11 @@ class CategoryController extends Controller
         }
     }
 
+
+
     public function show($id)
     {
         try {
-
             $category = Category::with(['createdByUser', 'updatedByUser', 'parentCategory'])->find($id);
 
             if (!$category) {
@@ -71,14 +77,10 @@ class CategoryController extends Controller
     {
         try {
             $validatedData = $request->validated();
-
-
             $validatedData['created_by'] = Auth::id();
             $validatedData['updated_by'] = null;
 
             $category = Category::create($validatedData);
-
-
             $category->load(['createdByUser', 'updatedByUser', 'parentCategory']);
 
             return response()->json([
@@ -99,13 +101,10 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::findOrFail($id);
-
             $validatedData = $request->validated();
             $validatedData['updated_by'] = Auth::id();
 
             $category->update($validatedData);
-
-
             $category->load(['createdByUser', 'updatedByUser', 'parentCategory']);
 
             return response()->json([
@@ -132,12 +131,10 @@ class CategoryController extends Controller
         try {
             $category = Category::with('children')->findOrFail($id);
 
-
             foreach ($category->children as $child) {
                 $child->delete();
             }
 
-            
             $category->delete();
 
             return response()->json([

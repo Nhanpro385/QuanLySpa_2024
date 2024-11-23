@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Promotion extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -30,12 +30,22 @@ class Promotion extends Model
         'updated_by',
     ];
 
-    protected $attribute = [
-        'status' => true
+    protected $attributes = [
+        'status' => true,
     ];
-    public function Payment()
+
+    public function payment()
     {
-        return $this->hasMany(Promotion::class, 'promotions_id', 'id');
+        return $this->hasMany(Payment::class, 'promotions_id', 'id');
     }
 
+    public function createdByUser()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedByUser()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

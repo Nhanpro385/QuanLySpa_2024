@@ -18,7 +18,7 @@ class CommentResource extends JsonResource
             'type' => $this->type,
             'image_url' => $this->image_url,
 
-            
+
             'created_by' => $this->createdByUser ? [
                 'id' => $this->createdByUser->id,
                 'full_name' => $this->createdByUser->full_name,

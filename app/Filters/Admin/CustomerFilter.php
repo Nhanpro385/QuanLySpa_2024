@@ -54,13 +54,13 @@ class CustomerFilter extends ApiFilter
 
             $searchTerms = preg_split('/[\s,]+/', $search);
 
-            $query->where(function ($query) use ($searchTerms) {
+            $query->where(function($query) use ($searchTerms) {
                 foreach ($searchTerms as $term) {
                     $query->orWhere('id', 'LIKE', "%$term%")
-                        ->orWhere('full_name', 'LIKE', "%$term%")
-                        ->orWhere('phone', 'LIKE', "%$term%")
-                        ->orWhere('email', 'LIKE', "%$term%")
-                        ->orWhere('address', 'LIKE', "%$term%");
+                          ->orWhere('full_name', 'LIKE', "%$term%")
+                          ->orWhere('phone', 'LIKE', "%$term%")
+                          ->orWhere('email', 'LIKE', "%$term%")
+                          ->orWhere('address', 'LIKE', "%$term%");
                 }
             });
         }

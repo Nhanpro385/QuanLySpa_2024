@@ -38,7 +38,7 @@ class CategoryRequest extends FormRequest
             'status.required' => 'Trạng thái không được bỏ trống!',
             'status.boolean' => 'Trạng thái phải là true hoặc false.',
             'description.required' => 'Mô tả không được bỏ trống!',
-            
+
             'parent_id.digits_between' => 'Parent ID phải có độ dài từ 10 đến 20 ký tự số.',
             'parent_id.integer' => 'Parent ID phải là số nguyên.',
             'parent_id.exists' => 'Parent ID không tồn tại trong danh mục.',

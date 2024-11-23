@@ -14,7 +14,7 @@ class PromotionResource extends JsonResource
             'description' => $this->description,
             'status' => $this->status,
             'start_date' => $this->start_date ? $this->start_date : null,
-            'end_date' => $this->end_date ? $this->end_date : null,
+            'end_date' => $this->end_date ? $this->end_date: null,
             'promotion_type' => $this->promotion_type === 1 ? 'Cash' : 'Percent',
             'discount_percent' => $this->discount_percent,
             'min_order_amount' => $this->min_order_amount,

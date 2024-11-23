@@ -9,20 +9,18 @@ class CommentFilter extends ApiFilter
 {
     protected $safeParams = [
         'id' => ['eq', 'like'],
-        'service_id' => ['eq'],
-        'customer_id' => ['eq'],
-        'parent_comment_id' => ['eq'],
+        'content' => ['eq', 'like'],
         'status' => ['eq'],
-        'created_at' => ['eq', 'lt', 'lte', 'gt', 'gte'],
+        'created_by' => ['eq'],
+        'updated_by' => ['eq'],
     ];
 
     protected $columnMap = [
         'id' => 'id',
-        'service_id' => 'service_id',
-        'customer_id' => 'customer_id',
-        'parent_comment_id' => 'parent_comment_id',
+        'content' => 'content',
         'status' => 'status',
-        'created_at' => 'created_at',
+        'created_by' => 'created_by',
+        'updated_by' => 'updated_by',
     ];
 
     protected $operatorMap = [
@@ -35,27 +33,20 @@ class CommentFilter extends ApiFilter
     ];
 
     protected $sortParams = [
-        'sort_by' => 'created_at',
+        'sort_by' => 'id',
         'sort_order' => 'asc',
     ];
 
     public function apply(Request $request, $query)
     {
 
-        $query->with(['customer', 'service']);
-
         if ($request->has('search')) {
             $search = $request->input('search');
 
-            $query->where(function($query) use ($search) {
+            $query->where(function ($query) use ($search) {
                 $query->where('id', 'LIKE', "%$search%")
-                      ->orWhere('content', 'LIKE', "%$search%")
-                      ->orWhereHas('customer', function($q) use ($search) {
-                          $q->where('name', 'LIKE', "%$search%");
-                      })
-                      ->orWhereHas('service', function($q) use ($search) {
-                          $q->where('name', 'LIKE', "%$search%");
-                      });
+                      ->orWhere('comment', 'LIKE', "%$search%")
+                      ->orWhere('status', 'LIKE', "%$search%");
             });
         }
 
@@ -78,16 +69,13 @@ class CommentFilter extends ApiFilter
             }
         }
 
-        
+      
         if ($request->has('sort_by') && $request->has('sort_order')) {
             $sortBy = $request->input('sort_by');
             $sortOrder = $request->input('sort_order');
             $query->orderBy($sortBy, $sortOrder);
-        } else {
-            $query->orderBy($this->sortParams['sort_by'], $this->sortParams['sort_order']);
         }
 
         return $query;
     }
-
 }

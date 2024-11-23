@@ -11,22 +11,42 @@ use App\Http\Resources\Admin\Customers\CustomerCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Filters\Admin\CustomerFilter;
+
 
 class CustomerController extends Controller
 {
-    public function index()
-{
-    try {
-        $customers = Customer::with(['createdBy', 'updatedBy'])->paginate(5);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Xem danh sách khách hàng!',
-            'data' => new CustomerCollection($customers),
-        ]);
-    } catch (\Throwable $th) {
-        return $this->errorResponse('Đã xảy ra lỗi trong quá trình xử lý.', $th);
+    public function index(Request $request, CustomerFilter $filter)
+    {
+        try {
+
+            $query = Customer::with(['createdBy', 'updatedBy']);
+
+
+            $filteredCustomers = $filter->apply($request, $query)->paginate(5);
+
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Danh sách khách hàng',
+                'data' => CustomerResource::collection($filteredCustomers),
+                'meta' => [
+                    'current_page' => $filteredCustomers->currentPage(),
+                    'last_page' => $filteredCustomers->lastPage(),
+                    'per_page' => $filteredCustomers->perPage(),
+                    'total' => $filteredCustomers->total(),
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình lấy danh sách danh mục.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
-}
+
 
 
     public function show($id)
@@ -66,23 +86,23 @@ class CustomerController extends Controller
         try {
             $validatedData = $request->validated();
 
-            // Mã hóa mật khẩu
+
             if (!isset($validatedData['password'])) {
                 $validatedData['password'] = $this->generateRandomPassword();
             } else {
                 $validatedData['password'] = Hash::make($validatedData['password']);
             }
 
-            // Ánh xạ giá trị giới tính
+
             $this->mapGender($validatedData);
 
-            // Thêm thông tin người tạo
+
             $validatedData['created_by'] = Auth::id();
             $validatedData['updated_by'] = null;
 
             $customer = Customer::create($validatedData);
 
-            // Lấy thông tin người tạo
+
             $creator = $customer->createdBy;
 
             return response()->json([
@@ -91,7 +111,7 @@ class CustomerController extends Controller
                 'data' => [
                     'id' => $customer->id,
                     'full_name' => $customer->full_name,
-                    'gender' => $this->getGenderText($customer->gender),
+                    'gender' => $customer->gender,
                     'contact_email' => $customer->email ?? 'gmail',
                     'phone' => $customer->phone ?? 'phone',
                     'date_of_birth' => $customer->date_of_birth,
@@ -113,20 +133,20 @@ class CustomerController extends Controller
             $customer = Customer::findOrFail($id);
             $validatedData = $request->validated();
 
-            // Mã hóa mật khẩu nếu có
+
             if (isset($validatedData['password'])) {
                 $validatedData['password'] = Hash::make($validatedData['password']);
             }
 
-            // Ánh xạ giá trị giới tính
+
             $this->mapGender($validatedData);
 
-            // Thêm thông tin người cập nhật
+
             $validatedData['updated_by'] = Auth::id();
 
             $customer->update($validatedData);
 
-            // Lấy thông tin chi tiết của khách hàng sau khi cập nhật
+
             $customer->load(['createdBy', 'updatedBy']);
 
             return response()->json([
@@ -135,7 +155,7 @@ class CustomerController extends Controller
                 'data' => [
                     'id' => $customer->id,
                     'full_name' => $customer->full_name,
-                    'gender' => $this->getGenderText($customer->gender),
+                    'gender' => $customer->gender,
                     'contact_email' => $customer->email ?? 'gmail',
                     'phone' => $customer->phone ?? 'phone',
                     'date_of_birth' => $customer->date_of_birth,
