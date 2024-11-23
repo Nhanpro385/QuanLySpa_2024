@@ -120,11 +120,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(User::class, 'user_id', 'id');
     }
 
-
-
     public function shifts()
     {
-        return $this->belongsToMany(User::class,'staff_shifts', 'staff_id', 'shift_id');
+        return $this->belongsToMany(User::class, 'staff_shifts', 'staff_id', 'shift_id');
     }
 
     public function shifts_after()
@@ -165,13 +163,5 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->hasMany(Product::class, 'created_by', 'id');
     }
-
-     // fix id trả về qua js bị 00
-   protected $casts = [
-    'id' => 'string',
-    'created_by' => 'string',
-    'updated_by' => 'string',
-];
-
 
 }
