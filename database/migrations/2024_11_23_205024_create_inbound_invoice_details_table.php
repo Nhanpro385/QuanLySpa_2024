@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        // Tạo bảng 'inbound_invoice_details'
         Schema::create('inbound_invoice_details', function (Blueprint $table) {
             $table->string('id', 20)->primary();
             $table->string('product_id', 20)->nullable();
@@ -22,12 +23,22 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+        // Thêm ràng buộc khóa ngoại
         Schema::table('inbound_invoice_details', function (Blueprint $table) {
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('set null');
+            $table->foreign('product_id')
+                ->references('id')
+                ->on('products')
+                ->onDelete('set null');
+
             $table->foreign('inbound_invoice_id')
                 ->references('id')
                 ->on('inbound_invoices')
                 ->onDelete('set null');
+        });
+
+        // Thêm cột soft deletes
+        Schema::table('inbound_invoice_details', function (Blueprint $table) {
+            $table->softDeletes(); // Thêm cột deleted_at
         });
     }
 
@@ -36,8 +47,13 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        // Xóa ràng buộc khóa ngoại trước khi xóa bảng
+        Schema::table('inbound_invoice_details', function (Blueprint $table) {
+            $table->dropForeign(['product_id']);
+            $table->dropForeign(['inbound_invoice_id']);
+        });
+
+        // Xóa bảng
         Schema::dropIfExists('inbound_invoice_details');
     }
-
-    
 };

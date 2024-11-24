@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ContactsController;
 use App\Http\Controllers\Admin\ShiftsController;
 use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\TreatmentHistoryController;
+use App\Http\Controllers\Admin\InboundInvoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
@@ -44,13 +45,18 @@ Route::group([
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
 
-    // Route::get('/shifts', [ShiftsController::class, 'index']);
-    // Route::post('/shifts', [ShiftsController::class, 'store']);
-    // Route::get('/shifts/{id}', [ShiftsController::class, 'show']);
-    // Route::put('/shifts/{id}', [ShiftsController::class, 'update']);
-    // Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
+    Route::get('/shifts', [ShiftsController::class, 'index']);
+    Route::post('/shifts', [ShiftsController::class, 'store']);
+    Route::get('/shifts/{id}', [ShiftsController::class, 'show']);
+    Route::put('/shifts/{id}', [ShiftsController::class, 'update']);
+    Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
 
 
+    Route::get('/inbound-invoices', [InboundInvoiceController::class, 'index']);
+    Route::post('/inbound-invoices', [InboundInvoiceController::class, 'store']);
+    Route::get('/inbound-invoices/{id}', [InboundInvoiceController::class, 'show']);
+    Route::put('/inbound-invoices/{id}', [InboundInvoiceController::class, 'update']);
+    Route::delete('/inbound-invoices/{id}', [InboundInvoiceController::class, 'destroy']);
 
     Route::get('/staff-shifts', [StaffShiftController::class, 'index']);
     Route::post('/staff-shifts', [StaffShiftController::class, 'store']);

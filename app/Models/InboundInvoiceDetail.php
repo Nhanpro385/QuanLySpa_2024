@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kra8\Snowflake\HasSnowflakePrimary;
+
 
 class InboundInvoiceDetail extends Model
 {
-    use HasFactory;
+    use HasFactory,HasSnowflakePrimary;
     use SoftDeletes;
     protected $keyType = 'string';
     public $incrementing = false;
@@ -31,6 +33,6 @@ class InboundInvoiceDetail extends Model
     }
     public function inboundInvoice()
     {
-        return $this->belongsTo(InboundInvoice::class, 'inbound_invoices_id', 'id');
+        return $this->belongsTo(InboundInvoice::class, 'inbound_invoice_id', 'id');
     }
-}
+}    
