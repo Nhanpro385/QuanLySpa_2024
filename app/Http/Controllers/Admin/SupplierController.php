@@ -18,19 +18,9 @@ class SupplierController extends Controller
 {
     try {
         $query = Supplier::with(['createdBy', 'updatedBy']);
-        $suppliers = $filter->apply($request, $query)->paginate(5);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Danh sách nhà cung cấp',
-            'data' => SupplierResource::collection($suppliers),
-            'meta' => [
-                'current_page' => $suppliers->currentPage(),
-                'last_page' => $suppliers->lastPage(),
-                'per_page' => $suppliers->perPage(),
-                'total' => $suppliers->total(),
-            ],
-        ]);
+        
+        $suppliers = $filter->apply($request, $query)->paginate($request->input('per_page', 5));
+        return new SupplierCollection($suppliers);
     } catch (\Throwable $th) {
         return response()->json([
             'status' => 'error',

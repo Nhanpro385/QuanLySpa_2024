@@ -10,7 +10,6 @@ class CustomerFilter extends ApiFilter
     protected $safeParams = [
         'id' => ['eq'],
         'full_name' => ['eq', 'like'],
-        'name' => ['eq', 'like'],
         'email' => ['eq', 'like'],
         'gender' => ['eq'],
         'phone' => ['eq', 'like'],
@@ -23,7 +22,6 @@ class CustomerFilter extends ApiFilter
     protected $columnMap = [
         'id' => 'id',
         'full_name' => 'full_name',
-        'name' => 'name',
         'email' => 'email',
         'gender' => 'gender',
         'phone' => 'phone',
@@ -43,15 +41,15 @@ class CustomerFilter extends ApiFilter
     ];
 
     protected $sortParams = [
-        'sort_by' => 'id',
+        'sort_by' => 'full_name', 
         'sort_order' => 'asc',
     ];
 
     public function apply(Request $request, $query)
     {
+
         if ($request->has('search')) {
             $search = $request->input('search');
-
             $searchTerms = preg_split('/[\s,]+/', $search);
 
             $query->where(function($query) use ($searchTerms) {
@@ -83,13 +81,20 @@ class CustomerFilter extends ApiFilter
             }
         }
 
+
         if ($request->has('sort_by') && $request->has('sort_order')) {
             $sortBy = $request->input('sort_by');
             $sortOrder = $request->input('sort_order');
-            $query->orderBy($sortBy, $sortOrder);
+
+
+            if (array_key_exists($sortBy, $this->columnMap)) {
+                $query->orderBy($this->columnMap[$sortBy], $sortOrder);
+            } else {
+
+                $query->orderBy($this->columnMap['full_name'], 'asc');
+            }
         }
 
         return $query;
     }
-
 }

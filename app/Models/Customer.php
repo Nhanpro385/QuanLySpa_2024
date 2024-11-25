@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use App\Models\Consultation;
 
 class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
@@ -53,6 +54,7 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
     }
 
 
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -63,6 +65,13 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function consultations()
+    {
+        return $this->hasMany(Consulation::class, 'customer_id', 'id');
+    }
+
+   
 
 
 
@@ -125,4 +134,5 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
         $url = env('FRONTEND_URL') . '/matkhaumoi?token=' . $token;
         $this->notify(new ResetPasswordNotification($url));
     }
+
 }

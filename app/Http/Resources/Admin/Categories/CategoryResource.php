@@ -13,7 +13,7 @@ class CategoryResource extends JsonResource
             'parent_id' => $this->parentCategory ? [
                 'id' => $this->parentCategory->id,
                 'name' => $this->parentCategory->name,
-                'role' => $this->parentCategory->createdByUser ? $this->getRoleName($this->parentCategory->createdByUser->role) : null,
+                
             ] : null,
             'name' => $this->name,
             'description' => $this->description,

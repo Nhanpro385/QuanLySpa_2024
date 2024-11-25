@@ -42,10 +42,9 @@ class CommentFilter extends ApiFilter
 
         if ($request->has('search')) {
             $search = $request->input('search');
-
             $query->where(function ($query) use ($search) {
                 $query->where('id', 'LIKE', "%$search%")
-                      ->orWhere('comment', 'LIKE', "%$search%")
+                      ->orWhere('content', 'LIKE', "%$search%")
                       ->orWhere('status', 'LIKE', "%$search%");
             });
         }
@@ -69,13 +68,21 @@ class CommentFilter extends ApiFilter
             }
         }
 
-      
+
         if ($request->has('sort_by') && $request->has('sort_order')) {
             $sortBy = $request->input('sort_by');
             $sortOrder = $request->input('sort_order');
-            $query->orderBy($sortBy, $sortOrder);
+
+
+            if (array_key_exists($sortBy, $this->columnMap)) {
+                $query->orderBy($sortBy, $sortOrder);
+            } else {
+
+                $query->orderBy($this->sortParams['sort_by'], $this->sortParams['sort_order']);
+            }
         }
 
         return $query;
     }
+
 }

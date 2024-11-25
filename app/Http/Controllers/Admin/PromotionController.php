@@ -10,6 +10,7 @@ use App\Http\Resources\Admin\Promotions\PromotionResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Filters\Admin\PromotionFilter;
+use App\Http\Resources\Admin\Promotions\PromotionCollection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -19,19 +20,9 @@ class PromotionController extends Controller
     {
         try {
             $query = Promotion::with(['createdByUser', 'updatedByUser']);
-            $filteredPromotions = $filter->apply($request, $query)->paginate(5);
+            $promotion = $filter->apply($request, $query)->paginate($request->input('per_page', 5));
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Danh sách khuyến mãi',
-                'data' => PromotionResource::collection($filteredPromotions),
-                'meta' => [
-                    'current_page' => $filteredPromotions->currentPage(),
-                    'last_page' => $filteredPromotions->lastPage(),
-                    'per_page' => $filteredPromotions->perPage(),
-                    'total' => $filteredPromotions->total(),
-                ],
-            ]);
+            return new PromotionCollection($promotion);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -113,6 +104,12 @@ class PromotionController extends Controller
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->storeAs('public/uploads/promotions', $imageName);
                 $validatedData['image_url'] = $imageName;
+            }
+            if ($promotion->name !== $validatedData['name']) {
+                
+                $this->$request->validated($request, [
+                    'name' => 'unique:promotions,name'
+                ]);
             }
 
             $promotion->update($validatedData);

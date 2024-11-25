@@ -3,19 +3,14 @@
 namespace App\Http\Resources\Admin\Suppliers;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Request as HttpRequest;
 
 class SupplierCollection extends ResourceCollection
 {
-    public function toArray($request)
+    public $collects = SupplierResource::class;
+
+    public function toArray(HttpRequest $request): array
     {
-        return [
-            'data' => $this->collection,
-            'meta' => [
-                'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
-                'per_page' => $this->perPage(),
-                'total' => $this->total(),
-            ],
-        ];
+        return parent::toArray($request);
     }
 }

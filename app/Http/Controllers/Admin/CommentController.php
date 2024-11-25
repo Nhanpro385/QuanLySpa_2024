@@ -27,20 +27,9 @@ class CommentController extends Controller
         try {
             $query = Comment::with(['createdByUser', 'updatedByUser']);
 
-         
-            $comments = $filter->apply($request, $query)->paginate(5);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Danh sách bình luận',
-                'data' => CommentResource::collection($comments),
-                'meta' => [
-                    'current_page' => $comments->currentPage(),
-                    'last_page' => $comments->lastPage(),
-                    'per_page' => $comments->perPage(),
-                    'total' => $comments->total()
-                ],
-            ]);
+            $comments = $filter->apply($request, $query)->paginate($request->input('per_page', 5));
+            return new CommentCollection($comments);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',

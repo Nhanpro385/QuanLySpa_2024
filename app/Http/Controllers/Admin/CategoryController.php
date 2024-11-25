@@ -20,22 +20,13 @@ class CategoryController extends Controller
     {
         try {
 
+
             $query = Category::with(['createdByUser', 'updatedByUser', 'parentCategory']);
 
 
-            $categories = $filter->apply($request, $query)->paginate(5);
+            $categories = $filter->apply($request, $query)->paginate($request->input('per_page', 5));
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Danh sách danh mục',
-                'data' => CategoryResource::collection($categories),
-                'meta' => [
-                    'current_page' => $categories->currentPage(),
-                    'last_page' => $categories->lastPage(),
-                    'per_page' => $categories->perPage(),
-                    'total' => $categories->total()
-                ],
-            ]);
+           return new CategoryCollection($categories);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',

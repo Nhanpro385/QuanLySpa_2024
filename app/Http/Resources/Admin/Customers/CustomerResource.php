@@ -3,6 +3,8 @@
 namespace App\Http\Resources\Admin\Customers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Admin\Appointments\AppointmentResource;
+use App\Http\Resources\Admin\Consulations\ConsulationResource;
 
 class CustomerResource extends JsonResource
 {
@@ -27,6 +29,8 @@ class CustomerResource extends JsonResource
             ] : null,
             'created_at' => $this->created_at->format('d-m-Y H:i'),
             'updated_at' => $this->updated_at ? $this->updated_at->format('d-m-Y H:i') : null,
+            'appointments' => AppointmentResource::collection($this->appointments),
+            'consulations' => ConsulationResource::collection($this->consultations),
         ];
     }
 

@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Filters\Admin\CustomerFilter;
+use App\Http\Resources\Admin\Appointments\AppointmentResource;
+use App\Http\Resources\Admin\Consulations\ConsulationResource;
+
 
 
 class CustomerController extends Controller
@@ -21,23 +24,14 @@ class CustomerController extends Controller
     {
         try {
 
+
             $query = Customer::with(['createdBy', 'updatedBy']);
 
 
-            $filteredCustomers = $filter->apply($request, $query)->paginate(5);
+            $customer = $filter->apply($request, $query)->paginate($request->input('per_page', 5));
 
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Danh sách khách hàng',
-                'data' => CustomerResource::collection($filteredCustomers),
-                'meta' => [
-                    'current_page' => $filteredCustomers->currentPage(),
-                    'last_page' => $filteredCustomers->lastPage(),
-                    'per_page' => $filteredCustomers->perPage(),
-                    'total' => $filteredCustomers->total(),
-                ],
-            ]);
+            return new CustomerCollection($customer);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -52,7 +46,16 @@ class CustomerController extends Controller
     public function show($id)
     {
         try {
-            $customer = Customer::with(['createdBy', 'updatedBy'])->findOrFail($id);
+          
+            $customer = Customer::with(['appointments', 'consultations', 'createdBy', 'updatedBy'])->find($id);
+
+            if (!$customer) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Khách hàng không tồn tại!',
+                ], 404);
+            }
+
 
             return response()->json([
                 'status' => 'success',
@@ -65,19 +68,20 @@ class CustomerController extends Controller
                     'phone' => $customer->phone ?? 'phone',
                     'date_of_birth' => $customer->date_of_birth,
                     'address' => $customer->address,
+                    'appointments' => AppointmentResource::collection($customer->appointments),
+                    'consulations' => ConsulationResource::collection($customer->consultations),
                     'created_by' => $this->formatUserRole($customer->createdBy),
                     'updated_by' => $customer->updatedBy ? $this->formatUserRole($customer->updatedBy) : null,
                     'created_at' => $customer->created_at->format('d-m-Y H:i'),
                     'updated_at' => $customer->updated_at->format('d-m-Y H:i'),
                 ],
             ]);
-        } catch (ModelNotFoundException $e) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Khách hàng không tồn tại!',
-            ], 404);
-        } catch (\Throwable $th) {
-            return $this->errorResponse('Đã xảy ra lỗi trong quá trình xử lý.', $th);
+                'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
     }
 
