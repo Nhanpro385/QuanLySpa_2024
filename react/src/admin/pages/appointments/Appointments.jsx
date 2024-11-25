@@ -29,49 +29,52 @@ function Appointments() {
         getappointmentsById,
         searchappointments,
     } = useappointmentsActions();
-    const { appointments } = useSelector((state) => state.appointments);
+    const { appointments, loading } = useSelector(
+        (state) => state.appointments
+    );
 
-    const [loading, setLoading] = useState(true); // Thêm trạng thái loading
     const [searchQuery, setSearchQuery] = useState({
         page: 1,
         search: "",
         per_page: 5,
     });
-
+    const [dataAppointments, setDataAppointments] = useState([]);
     useEffect(() => {
         const fetchAppointments = async () => {
-            setLoading(true); // Bắt đầu tải
             await getappointments();
-            setLoading(false); // Kết thúc tải
         };
         fetchAppointments();
     }, []);
 
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-  
 
-    const dataSource =
-        appointments.data.map((item) => {
-            return {
-                key: item.id,
-                id: item.id,
-                title: item.title,
-                service_name: item.services
-                    .map((service) => service.name)
-                    .join(", "),
-                customer_id: item.customer.full_name,
-                employee_name: item.users
-                    .map((user) => user.full_name)
-                    .join(", "),
-                start: item.start_time,
-                end: item.end,
-                status: item.status,
-                date: item.appointment_date,
-            };
-        }) || [];
+    useEffect(() => {
+        if (appointments && !loading) {
+            if (appointments.data) {
+                setDataAppointments(
+                    appointments.data.map((item) => ({
+                        key: item.id,
+                        id: item.id,
+                        title: item.title,
+                        service_name: item.services
+                            .map((service) => service.name)
+                            .join(", "),
+                        customer_id: item.customer.full_name,
+                        employee_name: item.users
+                            .map((user) => user.full_name)
+                            .join(", "),
+                        start: item.start_time,
+                        end: item.end,
+                        status: item.status,
+                        date: item.appointment_date,
+                    }))
+                );
+            }
+        }
+    }, [appointments]);
     const pagination = appointments.meta || {};
-   
+
     useEffect(() => {
         if (
             searchQuery.search ||
@@ -98,85 +101,53 @@ function Appointments() {
                     <Card>
                         <Row className="m-2" justify={"space-between"}>
                             <h2>Danh Sách Đặt Lịch</h2>
-                            <Button type="primary" onClick={
-                                () => {
+                            <Button
+                                type="primary"
+                                onClick={() => {
                                     navigate("/admin/lichhen/them");
-                                }
-                            } >
-        
+                                }}
+                            >
                                 Thêm lịch hẹn
                             </Button>
                         </Row>
-                        {loading ? ( // Hiển thị spinner khi loading
-                            <Row justify="center" className="p-5">
-                                <Col
-                                    xxl={24}
-                                    xl={24}
-                                    lg={24}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
-                                >
-                                    <Spin
-                                        spinning={loading}
-                                        tip="Đang tải dữ liệu..."
-                                    >
-                                        {!loading && (
-                                            <AppointmentsTable
-                                                dataSource={dataSource}
-                                            />
-                                        )}
-                                    </Spin>
-                                </Col>
-                            </Row>
-                        ) : (
-                            <>
-                                <Row gutter={[16, 16]} className="mb-3">
-                                    <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                    >
-                                        <Input.Search
-                                            placeholder="Tìm kiếm sản phẩm theo : tên, số điện thoại, email, ngày"
-                                            allowClear
-                                            enterButton="Tìm kiếm"
-                                            size="middle"
-                                            onSearch={handleInputChange}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </Col>
-                                </Row>
-                                <AppointmentsTable
-                                    dataSource={dataSource}
-                                    onEdit={(id) => {
-                                        
-                                        navigate(
-                                            "/admin/lichhen/chinhsua/" + id
-                                        );
-                                    }}
-                                    onViewDetail={(id) => {
-                                      
-                                        navigate(
-                                            "/admin/appointments/detail/" + id
-                                        );
-                                    }}
-                                    pagination={pagination}
-                                    handlePageChange={handlePageChange}
+
+                        <Row gutter={[16, 16]} className="mb-3">
+                            <Col
+                                xxl={12}
+                                xl={12}
+                                lg={12}
+                                md={24}
+                                sm={24}
+                                xs={24}
+                            >
+                                <Input.Search
+                                    placeholder="Tìm kiếm sản phẩm theo : tên, số điện thoại, email, ngày"
+                                    allowClear
+                                    enterButton="Tìm kiếm"
+                                    size="middle"
+                                    onSearch={handleInputChange}
+                                    onChange={(e) =>
+                                        handleInputChange(e.target.value)
+                                    }
                                 />
-                            </>
-                        )}
+                            </Col>
+                        </Row>
+                        <AppointmentsTable
+                            loading={loading}
+                            dataSource={dataAppointments}
+                            onEdit={(id) => {
+                                navigate("/admin/lichhen/chinhsua/" + id);
+                            }}
+                            onViewDetail={(id) => {
+                                navigate("/admin/appointments/detail/" + id);
+                            }}
+                            pagination={pagination}
+                            handlePageChange={handlePageChange}
+                        />
                     </Card>
                 </Col>
                 <Col span={24}>
-                    {dataSource.length > 0 && (
+                    {dataAppointments.length > 0 && (
                         <AppointmentsCalendar data={appointments.data} />
                     )}
                 </Col>

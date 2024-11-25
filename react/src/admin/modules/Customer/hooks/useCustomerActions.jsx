@@ -14,7 +14,10 @@ const useCustomerActions = () => {
         return await dispatch(CustomerAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getCustomer = async () => {
+    const getCustomer = async (config) => {
+        if (config) {
+            return await dispatch(CustomerGet(config));
+        }
         return await dispatch(CustomerGet());
     };
 

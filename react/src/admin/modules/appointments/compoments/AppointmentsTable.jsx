@@ -8,8 +8,11 @@ const AppointmentsTable = ({
     onEdit,
     onViewDetail,
     pagination,
+    loading,
     handlePageChange,
 }) => {
+    console.log(dataSource);
+
     const items = [
         {
             key: "1",
@@ -109,6 +112,7 @@ const AppointmentsTable = ({
             style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
+            loading={loading}
             pagination={{
                 current: pagination.current_page,
                 pageSize: pagination.per_page,

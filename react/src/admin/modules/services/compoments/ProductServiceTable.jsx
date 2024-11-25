@@ -11,8 +11,7 @@ const ProductServiceTable = ({
     handleDeleteProduct,
     pagination,
 }) => {
-    console.log(dataSource);
-    
+
     const columns = [
         {
             title: "STT",
@@ -32,7 +31,7 @@ const ProductServiceTable = ({
             key: "action",
             render: (text, record) => (
                 <Space>
-                    <Button type="primary" onClick={() => handleEditProduct(record.id)}>
+                    <Button type="primary" onClick={() => handleEditProduct(record)}>
                         <EditOutlined />
                     </Button>
                     <Button type="danger" onClick={() => handleDeleteProduct(record.id)}>

@@ -71,7 +71,7 @@ const Appointment_Add = () => {
         getservices(50);
         getusers(50);
         getshifts(50);
-        getCustomer();
+        getCustomer(50);
     }, []);
     useEffect(() => {
         if (service.loading === false && service.services) {
@@ -169,6 +169,14 @@ const Appointment_Add = () => {
                     message: "Thêm lịch hẹn thành công",
                     description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
                 });
+                // reset all
+                setSelectedServices([]);
+                setValue("customer_id", null);
+                setValue("appointment_date", null);
+                setValue("service", null);
+                setValue("shift", null);
+                setValue("employee", null);
+                setValue("note", null);
             } else {
                 const errorMessage =
                     res.payload?.message + res.payload.errors ||

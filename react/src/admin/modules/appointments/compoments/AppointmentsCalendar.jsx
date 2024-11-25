@@ -19,13 +19,17 @@ export default function AppointmentsCalendar({ data }) {
                 const startDateTime = new Date(
                     item.appointment_date + "T" + item.start_time
                 );
+                console.log(startDateTime);
+
                 const endDateTime = new Date(
-                    item.appointment_date + "T" + item.start_time
+                    item.appointment_date + "T" + item.expected_time
                 );
+                console.log(item);
 
                 return {
                     id: item.id,
-                    title: item.title || "Sự kiện không có tiêu đề", // Default title
+                    title:
+                        item.customer.full_name || "Sự kiện không có tiêu đề", // Default title
                     start: startDateTime,
                     end: endDateTime,
                 };
@@ -63,8 +67,6 @@ export default function AppointmentsCalendar({ data }) {
                         <span>
                             <strong>{event.title}</strong>
                             <br />
-                            {moment(event.start).format("HH:mm")} -{" "}
-                            {moment(event.end).format("HH:mm")}
                         </span>
                     ),
                 }}
