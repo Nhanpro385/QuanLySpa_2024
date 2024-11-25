@@ -298,6 +298,8 @@ class ServiceController extends Controller
             ], 404);
         }
 
+        ProductService::where('service_id', $id)->delete();
+
         foreach ($validateData['products'] as $productData) {
             $productService = ProductService::where('service_id', $id)
                 ->where('product_id', $productData['product_id'])

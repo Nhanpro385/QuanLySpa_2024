@@ -24,7 +24,7 @@ class ServiceProductsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'products' => 'required|array',
+            'products' => 'nullable|array',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity_used' => 'required|integer|min:1',
         ];

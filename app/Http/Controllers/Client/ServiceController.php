@@ -27,7 +27,7 @@ class ServiceController extends Controller
                 $perPage = 5;
             }
 
-            $selectedColumns = ['id', 'name', 'price', 'service_category_id', 'status', 'duration'];
+            $selectedColumns = ["*"];
             $query = Service::select($selectedColumns)->where($queryItems)->where('status', 1);
 
             if ($request['search']) {

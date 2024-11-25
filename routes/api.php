@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\StatisticalController;
 use App\Http\Controllers\Client\AppointmentController as ClientAppointmentController;
 use App\Http\Controllers\Client\ServiceCategoryController as ClientServiceCategoryController;
 use App\Http\Controllers\Client\ServiceController as ClientServiceController;
@@ -210,6 +211,14 @@ Route::group([
     Route::post('/promotion/{id}', [PromotionController::class, 'update']);
     Route::delete('/promotion/{id}', [PromotionController::class, 'destroy']);
 
+    //Statistical
+    Route::get('/statistical/dailyRevenues', [StatisticalController::class, 'dailyRevenues']);
+
+    Route::get('/statistical/weeklyRevenues', [StatisticalController::class, 'weeklyRevenues']);
+
+    Route::get('/statistical/monthlyRevenues', [StatisticalController::class, 'monthlyRevenues']);
+
+    Route::get('/statistical/appointments', [StatisticalController::class, 'appointments']);
 
 
 
