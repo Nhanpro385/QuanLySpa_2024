@@ -11,6 +11,7 @@ const ServiceTable = ({
     pagination,
     handleChangepage,
     loading,
+    onAddproduct,
 }) => {
     const columns = [
         {
@@ -34,6 +35,7 @@ const ServiceTable = ({
                             record={record}
                             onEdit={onEdit}
                             onDelete={onDelete}
+                            onAddproduct={onAddproduct}
                             onViewDetails={onViewDetails}
                         />
                     }

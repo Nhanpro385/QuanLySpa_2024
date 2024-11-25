@@ -44,7 +44,7 @@ export const appointmentsAdd = createAsyncThunk(
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
-                errors: error.response?.data?.errors || [],
+                errors: error.response?.data?.error || [],
             });
         }
     }

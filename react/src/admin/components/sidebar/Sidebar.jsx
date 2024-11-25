@@ -157,7 +157,7 @@ const items = [
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
-            to="/admin/services"
+            to="/admin/dichvu"
         >
             Quản lý dịch vụ
         </Link>,
@@ -167,7 +167,7 @@ const items = [
             getItem(
                 <Link
                     className="text-decoration-none text-black fs-4"
-                    to="/admin/services"
+                    to="/admin/dichvu"
                 >
                     Danh sách dịch vụ
                 </Link>,
@@ -176,7 +176,7 @@ const items = [
             getItem(
                 <Link
                     className="text-decoration-none text-black fs-4"
-                    to="/admin/categoriesService"
+                    to="/admin/danhmucdichvu"
                 >
                     Danh mục dịch vụ
                 </Link>,
@@ -185,7 +185,7 @@ const items = [
             getItem(
                 <Link
                     className="text-decoration-none text-black fs-4"
-                    to="/admin/services/them"
+                    to="/admin/dichvu/them"
                 >
                     Thêm dịch vụ
                 </Link>,

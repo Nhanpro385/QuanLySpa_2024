@@ -158,7 +158,44 @@ export const servicesSearch = createAsyncThunk(
         }
     }
 );
-
+export const servicesAddProduct = createAsyncThunk(
+    "services/addProduct",
+    async (data, { dispatch, rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.services.addProduct(data.id),
+                data.data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi thêm sản phẩm",
+            });
+        }
+    }
+);
+export const servicesUpdateProduct = createAsyncThunk(
+    "services/updateProduct",
+    async (data, { dispatch, rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                endpoints.services.updateProduct(data.id),
+                data.data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi cập nhật sản phẩm",
+            });
+        }
+    }
+);
 const initialState = {
     services: {
         data: [],
@@ -203,8 +240,6 @@ const servicesSlice = createSlice({
                 state.error = null;
             })
             .addCase(servicesDelete.fulfilled, (state, action) => {
-               
-
                 state.services.data = state.services.data.filter(
                     (cate) => cate.id !== action.payload
                 );
@@ -259,6 +294,30 @@ const servicesSlice = createSlice({
                 state.loading = false;
             })
             .addCase(servicesSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+            })
+            .addCase(servicesAddProduct.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(servicesAddProduct.fulfilled, (state, action) => {
+                state.service = action.payload;
+                state.loading = false;
+            })
+            .addCase(servicesAddProduct.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+            })
+            .addCase(servicesUpdateProduct.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(servicesUpdateProduct.fulfilled, (state, action) => {
+                state.service = action.payload;
+                state.loading = false;
+            })
+            .addCase(servicesUpdateProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             });

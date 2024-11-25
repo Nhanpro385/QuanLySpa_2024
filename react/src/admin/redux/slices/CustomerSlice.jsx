@@ -180,7 +180,7 @@ const CustomerSlice = createSlice({
                 state.error = null;
             })
             .addCase(CustomerGet.fulfilled, (state, action) => {
-                state.customers = action.payload.data;
+                state.customers = action.payload;
                 state.loading = false;
             })
             .addCase(CustomerGet.rejected, (state, action) => {

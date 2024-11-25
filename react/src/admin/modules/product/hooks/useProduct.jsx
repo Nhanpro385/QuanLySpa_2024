@@ -5,7 +5,7 @@ import {
     productUpdate,
     productDelete,
     productGetById,
-    productSearch
+    productSearch,
 } from "@admin/redux/slices/ProductSlice";
 const useproductActions = () => {
     const dispatch = useDispatch();
@@ -14,7 +14,10 @@ const useproductActions = () => {
         return await dispatch(productAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getproduct = async () => {
+    const getproduct = async (config) => {
+        if (config) {
+            return await dispatch(productGet(config));
+        }
         return await dispatch(productGet());
     };
 
@@ -30,17 +33,15 @@ const useproductActions = () => {
         return await dispatch(productGetById(id));
     };
     const searchproduct = async (data) => {
-       
-        
         return await dispatch(productSearch(data));
-    }
+    };
     return {
         addproduct,
         getproduct,
         updateproduct,
         deleteproduct,
         getproductById,
-        searchproduct
+        searchproduct,
     };
 };
 

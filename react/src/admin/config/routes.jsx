@@ -57,6 +57,7 @@ import Appointment_Edit from "@admin/pages/appointments/Appointments_Edit";
 import StreatMents from "../pages/customerManagement/CustomerTreatments";
 import StreatmentsAdd from "../pages/customerManagement/TreatmentsAdd";
 import StreatmentsEdit from "../pages/customerManagement/CustomerTreatments_Edit";
+import ProductServiceAdd from "../pages/services/ProductServiceAdd";
 
 const PublicRoutes = [
     // Dashboard
@@ -87,12 +88,14 @@ const PublicRoutes = [
     // positions
     { path: "/nhanvien/chucvu", element: <Positions /> },
     // Services
-    { path: "/services", element: <Services /> },
-    { path: "/services/them", element: <ServicesAdd /> },
+    { path: "/dichvu", element: <Services /> },
+    { path: "/dichvu/them", element: <ServicesAdd /> },
     {
-        path: "/categoriesService",
+        path: "/danhmucdichvu",
         element: <ServiceCategories />,
     },
+    { path: "/dichvu/themsanphamdichvu/:id", element: <ProductServiceAdd /> },
+
     // Products
     { path: "/products", element: <Products /> },
     { path: "/products/add", element: <ProductsAdd /> },

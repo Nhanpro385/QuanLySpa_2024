@@ -30,7 +30,7 @@ import {
     ContactsOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { get, set } from "lodash";
+
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
@@ -161,21 +161,22 @@ const Appointment_Add = () => {
                 })),
                 status: 1,
             };
-            console.log("payload", payload);
 
             const res = await addappointments(payload);
+            console.log("res", res);
             if (res.meta.requestStatus === "fulfilled") {
                 api.success({
                     message: "Thêm lịch hẹn thành công",
                     description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
-                    duration: 3,
-
                 });
-            }else{
+            } else {
+                const errorMessage =
+                    res.payload?.message + res.payload.errors ||
+                    "Lỗi không xác định";
                 api.error({
                     message: "Thêm lịch hẹn thất bại",
-                    description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
-                    duration: 3,
+                    duration: 5,
+                    description: errorMessage,
                 });
             }
         } catch (error) {
@@ -282,6 +283,7 @@ const Appointment_Add = () => {
 
     return (
         <Card title="Thêm lịch hẹn">
+            {contextHolder}
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
                     <Col span={6}>
@@ -462,7 +464,6 @@ const Appointment_Add = () => {
                     </Button>
                 </Form.Item>
             </Form>
-            {contextHolder}
         </Card>
     );
 };

@@ -78,12 +78,14 @@ const endpoints = {
         reply: (id) => `${API_BASE_URL}/comment/${id}/reply`,
     },
     services: {
-        list: `${API_BASE_URL}/services`,
-        detail: (id) => `${API_BASE_URL}/services/${id}`,
+        list: `${API_BASE_URL}/services?products=true`,
+        detail: (id) => `${API_BASE_URL}/services/${id}?products=true`,
         create: `${API_BASE_URL}/services`,
         update: (id) => `${API_BASE_URL}/services/${id}`,
         delete: (id) => `${API_BASE_URL}/services/${id}`,
         search: `${API_BASE_URL}/services`,
+        addProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
+        updateProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
     },
     shifts: {
         list: `${API_BASE_URL}/shifts`,

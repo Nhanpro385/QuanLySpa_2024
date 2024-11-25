@@ -130,6 +130,9 @@ function Services() {
             console.log(err);
         }
     };
+    const onAddproduct = (record) => {
+        Navigate("/admin/dichvu/themsanphamdichvu/" + record.id);
+    };
     return (
         <div>
             {contextHolder}
@@ -151,7 +154,7 @@ function Services() {
                     </Button>
                 </Col>
                 <Col xl={4} md={6} sm={24} xs={24}>
-                    <Link to="/admin/categoriesService">
+                    <Link to="/admin/danhmucdichvu">
                         <Button color="primary" variant="outlined" block>
                             <PlusOutlined />
                             Thêm Loại dịch vụ
@@ -178,6 +181,7 @@ function Services() {
                 pagination={pagination}
                 handleChangepage={handleChangepage}
                 loading={loading}
+                onAddproduct={onAddproduct}
             />
 
             <ServiceModalEdit

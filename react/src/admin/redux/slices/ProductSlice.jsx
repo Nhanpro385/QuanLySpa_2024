@@ -15,9 +15,17 @@ const checkRoleAndLogout = (dispatch) => {
 };
 export const productGet = createAsyncThunk(
     "product/get",
-    async (_, { rejectWithValue }) => {
+    async (per_page, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Products.list);
+            // Xây dựng query parameters chỉ với `per_page` nếu có
+            const queryParams = per_page ? `?per_page=${per_page}` : "";
+
+            // Gọi API
+            const response = await axiosInstance.get(
+                `${endpoints.Products.list}${queryParams}`
+            );
+
+            // Trả về dữ liệu response
             return response.data;
         } catch (error) {
             return rejectWithValue({

@@ -6,6 +6,8 @@ import {
     servicesDelete,
     servicesGetById,
     servicesSearch,
+    servicesAddProduct,
+    servicesUpdateProduct,
 } from "@admin/redux/slices/serviceSlice";
 const useServicesActions = () => {
     const dispatch = useDispatch();
@@ -16,7 +18,7 @@ const useServicesActions = () => {
 
     const getservices = async (config) => {
         console.log("config", config);
-        
+
         return await dispatch(servicesGet(config));
     };
 
@@ -34,6 +36,12 @@ const useServicesActions = () => {
     const searchservices = async (params) => {
         return await dispatch(servicesSearch(params));
     };
+    const addProduct = async (data) => {
+        return await dispatch(servicesAddProduct(data));
+    };
+    const updateProduct = async (data) => {
+        return await dispatch(servicesUpdateProduct(data));
+    };
 
     return {
         addservices,
@@ -42,6 +50,8 @@ const useServicesActions = () => {
         deleteservices,
         getservicesById,
         searchservices,
+        addProduct,
+        updateProduct,
     };
 };
 
