@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Card, Col, Input, Row, message } from "antd";
 import { useSelector } from "react-redux";
 import useModal from "../../modules/appointments/hooks/openmodal";
-import ProductServiceForm from "../../modules/services/compoments/ProductServiceForm";
+import ProductServiceForm from "@admin/modules/services/compoments/ProductServiceForm";
 import ProductServiceTable from "../../modules/services/compoments/ProductServiceTable";
-
 import useServicesActions from "../../modules/services/hooks/useServices";
 import useproductActions from "../../modules/product/hooks/useProduct";
 import debounce from "lodash/debounce";
 import { useParams } from "react-router-dom";
-import { set } from "lodash";
+
+// Constants and Hooks Initialization
 const ProductServiceAdd = () => {
     const { id: idservice } = useParams();
     const [messageApi, contextHolder] = message.useMessage();
@@ -28,12 +28,14 @@ const ProductServiceAdd = () => {
     const [productSelected, setProductSelected] = useState([]);
     const [ProductService, setProductService] = useState([]);
 
+    // Effect Hooks
     useEffect(() => {
         if (idservice) {
             getproduct(50);
             getservicesById(idservice);
         }
     }, [idservice]);
+
     useEffect(() => {
         if (services.service.data && !services.loading) {
             setProductService(
@@ -56,8 +58,7 @@ const ProductServiceAdd = () => {
         }
     }, [product]);
 
-    const pagination = {};
-    const category = {};
+    // Handlers and Utility Functions
     const onSearch = debounce((value) => {
         setSearchQuery({
             ...searchQuery,
@@ -75,14 +76,15 @@ const ProductServiceAdd = () => {
             };
 
             const result = await addProduct({
-                id: id,
+                id: idservice,
                 data: payload,
             });
             if (result.meta.requestStatus === "fulfilled") {
                 messageApi.success("Danh mục đã được thêm!");
-                getservicesById(id);
+                getservicesById(idservice);
+                setProductSelected([]);
             } else {
-                messageApi.error("Có lỗi xảy ra khi thêm danh mục.");
+                messageApi.error(result.payload.message || "Có lỗi xảy ra.");
             }
         } catch (error) {
             console.log(error);
@@ -90,21 +92,51 @@ const ProductServiceAdd = () => {
     };
 
     const handlesetProductSelected = (value) => {
-        setProductSelected(value);
+        value.map((item) => {
+            const isExist = productSelected.find(
+                (product) => product.id === item.value
+            );
+            if (!isExist) {
+                setProductSelected([
+                    ...productSelected,
+                    {
+                        id: item.value,
+                        label: item.label,
+                        quantity: 1,
+                    },
+                ]);
+            }
+        });
     };
+
     const handleUpdateProductSelected = (index, value) => {
         const newProductSelected = [...productSelected];
         newProductSelected[index] = value;
         setProductSelected(newProductSelected);
     };
+
     const handleDeleteProductSelected = (index) => {
         const newProductSelected = [...productSelected];
         newProductSelected.splice(index, 1);
         setProductSelected(newProductSelected);
     };
+
     const handleEditProduct = (data) => {
-        console.log(data);
+        const isExist = productSelected.find((item) => item.id === data.id);
+        if (isExist) {
+            return;
+        }
+        setProductSelected([
+            ...productSelected,
+            {
+                id: data.id,
+                label: data.name,
+                quantity: data.quantity_used,
+                tag: "edit",
+            },
+        ]);
     };
+
     const handleDeleteProduct = async (id) => {
         try {
             const newProductService = ProductService.filter(
@@ -129,6 +161,51 @@ const ProductServiceAdd = () => {
             console.log(error);
         }
     };
+
+    const handleUpdateProductQuantity = async () => {
+        try {
+            const existProduct = productSelected.filter(
+                (item) => item.tag === "edit"
+            );
+            if (existProduct.length === 0) {
+                return messageApi.error("Không có sản phẩm nào được chỉnh sửa!");
+            }
+            const productEdit = productSelected;
+            const productServiceEdit = ProductService;
+            const newdata = {
+                products: productServiceEdit.map((item) => {
+                    const product = productEdit.find(
+                        (product) => product.id === item.id
+                    );
+                    if (product) {
+                        return {
+                            product_id: item.id,
+                            quantity_used: Number(product.quantity),
+                        };
+                    }
+                    return {
+                        product_id: item.id,
+                        quantity_used: item.quantity_used,
+                    };
+                }),
+            };
+            const result = await updateProduct({
+                id: idservice,
+                data: newdata,
+            });
+            if (result.meta.requestStatus === "fulfilled") {
+                messageApi.success("Danh mục đã được cập nhật!");
+                getservicesById(idservice);
+                setProductSelected([]);
+            } else {
+                messageApi.error("Có lỗi xảy ra khi cập nhật danh mục.");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Render Section
     return (
         <>
             <h1 className="text-center">Thêm danh mục sản phẩm Của Dịch Vụ</h1>
@@ -150,6 +227,9 @@ const ProductServiceAdd = () => {
                             }
                             handleFormSubmit={handleFormSubmit}
                             onSearch={onSearch}
+                            handleUpdateProductQuantity={
+                                handleUpdateProductQuantity
+                            }
                         />
                     </Card>
                 </Col>
@@ -158,9 +238,10 @@ const ProductServiceAdd = () => {
                         <ProductServiceTable
                             dataSource={ProductService}
                             loading={services.loading}
-                            pagination={pagination}
+                            pagination={{}}
                             handleDeleteProduct={handleDeleteProduct}
                             handleEditProduct={handleEditProduct}
+                            productSelected={productSelected}
                         />
                     </Card>
                 </Col>

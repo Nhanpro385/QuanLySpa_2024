@@ -58,7 +58,7 @@ import StreatMents from "../pages/customerManagement/CustomerTreatments";
 import StreatmentsAdd from "../pages/customerManagement/TreatmentsAdd";
 import StreatmentsEdit from "../pages/customerManagement/CustomerTreatments_Edit";
 import ProductServiceAdd from "../pages/services/ProductServiceAdd";
-import ProductServiceEdit from "../pages/services/ProductServiceEdt";
+
 
 const PublicRoutes = [
     // Dashboard
@@ -96,7 +96,6 @@ const PublicRoutes = [
         element: <ServiceCategories />,
     },
     { path: "/dichvu/themsanphamdichvu/:id", element: <ProductServiceAdd /> },
-    { path: "/dichvu/chinhsua/:id", element: <ProductServiceEdit /> },
 
     // Products
     { path: "/products", element: <Products /> },

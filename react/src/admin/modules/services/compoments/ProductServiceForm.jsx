@@ -3,7 +3,6 @@ import { Form, Button, Select, Row, Col, Table, Input } from "antd";
 import { useForm, Controller } from "react-hook-form";
 
 const ProductServiceForm = ({
-    onSubmit,
     error,
     dataproduct,
     productSelected,
@@ -12,6 +11,7 @@ const ProductServiceForm = ({
     handleDeleteProductSelected,
     handleFormSubmit,
     onSearch,
+    handleUpdateProductQuantity,
 }) => {
     const {
         control,
@@ -20,6 +20,12 @@ const ProductServiceForm = ({
         setError,
         setValue,
     } = useForm();
+    const [statusEdit, setStatusEdit] = React.useState(false);
+
+    useEffect(() => {
+        const hasEditTag = dataselected.some((item) => item.tag);
+        setStatusEdit(hasEditTag);
+    }, [dataselected]);
 
     useEffect(() => {
         setValue(
@@ -27,6 +33,7 @@ const ProductServiceForm = ({
             dataselected.map((e) => e.id)
         );
     }, [dataselected]);
+
     useEffect(() => {
         if (error) {
             Object.keys(error).forEach((key) => {
@@ -37,8 +44,6 @@ const ProductServiceForm = ({
             });
         }
     }, [error, setError]);
-
-    // Xử lý sự kiện khi danh sách thay đổi
 
     return (
         <Form layout="vertical" onFinish={handleSubmit(handleFormSubmit)}>
@@ -78,25 +83,10 @@ const ProductServiceForm = ({
                                             .toLowerCase()
                                             .indexOf(input.toLowerCase()) >= 0
                                     }
+                                    disabled={statusEdit} // Disable Select nếu statusEdit là true
                                     onChange={(value, options) => {
-                                        const updatedProductSelected =
-                                            options.map((option) => {
-                                                const existingProduct =
-                                                    dataselected.find(
-                                                        (product) =>
-                                                            product.id ===
-                                                            option.value
-                                                    );
-                                                return {
-                                                    id: option.value,
-                                                    label: option.label,
-                                                    quantity: existingProduct
-                                                        ? existingProduct.quantity
-                                                        : 1,
-                                                };
-                                            });
                                         field.onChange(value);
-                                        productSelected(updatedProductSelected);
+                                        productSelected(options);
                                     }}
                                     onSearch={onSearch}
                                 />
@@ -107,8 +97,11 @@ const ProductServiceForm = ({
                 <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Table
                         dataSource={dataselected}
-                        rowKey="id" // Use the unique id for rowKey
+                        rowKey="id"
                         scroll={{ y: 340 }}
+                        style={{
+                            minHeight: "360px",
+                        }}
                         pagination={false}
                         columns={[
                             {
@@ -156,10 +149,25 @@ const ProductServiceForm = ({
             </Row>
 
             <Form.Item>
-                <Button type="primary" htmlType="submit">
-                    Thêm Mới
-                </Button>{" "}
-                <Button type="primary">Cập Nhật</Button>
+                <Row gutter={[16, 16]}>
+                    <Col xxl={2} xl={4} lg={4} md={4} sm={24} xs={24}>
+                        {!statusEdit && ( // Ẩn nút "Thêm Mới" khi statusEdit là true
+                            <Button block type="primary" htmlType="submit">
+                                Thêm Mới
+                            </Button>
+                        )}
+                    </Col>
+                    <Col xxl={2} xl={4} lg={4} md={4} sm={24} xs={24}>
+                        <Button
+                            block
+                            danger
+                            variant="outlined"
+                            onClick={handleUpdateProductQuantity}
+                        >
+                            Cập Nhật
+                        </Button>
+                    </Col>
+                </Row>
             </Form.Item>
         </Form>
     );

@@ -12,6 +12,7 @@ const ServiceTable = ({
     handleChangepage,
     loading,
     onAddproduct,
+    onEditproduct,
 }) => {
     const columns = [
         {
@@ -37,6 +38,7 @@ const ServiceTable = ({
                             onDelete={onDelete}
                             onAddproduct={onAddproduct}
                             onViewDetails={onViewDetails}
+                            onEditproduct={onEditproduct}
                         />
                     }
                     trigger={["click"]}

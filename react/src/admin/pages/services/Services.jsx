@@ -133,6 +133,9 @@ function Services() {
     const onAddproduct = (record) => {
         Navigate("/admin/dichvu/themsanphamdichvu/" + record.id);
     };
+    const onEditproduct = (record) => {
+        Navigate("/admin/dichvu/chinhsuasanpham/" + record.id);
+    }
     return (
         <div>
             {contextHolder}
@@ -182,6 +185,7 @@ function Services() {
                 handleChangepage={handleChangepage}
                 loading={loading}
                 onAddproduct={onAddproduct}
+                onEditproduct={onEditproduct}
             />
 
             <ServiceModalEdit

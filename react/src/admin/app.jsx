@@ -19,6 +19,7 @@ const AppAdmin = () => {
                     <Route
                         key={index}
                         path={route.path}
+                    
                         element={
                             <AuthMiddleware requiredRole={route.requiredRole}>
                                 <AdminLayout>{route.element}</AdminLayout>
