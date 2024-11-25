@@ -216,7 +216,7 @@ class PaymentController extends Controller
                 'message' => 'Không thể chỉnh sửa do thanh toán đã hoàn thành.'
             ], status: 200);
         }
-
+        PaymentProducts::where('payment_id', $payment->id)->delete();
 
         if ($validateData['products'] != null || $validateData['products'] != []) {
             PaymentProducts::where('payment_id', $payment->id)->delete();
@@ -238,7 +238,6 @@ class PaymentController extends Controller
         $reduce = 0;
         $total_amount = 0;
         $payment_Id = $payment->id;
-
         //them products payment
         foreach ($validateData['products'] as $product) {
             $pr = Product::find($product['product_id']);
@@ -254,6 +253,7 @@ class PaymentController extends Controller
             $product_total += $total_price;
         }
         $subtotal = $product_total + $service_total;
+
         //xu ly khi co ma giam
         $promotionId = null;
         if ($validateData['promotion_name']) {
@@ -342,7 +342,7 @@ class PaymentController extends Controller
         ];
         return response()->json($response);
 
-        // else {
+        // } else {
         //     $response = [
         //         'status' => 'success',
         //         'message' => 'Chỉnh sửa hóa đơn không thành công.',
