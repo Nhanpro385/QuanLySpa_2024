@@ -59,6 +59,7 @@ import StreatmentsAdd from "../pages/customerManagement/TreatmentsAdd";
 import StreatmentsEdit from "../pages/customerManagement/CustomerTreatments_Edit";
 import ProductServiceAdd from "../pages/services/ProductServiceAdd";
 import Promotions_Edit from "../pages/Promotions/Promotions_Edit";
+import VideocallAdmin from "../pages/videocall";
 
 const PublicRoutes = [
     // Dashboard
@@ -114,7 +115,7 @@ const PublicRoutes = [
     { path: "/khuyenmai/chinhsua/:id", element: <Promotions_Edit /> },
 
     // Consultant and Comments
-    { path: "/consultant", element: <Consultant /> },
+    { path: "/tuvantructuyen", element: <Consultant /> },
     { path: "/CommentManagement", element: <CommentManagement /> },
 
     // Shift Management
@@ -127,6 +128,10 @@ const PublicRoutes = [
     {
         path: "/nhacungcap",
         element: <SupplierManagement />,
+    },
+    {
+        path: "/tuvantructuyen/videocall/:id",
+        element: <VideocallAdmin />,
     },
 ];
 

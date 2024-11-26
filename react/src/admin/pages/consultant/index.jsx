@@ -9,16 +9,19 @@ import {
     Modal,
     Tag,
     Row,
+    notification,
     Col,
 } from "antd";
 import ConsultationTable from "../../modules/consulations/compoments/ConsultationTable";
-
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 import useconsulationsAction from "../../modules/consulations/hooks/useconsulationsAction";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 const Consultant = () => {
+    const navigate = useNavigate();
     const [form] = Form.useForm();
+    const [api, contextHolder] = notification.useNotification();
     const [editForm] = Form.useForm(); // Form instance for editing
     const { getconsulations, searchconsulations, acceptConsulations } =
         useconsulationsAction();
@@ -106,7 +109,25 @@ const Consultant = () => {
     const handleAccept = async (id) => {
         try {
             const res = await acceptConsulations(id);
-            console.log(res);
+            if (res.payload.status === "true") {
+                api.success({
+                    message:
+                        res.payload.message || "Chấp nhận thành công lịch hẹn",
+                    description: "Duyệt lịch hẹn",
+                    duration: 3,
+                });
+                navigate(
+                    "/admin/tuvantructuyen/videocall/" + id
+                );
+            } else {
+                api.success({
+                    message:
+                        res.payload.message ||
+                        "Chấp nhận không thành công lịch hẹn",
+                    description: "Duyệt lịch hẹn",
+                    duration: 3,
+                });
+            }
         } catch (err) {
             console.log(err);
         }
@@ -126,6 +147,7 @@ const Consultant = () => {
 
     return (
         <Card>
+            {contextHolder}
             <Form
                 form={form}
                 layout="inline"
