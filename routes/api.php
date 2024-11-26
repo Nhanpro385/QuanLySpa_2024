@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ContactsController;
+use App\Http\Controllers\Client\ContactController as ClientContactsController;
 use App\Http\Controllers\Admin\ShiftsController;
 use App\Http\Controllers\Client\ShiftsController as ClientShiftsController;
 use App\Http\Controllers\Admin\StaffShiftController;
@@ -234,6 +235,11 @@ Route::group([
 
     Route::get('/shifts/{id}', [ClientShiftsController::class, 'show']);
  
+
+    
+    Route::get('/contacts', [ClientContactsController::class, 'index']);
+
+    Route::get('/contacts/{id}', [ClientContactsController::class, 'show']);
 });
 
 
