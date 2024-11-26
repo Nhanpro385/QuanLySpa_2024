@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Admin\Contacts;
+namespace App\Http\Resources\Client\Contacts;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
