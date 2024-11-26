@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\InboundInvoices\StoreInboundInvoiceDetailRequest;
 use App\Http\Requests\Admin\InboundInvoices\StoreInboundInvoiceRequest;
 use App\Http\Resources\Admin\InboundInvoice\InboundInvoiceResource;
+use App\Http\Requests\Admin\InboundInvoices\UpdateInboundInvoiceRequest;
 use App\Http\Resources\Admin\InboundInvoice\InboundInvoiceCollection;
 use App\Models\InboundInvoice;
 use App\Models\InboundInvoiceDetail;
@@ -142,44 +143,43 @@ class InboundInvoiceController extends Controller
     /**
      * Cập nhật một hóa đơn nhập.
      */
-    public function update(StoreInboundInvoiceRequest $request, InboundInvoice $inboundInvoice)
+    public function update(UpdateInboundInvoiceRequest $request, $id)
     {
-        DB::beginTransaction();
-
         try {
-            $inboundInvoice->update([
-                'supplier_id' => $request->input('supplier_id'),
-                'total_cost' => $request->input('total_cost'),
-                'note' => $request->input('note'),
-                'updated_by' => auth()->id(),
-            ]);
-
-            foreach ($request->input('details', []) as $detail) {
-                $validatedDetail = (new StoreInboundInvoiceDetailRequest($detail))->validated();
-
-                $inboundDetail = InboundInvoiceDetail::updateOrCreate(
-                    [
-                        'inbound_invoice_id' => $inboundInvoice->id,
-                        'product_id' => $validatedDetail['product_id'],
-                    ],
-                    [
-                        'quantity_import' => $validatedDetail['quantity_import'],
-                        'cost_import' => $validatedDetail['cost_import'],
-                    ]
-                );
-
-                $inventory = Inventory::firstOrNew(['product_id' => $validatedDetail['product_id']]);
-                $inventory->quantity += $validatedDetail['quantity_import'];
-                $inventory->save();
+            $invoice = InboundInvoice::findOrFail($id);
+    
+            // Cập nhật thông tin chính
+            $invoice->update($request->only([
+                'staff_id',
+                'supplier_id',
+                'note',
+                'total_amount',
+                'status',
+            ]));
+    
+            // Xử lý chi tiết hóa đơn
+            foreach ($request->details as $detail) {
+                $inboundDetail = InboundInvoiceDetail::find($detail['id']);
+    
+                if ($inboundDetail) {
+                    $inboundDetail->update($detail);
+                }
             }
-
-            DB::commit();
-            return new InboundInvoiceResource($inboundInvoice->load(['details', 'createdBy', 'updatedBy']));
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Hóa đơn nhập hàng đã được cập nhật thành công',
+                'data' => $invoice->fresh(),
+            ]);
         } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Đã xảy ra lỗi khi cập nhật hóa đơn nhập.'], 500);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
+    
 
     /**
      * Xóa một hóa đơn nhập (soft delete).
