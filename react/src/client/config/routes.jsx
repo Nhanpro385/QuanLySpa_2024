@@ -6,6 +6,9 @@ import VideoCall from "../pages/VideoCall";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Services from "../pages/Services";
+import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
+import NewPassword from "../pages/NewPassword/NewPassword";
+
 
 const PublicRoutes = [
     { path: "/", element: <Home /> },
@@ -16,6 +19,9 @@ const PublicRoutes = [
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/services", element: <Services /> },
+    { path: "/quenmatkhau", element: <ForgotPassword /> },
+    { path: "/matkhaumoi", element: <NewPassword /> },
+
 ];
 
 export { PublicRoutes };
