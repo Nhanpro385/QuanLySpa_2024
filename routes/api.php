@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ContactsController;
 use App\Http\Controllers\Admin\ShiftsController;
+use App\Http\Controllers\Client\ShiftsController as ClientShiftsController;
 use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\TreatmentHistoryController;
 use App\Http\Controllers\Admin\InboundInvoiceController;
@@ -147,11 +148,7 @@ Route::group([
     Route::put('/contacts/{id}', [ContactsController::class, 'update']);
     Route::delete('/contacts/{id}', [ContactsController::class, 'destroy']);
 
-    // Route::get('/shifts', [ShiftsController::class, 'index']);
-    // Route::post('/shifts', [ShiftsController::class, 'store']);
-    // Route::get('/shifts/{id}', [ShiftsController::class, 'show']);
-    // Route::put('/shifts/{id}', [ShiftsController::class, 'update']);
-    // Route::delete('/shifts/{id}', [ShiftsController::class, 'destroy']);
+
 
     Route::get('/treatment-history', [TreatmentHistoryController::class, 'index']);
     Route::post('/treatment-history', [TreatmentHistoryController::class, 'store']);
@@ -240,6 +237,13 @@ Route::group([
     Route::put('/customer/{id}', [ClientCustomerAccountController::class, 'update']);
 
     Route::delete('/customer/{id}', [ClientCustomerAccountController::class, 'destroy']);
+
+
+
+    Route::get('/shifts', [ClientShiftsController::class, 'index']);
+
+    Route::get('/shifts/{id}', [ClientShiftsController::class, 'show']);
+
 });
 
 
