@@ -125,6 +125,15 @@ const endpoints = {
         delete: (id) => `${API_BASE_URL}/promotion/${id}`,
         search: `${API_BASE_URL}/promotion`,
     },
+    consulations: {
+        list: `${API_BASE_URL}/consulations`,
+        detail: (id) => `${API_BASE_URL}/consulations/${id}`,
+        create: `${API_BASE_URL}/consulations`,
+        update: (id) => `${API_BASE_URL}/consulations/${id}`,
+        delete: (id) => `${API_BASE_URL}/consulations/${id}`,
+        search: `${API_BASE_URL}/consulations`,
+        accept: (id) => `${API_BASE_URL}/consulations/${id}/browse`,
+    },
 };
 
 export default endpoints;

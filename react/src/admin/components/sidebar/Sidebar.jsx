@@ -405,6 +405,27 @@ const items = [
             ),
         ]
     ),
+    getItem(
+        <Link
+            className="text-decoration-none text-black fs-4"
+            to="/admin/consultant"
+        >
+            Quản lý Tư Vấn Trực Tuyến
+        </Link>,
+        "39",
+        <FileOutlined />,
+        [
+            getItem(
+                <Link
+                    className="text-decoration-none text-black fs-4"
+                    to="/admin/consultant"
+                >
+                    Danh sách lịch hẹn tư vấn
+                </Link>,
+                "40"
+            ),
+        ]
+    ),
 ];
 
 const Sidebar = () => {

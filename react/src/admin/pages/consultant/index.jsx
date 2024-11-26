@@ -1,66 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
     Layout,
-    Table,
     Form,
     Input,
     Button,
     Select,
     Card,
-    Tag,
-    Dropdown,
-    Space,
     Modal,
+    Tag,
     Row,
     Col,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import ConsultationTable from "../../modules/consulations/compoments/ConsultationTable";
 
 const { Option } = Select;
-const { Header, Content } = Layout;
-
-const items = [
-    {
-        key: "1",
-        label: <Button block> Sửa </Button>,
-    },
-    {
-        key: "2",
-        label: <Button block> Gọi Điện tư vấn </Button>,
-    },
-];
-
+import useconsulationsAction from "../../modules/consulations/hooks/useconsulationsAction";
+import { useSelector } from "react-redux";
+import debounce from "lodash/debounce";
 const Consultant = () => {
     const [form] = Form.useForm();
     const [editForm] = Form.useForm(); // Form instance for editing
-    const [consultations, setConsultations] = useState([
-        {
-            key: 0,
-            customerName: "Nguyễn Văn A",
-            employee: "Trần Phi Hào",
-            service: "Dịch vụ A",
-            consultationPlan: "Tư vấn da",
-            skinStatus: "Da khô",
-            status: <Tag color="green">Đang chờ</Tag>,
-        },
-        {
-            key: 1,
-            customerName: "Trần Thị B",
-            employee: "Nguyễn Văn C",
-            service: "Dịch vụ B",
-            consultationPlan: "Tư vấn da",
-            skinStatus: "Da dầu",
-            status: <Tag color="green">Đang chờ</Tag>,
-        },
-    ]);
+    const { getconsulations, searchconsulations, acceptConsulations } =
+        useconsulationsAction();
+    const consulations = useSelector((state) => state.consulations);
+    const [consultationsData, setConsultationsData] = useState([]);
+    const pagnation = consulations.consulations.meta || {};
+    const [searchquery, setsearchquery] = useState({
+        search: "",
+        page: 1,
+        per_page: 5,
+    });
+    useEffect(() => {
+        getconsulations();
+    }, []);
+
+    useEffect(() => {
+        if (!consulations.loading && consulations.consulations) {
+            setConsultationsData(
+                consulations.consulations.data.map((e) => ({
+                    ...e, // Spread tất cả các thuộc tính từ e
+                    key: e.id, // Thêm trường key từ e.id
+                }))
+            );
+        }
+    }, [consulations]);
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false); // Modal state
     const [selectedConsultation, setSelectedConsultation] = useState(null); // Selected record
 
     const handleFinish = (values) => {
-        setConsultations([
-            ...consultations,
-            { ...values, key: consultations.length },
+        setConsultationsData([
+            ...consultationsData,
+            { ...values, key: consultationsData.length },
         ]);
         form.resetFields();
     };
@@ -75,10 +66,12 @@ const Consultant = () => {
         editForm
             .validateFields()
             .then((values) => {
-                const updatedData = consultations.map((item) =>
-                    item.key === selectedConsultation.key ? { ...values, key: item.key } : item
+                const updatedData = consultationsData.map((item) =>
+                    item.key === selectedConsultation.key
+                        ? { ...values, key: item.key }
+                        : item
                 );
-                setConsultations(updatedData);
+                setConsultationsData(updatedData);
                 setIsEditModalOpen(false); // Close modal
                 setSelectedConsultation(null); // Clear selected record
             })
@@ -91,94 +84,86 @@ const Consultant = () => {
         setIsEditModalOpen(false);
         setSelectedConsultation(null); // Clear selected record
     };
+    const Onsearch = debounce((value) => {
+        console.log(value);
 
+        setsearchquery({ ...searchquery, search: value });
+    }, 500);
+    const onchangePage = (page, pagination) => {
+        setsearchquery({ ...searchquery, page: page, per_page: pagination });
+    };
+    useEffect(() => {
+        if (
+            searchquery.search !== "" ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 5
+        ) {
+            searchconsulations(searchquery);
+        } else {
+            getconsulations();
+        }
+    }, [searchquery]);
+    const handleAccept = async (id) => {
+        try {
+            const res = await acceptConsulations(id);
+            console.log(res);
+        } catch (err) {
+            console.log(err);
+        }
+    };
     const onClick = ({ key, record }) => {
         switch (key) {
             case "1":
                 handleEdit(record);
                 break;
             case "2":
-                // Logic for calling
+                handleAccept(record.id);
                 break;
             default:
                 break;
         }
     };
 
-    const columns = [
-        {
-            title: "#",
-            key: "index",
-            render: (text, record, index) => index + 1,
-        },
-        {
-            title: "Khách hàng",
-            dataIndex: "customerName",
-            key: "customerName",
-        },
-        {
-            title: "Nhân viên",
-            dataIndex: "employee",
-            key: "employee",
-        },
-        {
-            title: "Dịch vụ",
-            dataIndex: "service",
-            key: "service",
-        },
-        {
-            title: "Kế hoạch tư vấn",
-            dataIndex: "consultationPlan",
-            key: "consultationPlan",
-        },
-        {
-            title: "Tình trạng da",
-            dataIndex: "skinStatus",
-            key: "skinStatus",
-        },
-        {
-            title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-        },
-        {
-            title: "Hành động",
-            key: "action",
-            render: (text, record) => (
-                <span>
-                    <Dropdown
-                        menu={{
-                            items,
-                            onClick: (e) => onClick({ key: e.key, record }),
-                        }}
-                        trigger={["click"]}
-                    >
-                        <Button
-                            type="primary"
-                            onClick={(e) => e.preventDefault()}
-                        >
-                            <Space>
-                                Hành động
-                                <DownOutlined />
-                            </Space>
-                        </Button>
-                    </Dropdown>
-                </span>
-            ),
-        },
-    ];
-
     return (
         <Card>
-             <Form
-            form={form}
-            layout="inline"
-            onFinish={handleFinish}
-            style={{ marginBottom: "20px" }}
-        >
-            <Row gutter={[16, 16]}>
-                <Col xs={24} sm={12} md={8} lg={8}>
+            <Form
+                form={form}
+                layout="inline"
+                onFinish={handleFinish}
+                style={{ marginBottom: "20px" }}
+            >
+                <Row gutter={[16, 16]}>
+                    <Col span={24}>
+                        <Input.Search
+                            placeholder="Tìm kiếm lịch tư vấn"
+                            type="text"
+                            name="search"
+                            onSearch={Onsearch}
+                            onChange={(e) => Onsearch(e.target.value)}
+                            style={{ width: "100%" }}
+                        />
+                    </Col>
+                </Row>
+            </Form>
+
+            <ConsultationTable
+                consultationsData={consultationsData}
+                onClick={onClick}
+                pagination={pagnation}
+                onchangePage={onchangePage}
+                loading={consulations.loading}
+            />
+
+            {/* Modal for editing consultation */}
+            <Modal
+                title="Chỉnh sửa thông tin tư vấn"
+                open={isEditModalOpen}
+                onOk={handleEditOk}
+                onCancel={handleEditCancel}
+            >
+                <Form form={editForm} layout="vertical">
                     <Form.Item
+                        label="Tên khách hàng"
                         name="customerName"
                         rules={[
                             {
@@ -187,11 +172,10 @@ const Consultant = () => {
                             },
                         ]}
                     >
-                        <Input placeholder="Tên khách hàng" />
+                        <Input />
                     </Form.Item>
-                </Col>
-                <Col xs={24} sm={12} md={8} lg={8}>
                     <Form.Item
+                        label="Trạng thái"
                         name="status"
                         rules={[
                             {
@@ -199,62 +183,6 @@ const Consultant = () => {
                                 message: "Vui lòng chọn trạng thái!",
                             },
                         ]}
-                    >
-                        <Select placeholder="Trạng thái" style={{ width: "100%" }}>
-                            <Option value="Đang chờ">Đang chờ</Option>
-                            <Option value="Đang tư vấn">Đang tư vấn</Option>
-                            <Option value="Hoàn thành">Hoàn thành</Option>
-                        </Select>
-                    </Form.Item>
-                </Col>
-                <Col xs={24} sm={12} md={8} lg={8}>
-                    <Form.Item
-                        name="service"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn dịch vụ!",
-                            },
-                        ]}
-                    >
-                        <Select placeholder="Dịch vụ" className="w-100">
-                            <Option value="Dịch vụ A">Dịch vụ A</Option>
-                            <Option value="Dịch vụ B">Dịch vụ B</Option>
-                            <Option value="Dịch vụ C">Dịch vụ C</Option>
-                        </Select>
-                    </Form.Item>
-                </Col>
-                <Col xs={24} sm={12} md={8} lg={8}>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" block>
-                            Tìm kiếm
-                        </Button>
-                    </Form.Item>
-                </Col>
-            </Row>
-        </Form>
-
-            <Table columns={columns} dataSource={consultations} />
-
-            {/* Modal for editing consultation */}
-            <Modal
-                title="Chỉnh sửa thông tin tư vấn"
-                visible={isEditModalOpen}
-                onOk={handleEditOk}
-                onCancel={handleEditCancel}
-            >
-                <Form form={editForm} layout="vertical">
-                    <Form.Item
-                        label="Tên khách hàng"
-                        name="customerName"
-                        rules={[{ required: true, message: "Vui lòng nhập tên khách hàng!" }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Trạng thái"
-                        name="status"
-                        rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
                     >
                         <Select placeholder="Trạng thái">
                             <Option value="Đang chờ">Đang chờ</Option>
@@ -265,7 +193,12 @@ const Consultant = () => {
                     <Form.Item
                         label="Dịch vụ"
                         name="service"
-                        rules={[{ required: true, message: "Vui lòng chọn dịch vụ!" }]}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Vui lòng chọn dịch vụ!",
+                            },
+                        ]}
                     >
                         <Select placeholder="Dịch vụ">
                             <Option value="Dịch vụ A">Dịch vụ A</Option>

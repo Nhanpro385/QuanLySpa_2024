@@ -64,7 +64,7 @@ const ShiftManagement = () => {
         }
 
         setSearchQuery((prev) => ({ ...prev, search: value }));
-        console.log(searchquery);
+        
     }, 300);
     const pagnation = shifts.meta || {};
     const handleDelete = async (id) => {

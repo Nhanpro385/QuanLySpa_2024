@@ -24,7 +24,7 @@ import useAuthActions from "../../modules/authen/hooks/useAuth";
 const { Header } = Layout;
 
 const HeaderAdmin = () => {
-    const {authLogout} = useAuthActions();
+    const { authLogout } = useAuthActions();
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const showDrawer = () => {
@@ -189,18 +189,6 @@ const HeaderAdmin = () => {
     // Cấu trúc Menu sử dụng items
     const menuItems = [
         {
-            key: "1",
-            icon: <UserOutlined />,
-            label: (
-                <Link to="/admin/consultant">Quản lý Tư vấn trực tuyến</Link>
-            ),
-        },
-        {
-            key: "2",
-            icon: <SettingOutlined />,
-            label: "Cài đặt",
-        },
-        {
             key: "3",
             icon: <NotificationOutlined />,
             label: (
@@ -232,8 +220,8 @@ const HeaderAdmin = () => {
                 const logout = async () => {
                     try {
                         const res = await authLogout();
-                        console.log(res)
-                        
+                        console.log(res);
+
                         if (res.meta.requestStatus === "fulfilled") {
                             notification.success({
                                 message: "Đăng xuất thành công",

@@ -14,7 +14,8 @@ import {
     warehouseSlice,
     CustomerSlice,
     streatmentSlice,
-    promotionsSlice
+    promotionsSlice,
+    consulationslice,
 } from "../slices";
 
 const store = configureStore({
@@ -34,6 +35,7 @@ const store = configureStore({
         customers: CustomerSlice,
         streatments: streatmentSlice,
         promotions: promotionsSlice,
+        consulations: consulationslice,
     },
 });
 
