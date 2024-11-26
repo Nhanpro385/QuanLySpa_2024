@@ -3,7 +3,7 @@ import React from "react";
 import { Row, Col, Button, Divider } from "antd";
 import style from "../style/ForgotPasswordPage.module.scss";
 
-const ForgotPasswordPage = () => (
+const ForgotPasswordPage = () => (  
     <Row justify="center" align="middle" className={style.container}>
         <Col xs={22} sm={16} md={12} lg={8} xl={6} className={style.boxForm}>
             <h2>Quên mật khẩu</h2>

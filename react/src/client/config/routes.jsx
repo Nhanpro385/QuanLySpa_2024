@@ -8,6 +8,8 @@ import Register from "../pages/Register";
 import Services from "../pages/Services";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import NewPassword from "../pages/NewPassword/NewPassword";
+import Profile from "../pages/Profile/Profile";
+import BookingConsultant from "../pages/BookingConsultant/BookingConsultant";
 
 
 const PublicRoutes = [
@@ -21,6 +23,8 @@ const PublicRoutes = [
     { path: "/services", element: <Services /> },
     { path: "/quenmatkhau", element: <ForgotPassword /> },
     { path: "/matkhaumoi", element: <NewPassword /> },
+    { path: "/profile", element: <Profile /> },
+    { path: "/tuvandatlich", element: <BookingConsultant /> },
 
 ];
 

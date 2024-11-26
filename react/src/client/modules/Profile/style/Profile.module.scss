@@ -1,0 +1,135 @@
+.container {
+    padding: 30px;
+    background-color: #f5f5f5;
+}
+
+.header {
+    margin-bottom: 30px;
+    background-color: #fff;
+    // padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center; // Align items vertically
+    justify-content: space-between; // Space between avatar and title
+    padding: 20px 20px;
+}
+
+.avatar {
+    border: 2px solid #f06262;
+}
+
+.boxAvatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center; // Center avatar and buttons horizontally
+    text-align: center;
+}
+
+.boxTitleProfile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+
+    h2 {
+        color: rgba(94, 80, 79, 1);
+        font-size: 35px;
+        font-style: 'anton';
+        font-weight: 700;
+    }
+}
+
+.avatarActions {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.avatarBtn {
+    margin: 5px;
+    width: 100%;
+}
+
+.profileForm {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    background-image: url(../../../assets/images/image18.png);
+}
+
+.formInput {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input,
+.ant-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.actionButtons {
+    display: flex;
+    justify-content: space-between;
+
+    .cancelButton {
+        background-color: #f5f5f5;
+        border-color: rgba(224, 82, 101, 1);
+        color: rgba(224, 82, 101, 1);
+        width: 45%;
+    }
+
+    .updateButton {
+        background-color: rgba(224, 82, 101, 1);
+        border-color: #f06262;
+        color: white;
+        width: 45%;
+    }
+}
+
+
+
+// .infoBox,
+.pointsBox {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+
+    .exchangeButton {
+        background-color: rgba(224, 82, 101, 1);
+        border-color: rgba(224, 82, 101, 1);
+        color: white;
+    }
+}
+
+.points {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar {
+    max-height: 600px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.nameItemMenu{
+    text-decoration: none;
+}
