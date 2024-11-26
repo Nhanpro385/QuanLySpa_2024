@@ -50,7 +50,7 @@ class ConsulationController extends Controller
 
             $email = config('mail.from.address');
             $full_name = auth('customer_api')->user()->full_name ?? "SPA-ER";
-            $url_consulation = env('FRONTEND_URL') . "/admin/tuvankhachhang/videocall/" . $consulation->id;
+            $url_consulation = env('FRONTEND_URL') . "/admin/tuvankhachhang";
 
             $mailSend = Mail::to($email)->send(new BrowseConsulation($url_consulation, $full_name));
 

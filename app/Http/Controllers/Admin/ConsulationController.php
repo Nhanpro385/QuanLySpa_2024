@@ -216,6 +216,7 @@ class ConsulationController extends Controller
                 return response()->json([
                     'status' => 'true',
                     'message' => 'Tham gia cuộc tư vấn này. Chuyển đến trang tư vấn trực tuyến',
+                    'data' => new ConsulationResource($consulation)
                 ], 200);
             }
 
