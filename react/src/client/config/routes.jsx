@@ -10,6 +10,7 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import NewPassword from "../pages/NewPassword/NewPassword";
 import Profile from "../pages/Profile/Profile";
 import BookingConsultant from "../pages/BookingConsultant/BookingConsultant";
+import ServiceHistory from "../pages/ServiceHistory/ServiceHistory";
 
 
 const PublicRoutes = [
@@ -25,6 +26,7 @@ const PublicRoutes = [
     { path: "/matkhaumoi", element: <NewPassword /> },
     { path: "/profile", element: <Profile /> },
     { path: "/tuvandatlich", element: <BookingConsultant /> },
+    { path: "/lichsudichvu", element: <ServiceHistory /> },
 
 ];
 

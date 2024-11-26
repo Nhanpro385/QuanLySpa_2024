@@ -1,17 +1,17 @@
 import React from "react";
 
 import { Row, Col, Button, Select, Table } from "antd";
-import style from "../style/BookingConsultant.module.scss";
+import style from "../style/ServiceHistory.module.scss";
 
 const { Option } = Select;
 import MenuProfile from "./MenuProfile";
 
 
-const BookingConsultant = () => {
+const ServiceHistory = () => {
     const data = [
         {
             key: "1",
-            doctor: "Trịnh Trần Phương Tuấn",
+            services: "Trịnh Trần Phương Tuấn",
             date: "21/08/2024",
             time: "10:30",
             status: "Đang chờ thực hiện",
@@ -19,7 +19,7 @@ const BookingConsultant = () => {
         },
         {
             key: "2",
-            doctor: "Định Hình Phương Hướng",
+            services: "Định Hình Phương Hướng",
             date: "21/08/2024",
             time: "10:30",
             status: "Đang thực hiện",
@@ -27,7 +27,7 @@ const BookingConsultant = () => {
         },
         {
             key: "3",
-            doctor: "Meo Meo",
+            services: "Meo Meo",
             date: "21/08/2024",
             time: "10:30",
             status: "Đã hủy",
@@ -35,7 +35,7 @@ const BookingConsultant = () => {
         },
         {
             key: "4",
-            doctor: "Jack J97",
+            services: "Jack J97",
             date: "21/08/2024",
             time: "10:30",
             status: "Hoàn thành",
@@ -45,9 +45,9 @@ const BookingConsultant = () => {
 
     const columns = [
         {
-            title: "Tên bác sĩ",
-            dataIndex: "doctor",
-            key: "doctor",
+            title: "Tên dịch vụ",
+            dataIndex: "services",
+            key: "services",
         },
         {
             title: "Thời gian",
@@ -90,7 +90,7 @@ const BookingConsultant = () => {
                 {/* Banner Header */}
                 <Row justify="center" align="middle" className={style.header}>
                     <Col xs={18} className={style.boxTitleProfile}>
-                        <h2>Tư vấn đặt lịch</h2>
+                        <h2>Lịch sử dịch vụ</h2>
                     </Col>
                 </Row>
 
@@ -124,4 +124,4 @@ const BookingConsultant = () => {
     );
 };
 
-export default BookingConsultant;
+export default ServiceHistory;

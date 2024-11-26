@@ -12,12 +12,12 @@ const DefaultLayout = ({ children }) => {
                         horizontalItemSelectedColor: "#E05265",
                         itemSelectedColor: "#E05265",
                     },
-                    Table: {
-                        colorBgContainer: "#FFDCDC",
-                        colorBorder: "#fff",
-                        headerBg: "#E05265",
-                        headerColor: "white",
-                    },
+                    // Table: {
+                    //     colorBgContainer: "#FFDCDC",
+                    //     colorBorder: "#fff",
+                    //     headerBg: "#E05265",
+                    //     headerColor: "white",
+                    // },
                 },
                 token: {
                     colorPrimary: "#E05265",

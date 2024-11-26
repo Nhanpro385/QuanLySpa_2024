@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from 'react-router-dom';
 import { Row, Col, Button, Input, Avatar, Menu } from "antd";
-import { UserOutlined, ShoppingCartOutlined, StarOutlined, AppstoreOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { UserOutlined, AppstoreOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import style from "../style/Profile.module.scss";
 
 const { SubMenu } = Menu;
@@ -16,7 +16,7 @@ const MenuProfile = () => (
             <Link className={style.nameItemMenu} to="/tuvandatlich">Tư vấn đặt lịch</Link>
         </Menu.Item>
         <Menu.Item key="3" icon={<ClockCircleOutlined />} className={style.menuItem}>
-            <Link className={style.nameItemMenu} to="#">Lịch sử dịch vụ</Link>
+            <Link className={style.nameItemMenu} to="/lichsudichvu">Lịch sử dịch vụ</Link>
         </Menu.Item>
     </Menu>
 );
