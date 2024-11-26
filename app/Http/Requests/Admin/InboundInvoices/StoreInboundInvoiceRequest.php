@@ -20,7 +20,6 @@ class StoreInboundInvoiceRequest extends FormRequest
             'supplier_id' => 'nullable|string|exists:suppliers,id',
             'note' => 'nullable|string|max:255',
             'total_amount' => 'required|numeric|min:0',
-      
             'details' => 'required|array|min:1',
         ];
     }

@@ -10,7 +10,7 @@ use App\Models\InboundInvoice;
 use App\Models\InboundInvoiceDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
-
+use App\Filters\Admin\InboundInvoiceFilter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Models\Inventory;
@@ -25,19 +25,45 @@ class InboundInvoiceController extends Controller
     /**
      * Lấy danh sách hóa đơn nhập.
      */
-    public function index(Request $request)
+    public function index(Request $request, InboundInvoiceFilter $filter)
     {
-        $invoices = InboundInvoice::with(['details', 'createdBy', 'updatedBy'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        // Lấy filter từ lớp InboundInvoiceFilter
+        $filters = $filter->transform($request);
 
-        return new InboundInvoiceCollection($invoices);
+        // Khởi tạo query
+        $query = InboundInvoice::query();
+
+        // Áp dụng filter chính
+        foreach ($filters['filter'] as $filterCondition) {
+            $query->where(...$filterCondition);
+        }
+
+        // Áp dụng filter quan hệ
+        foreach ($filters['relations'] as $relationFilter) {
+            [$relation, $column, $operator, $value] = $relationFilter;
+            $query = $filter->RelationFilters($query, $relation, $column, $value);
+        }
+
+        // Áp dụng sắp xếp
+        [$sortBy, $sortOrder] = $filters['sorts'];
+        $query->orderBy($sortBy, $sortOrder);
+
+        // Lấy `perPage` từ request, mặc định 10
+        $perPage = $request->input('perPage', 10);
+        $invoices = $query->paginate($perPage);
+       
+    
+        return (new InboundInvoiceCollection($invoices))->additional(['status' => true]);
+     
     }
+
 
     public function store(StoreInboundInvoiceRequest $request)
     {
         $validated = $request->validated();
+        $userId = auth()->id(); 
 
+       
         DB::beginTransaction();
 
         try {
@@ -48,6 +74,7 @@ class InboundInvoiceController extends Controller
                 'note' => $validated['note'] ?? null,
                 'total_amount' => $validated['total_amount'],
                 'status' => true,
+                'created_by' => $userId, // Gán người tạo
             ]);
 
             // Lặp qua từng chi tiết
@@ -83,6 +110,7 @@ class InboundInvoiceController extends Controller
                 // Tạo chi tiết hóa đơn
                 InboundInvoiceDetail::create(array_merge($detail, [
                     'inbound_invoice_id' => $invoice->id,
+                    'created_by' => $userId, // Gán người tạo cho từng chi tiết
                 ]));
             }
 

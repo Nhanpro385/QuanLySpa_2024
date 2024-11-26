@@ -23,21 +23,9 @@ class InboundInvoiceResource extends JsonResource
             'total_amount' => $this->total_amount,
             'note' => $this->note,
             'status' => $this->status,
-            'details' => $this->details->map(function ($detail) {
-                return [
-                    'id' => (string) $detail->id,
-                    'product' => $detail->product ? [
-                        'id' => (string) $detail->product->id,
-                        'name' => $detail->product->name,
-                        'sku' => $detail->product->sku,
-                    ] : null,
-                    'quantity_olded' => $detail->quantity_olded,
-                    'quantity_import' => $detail->quantity_import,
-                    'cost_import' => $detail->cost_import,
-                    'cost_olded' => $detail->cost_olded,
-                    'unit_price' => $detail->unit_price,
-                ];
-            }),            
+            'details' => $this->invoice_details,
+         
+            
             'created_by' => $this->createdBy ? [
                 'id' => (string) $this->createdBy->id,
                 'name' => $this->createdBy->full_name,
