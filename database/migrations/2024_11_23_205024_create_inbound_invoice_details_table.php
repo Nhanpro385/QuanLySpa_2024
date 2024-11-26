@@ -20,11 +20,12 @@ return new class extends Migration {
             $table->decimal('cost_import', 10, 2);
             $table->decimal('cost_olded', 10, 2);
             $table->decimal('unit_price', 10, 2);
+            $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
             $table->timestamps();
-        });
+            $table->softDeletes(); // Thêm cột deleted_at
 
-        // Thêm ràng buộc khóa ngoại
-        Schema::table('inbound_invoice_details', function (Blueprint $table) {
+            // Ràng buộc khóa ngoại
             $table->foreign('product_id')
                 ->references('id')
                 ->on('products')
@@ -34,11 +35,16 @@ return new class extends Migration {
                 ->references('id')
                 ->on('inbound_invoices')
                 ->onDelete('set null');
-        });
 
-        // Thêm cột soft deletes
-        Schema::table('inbound_invoice_details', function (Blueprint $table) {
-            $table->softDeletes(); // Thêm cột deleted_at
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
         });
     }
 
@@ -51,6 +57,8 @@ return new class extends Migration {
         Schema::table('inbound_invoice_details', function (Blueprint $table) {
             $table->dropForeign(['product_id']);
             $table->dropForeign(['inbound_invoice_id']);
+            $table->dropForeign(['created_by']);
+            $table->dropForeign(['updated_by']);
         });
 
         // Xóa bảng

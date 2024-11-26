@@ -26,6 +26,8 @@ class InboundInvoiceDetail extends Model
         'cost_import',
         'cost_olded',
         'unit_price',
+        'created_by',
+        'updated_by',
     ];
     public function product()
     {

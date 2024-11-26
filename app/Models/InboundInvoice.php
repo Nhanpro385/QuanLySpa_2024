@@ -23,19 +23,31 @@ class InboundInvoice extends Model
         'supplier_id',
         'note',
         'total_amount',
-        'status'
+        'status',
+        'created_by',
+        'updated_by',
+        
     ];
-    protected $attribute = [
-        'status' => true,
-    ];
+    protected static function boot()
+    {
+        parent::boot();
+    
+        static::creating(function ($model) {
+            if (is_null($model->status)) {
+                $model->status = true;
+            }
+        });
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class, 'suppliers_id', 'id');
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'id'); // Đúng cột
     }
+    
     
     public function details()
     {
@@ -43,10 +55,33 @@ class InboundInvoice extends Model
     }
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by', 'id');
+        return $this->belongsTo(User::class, 'created_by','id');
     }    
+// Nếu dùng Attribute
+public function getInvoiceDetailsAttribute()
+{
+    return $this->details->map(function ($detail) {
+        return [
+            'id' => (string) $detail->id,
+            'product' => $detail->product ? [
+                'id' => (string) $detail->product->id,
+                'name' => $detail->product->name,
+                'sku' => $detail->product->bar_code,
+            ] : null,
+            'quantity_olded' => $detail->quantity_olded,
+            'quantity_import' => $detail->quantity_import,
+            'cost_import' => $detail->cost_import,
+            'cost_olded' => $detail->cost_olded,
+            'unit_price' => $detail->unit_price,
+        ];
+    });
+}
+
+
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by', 'id');
+        return $this->belongsTo(User::class, 'updated_by');
     }
+
+    
 }

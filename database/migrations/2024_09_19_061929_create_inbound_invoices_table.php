@@ -28,6 +28,14 @@ return new class extends Migration {
                 ->on('suppliers')
                 ->onDelete('set null');
         });
+        Schema::table('inbound_invoices', function (Blueprint $table) {
+            $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
+        
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+        });
+        
     }
 
     /**
