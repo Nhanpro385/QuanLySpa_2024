@@ -68,9 +68,8 @@ class Service extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'service_id', 'id');
+        return $this->hasMany(Comment::class, 'service_id', 'id')->orderBy('created_at', 'desc');
     }
-
 
     public function products()
     {

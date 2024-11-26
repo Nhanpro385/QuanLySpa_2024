@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin\Services;
 
+use App\Http\Resources\Admin\Comments\CommentResource;
 use App\Http\Resources\Admin\ProductServices\ProductServiceResource;
 use App\Http\Resources\Admin\ServiceImages\ServiceImageResource;
 use App\Http\Resources\Admin\Users\UserResource;
@@ -17,12 +18,15 @@ class ServiceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $products = $serviceImages = [];
+        $products = $serviceImages = $comments = [];
         if ($request->input('products') === "true") {
             $products = $this->whenLoaded('products') ? $this->products : [];
         }
         if ($request->input('products') === "true") {
             $serviceImages = $this->whenLoaded('serviceImages') ? $this->serviceImages : [];
+        }
+        if ($request->input('comments') === "true") {
+            $comments = $this->whenLoaded('comments') ? $this->comments : [];
         }
 
         return [
@@ -63,7 +67,8 @@ class ServiceResource extends JsonResource
                     'image_url' => $serviceImage->image_url,
                     'created_by' => $serviceImage->created_by ? $serviceImage->createdBy->full_name : null,
                 ];
-            }) : []
+            }) : [],
+            'comments' => $comments ? CommentResource::collection($comments) : []
         ];
     }
 
