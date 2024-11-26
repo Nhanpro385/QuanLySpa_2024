@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Client\ClientCustomerRequest;
 use App\Http\Requests\Client\ClientCustomerUpdateRequest;
-use App\Http\Resources\Client\ClientCustomerResource;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,70 +11,10 @@ use Illuminate\Support\Facades\Hash;
 
 class ClientCustomerAccountController extends Controller
 {
- 
-    public function store(ClientCustomerRequest $request)
-    {
-        $validated = $request->validated();
-
-
-        if (Customer::where('email', $validated['email'])->exists()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Email đã tồn tại trong hệ thống.',
-            ], 400);
-        }
-
-
-        $validated['password'] = Hash::make($validated['password']);
-
-
-        $customer = Customer::create($validated);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Tạo tài khoản thành công!',
-            'data' => new ClientCustomerResource($customer),
-        ], 201);
-    }
-
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string|min:8',
-        ]);
-
-
-        $customer = Customer::where('email', $request->email)->first();
-
-
-        if (!$customer || !Hash::check($request->password, $customer->password)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Thông tin đăng nhập không chính xác.',
-            ], 401);
-        }
-
-
-        $token = $customer->createToken('customer_token')->plainTextToken;
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Đăng nhập thành công!',
-            'data' => [
-                'id' => $customer->id,
-                'full_name' => $customer->full_name,
-                'email' => $customer->email,
-                'token' => $token,
-            ],
-        ]);
-    }
-
-
-    public function profile()
+    // Xem thông tin tài khoản của khách hàng đã đăng nhập
+    public function viewProfile()
     {
         $customer = Auth::user();
-
 
         if (!$customer) {
             return response()->json([
@@ -87,61 +25,58 @@ class ClientCustomerAccountController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Thông tin tài khoản khách hàng.',
-            'data' => new ClientCustomerResource($customer),
+            'message' => 'Thông tin tài khoản',
+            'data' => $customer,  // Trả về thông tin chi tiết của khách hàng
         ]);
     }
 
-
-
+    // Cập nhật thông tin khách hàng đã đăng nhập
     public function updateProfile(ClientCustomerUpdateRequest $request)
-    {
-        $customer = Auth::user();
+{
+    $customer = Auth::user();
 
-
-        if (!$customer) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Vui lòng đăng nhập để cập nhật thông tin.',
-            ], 401);
-        }
-
-
-        $validated = $request->validated();
-
-
-        if (isset($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-        } else {
-
-            unset($validated['password']);
-        }
-
-
-        $fieldsToRemove = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
-        $validated = array_diff_key($validated, array_flip($fieldsToRemove));
-
-        try {
-
-            $customer->update($validated);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Lỗi khi cập nhật thông tin.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-
+    if (!$customer) {
         return response()->json([
-            'status' => 'success',
-            'message' => 'Cập nhật thông tin thành công!',
-            'data' => new ClientCustomerResource($customer),
-        ]);
+            'status' => 'error',
+            'message' => 'Vui lòng đăng nhập để cập nhật thông tin.',
+        ], 401);
     }
 
+    $validated = $request->validated();
+
+    // Nếu mật khẩu được cập nhật, hash lại mật khẩu
+    if (isset($validated['password'])) {
+        $validated['password'] = Hash::make($validated['password']);
+    } else {
+        unset($validated['password']);
+    }
+
+    // Loại bỏ các trường không được phép cập nhật
+    $fieldsToRemove = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+    $validated = array_diff_key($validated, array_flip($fieldsToRemove));
+
+    try {
+        // Cập nhật thông tin khách hàng
+        $customer->fill($validated);
+        $customer->save();
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Lỗi khi cập nhật thông tin.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Cập nhật thông tin thành công!',
+        'data' => $customer,  // Trả về thông tin khách hàng đã cập nhật
+    ]);
+}
 
 
 
+    // Thay đổi mật khẩu cho khách hàng đã đăng nhập
     public function changePassword(Request $request)
     {
         $request->validate([
@@ -151,14 +86,12 @@ class ClientCustomerAccountController extends Controller
 
         $customer = Auth::user();
 
-
         if (!$customer) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Vui lòng đăng nhập để đổi mật khẩu.',
             ], 401);
         }
-
 
         if (!Hash::check($request->current_password, $customer->password)) {
             return response()->json([
@@ -167,7 +100,7 @@ class ClientCustomerAccountController extends Controller
             ], 400);
         }
 
-
+        // Cập nhật mật khẩu mới
         $customer->update(['password' => Hash::make($request->new_password)]);
 
         return response()->json([

@@ -8,6 +8,15 @@ class CommentResource extends JsonResource
 {
     public function toArray($request)
     {
+
+        $images = $this->images->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'image_url' => $image->image_url,
+                'created_at' => $image->created_at ? $image->created_at->format('d-m-Y H:i') : null,
+            ];
+        });
+
         return [
             'id' => $this->id,
             'service_id' => $this->service_id,
@@ -16,8 +25,7 @@ class CommentResource extends JsonResource
             'rate' => $this->rate,
             'status' => $this->status,
             'type' => $this->type,
-            'image_url' => $this->image_url,
-
+            'image_url' => $images, 
 
             'created_by' => $this->createdByUser ? [
                 'id' => $this->createdByUser->id,
@@ -25,19 +33,16 @@ class CommentResource extends JsonResource
                 'role' => $this->getRoleName($this->createdByUser->role),
             ] : null,
 
-
             'updated_by' => $this->updatedByUser ? [
                 'id' => $this->updatedByUser->id,
                 'full_name' => $this->updatedByUser->full_name,
                 'role' => $this->getRoleName($this->updatedByUser->role),
             ] : null,
 
-
             'created_at' => $this->created_at ? $this->created_at->format('d-m-Y H:i') : null,
             'updated_at' => $this->updated_at ? $this->updated_at->format('d-m-Y H:i') : null,
         ];
     }
-
 
     private function getRoleName($role)
     {

@@ -75,6 +75,7 @@ class CommentController extends Controller
                     'message' => 'Bạn cần đăng nhập để thêm bình luận.',
                 ], 401);
             }
+            $validatedData['created_by'] = Auth::id();
             $validatedData = $request->validated();
             $parentComment = null;
             if (!empty($validatedData['parent_comment_id'])) {

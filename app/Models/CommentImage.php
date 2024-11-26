@@ -22,4 +22,9 @@ class CommentImage extends Model
         'created_by',
         'updated_by'
     ];
+
+    public function comment()
+    {
+        return $this->belongsTo(Comment::class, 'comment_id', 'id');
+    }
 }

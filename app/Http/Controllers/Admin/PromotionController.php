@@ -88,49 +88,50 @@ class PromotionController extends Controller
     }
 
     public function update(PromotionUpdateRequest $request, $id)
-    {
-        try {
-            $promotion = Promotion::findOrFail($id);
-            $validatedData = $request->validated();
-            $validatedData['updated_by'] = Auth::id();
-            if ($request->hasFile('image_url')) {
-                if ($promotion->image_url) {
-                    $oldImagePath = storage_path('app/public/uploads/promotions/' . $promotion->image_url);
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
+{
+    try {
+        $promotion = Promotion::findOrFail($id);
+        $validatedData = $request->validated();
+        $validatedData['updated_by'] = Auth::id();
+
+        // Kiểm tra và xử lý ảnh
+        if ($request->hasFile('image_url')) {
+            if ($promotion->image_url) {
+                // Xóa ảnh cũ nếu có
+                $oldImagePath = storage_path('app/public/uploads/promotions/' . $promotion->image_url);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
                 }
-                $image = $request->file('image_url');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->storeAs('public/uploads/promotions', $imageName);
-                $validatedData['image_url'] = $imageName;
-            }
-            if ($promotion->name !== $validatedData['name']) {
-                
-                $this->$request->validated($request, [
-                    'name' => 'unique:promotions,name'
-                ]);
             }
 
-            $promotion->update($validatedData);
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Cập nhật khuyến mãi thành công',
-                'data' => new PromotionResource($promotion),
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Khuyến mãi không tồn tại!',
-            ], 404);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
-                'error' => $th->getMessage(),
-            ], 500);
+            // Lưu ảnh mới
+            $image = $request->file('image_url');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/uploads/promotions', $imageName);
+            $validatedData['image_url'] = $imageName;
         }
+
+        // Cập nhật thông tin khuyến mãi
+        $promotion->update($validatedData);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cập nhật khuyến mãi thành công',
+            'data' => new PromotionResource($promotion),
+        ], 200);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Khuyến mãi không tồn tại!',
+        ], 404);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
 
     public function destroy($id)
     {
