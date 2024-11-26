@@ -221,7 +221,7 @@ class ConsulationController extends Controller
 
             $email = ($consulation->customer->email);
             $full_name = ($consulation->customer->full_name ?? "SPA-ER");
-            $url_consulation = env('FRONTEND_URL') . "/videocall/" . $id;
+            $url_consulation = env('FRONTEND_URL') . "/tuvankhachhang/videocall/" . $id;
 
             $mailSend = Mail::to($email)->send(new ConsulationCustomerMail($url_consulation, $full_name));
 
