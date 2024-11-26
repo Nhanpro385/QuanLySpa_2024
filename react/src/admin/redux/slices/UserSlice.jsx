@@ -141,7 +141,7 @@ export const userSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.Users.search}?search=${data.search}&page=${data.page}`
+                `${endpoints.Users.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;

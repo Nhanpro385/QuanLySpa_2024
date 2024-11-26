@@ -1,106 +1,38 @@
-import React from "react";
-import { Table, Button, Row, Col, Card, Progress } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Row, Col, Card, Progress } from "antd";
 import {
     EllipsisOutlined,
     ClockCircleOutlined,
     FireOutlined,
 } from "@ant-design/icons";
 import fire from "../../assets/images/icons8-fire.gif";
+import PromotionTable from "../../modules/promotion/compoments/PromotionTable";
 import { useNavigate } from "react-router-dom";
+import usePromotionActions from "../../modules/promotion/hooks/usepromotionAction";
+import { useSelector } from "react-redux";
 function Promotions() {
     const navigate = useNavigate();
-    const dataSource = [
-        {
-            key: "1",
-            name: "Khuyến mãi tháng 4",
-            condition: "Sale 40% cho hóa đơn 1 triệu",
-            reduced: "40%",
-            start_time: "01/04/2024",
-            end_time: "30/04/2024",
-            progress: 60,
-            target: 500,
-            achieved: 300,
-        },
-        {
-            key: "2",
-            name: "Khuyến mãi tháng 5",
-            condition: "Giảm 30% cho khách hàng mới",
-            reduced: "30%",
-            start_time: "01/05/2024",
-            end_time: "31/05/2024",
-            progress: 45,
-            target: 400,
-            achieved: 180,
-        },
-        {
-            key: "3",
-            name: "Khuyến mãi mùa hè",
-            condition: "Sale 50% cho tất cả dịch vụ",
-            reduced: "50%",
-            start_time: "01/06/2024",
-            end_time: "30/06/2024",
-            progress: 80,
-            target: 600,
-            achieved: 480,
-        },
-    ];
+    const { getPromotions } = usePromotionActions();
+    const [PromotionsData, setPromotionsData] = useState([]);
+    const promotions = useSelector((state) => state.promotions);
+    useEffect(() => {
+        getPromotions();
+    }, []);
+    useEffect(() => {
+        console.log(promotions.promotions.data);
 
-    const columns = [
-        {
-            title: "STT",
-            key: "index",
-            render: (text, record, index) => index + 1,
-        },
-        {
-            title: "Dịch vụ",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "Điều kiện áp dụng",
-            dataIndex: "condition",
-            key: "condition",
-        },
-        {
-            title: "Giá giảm",
-            dataIndex: "reduced",
-            key: "reduced",
-        },
-        {
-            title: "Ngày bắt đầu",
-            dataIndex: "start_time",
-            key: "start_time",
-        },
-        {
-            title: "Ngày kết thúc",
-            dataIndex: "end_time",
-            key: "end_time",
-        },
-        {
-            title: "Hành động",
-            key: "action",
-            render: (text, record) => (
-                <span>
-                    <Button
-                        type="primary"
-                        onClick={() => handleEdit(record.key)}
-                        style={{ marginRight: 8 }}
-                    >
-                        Sửa
-                    </Button>
-                    <Button
-                        type="danger"
-                        onClick={() => handleDelete(record.key)}
-                    >
-                        Xóa
-                    </Button>
-                </span>
-            ),
-        },
-    ];
+        if (promotions.promotions.data && !promotions.loading) {
+            setPromotionsData(
+                promotions.promotions.data.map((item) => ({
+                    ...item,
+                    key: item.id,
+                }))
+            );
+        }
+    }, [promotions]);
 
     const handleEdit = (key) => {
-        console.log("Edit", key);
+        navigate(`/admin/khuyenmai/chinhsua/${key}`);
     };
 
     const handleDelete = (key) => {
@@ -108,7 +40,7 @@ function Promotions() {
     };
 
     const handleAdd = () => {
-        navigate("/admin/promotions/add");
+        navigate("/admin/khuyenmai/them");
     };
 
     return (
@@ -130,60 +62,92 @@ function Promotions() {
             </div>
 
             {/* Promotion Table */}
-            <Table dataSource={dataSource} columns={columns} />
+            <PromotionTable
+                dataSource={PromotionsData}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+            />
 
             {/* Promotion Cards */}
             <Row gutter={[16, 16]}>
-                {dataSource.map((promotion) => (
-                    <Col xl={8} md={12} sm={24} xs={24} key={promotion.key}>
-                        <Card
-                            bordered={false}
-                            actions={[<EllipsisOutlined key="ellipsis" />]}
-                            style={{
-                                borderRadius: "10px",
-                                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                            }}
-                        >
-                            <div>
-                                <h4>{promotion.name}</h4>
-                                <span>{promotion.condition}</span>
-                                <Progress
-                                    percent={promotion.progress}
-                                    showInfo={false}
-                                    strokeColor={{
-                                        "0%": "#108ee9",
-                                        "100%": "#87d068",
-                                    }}
-                                />
-                            </div>
-                            <div
+                {PromotionsData.map((promotion) => {
+                    // Tính toán tiến độ
+                    const currentDate = new Date();
+                    const startDate = new Date(promotion.start_date);
+                    const endDate = new Date(promotion.end_date);
+
+                    // Tính tổng thời gian và thời gian đã trôi qua
+                    const totalDuration = endDate - startDate;
+                    const timeElapsed = currentDate - startDate;
+
+                    // Tính phần trăm tiến độ (đảm bảo không vượt quá 100% hoặc dưới 0%)
+                    const progressPercent = Math.min(
+                        Math.max((timeElapsed / totalDuration) * 100, 0),
+                        100
+                    );
+
+                    return (
+                        <Col xl={8} md={12} sm={24} xs={24} key={promotion.id}>
+                            <Card
+                                bordered={false}
+                                actions={[<EllipsisOutlined key="ellipsis" />]}
                                 style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    marginTop: "12px",
-                                    alignItems: "center",
+                                    borderRadius: "10px",
+                                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
                                 }}
                             >
                                 <div>
-                                    <img src={fire} alt="fire" width="24px" />
-                                    <span
-                                        style={{
-                                            fontSize: "19px",
+                                    <h4>{promotion.name}</h4>
+                                    {promotion.promotion_type === "Cash"
+                                        ? `hóa đơn từ 
+                                                 ${parseInt(
+                                                     promotion.min_order_amount
+                                                 ).toLocaleString()} VNĐ trở lên sẽ được giảm giá`
+                                        : `Giảm ${promotion.discount_percent}%`}
+                                    <Progress
+                                        percent={progressPercent} // Sử dụng progress tính từ ngày
+                                        showInfo={false}
+                                        strokeColor={{
+                                            "0%": "#108ee9",
+                                            "100%": "#87d068",
                                         }}
-                                    >
-                                        {promotion.achieved}
-                                    </span>
-                                </div>
-                                <div>
-                                    <ClockCircleOutlined
-                                        style={{ marginRight: "4px" }}
                                     />
-                                    {promotion.achieved}/{promotion.target}
                                 </div>
-                            </div>
-                        </Card>
-                    </Col>
-                ))}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        marginTop: "12px",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <div>
+                                        <img
+                                            src={fire}
+                                            alt="promotion"
+                                            width="24px"
+                                        />
+                                        <span
+                                            style={{
+                                                fontSize: "19px",
+                                                marginLeft: "8px",
+                                            }}
+                                        >
+                                            {promotion.promotion_type === "Cash"
+                                                ? `Giảm ${parseInt(
+                                                      promotion.discount_percent
+                                                  ).toLocaleString()} VNĐ`
+                                                : `Giảm ${promotion.discount_percent}%`}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        Số lượng: {promotion.min_quantity}
+                                    </div>
+                                </div>
+                            </Card>
+                        </Col>
+                    );
+                })}
             </Row>
         </div>
     );

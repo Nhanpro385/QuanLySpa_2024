@@ -125,7 +125,7 @@ const TableProduct = ({
                 pageSize: pagination.per_page,
                 total: pagination.total,
                 showSizeChanger: true,
-
+                pageSizeOptions: ["5", "10", "20", "50"],
                 showQuickJumper: true,
                 showTotal: (total) => `Tổng ${total} mục`,
                 onChange: handlePageChange,

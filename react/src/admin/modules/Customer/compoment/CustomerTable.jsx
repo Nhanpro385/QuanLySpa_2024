@@ -6,14 +6,9 @@ const CustomerTable = ({
     customers,
     onClick,
     loading,
-    handlePageChange,
+    handelPageChange,
     pagination,
 }) => {
-    const dataSource = (customers.data.data || []).map((item) => ({
-        ...item,
-        key: item.id,
-    }));
-
     const columns = [
         {
             title: "STT",
@@ -26,16 +21,7 @@ const CustomerTable = ({
             dataIndex: "full_name",
             key: "full_name",
         },
-        {
-            title: "Năm Sinh",
-            dataIndex: "date_of_birth",
-            key: "date_of_birth",
-        },
-        {
-            title: "Tuổi",
-            dataIndex: "age",
-            key: "age",
-        },
+
         {
             title: "Số điện thoại",
             dataIndex: "phone",
@@ -85,7 +71,7 @@ const CustomerTable = ({
     return (
         <Table
             style={{ overflowX: "auto" }}
-            dataSource={dataSource}
+            dataSource={customers}
             columns={columns}
             loading={loading}
             pagination={{
@@ -94,7 +80,7 @@ const CustomerTable = ({
                 total: pagination.total,
                 showQuickJumper: true,
                 showSizeChanger: true,
-                onChange: handlePageChange,
+                onChange: handelPageChange,
                 showTotal: (total) => `Tổng ${total} khách hàng`,
             }}
         />

@@ -18,7 +18,9 @@ export const servicesGet = createAsyncThunk(
     async (per_page, { rejectWithValue }) => {
         try {
             // Xây dựng query parameters chỉ với `per_page` nếu có
-            const queryParams = per_page ? `?per_page=${per_page}` : "";
+            const queryParams = per_page
+                ? `?per_page=${per_page}&products=true`
+                : "";
 
             // Gọi API
             const response = await axiosInstance.get(

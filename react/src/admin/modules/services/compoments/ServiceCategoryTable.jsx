@@ -35,13 +35,13 @@ const ServiceCategoryTable = ({
             key: "action",
             render: (text, record) => (
                 <Space>
-                    <Button type="primary" onClick={() => editCate(record.id)}>
+                    <Button type="primary" onClick={() => editCate(record)}>
                         <EditOutlined />
                     </Button>
                     <Button
                         color="primary"
                         variant="outlined"
-                        onClick={() => deleteCate(record.id)}
+                        onClick={() => deleteCate(record)}
                     >
                         <DeleteOutlined />
                     </Button>
@@ -55,13 +55,13 @@ const ServiceCategoryTable = ({
             dataSource={dataSource}
             columns={columns}
             loading={loading}
-            rowKey="id" // Use the unique id for rowKey
+            rowKey="key" // Use the unique id for rowKey
             pagination={{
                 current: pagination.current_page,
                 pageSize: pagination.per_page,
                 total: pagination.total,
                 showSizeChanger: true,
-                
+                pageSizeOptions: ["5", "10", "50", "100"],
                 showQuickJumper: true,
                 showTotal: (total) => `Tổng ${total} mục`,
                 onChange: handlePageChange,

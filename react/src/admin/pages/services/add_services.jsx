@@ -24,7 +24,11 @@ const ServicesAdd = () => {
         useServiceCategoriesActions();
     const { addservices } = useServicesActions();
     const ServiceCategories = useSelector((state) => state.serviceCategories);
-
+    const [searchquery, setSearchQuery] = useState({
+        page: 1,
+        search: "",
+        per_page: 50,
+    });
     const [fileList, setFileList] = useState([]);
     const {
         control,
@@ -35,7 +39,7 @@ const ServicesAdd = () => {
     } = useForm();
 
     useEffect(() => {
-        getServiceCategories();
+        getServiceCategories(50);
     }, []);
 
     const servicesCategories = ServiceCategories.ServiceCategories.data.map(
@@ -46,12 +50,18 @@ const ServicesAdd = () => {
     );
 
     const OnSearchServiceCategories = debounce((value) => {
-        searchServiceCategories({
-            page: 1,
+        setSearchQuery({
+            ...searchquery,
             search: value,
         });
     }, 300);
-
+    useEffect(() => {
+        if (searchquery.search !== "") {
+            searchServiceCategories(searchquery);
+        } else {
+            getServiceCategories(50);
+        }
+    }, [searchquery]);
     const onSubmit = async (data) => {
         try {
             data.id = generateSnowflakeId();

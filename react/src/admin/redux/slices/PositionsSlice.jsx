@@ -3,6 +3,15 @@ import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 import { message } from "antd";
 
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
+
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const PositionsGet = createAsyncThunk("Positions/get", async () => {
     const response = await axiosInstance.get(endpoints.Positions.list);
     return response.data;
@@ -45,6 +54,7 @@ export const PositionsDelete = createAsyncThunk(
                 message: "Bạn không có quyền xóa vị trí",
             });
         }
+        console.log(userRole);
 
         try {
             await axiosInstance.delete(endpoints.Positions.delete(id));
@@ -63,8 +73,6 @@ export const PositionsUpdate = createAsyncThunk(
     "Positions/update",
     async (data, { rejectWithValue }) => {
         try {
-
-
             const response = await axiosInstance.put(
                 endpoints.Positions.update(data.id),
                 data
@@ -76,6 +84,7 @@ export const PositionsUpdate = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
+                    
             });
         }
     }
@@ -94,11 +103,9 @@ export const PositionsSearch = createAsyncThunk(
     "Positions/search",
     async (data, { rejectWithValue }) => {
         try {
-
             const response = await axiosInstance.get(
                 `${endpoints.Positions.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
-            console.log(response.data);
 
             return response.data;
         } catch (error) {
@@ -109,7 +116,6 @@ export const PositionsSearch = createAsyncThunk(
                     "Có lỗi xảy ra khi tìm kiếm",
             });
         }
-
     }
 );
 
@@ -157,8 +163,6 @@ const PositionsSlice = createSlice({
                 state.error = null;
             })
             .addCase(PositionsDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
-
                 state.Positions.data = state.Positions.data.filter(
                     (cate) => cate.id !== action.payload
                 );
@@ -173,8 +177,6 @@ const PositionsSlice = createSlice({
                 state.error = null;
             })
             .addCase(PositionsUpdate.fulfilled, (state, action) => {
-                console.log(action.payload.data.id);
-
                 state.Positions.data = state.Positions.data.map((cate) =>
                     cate.id === action.payload.data.id
                         ? action.payload.data
@@ -206,7 +208,7 @@ const PositionsSlice = createSlice({
                 if (action.payload.data == undefined) {
                     state.Positions = {
                         data: [],
-                    }
+                    };
                 } else {
                     state.Positions = action.payload;
                 }

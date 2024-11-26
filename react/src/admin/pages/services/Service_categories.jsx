@@ -28,10 +28,12 @@ const ServiceCategories = () => {
 
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-    const { ServiceCategories, loading, error, category } = useSelector(
-        (state) => state.ServiceCategories
-    );
+    // const { ServiceCategories, loading, error, category } = useSelector(
+    //     (state) => state.ServiceCategories
+    // );
+    const ServiceCategories = useSelector((state) => state.serviceCategories);
 
+    const [categoryData, setCategoryData] = useState([]);
     const [submissionStatus, setSubmissionStatus] = useState(null);
 
     const {
@@ -45,6 +47,7 @@ const ServiceCategories = () => {
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
+        per_page: 5,
     });
 
     useEffect(() => {
@@ -79,13 +82,13 @@ const ServiceCategories = () => {
         }
     });
 
-    const editCate = (id) => {
-        getServiceCategoriesById(id);
+    const editCate = (record) => {
+        getServiceCategoriesById(record.key);
         showModal();
     };
 
-    const deleteCate = async (id) => {
-        const resultAction = await deleteServiceCategories(id);
+    const deleteCate = async (record) => {
+        const resultAction = await deleteServiceCategories(record.key);
         if (resultAction.meta.requestStatus === "fulfilled") {
             messageApi.success("Xóa thành công");
         }
@@ -93,8 +96,14 @@ const ServiceCategories = () => {
 
     // Combined search and sort effect
     useEffect(() => {
-        if (searchQuery.search || searchQuery.page !== 1) {
+        if (
+            searchQuery.search ||
+            searchQuery.page !== 1 ||
+            searchQuery.per_page !== 5
+        ) {
             searchServiceCategories(searchQuery);
+        } else {
+            getServiceCategories();
         }
     }, [searchQuery]);
 
@@ -105,15 +114,39 @@ const ServiceCategories = () => {
         }));
     }, 500); // Debounce to reduce rapid calls
 
-    const handlePageChange = (page) => {
+    const handlePageChange = (page, pagination) => {
         setSearchQuery((prev) => ({
             ...prev,
             page,
+            per_page: pagination,
         }));
     };
+    useEffect(() => {
+        if (ServiceCategories.error) {
+            Object.keys(ServiceCategories.error.errors).forEach((key) => {
+                setError(key, {
+                    type: "server",
+                    message: ServiceCategories.error.errors[key][0],
+                });
+            });
+        }
+    }, [ServiceCategories.error]);
+    useEffect(() => {
+        if (
+            ServiceCategories.ServiceCategories.data &&
+            !ServiceCategories.loading
+        ) {
+            setCategoryData(
+                ServiceCategories.ServiceCategories.data.map((category) => ({
+                    key: category.id,
+                    name: category.name,
+                    description: category.description,
+                }))
+            );
+        }
+    }, [ServiceCategories]);
+    const pagination = ServiceCategories.ServiceCategories.meta || {};
 
-    const dataSource = ServiceCategories.data || [];
-    const pagination = ServiceCategories.meta || {};
     return (
         <>
             <h1 className="text-center">Danh mục Loại Dịch Vụ</h1>
@@ -121,15 +154,10 @@ const ServiceCategories = () => {
             <Row gutter={[16, 16]}>
                 <Col span={24}>
                     <Card title="Danh mục Loại Dịch Vụ">
-                        {error && (
-                            <Alert
-                                message={<span>{error.message}</span>}
-                                type="error"
-                            />
-                        )}
                         <ServiceCategoryForm
                             onSubmit={onSubmit}
                             errors={errors}
+                            errorMessage={ServiceCategories.error}
                             control={control}
                         />
                     </Card>
@@ -157,8 +185,8 @@ const ServiceCategories = () => {
                             </Col>
                         </Row>
                         <ServiceCategoryTable
-                            dataSource={dataSource}
-                            loading={loading}
+                            dataSource={categoryData}
+                            loading={ServiceCategories.loading}
                             editCate={editCate}
                             deleteCate={deleteCate}
                             pagination={pagination}
@@ -169,7 +197,7 @@ const ServiceCategories = () => {
                         isModalOpen={isModalOpen}
                         handleOk={handleOk}
                         handleCancel={handleCancel}
-                        category={category}
+                        category={ServiceCategories.category}
                     />
                 </Col>
             </Row>

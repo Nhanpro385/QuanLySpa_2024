@@ -26,30 +26,35 @@ import debounce from "lodash/debounce";
 function Staffs() {
     const { getusers, updateusers, deleteusers, getusersById, searchusers } =
         useUsersActions();
-    const { Option } = Select;
+
     const navigate = useNavigate();
     const [errorForm, setErrorForm] = React.useState(null);
     const [userEdit, setUserEdit] = React.useState(null);
     const [searchquery, setSearchQuery] = useState({
         search: "",
         page: 1,
+        per_page: 5,
     });
-
-    const { users, user } = useSelector((state) => state.user);
+    const [UserData, setUserData] = useState([]);
+    const { users, user, loading } = useSelector((state) => state.user);
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     useEffect(() => {
         getusers();
     }, []);
-
-    const dataSource =
-        users.data.map((user) => ({
-            key: user.id,
-            fullname: user.full_name,
-            age: user.age,
-            phone: user.phone,
-            address: user.address,
-            role: user.role,
-        })) || [];
+    useEffect(() => {
+        if (!loading && users.data) {
+            setUserData(
+                users.data.map((user) => ({
+                    key: user.id,
+                    fullname: user.full_name,
+                    age: user.age,
+                    phone: user.phone,
+                    address: user.address,
+                    role: user.role || "Nhân viên",
+                }))
+            );
+        }
+    }, [users]);
     const pagination = users.meta || {};
     const handleEdit = async (key) => {
         try {
@@ -103,16 +108,22 @@ function Staffs() {
         navigate("/admin/nhanvien/them");
     };
     useEffect(() => {
-        if (searchquery.search || searchquery.page !== 1) {
+        if (
+            searchquery.search ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 5
+        ) {
             searchusers(searchquery);
+        } else {
+            getusers();
         }
     }, [searchquery]);
 
     const onSearch = debounce((value) => {
         setSearchQuery({ page: 1, search: value });
     }, 500);
-    const handlePageChange = (page) => {
-        setSearchQuery({ ...searchquery, page });
+    const handlePageChange = (page, pagination) => {
+        setSearchQuery({ ...searchquery, page, per_page: pagination });
     };
 
     const today = new Date();
@@ -167,7 +178,8 @@ function Staffs() {
                 </Col>
             </Row>
             <StaffTable
-                dataSource={dataSource}
+                loading={loading}
+                dataSource={UserData}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
                 pagination={pagination}
@@ -177,13 +189,13 @@ function Staffs() {
                 isModalOpen={isModalOpen}
                 handleOk={handleOk}
                 handleCancel={handleCancel}
-                staff={user.data}
+                staff={userEdit}
                 handleEditSubmit={handleEditSubmit}
                 errorForm={errorForm}
             />
-            <Col>
+            {/* <Col>
                 <ScheduleXCalendar calendarApp={calendar} />
-            </Col>
+            </Col> */}
         </div>
     );
 }

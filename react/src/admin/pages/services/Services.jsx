@@ -21,19 +21,17 @@ function Services() {
         searchservices,
     } = useServicesActions();
     const [api, contextHolder] = notification.useNotification();
+    const [ServiceData, setServiceData] = useState([]);
     const Navigate = useNavigate();
-    const { services, loading, error } = useSelector((state) => state.services);
-    const dataSource = services.data.map((service, index) => ({
-        key: index,
-        ...service,
-    }));
+    const services = useSelector((state) => state.services);
+
     const [errorEdit, setErrorEdit] = useState(null);
     const pagination = services.meta || {};
     const [Searchquery, setSearchquery] = useState({
         search: "",
         page: 1,
     });
-    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+
     const {
         isModalOpen: isModalOpen2,
         showModal: showModal2,
@@ -41,10 +39,25 @@ function Services() {
         handleCancel: handleCancel2,
     } = useModal();
     const [editService, setEditService] = useState(null);
+    useEffect(() => {
+        if (services.services.data && !services.loading) {
+            setServiceData(
+                services.services.data.map((service) => ({
+                    key: service.id,
+                    name: service.name,
+                    price: service.price.toLocaleString("vi-VN"), // Chỉ sử dụng "vi-VN" để định dạng số
+                    duration: service.duration,
+                    status: service.status,
+                }))
+            );
+        }
+    }, [services]);
 
     const handleEdit = async (record) => {
         try {
-            const res = await getservicesById(record.id);
+            const res = await getservicesById(record.key);
+            console.log(res);
+
             if (res.payload.status === "success") {
                 setEditService(res.payload.data);
                 showModal2();
@@ -85,9 +98,9 @@ function Services() {
             getservices();
         }
     }, [Searchquery]);
-    const handledelete = async (id) => {
+    const handledelete = async (record) => {
         try {
-            const res = await deleteservices(id);
+            const res = await deleteservices(record.key);
             if (res.payload.status === "success") {
                 getservices();
                 api.success({
@@ -135,7 +148,7 @@ function Services() {
     };
     const onEditproduct = (record) => {
         Navigate("/admin/dichvu/chinhsuasanpham/" + record.id);
-    }
+    };
     return (
         <div>
             {contextHolder}
@@ -148,7 +161,7 @@ function Services() {
                     <Button
                         type="primary"
                         onClick={() => {
-                            Navigate("/admin/services/them");
+                            Navigate("/admin/dichvu/them");
                         }}
                         block
                     >
@@ -177,13 +190,13 @@ function Services() {
             </Row>
 
             <ServiceTable
-                dataSource={dataSource}
+                dataSource={ServiceData}
                 onEdit={handleEdit}
                 onDelete={handledelete}
                 onViewDetails={handleViewDetails}
                 pagination={pagination}
                 handleChangepage={handleChangepage}
-                loading={loading}
+                loading={services.loading}
                 onAddproduct={onAddproduct}
                 onEditproduct={onEditproduct}
             />

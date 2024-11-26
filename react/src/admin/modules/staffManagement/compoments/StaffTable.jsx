@@ -32,6 +32,7 @@ const StaffTable = ({
     handleDelete,
     pagination,
     handlePageChange,
+    loading,
 }) => {
     const navigate = useNavigate(); // Ensure `useNavigate` is called correctly
 
@@ -104,6 +105,7 @@ const StaffTable = ({
 
     return (
         <Table
+            loading={loading}
             style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
@@ -113,7 +115,7 @@ const StaffTable = ({
                 pageSize: pagination.per_page,
                 total: pagination.total,
                 showSizeChanger: true,
-
+                pageSizeOptions: ["5", "10", "20", "50"],
                 showQuickJumper: true,
                 showTotal: (total) => `Tổng ${total} mục`,
                 onChange: handlePageChange,

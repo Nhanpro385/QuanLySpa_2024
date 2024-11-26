@@ -37,7 +37,7 @@ const ServiceActions = ({
         {
             key: "4",
             label: (
-                <Button block danger onClick={() => onDelete(record.id)}>
+                <Button block danger onClick={() => onDelete(record)}>
                     Xóa
                 </Button>
             ),

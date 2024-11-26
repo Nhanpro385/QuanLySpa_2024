@@ -115,7 +115,7 @@ const Appointment_Add = () => {
                             </Tag>
                             <Tag
                                 color={
-                                    shift.staffs.length > 0 ? "green" : "red"
+                                    shift.staffs?.length > 0 ? "green" : "red"
                                 }
                             >
                                 <UserOutlined /> {shift.staffs.length} nhân viên

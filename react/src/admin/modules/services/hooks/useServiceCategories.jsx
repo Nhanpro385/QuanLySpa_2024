@@ -14,7 +14,10 @@ const useServiceCategoriesActions = () => {
         return await dispatch(ServiceCategoriesAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getServiceCategories = async () => {
+    const getServiceCategories = async (config) => {
+        if (config) {
+            return await dispatch(ServiceCategoriesGet(config));
+        }
         return await dispatch(ServiceCategoriesGet());
     };
 

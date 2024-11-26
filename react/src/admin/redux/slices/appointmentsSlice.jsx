@@ -97,6 +97,7 @@ export const appointmentsUpdate = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
+                errors: error.response?.data?.error || [],
             });
         }
     }
@@ -114,8 +115,6 @@ export const appointmentsSearch = createAsyncThunk(
     "appointments/search",
     async (data, { rejectWithValue }) => {
         try {
-            console.log("data", data);
-
             const response = await axiosInstance.get(
                 `${endpoints.appointments.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
@@ -138,6 +137,25 @@ export const GetAppointmentByStatus = createAsyncThunk(
             `${endpoints.appointments.list}?status[eq]=${status}&per_page=${per_page}`
         );
         return response.data;
+    }
+);
+export const searchAppointmentByStatus = createAsyncThunk(
+    "appointments/searchByStatus",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.appointments.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}&status[eq]=${data.status}`
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm lịch hẹn",
+            });
+        }
     }
 );
 const initialState = {
@@ -252,6 +270,24 @@ const appointmentsSlice = createSlice({
                 state.loading = false;
             })
             .addCase(GetAppointmentByStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(searchAppointmentByStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(searchAppointmentByStatus.fulfilled, (state, action) => {
+                if (action.payload.data == undefined) {
+                    state.appointments = {
+                        data: [],
+                    };
+                } else {
+                    state.appointments = action.payload;
+                }
+                state.loading = false;
+            })
+            .addCase(searchAppointmentByStatus.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

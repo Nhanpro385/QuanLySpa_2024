@@ -141,6 +141,7 @@ function ModalAddShiftEdit({
                                 render={({ field }) => (
                                     <TimePicker
                                         {...field}
+                                       
                                         style={{ width: "100%" }}
                                         
                                         onChange={(time) =>
@@ -169,8 +170,6 @@ function ModalAddShiftEdit({
                                     <TimePicker
                                         {...field}
                                         style={{ width: "100%" }}
-                                        
-                                       
                                         onChange={(time) =>
                                             field.onChange(time)
                                         }

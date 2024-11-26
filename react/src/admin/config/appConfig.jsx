@@ -78,7 +78,7 @@ const endpoints = {
         reply: (id) => `${API_BASE_URL}/comment/${id}/reply`,
     },
     services: {
-        list: `${API_BASE_URL}/services?products=true`,
+        list: `${API_BASE_URL}/services`,
         detail: (id) => `${API_BASE_URL}/services/${id}?products=true`,
         create: `${API_BASE_URL}/services`,
         update: (id) => `${API_BASE_URL}/services/${id}`,
@@ -116,6 +116,14 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/treatment-history/${id}`,
         delete: (id) => `${API_BASE_URL}/treatment-history/${id}`,
         search: `${API_BASE_URL}/treatment-history`,
+    },
+    promotions: {
+        list: `${API_BASE_URL}/promotion`,
+        detail: (id) => `${API_BASE_URL}/promotion/${id}`,
+        create: `${API_BASE_URL}/promotion`,
+        update: (id) => `${API_BASE_URL}/promotion/${id}`,
+        delete: (id) => `${API_BASE_URL}/promotion/${id}`,
+        search: `${API_BASE_URL}/promotion`,
     },
 };
 

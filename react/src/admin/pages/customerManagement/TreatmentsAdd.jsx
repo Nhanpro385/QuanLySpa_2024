@@ -37,7 +37,7 @@ const StreatmentsAdd = () => {
         per_page: 50,
         status: 3,
     });
-    const { getappointmentsByStatus, searchappointments } =
+    const { getappointmentsByStatus, searchappointmentsByStatus } =
         useappointmentsActions();
     const { addStreatment } = useStreatmentsAction();
 
@@ -48,6 +48,7 @@ const StreatmentsAdd = () => {
         control,
         handleSubmit,
         setError,
+        reset,
         formState: { errors },
     } = useForm({
         shouldFocusError: false, // Không tự động focus trường lỗi
@@ -91,11 +92,21 @@ const StreatmentsAdd = () => {
             const response = await addStreatment(formData);
             console.log("response", response);
 
-            if (response.payload.status !== "success") {
+            if (response.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Thêm lịch sử trị liệu thành công",
+                    description: response.payload.message,
+                    duration: 3,
+                });
+                setFileList([]);
+                reset();
+            } else {
                 api.error({
                     message: "Thêm lịch sử trị liệu thất bại",
                     description: response.payload.message,
+                    duration: 3,
                 });
+
                 Object.keys(response.payload.errors).forEach((key) => {
                     setError(key, {
                         type: "manual",
@@ -118,12 +129,12 @@ const StreatmentsAdd = () => {
             : null;
 
     const OnSearch = debounce((value) => {
-       setSearchQuery((prev) => ({ ...prev, search: value }));
+        setSearchQuery((prev) => ({ ...prev, search: value }));
     }, 500);
     useEffect(() => {
         if (searchQuery.search) {
-           searchappointments(searchQuery);
-        }else{
+            searchappointmentsByStatus(searchQuery);
+        } else {
             getappointmentsByStatus({ status: 3, per_page: 50 });
         }
     }, [searchQuery]);
@@ -162,7 +173,7 @@ const StreatmentsAdd = () => {
                                                         value
                                                     );
                                                 }}
-                                                 filterOption={false}
+                                                filterOption={false}
                                                 onSearch={OnSearch}
                                                 notFoundContent={
                                                     <Spin size="small" />
@@ -281,6 +292,9 @@ const StreatmentsAdd = () => {
                 </Col>
                 <Col span={9}>
                     <Card title="Hình ảnh sản phẩm">
+                        <span className="mb-2">
+                            * Vui lòng chọn 2 ảnh (trước và sau).
+                        </span>
                         <Form.Item
                             label="Hình ảnh sản phẩm"
                             validateStatus={errors.image_url && "error"}

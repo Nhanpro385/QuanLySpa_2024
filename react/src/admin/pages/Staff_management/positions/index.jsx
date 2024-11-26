@@ -22,10 +22,8 @@ const Positions = () => {
 
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-    const { Positions, loading, error, Position } = useSelector(
-        (state) => state.Positions
-    );
-
+    const Positions = useSelector((state) => state.positions);
+    const [PositionData, setPositionData] = useState([]);
     useEffect(() => {
         getPositions();
     }, []);
@@ -44,12 +42,22 @@ const Positions = () => {
             note: "",
         },
     });
-    console.log(Positions);
+    useEffect(() => {
+        if (Positions.Positions.data && !Positions.loading) {
+            setPositionData(
+                Positions.Positions.data.map((Position) => ({
+                    key: Position.id,
+                    name: Position.name,
+                    wage: Position.wage,
+                    note: Position.note,
+                }))
+            );
+        }
+    }, [Positions]);
 
-    const pagination = Positions.meta || [];
+    const pagination = Positions.Positions.meta || {};
 
-    const dataSource = (Positions && Positions.data) || [];
-
+    const Position = {};
     const onSubmit = async (data) => {
         const payload = {
             id: Snowflake.generate(),
@@ -61,6 +69,8 @@ const Positions = () => {
 
         try {
             const resultAction = await addPositions(payload);
+            console.log(resultAction);
+
             if (resultAction.meta.requestStatus === "fulfilled") {
                 messageApi.success("Thêm vị trí thành công!");
                 reset();
@@ -78,7 +88,10 @@ const Positions = () => {
                     });
                 } else {
                     // General error message
-                    messageApi.error("Dữ liệu đầu vào không hợp lệ.");
+                    messageApi.error(
+                        resultAction.payload.message ||
+                            "Có lỗi xảy ra khi thêm mới vị trí."
+                    );
                 }
             }
         } catch (err) {
@@ -87,27 +100,21 @@ const Positions = () => {
         }
     };
 
-    const editCate = async (id) => {
-        if (!id) {
+    const editCate = async (record) => {
+        if (!record.key) {
             messageApi.error("ID không hợp lệ.");
             return;
         }
 
         try {
-            const resultAction = await getPositionsById(id);
+            const resultAction = await getPositionsById(record.key);
+            console.log(resultAction);
 
             // Check if the request was successful and payload is valid
             if (
                 resultAction?.meta?.requestStatus === "fulfilled" &&
-                resultAction.payload
+                resultAction.payload.data
             ) {
-                const { name, wage, note } = resultAction.payload;
-
-                // Additional safety checks before setting form values
-                setValue("name", name || ""); // Ensure it's a string
-                setValue("wage", typeof wage === "number" ? wage : 0); // Default to 0 if wage is invalid
-                setValue("note", note || "");
-
                 showModal();
             } else {
                 messageApi.error("Không thể lấy thông tin vị trí.");
@@ -118,15 +125,14 @@ const Positions = () => {
         }
     };
 
-    const deleteCate = async (id) => {
-        if (!id) {
+    const deleteCate = async (record) => {
+        if (!record.key) {
             messageApi.error("ID không hợp lệ.");
             return;
         }
 
         try {
-            const resultAction = await deletePositions(id);
-
+            const resultAction = await deletePositions(record.key);
             // Check if the request was successful and the payload is valid
             if (
                 resultAction?.meta?.requestStatus === "fulfilled" &&
@@ -176,29 +182,28 @@ const Positions = () => {
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
-        per_page: 5
-    })
+        per_page: 5,
+    });
 
     useEffect(() => {
-        if (searchQuery.search || searchQuery.page !== 1 || searchQuery.per_page){
-            searchPositions(searchQuery)
+        if (
+            searchQuery.search ||
+            searchQuery.page !== 1 ||
+            searchQuery.per_page !== 5
+        ) {
+            searchPositions(searchQuery);
         } else {
-            console.log(2);
-            
+            getPositions();
         }
-    }, [searchQuery])
-    console.log(searchQuery);
-
+    }, [searchQuery]);
 
     const getSearch = (e) => {
         setSearchQuery({ ...searchQuery, search: e });
-    }
-    console.log(searchQuery);
+    };
 
     const handleChangePage = (page, pagination) => {
-
-        setSearchQuery({ ...searchQuery, page, per_page: pagination })
-    }
+        setSearchQuery({ ...searchQuery, page, per_page: pagination });
+    };
 
     return (
         <>
@@ -223,13 +228,15 @@ const Positions = () => {
                                     type="text"
                                     name="search"
                                     onSearch={getSearch}
-                                    onChange={(e) => { getSearch(e.target.value) }}
+                                    onChange={(e) => {
+                                        getSearch(e.target.value);
+                                    }}
                                 />
                             </Col>
                         </Row>
                         <PositionsTable
-                            dataSource={dataSource}
-                            loading={loading}
+                            dataSource={PositionData}
+                            loading={Positions.loading}
                             editCate={editCate}
                             deleteCate={deleteCate}
                             pagination={pagination}
@@ -240,7 +247,7 @@ const Positions = () => {
                         isModalOpen={isModalOpen}
                         handleOk={handleOk}
                         handleCancel={handleCancel}
-                        Position={Position}
+                        Position={Positions.Position}
                         handleEditSubmit={handleEditSubmit}
                     />
                 </Col>

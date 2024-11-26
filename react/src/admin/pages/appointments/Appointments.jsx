@@ -52,22 +52,20 @@ function Appointments() {
     useEffect(() => {
         if (appointments && !loading) {
             if (appointments.data) {
+                console.log(appointments.data);
+
                 setDataAppointments(
                     appointments.data.map((item) => ({
                         key: item.id,
                         id: item.id,
-                        title: item.title,
-                        service_name: item.services
-                            .map((service) => service.name)
-                            .join(", "),
-                        customer_id: item.customer.full_name,
-                        employee_name: item.users
-                            .map((user) => user.full_name)
-                            .join(", "),
-                        start: item.start_time,
-                        end: item.end,
-                        status: item.status,
-                        date: item.appointment_date,
+                        title: item.title || "Không có tiêu đề",
+                        service_name: item.services?.map((service) => service.name).join(", "),
+                        customer_id: item.customer?.full_name,
+                        employee_name: item.users?.map((user) => user.full_name).join(", "),
+                        start: item.start_time || "Không có thời gian bắt đầu",
+                        end: item.end || "Không có thời gian kết thúc",
+                        status: item.status || "Không có trạng thái",
+                        date: item.appointment_date || "Không có  ngày",
                     }))
                 );
             }

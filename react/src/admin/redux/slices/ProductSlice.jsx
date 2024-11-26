@@ -106,9 +106,14 @@ export const productUpdate = createAsyncThunk(
         }
 
         try {
-            const response = await axiosInstance.put(
+            const response = await axiosInstance.post(
                 endpoints.Products.update(data.id),
-                data
+                data.data,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
             );
             return response.data;
         } catch (error) {
@@ -145,7 +150,7 @@ export const productSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.Products.search}?search=${data.search}&page=${data.page}`
+                `${endpoints.Products.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;
@@ -160,7 +165,7 @@ export const productSearch = createAsyncThunk(
     }
 );
 const initialState = {
-    product: {
+    products: {
         data: [],
     },
     productDetail: {},
@@ -186,7 +191,7 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productGet.fulfilled, (state, action) => {
-                state.product = action.payload;
+                state.products = action.payload;
                 state.loading = false;
             })
             .addCase(productGet.rejected, (state, action) => {
@@ -199,9 +204,9 @@ const productSlice = createSlice({
             })
             .addCase(productAdd.fulfilled, (state, action) => {
                 if (!state.product.data) {
-                    state.product.data = [];
+                    state.products.data = [];
                 }
-                state.product.data.push(action.payload.data);
+                state.products.data.push(action.payload.data);
                 state.loading = false;
             })
             .addCase(productAdd.rejected, (state, action) => {
@@ -213,7 +218,7 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productDelete.fulfilled, (state, action) => {
-                state.product.data = state.product.data.filter(
+                state.products.data = state.products.data.filter(
                     (prod) => prod.id !== action.payload
                 );
                 state.loading = false;
@@ -227,7 +232,7 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productUpdate.fulfilled, (state, action) => {
-                state.product.data = state.product.data.map((prod) =>
+                state.products.data = state.products.data.map((prod) =>
                     prod.id === action.payload.data.id
                         ? action.payload.data
                         : prod
@@ -243,7 +248,7 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productGetById.fulfilled, (state, action) => {
-                state.productDetail = action.payload;
+                state.productsDetail = action.payload;
                 state.loading = false;
             })
             .addCase(productGetById.rejected, (state, action) => {
@@ -256,11 +261,11 @@ const productSlice = createSlice({
             })
             .addCase(productSearch.fulfilled, (state, action) => {
                 if (action.payload.data == undefined) {
-                    state.product = {
+                    state.products = {
                         data: [],
                     };
                 } else {
-                    state.product = action.payload;
+                    state.products = action.payload;
                 }
                 state.loading = false;
             })

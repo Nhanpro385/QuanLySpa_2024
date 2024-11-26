@@ -9,6 +9,7 @@ import {
     TimePicker,
     Switch,
     Button,
+    Space,
 } from "antd";
 import { Controller, useForm } from "react-hook-form";
 
@@ -26,6 +27,7 @@ function ModalAddShift({
         control,
         handleSubmit,
         formState: { errors },
+        setValue,
         reset,
     } = useForm();
 
@@ -47,6 +49,7 @@ function ModalAddShift({
     return (
         <Modal
             title="Thêm Ca Làm"
+            width={800}
             open={isModalOpen}
             onOk={handleSubmit(onSubmit)} // Ensure onOk triggers handleSubmit
             onCancel={handleCancel}
@@ -105,6 +108,40 @@ function ModalAddShift({
                                 }}
                                 render={({ field }) => (
                                     <TimePicker
+                                        renderExtraFooter={() => (
+                                            <Space size="small">
+                                                <Button
+                                                    size="small"
+                                                    type="primary"
+                                                    onClick={() =>
+                                                        setValue(
+                                                            "start_time",
+                                                            dayjs(
+                                                                "08:00",
+                                                                "HH:mm"
+                                                            )
+                                                        )
+                                                    }
+                                                >
+                                                    Ca sáng
+                                                </Button>
+                                                <Button
+                                                    size="small"
+                                                    type="primary"
+                                                    onClick={() =>
+                                                        setValue(
+                                                            "start_time",
+                                                            dayjs(
+                                                                "13:00",
+                                                                "HH:mm"
+                                                            )
+                                                        )
+                                                    }
+                                                >
+                                                    Ca chiều
+                                                </Button>
+                                            </Space>
+                                        )}
                                         {...field}
                                         style={{ width: "100%" }}
                                         onChange={(time) =>
@@ -133,6 +170,40 @@ function ModalAddShift({
                                     <TimePicker
                                         {...field}
                                         style={{ width: "100%" }}
+                                        renderExtraFooter={() => (
+                                            <Space size="small">
+                                                <Button
+                                                    size="small"
+                                                    type="primary"
+                                                    onClick={() =>
+                                                        setValue(
+                                                            "end_time",
+                                                            dayjs(
+                                                                "12:00",
+                                                                "HH:mm"
+                                                            )
+                                                        )
+                                                    }
+                                                >
+                                                    Ca sáng
+                                                </Button>
+                                                <Button
+                                                    size="small"
+                                                    type="primary"
+                                                    onClick={() =>
+                                                        setValue(
+                                                            "end_time",
+                                                            dayjs(
+                                                                "17:00",
+                                                                "HH:mm"
+                                                            )
+                                                        )
+                                                    }
+                                                >
+                                                    Ca chiều
+                                                </Button>
+                                            </Space>
+                                        )}
                                         onChange={(time) =>
                                             field.onChange(time)
                                         }

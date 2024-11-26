@@ -19,8 +19,6 @@ export const CustomerGet = createAsyncThunk(
         try {
             // Xây dựng query parameters chỉ với `per_page` nếu có
             const queryParams = per_page ? `?per_page=${per_page}` : "";
-
-            // Gọi API
             const response = await axiosInstance.get(
                 `${endpoints.Customers.list}${queryParams}`
             );
@@ -146,7 +144,7 @@ export const CustomerSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.Customers.search}?search=${data.search}&page=${data.page}`
+                `${endpoints.Customers.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;
@@ -247,7 +245,7 @@ const CustomerSlice = createSlice({
             .addCase(CustomerUpdate.rejected, (state, action) => {
                 state.loading = false;
                 state.error =
-                    action.payload?.message || "Failed to update customer";
+                    action.payload?.errors || "Failed to update customer";
             })
             // Customer Get by ID
             .addCase(CustomerGetbyId.pending, (state) => {

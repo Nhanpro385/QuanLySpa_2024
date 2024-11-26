@@ -2,8 +2,14 @@ import React from "react";
 import { Table, Button, Space } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const PositionsTable = ({ dataSource, loading, editCate, deleteCate, pagination, onChangePage }) => {
-
+const PositionsTable = ({
+    dataSource,
+    loading,
+    editCate,
+    deleteCate,
+    pagination,
+    onChangePage,
+}) => {
     const columns = [
         {
             title: "STT",
@@ -27,10 +33,10 @@ const PositionsTable = ({ dataSource, loading, editCate, deleteCate, pagination,
             key: "action",
             render: (text, record) => (
                 <Space>
-                    <Button type="primary" onClick={() => editCate(record.id)}>
+                    <Button type="primary" onClick={() => editCate(record)}>
                         <EditOutlined />
                     </Button>
-                    <Button danger onClick={() => deleteCate(record.id)}>
+                    <Button danger onClick={() => deleteCate(record)}>
                         <DeleteOutlined />
                     </Button>
                 </Space>
@@ -44,6 +50,7 @@ const PositionsTable = ({ dataSource, loading, editCate, deleteCate, pagination,
             style={{ overflowX: "auto" }}
             dataSource={dataSource}
             columns={columns}
+            rowKey="key"
             pagination={{
                 current: pagination.current_page,
                 pageSize: pagination.per_page,
@@ -51,11 +58,9 @@ const PositionsTable = ({ dataSource, loading, editCate, deleteCate, pagination,
                 showSizeChanger: true,
                 showQuickJumper: true,
                 onChange: onChangePage,
-                pageSizeOptions:['5','10','50','100'],
+                pageSizeOptions: ["5", "10", "50", "100"],
                 showTotal: (total) => `Tổng ${total} mục`,
             }}
-            rowKey="id"
-
         />
     );
 };

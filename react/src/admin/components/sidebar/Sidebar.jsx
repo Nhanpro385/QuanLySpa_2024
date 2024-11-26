@@ -16,7 +16,6 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
-import { get } from "react-hook-form";
 
 const { Sider } = Layout;
 
@@ -92,7 +91,7 @@ const items = [
         >
             Quản lý lịch hẹn
         </Link>,
-        "5",
+        "7",
         <CalendarOutlined />,
         [
             getItem(
@@ -102,7 +101,7 @@ const items = [
                 >
                     Danh sách lịch hẹn
                 </Link>,
-                "6"
+                "8"
             ),
             getItem(
                 <Link
@@ -111,7 +110,7 @@ const items = [
                 >
                     Thêm lịch hẹn
                 </Link>,
-                "7"
+                "9"
             ),
         ]
     ),
@@ -122,7 +121,7 @@ const items = [
         >
             Quản lý nhân viên
         </Link>,
-        "7",
+        "10",
         <TeamOutlined />,
         [
             getItem(
@@ -132,7 +131,7 @@ const items = [
                 >
                     Danh sách nhân viên
                 </Link>,
-                "8"
+                "11"
             ),
             getItem(
                 <Link
@@ -141,7 +140,7 @@ const items = [
                 >
                     Thêm nhân viên
                 </Link>,
-                "9"
+                "12"
             ),
             getItem(
                 <Link
@@ -150,7 +149,7 @@ const items = [
                 >
                     Chức vụ
                 </Link>,
-                "10"
+                "13"
             ),
         ]
     ),
@@ -161,7 +160,7 @@ const items = [
         >
             Quản lý dịch vụ
         </Link>,
-        "11",
+        "14",
         <SolutionOutlined />,
         [
             getItem(
@@ -171,7 +170,7 @@ const items = [
                 >
                     Danh sách dịch vụ
                 </Link>,
-                "12"
+                "15"
             ),
             getItem(
                 <Link
@@ -180,7 +179,7 @@ const items = [
                 >
                     Danh mục dịch vụ
                 </Link>,
-                "13"
+                "16"
             ),
             getItem(
                 <Link
@@ -189,7 +188,7 @@ const items = [
                 >
                     Thêm dịch vụ
                 </Link>,
-                "14"
+                "17"
             ),
         ]
     ),
@@ -200,7 +199,7 @@ const items = [
         >
             Quản lý sản phẩm
         </Link>,
-        "14",
+        "18",
         <ShoppingOutlined />,
         [
             getItem(
@@ -210,7 +209,7 @@ const items = [
                 >
                     Danh sách sản phẩm
                 </Link>,
-                "15"
+                "19"
             ),
             getItem(
                 <Link
@@ -219,7 +218,7 @@ const items = [
                 >
                     Thêm sản phẩm
                 </Link>,
-                "16"
+                "20"
             ),
             getItem(
                 <Link
@@ -228,28 +227,28 @@ const items = [
                 >
                     Danh mục sản phẩm
                 </Link>,
-                "17"
+                "21"
             ),
         ]
     ),
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
-            to="/admin/promotions"
+            to="/admin/khuyenmai"
         >
             Quản lý khuyến mãi
         </Link>,
-        "18",
+        "22",
         <TagsOutlined />,
         [
             getItem(
                 <Link
                     className="text-decoration-none text-black fs-4"
-                    to="/admin/promotions"
+                    to="/admin/khuyenmai"
                 >
                     Danh sách khuyến mãi
                 </Link>,
-                "19"
+                "23"
             ),
         ]
     ),
@@ -260,7 +259,7 @@ const items = [
         >
             Quản lý kho
         </Link>,
-        "20",
+        "24",
         <ShopOutlined />,
         [
             getItem(
@@ -270,7 +269,7 @@ const items = [
                 >
                     Danh sách kho
                 </Link>,
-                "21"
+                "25"
             ),
             getItem(
                 <Link
@@ -279,7 +278,7 @@ const items = [
                 >
                     Nhập kho
                 </Link>,
-                "22"
+                "26"
             ),
             getItem(
                 <Link
@@ -288,7 +287,7 @@ const items = [
                 >
                     Xuất kho
                 </Link>,
-                "23"
+                "27"
             ),
             getItem(
                 <Link
@@ -297,7 +296,7 @@ const items = [
                 >
                     Quản lý Tồn Kho
                 </Link>,
-                "24"
+                "28"
             ),
         ]
     ),
@@ -308,7 +307,7 @@ const items = [
         >
             Quản lý ca làm việc
         </Link>,
-        "25",
+        "29",
         <SettingOutlined />,
         [
             getItem(
@@ -318,7 +317,7 @@ const items = [
                 >
                     Quản lý ca làm việc
                 </Link>,
-                "26"
+                "30"
             ),
         ]
     ),
@@ -329,7 +328,7 @@ const items = [
         >
             Quản lý bình luận và đánh giá
         </Link>,
-        "27",
+        "31",
         <CommentOutlined />,
         [
             getItem(
@@ -339,7 +338,7 @@ const items = [
                 >
                     Danh sách bình luận
                 </Link>,
-                "28"
+                "32"
             ),
         ]
     ),
@@ -350,7 +349,7 @@ const items = [
         >
             Quản lý liên hệ
         </Link>,
-        "29",
+        "33",
         <PhoneOutlined />,
         [
             getItem(
@@ -360,7 +359,7 @@ const items = [
                 >
                     Danh sách liên hệ
                 </Link>,
-                "30"
+                "34"
             ),
         ]
     ),
@@ -371,7 +370,7 @@ const items = [
         >
             Quản lý thanh toán
         </Link>,
-        "31",
+        "35",
         <DesktopOutlined />,
         [
             getItem(
@@ -381,7 +380,7 @@ const items = [
                 >
                     Quản lý thanh toán
                 </Link>,
-                "32"
+                "36"
             ),
         ]
     ),
@@ -392,7 +391,7 @@ const items = [
         >
             Quản lý Nhà Cung Cấp
         </Link>,
-        "33",
+        "37",
         <FileOutlined />,
         [
             getItem(
@@ -402,7 +401,7 @@ const items = [
                 >
                     Quản lý Nhà Cung Cấp
                 </Link>,
-                "34"
+                "38"
             ),
         ]
     ),
@@ -428,6 +427,6 @@ const Sidebar = () => {
             />
         </Sider>
     );
-}
+};
 
 export default Sidebar;

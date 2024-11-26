@@ -14,7 +14,6 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useproductActions from "@admin/modules/product/hooks/useProduct";
-
 import { useSelector } from "react-redux";
 import TableProduct from "./tableProduct";
 import useModal from "@admin/modules/appointments/hooks/openmodal";
@@ -22,7 +21,8 @@ import ModalEditProduct from "../../modules/product/compoments/ModalEditProduct"
 import debounce from "lodash/debounce";
 function Products() {
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
-    const { product, loading } = useSelector((state) => state.products);
+    const [productData, setProductData] = useState([]);
+    const product = useSelector((state) => state.products);
     const {
         getproduct,
         updateproduct,
@@ -35,6 +35,7 @@ function Products() {
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
+        per_page: 5,
     });
 
     useEffect(() => {
@@ -42,28 +43,43 @@ function Products() {
     }, []);
 
     useEffect(() => {
-        if (searchQuery.search || searchQuery.page !== 1) {
+        if (
+            searchQuery.search ||
+            searchQuery.page !== 1 ||
+            searchQuery.per_page !== 5
+        ) {
             searchproduct(searchQuery);
+        } else {
+            getproduct();
         }
     }, [searchQuery]);
-
+    useEffect(() => {
+        if (!product.loading && product.products) {
+            setProductData(
+                product.products.data.map((item) => ({
+                    key: item.id,
+                    name: item.name,
+                    image_url: (
+                        <Image src="http://127.0.0.1:8000/storage/app/uploads/1729000364_123.png" />
+                    ),
+                    price: item.price,
+                    quantity: item.quantity || "Dữ liệu không có",
+                    capacity: item.capacity || "Dữ liệu không có",
+                    date: item.date,
+                    status:
+                        item.status === 1 ? (
+                            <Tag color="green">Đang Hoạt Động</Tag>
+                        ) : (
+                            <Tag color="red">Ngừng Hoạt Động</Tag>
+                        ),
+                }))
+            );
+        }
+    }, [product]);
     const [dataEdit, setDataEdit] = useState({});
     const navigation = useNavigate();
 
-    const dataSource = (product.data || []).map((item) => ({
-        key: item.id,
-        name: item.name,
-        image_url: (
-            <Image src="http://127.0.0.1:8000/storage/app/uploads/1729000364_123.png" />
-        ),
-        price: item.price,
-        quantity: item.quantity,
-        capacity: item.capacity,
-        date: item.date,
-        status: item.status,
-    }));
-
-    const pagination = product.meta || [];
+    const pagination = product.products.meta || {};
     const handleAdd = () => {
         navigation("/admin/products/add");
     };
@@ -96,9 +112,26 @@ function Products() {
     const handleInputChange = (e) => {
         setSearchQuery({ ...searchQuery, search: e });
     };
-    const handlechangepage = (page) => {
-        setSearchQuery({ ...searchQuery, page });
+    const handlechangepage = (page, pagination) => {
+        setSearchQuery({ ...searchQuery, page, per_page: pagination });
     };
+    const handleSubmitEdit = async (data) => {
+        try {
+            const result = await updateproduct(data);
+            if (result.meta.requestStatus === "fulfilled") {
+                message.success("Cập nhật sản phẩm thành công");
+                getproduct();
+                handleCancel();
+                return true;
+            } else {
+                message.error("Cập nhật sản phẩm thất bại");
+                return false;
+            }
+        } catch (error) {
+            message.error("Cập nhật sản phẩm thất bại");
+        }
+    };
+
     return (
         <div>
             <h1 className="text-center">Quản Lý Sản Phẩm</h1>
@@ -128,18 +161,19 @@ function Products() {
             </Row>
 
             <TableProduct
-                dataSource={dataSource}
+                dataSource={productData}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
                 pagination={pagination}
                 handlePageChange={handlechangepage}
-                loading={loading}
+                loading={product.loading}
             />
             <ModalEditProduct
                 isModalOpen={isModalOpen}
                 handleOk={handleOk}
                 handleCancel={handleCancel}
                 productData={dataEdit}
+                handleSubmitEdit={handleSubmitEdit}
             />
         </div>
     );

@@ -18,36 +18,38 @@ const ModalEditCustomer = ({
         setError,
         formState: { errors },
     } = useForm();
-   
-    
+    useEffect(() => {
+        if (formErrors) {
+            Object.keys(formErrors).forEach((key) => {
+                setError(key, {
+                    type: "manual",
+                    message: formErrors[key],
+                });
+            });
+        }
+    }, [formErrors]);
+
     useEffect(() => {
         if (customer) {
-            setValue("name", customer.name);
+            setValue("id", customer.id);
             setValue("full_name", customer.full_name);
-            setValue("email", customer.email);
+            setValue("email", customer.contact_email);
             // setValue("password", customer.password); // Để an toàn, bạn có thể không hiển thị mật khẩu trong form
             setValue("phone", customer.phone);
             setValue("address", customer.address);
             setValue("date_of_birth", dayjs(customer.date_of_birth));
-            setValue("gender", customer.gender+"");
+            setValue(
+                "gender",
+                customer.gender === "Không xác định"
+                    ? "2"
+                    : customer === "Nam"
+                    ? "0"
+                    : "1"
+            );
             setValue("note", customer.note);
             setValue("role", customer.role);
         }
-    }, [customer, setValue]);
-    useEffect(() => {
-        if (formErrors) {
-            console.log(formErrors);
-
-            Object.keys(formErrors).forEach((key) => {
-                setError(key, { type: "manual", message: formErrors[key] });
-            });
-        }
-    }, [formErrors, setError]);
-    const onSubmit = (data) => {
-        data.date_of_birth = formatDate(data.date_of_birth);
-
-        handleOk({ ...data, id: customer.id, status: customer.status });
-    };
+    }, [customer]);
 
     return (
         <Modal
@@ -57,29 +59,7 @@ const ModalEditCustomer = ({
             onCancel={handleCancel}
             footer={null}
         >
-            <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-                <Form.Item label="Tên">
-                    <Controller
-                        name="name"
-                        control={control}
-                        rules={{
-                            required: "Tên là bắt buộc",
-                            pattern: {
-                                value: /^[^\d]+$/,
-                                message: "Tên không được chứa số",
-                            },
-                            maxLength: {
-                                value: 50,
-                                message: "Tên không được vượt quá 50 ký tự",
-                            },
-                        }}
-                        render={({ field }) => <Input type="text" {...field} />}
-                    />
-                    {errors.name && (
-                        <p style={{ color: "red" }}>{errors.name.message}</p>
-                    )}
-                </Form.Item>
-
+            <Form layout="vertical" onFinish={handleSubmit(handleOk)}>
                 <Form.Item label="Họ và tên">
                     <Controller
                         name="full_name"
@@ -123,30 +103,6 @@ const ModalEditCustomer = ({
                     )}
                 </Form.Item>
 
-                {/* <Form.Item label="Mật khẩu">
-                    <Controller
-                        name="password"
-                        control={control}
-                        rules={{
-                            minLength: {
-                                value: 6,
-                                message: "Mật khẩu phải có ít nhất 6 ký tự",
-                            },
-                            maxLength: {
-                                value: 20,
-                                message:
-                                    "Mật khẩu không được vượt quá 20 ký tự",
-                            },
-                        }}
-                        render={({ field }) => <Input.Password {...field} />}
-                    />
-                    {errors.password && (
-                        <p style={{ color: "red" }}>
-                            {errors.password.message}
-                        </p>
-                    )}
-                </Form.Item> */}
-
                 <Form.Item label="Số điện thoại">
                     <Controller
                         name="phone"
@@ -158,7 +114,9 @@ const ModalEditCustomer = ({
                                 message: "Số điện thoại không hợp lệ",
                             },
                         }}
-                        render={({ field }) => <Input {...field} />}
+                        render={({ field }) => (
+                            <Input type="number" {...field} />
+                        )}
                     />
                     {errors.phone && (
                         <p style={{ color: "red" }}>{errors.phone.message}</p>
@@ -180,9 +138,9 @@ const ModalEditCustomer = ({
                         rules={{ required: "Giới tính là bắt buộc" }}
                         render={({ field }) => (
                             <Select {...field}>
-                                <Option value="2">Nam</Option>z
+                                <Option value="0">Nam</Option>z
                                 <Option value="1">Nữ</Option>
-                                <Option value="0">Khác</Option>
+                                <Option value="2">Khác</Option>
                             </Select>
                         )}
                     />

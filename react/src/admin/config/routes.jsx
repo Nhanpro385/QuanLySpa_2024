@@ -58,7 +58,7 @@ import StreatMents from "../pages/customerManagement/CustomerTreatments";
 import StreatmentsAdd from "../pages/customerManagement/TreatmentsAdd";
 import StreatmentsEdit from "../pages/customerManagement/CustomerTreatments_Edit";
 import ProductServiceAdd from "../pages/services/ProductServiceAdd";
-
+import Promotions_Edit from "../pages/Promotions/Promotions_Edit";
 
 const PublicRoutes = [
     // Dashboard
@@ -109,8 +109,9 @@ const PublicRoutes = [
     { path: "/warehouse/export", element: <WarehouseExport /> },
     { path: "/warehouse/inventory", element: <ProductInventory /> },
     // Promotions
-    { path: "/promotions", element: <Promotions /> },
-    { path: "/promotions/add", element: <Promotions_add /> },
+    { path: "/khuyenmai", element: <Promotions /> },
+    { path: "/khuyenmai/them", element: <Promotions_add /> },
+    { path: "/khuyenmai/chinhsua/:id", element: <Promotions_Edit /> },
 
     // Consultant and Comments
     { path: "/consultant", element: <Consultant /> },

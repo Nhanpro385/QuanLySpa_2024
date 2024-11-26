@@ -1,5 +1,5 @@
 // src/admin/components/ModalEditProduct.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Modal,
     Button,
@@ -17,7 +17,7 @@ import { useForm, Controller } from "react-hook-form";
 import usecategoriesActions from "@admin/modules/product/hooks/useCategoriesProduct";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
-
+import debounce from "lodash/debounce";
 const ModalEditProduct = ({
     visible,
     onCancel,
@@ -25,18 +25,61 @@ const ModalEditProduct = ({
     isModalOpen,
     handleOk,
     handleCancel,
+    handleSubmitEdit,
 }) => {
-    const { control, handleSubmit, setValue } = useForm();
-    const { getcategories } = usecategoriesActions();
-    const { categories } = useSelector((state) => state.categories);
+    const { control, handleSubmit, setValue, reset, getValues } = useForm({
+        shouldFocusError: false, // Không tự động focus trường lỗi
+    });
+    const { getcategories, searchcategories } = usecategoriesActions();
+    const categories = useSelector((state) => state.categories);
+    const [CategoryData, setCategoryData] = useState([]);
+    const [fileList, setFileList] = useState([]);
+
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+        per_page: 50,
+    });
     useEffect(() => {
-        getcategories({ page: 1 ,per_page: 5});
-        
-        
+        if (
+            !categories.loading &&
+            categories.categories &&
+            categories.categories.length > 0
+        ) {
+            console.log("Categories Data:", categories.categories);
+
+            setCategoryData(
+                categories.categories.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                }))
+            );
+        }
+    }, [categories]);
+
+    const onSearch = debounce((value) => {
+        setSearchQuery({ ...searchQuery, search: value });
+    }, 500);
+    useEffect(() => {
+        if (searchQuery.search !== "") {
+            searchcategories(searchQuery);
+        } else {
+            getcategories(50);
+        }
+    }, [searchQuery]);
+    useEffect(() => {
+        getcategories(50);
+        console.log("Product Data:", productData);
+
         if (productData) {
             Object.keys(productData).forEach((key) => {
                 if (key === "date") {
                     setValue(key, dayjs(productData[key]));
+                } else if (key === "category_id") {
+                    setValue(key, {
+                        label: productData[key]?.name, // Hiển thị label từ productData
+                        value: productData[key]?.id, // Lưu giá trị id
+                    });
                 } else {
                     setValue(key, productData[key]);
                 }
@@ -45,9 +88,29 @@ const ModalEditProduct = ({
     }, [productData, setValue]);
 
     const onSubmit = async (data) => {
-        console.log("Updated Product Data:", data);
-        // Call API to update product here
-        onCancel(); // Close the modal after updating
+        const payload = {
+            id: productData.id,
+            name: data.name,
+            price: data.price,
+            cost: data.cost,
+            capacity: data.capacity,
+            bar_code: data.bar_code,
+            date: dayjs(data.date).format("YYYY-MM-DD"),
+            image_url: fileList[0]?.originFileObj || null,
+            description: data.description,
+            category_id: data.category_id.value,
+            priority: 1,
+        };
+        handleSubmitEdit({
+            id: productData.id,
+            data: payload,
+        }).then((result) => {
+            if (result) {
+                setFileList([]);
+                reset();
+                handleCancel();
+            }
+        });
     };
 
     return (
@@ -56,6 +119,7 @@ const ModalEditProduct = ({
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
+            width={1000}
             footer={[
                 <Button key="back" onClick={onCancel}>
                     Hủy
@@ -70,8 +134,9 @@ const ModalEditProduct = ({
             ]}
         >
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-                <Row gutter={16}>
-                    <Col span={12}>
+                <Row gutter={[16, 16]}>
+                    {/* Tên sản phẩm */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Controller
                             name="name"
                             control={control}
@@ -89,6 +154,7 @@ const ModalEditProduct = ({
                                     }
                                 >
                                     <Input
+                                        className="w-100"
                                         {...field}
                                         placeholder="Tên sản phẩm"
                                     />
@@ -96,45 +162,28 @@ const ModalEditProduct = ({
                             )}
                         />
                     </Col>
-                    <Col span={12}>
+
+                    {/* Mã sản phẩm */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Controller
-                            name="price"
+                            name="id"
                             control={control}
-                            rules={{ required: "Vui lòng nhập Giá sản phẩm!" }}
-                            render={({ field, fieldState }) => (
-                                <Form.Item
-                                    label="Giá sản phẩm"
-                                    validateStatus={
-                                        fieldState.error ? "error" : ""
-                                    }
-                                    help={
-                                        fieldState.error
-                                            ? fieldState.error.message
-                                            : ""
-                                    }
-                                >
-                                    <InputNumber
+                            render={({ field }) => (
+                                <Form.Item label="Mã sản phẩm">
+                                    <Input
                                         {...field}
-                                        placeholder="Giá sản phẩm"
+                                        placeholder="Mã sản phẩm"
+                                        disabled // Không cho chỉnh sửa
                                     />
                                 </Form.Item>
                             )}
                         />
                     </Col>
-                    <Col span={12}>
+
+                    {/* Danh mục */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Controller
-                            name="date"
-                            control={control}
-                            render={({ field }) => (
-                                <Form.Item label="Ngày sản xuất">
-                                    <DatePicker {...field} />
-                                </Form.Item>
-                            )}
-                        />
-                    </Col>
-                    <Col span={12}>
-                        <Controller
-                            name="category"
+                            name="category_id"
                             control={control}
                             rules={{ required: "Vui lòng chọn Danh mục!" }}
                             render={({ field, fieldState }) => (
@@ -152,22 +201,138 @@ const ModalEditProduct = ({
                                     <Select
                                         {...field}
                                         placeholder="Chọn danh mục"
-                                      
-                                    >
-                                        {categories.data.map((category) => (
-                                            <Select.Option
-                                                key={category.id}
-                                                value={category.id}
-                                            >
-                                                {category.name}
-                                            </Select.Option>
-                                        ))}
-                                    </Select>
+                                        options={CategoryData} // Dữ liệu danh mục đã chuẩn hóa
+                                        value={field.value}
+                                        onChange={(value) =>
+                                            field.onChange(value)
+                                        } // Cập nhật giá trị khi chọn
+                                        filterOption={false}
+                                        showSearch
+                                        onSearch={onSearch}
+                                    />
                                 </Form.Item>
                             )}
                         />
                     </Col>
-                    <Col span={24}>
+
+                    {/* Mã vạch */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        <Controller
+                            name="bar_code"
+                            control={control}
+                            render={({ field }) => (
+                                <Form.Item label="Mã vạch">
+                                    <Input
+                                        {...field}
+                                        placeholder="Mã vạch sản phẩm"
+                                    />
+                                </Form.Item>
+                            )}
+                        />
+                    </Col>
+
+                    {/* Dung lượng */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        <Controller
+                            name="capacity"
+                            control={control}
+                            render={({ field }) => (
+                                <Form.Item label="Dung lượng">
+                                    <InputNumber
+                                        className="w-100"
+                                        {...field}
+                                        placeholder="Dung lượng sản phẩm"
+                                    />
+                                </Form.Item>
+                            )}
+                        />
+                    </Col>
+
+                    {/* Giá vốn */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        <Controller
+                            name="cost"
+                            control={control}
+                            rules={{ required: "Vui lòng nhập Giá vốn!" }}
+                            render={({ field, fieldState }) => (
+                                <Form.Item
+                                    label="Giá vốn"
+                                    validateStatus={
+                                        fieldState.error ? "error" : ""
+                                    }
+                                    help={
+                                        fieldState.error
+                                            ? fieldState.error.message
+                                            : ""
+                                    }
+                                >
+                                    <InputNumber
+                                        className="w-100"
+                                        suffix="VNĐ"
+                                        formatter={(value) =>
+                                            `${value}`.replace(
+                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                ","
+                                            )
+                                        }
+                                        {...field}
+                                        placeholder="Giá vốn"
+                                    />
+                                </Form.Item>
+                            )}
+                        />
+                    </Col>
+
+                    {/* Giá sản phẩm */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        <Controller
+                            name="price"
+                            control={control}
+                            rules={{ required: "Vui lòng nhập Giá sản phẩm!" }}
+                            render={({ field, fieldState }) => (
+                                <Form.Item
+                                    label="Giá sản phẩm"
+                                    validateStatus={
+                                        fieldState.error ? "error" : ""
+                                    }
+                                    help={
+                                        fieldState.error
+                                            ? fieldState.error.message
+                                            : ""
+                                    }
+                                >
+                                    <InputNumber
+                                        className="w-100"
+                                        suffix="VNĐ"
+                                        formatter={(value) =>
+                                            `${value}`.replace(
+                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                ","
+                                            )
+                                        }
+                                        {...field}
+                                        placeholder="Giá sản phẩm"
+                                    />
+                                </Form.Item>
+                            )}
+                        />
+                    </Col>
+
+                    {/* Ngày sản xuất */}
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        <Controller
+                            name="date"
+                            control={control}
+                            render={({ field }) => (
+                                <Form.Item label="Ngày sản xuất">
+                                    <DatePicker className="w-100" {...field} />
+                                </Form.Item>
+                            )}
+                        />
+                    </Col>
+
+                    {/* Mô tả */}
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Controller
                             name="description"
                             control={control}
@@ -181,13 +346,41 @@ const ModalEditProduct = ({
                             )}
                         />
                     </Col>
-                    <Col span={24}>
+
+                    {/* Hình ảnh */}
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Form.Item label="Tải lên hình ảnh">
-                            <Upload>
-                                <Button icon={<UploadOutlined />}>
-                                    Chọn tệp
-                                </Button>
-                            </Upload>
+                            <Controller
+                                name="image_url"
+                                control={control}
+                                rules={{
+                                    required: "Vui lòng chọn ảnh sản phẩm!",
+                                }}
+                                render={({ field }) => (
+                                    <Upload
+                                        {...field}
+                                        listType="picture-card"
+                                        fileList={fileList}
+                                        onChange={({ fileList }) => {
+                                            setFileList(fileList);
+                                            field.onChange(fileList);
+                                        }}
+                                        beforeUpload={() => false}
+                                        name="image_url"
+                                        maxCount={1}
+                                        multiple
+                                    >
+                                        {fileList.length < 1 && (
+                                            <div>
+                                                <UploadOutlined />
+                                                <div style={{ marginTop: 8 }}>
+                                                    Tải ảnh lên
+                                                </div>
+                                            </div>
+                                        )}
+                                    </Upload>
+                                )}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>

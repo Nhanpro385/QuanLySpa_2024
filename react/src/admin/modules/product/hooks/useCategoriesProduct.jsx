@@ -15,7 +15,10 @@ const usecategoriesActions = () => {
     };
 
     const getcategories = async (config) => {
-        return await dispatch(categoriesGet(config));
+        if (config) {
+            return await dispatch(categoriesGet(config));
+        }
+        return await dispatch(categoriesGet());
     };
 
     const updatecategories = async (data) => {

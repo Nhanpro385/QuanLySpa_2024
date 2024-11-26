@@ -20,31 +20,47 @@ const ProductCategories = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const [apiError, setApiError] = useState(null);
-    const { categories, loading, error, category } = useSelector(
-        (state) => state.categories
-    );
+    const categories = useSelector((state) => state.categories);
+
+    const [categoriesData, setCategoriesData] = useState([]);
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
+        per_page: 5,
     });
-    console.log(categories);
-    
+
     useEffect(() => {
-        if (searchQuery.search || searchQuery.page !== 1) {
+        if (
+            searchQuery.search ||
+            searchQuery.page !== 1 ||
+            searchQuery.per_page !== 5
+        ) {
             searchcategories(searchQuery);
+        } else {
+            getcategories();
         }
     }, [searchQuery]);
     useEffect(() => {
-        getcategories({ page: 1 ,per_page: 5});
+        getcategories();
     }, []);
+    useEffect(() => {
+        console.log(categories);
+        if (categories.categories.data && !categories.loading) {
+            setCategoriesData(
+                categories.categories.data.map((item) => ({
+                    ...item,
+                    key: item.id,
+                }))
+            );
+        }
+    }, [categories]);
 
-    const dataSource = Array.isArray(categories?.data) ? categories.data : [];
-    const pagination = categories.meta || {};
+    const pagination = categories.categories.meta || {};
     const onSearch = (value) => {
         setSearchQuery((prev) => ({ ...prev, search: value }));
     };
-    const handlePageChange = (page) => {
-        setSearchQuery((prev) => ({ ...prev, page }));
+    const handlePageChange = (page, pagination) => {
+        setSearchQuery((prev) => ({ ...prev, page, per_page: pagination }));
     };
     const handleFormSubmit = async (data) => {
         const payload = {
@@ -80,10 +96,10 @@ const ProductCategories = () => {
 
     const deleteCate = async (id) => {
         const result = await deletecategories(id);
-     
 
         if (result.meta.requestStatus === "fulfilled") {
             messageApi.success("Danh mục đã được xóa!");
+            getcategories();
         } else {
             messageApi.error("Có lỗi xảy ra khi xóa danh mục.");
         }
@@ -123,8 +139,8 @@ const ProductCategories = () => {
                             </Col>
                         </Row>
                         <CategoriesTable
-                            dataSource={dataSource}
-                            loading={loading}
+                            dataSource={categoriesData}
+                            loading={categories.loading}
                             editCate={editCate}
                             deleteCate={deleteCate}
                             pagination={pagination}
@@ -135,7 +151,7 @@ const ProductCategories = () => {
                         isModalOpen={isModalOpen}
                         handleOk={handleOk}
                         handleCancel={handleCancel}
-                        category={category}
+                        category={categories.category || {}}
                     />
                 </Col>
             </Row>

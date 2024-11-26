@@ -51,8 +51,6 @@ const ModalEditStaff = ({
     }, [errorForm]);
 
     const onSubmit = (data) => {
-        
-        
         data.date_of_birth = formatDate(data.date_of_birth);
 
         handleEditSubmit({ ...data, id: staff.id, status: staff.status });
@@ -94,7 +92,6 @@ const ModalEditStaff = ({
                         </p>
                     )}
                 </Form.Item>
-
                 <Form.Item label="Email">
                     <Controller
                         name="email"
@@ -110,30 +107,6 @@ const ModalEditStaff = ({
                     />
                     {errors.email && (
                         <p style={{ color: "red" }}>{errors.email.message}</p>
-                    )}
-                </Form.Item>
-
-                <Form.Item label="Mật khẩu">
-                    <Controller
-                        name="password"
-                        control={control}
-                        rules={{
-                            minLength: {
-                                value: 6,
-                                message: "Mật khẩu phải có ít nhất 6 ký tự",
-                            },
-                            maxLength: {
-                                value: 20,
-                                message:
-                                    "Mật khẩu không được vượt quá 20 ký tự",
-                            },
-                        }}
-                        render={({ field }) => <Input.Password {...field} />}
-                    />
-                    {errors.password && (
-                        <p style={{ color: "red" }}>
-                            {errors.password.message}
-                        </p>
                     )}
                 </Form.Item>
 
@@ -154,7 +127,6 @@ const ModalEditStaff = ({
                         <p style={{ color: "red" }}>{errors.phone.message}</p>
                     )}
                 </Form.Item>
-
                 <Form.Item label="Địa chỉ">
                     <Controller
                         name="address"
@@ -162,7 +134,6 @@ const ModalEditStaff = ({
                         render={({ field }) => <Input {...field} />}
                     />
                 </Form.Item>
-
                 <Form.Item label="Giới tính">
                     <Controller
                         name="gender"
@@ -213,7 +184,6 @@ const ModalEditStaff = ({
                         </p>
                     )}
                 </Form.Item>
-
                 <Form.Item label="Ghi chú">
                     <Controller
                         name="note"
@@ -221,7 +191,6 @@ const ModalEditStaff = ({
                         render={({ field }) => <Input.TextArea {...field} />}
                     />
                 </Form.Item>
-
                 <Form.Item>
                     <Space>
                         <Button type="primary" htmlType="submit">

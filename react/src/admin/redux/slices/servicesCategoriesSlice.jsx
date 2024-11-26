@@ -14,11 +14,17 @@ const checkRoleAndLogout = (dispatch) => {
 };
 export const ServiceCategoriesGet = createAsyncThunk(
     "ServiceCategories/get",
-    async () => {
+    async (per_page) => {
         try {
+            // Xây dựng query parameters chỉ với `per_page` nếu có
+            const queryParams = per_page ? `?per_page=${per_page}` : "";
+
+            // Gọi API
             const response = await axiosInstance.get(
-                endpoints.ServiceCategories.list
+                `${endpoints.ServiceCategories.list}${queryParams}`
             );
+
+            // Trả về dữ liệu response
             return response.data;
         } catch (error) {
             console.log(error);
@@ -109,7 +115,7 @@ export const ServiceCategoriesSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.ServiceCategories.search}?search=${data.search}&page=${data.page}`
+                `${endpoints.ServiceCategories.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;

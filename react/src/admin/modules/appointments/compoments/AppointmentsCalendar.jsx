@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-
+import { Popover } from "antd";
 // Set Vietnamese locale
 moment.locale("vi");
 const localizer = momentLocalizer(moment);
@@ -29,7 +29,8 @@ export default function AppointmentsCalendar({ data }) {
                 return {
                     id: item.id,
                     title:
-                        item.customer.full_name || "Sự kiện không có tiêu đề", // Default title
+                        item.customer?.full_name ||
+                        "Của khách hàng ngày " + item.appointment_date,
                     start: startDateTime,
                     end: endDateTime,
                 };
@@ -48,7 +49,7 @@ export default function AppointmentsCalendar({ data }) {
                 defaultView="month"
                 events={eventsData}
                 style={{ height: "100vh" }}
-                onSelectEvent={(event) => alert(event.title)}
+                onSelectEvent={(event) => console.log(event)}
                 messages={{
                     allDay: "Cả ngày",
                     previous: "Trước",
@@ -64,10 +65,14 @@ export default function AppointmentsCalendar({ data }) {
                 }}
                 components={{
                     event: ({ event }) => (
-                        <span>
-                            <strong>{event.title}</strong>
-                            <br />
-                        </span>
+                        <Popover content={event.title}
+                        
+                        trigger={"click"}>
+                            <div>
+                                <strong>{event.title}</strong>
+                                <br />
+                            </div>
+                        </Popover>
                     ),
                 }}
             />

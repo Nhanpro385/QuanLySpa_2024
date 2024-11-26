@@ -64,9 +64,13 @@ const StreatMents = () => {
         }
     }, [searchQuery]);
     const onClick = ({ key, record }) => {
+        console.log("record", record);
+        
         switch (key) {
             case "1":
-                navigate(`/admin/khachhang/lichsutrilieu/chinhsua/${record.id}`);
+                navigate(
+                    `/admin/khachhang/lichsutrilieu/chinhsua/${record.id}`
+                );
                 break;
             case "2":
                 handelDetail(record);
@@ -95,13 +99,13 @@ const StreatMents = () => {
         setSearchQuery((prev) => ({ ...prev, search: value }));
     };
     const handelPageChange = (page, pagination) => {
-        setSearchQuery((prev) => ({ ...prev, page }));
+        setSearchQuery((prev) => ({ ...prev, page, per_page: pagination }));
     };
-   
+
     const handleDelete = async (id) => {
         try {
-           const resultAction = await deleteStreatment(id);
-           getStreatments();
+            const resultAction = await deleteStreatment(id);
+            getStreatments();
             message.success("Xóa lịch sử trị liệu thành công");
         } catch (error) {
             message.error("Đã xảy ra lỗi khi xóa lịch sử trị liệu");
@@ -116,7 +120,7 @@ const StreatMents = () => {
             <Row gutter={[16, 16]} className="mb-3">
                 <Col xl={21} md={18} sm={12} xs={24}></Col>
                 <Col xl={3} md={6} sm={12} xs={24}>
-                    <Link to="/admin/khachhang/them">
+                    <Link to="/admin/khachhang/lichsutrilieu/them">
                         <Button block type="primary">
                             <PlusOutlined />
                             Thêm mới

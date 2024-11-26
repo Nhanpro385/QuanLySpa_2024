@@ -7,6 +7,7 @@ import {
     appointmentsGetById,
     appointmentsSearch,
     GetAppointmentByStatus,
+    searchAppointmentByStatus,
 } from "@admin/redux/slices/appointmentsSlice";
 const useappointmentsActions = () => {
     const dispatch = useDispatch();
@@ -36,7 +37,9 @@ const useappointmentsActions = () => {
     const getappointmentsByStatus = async (data) => {
         return await dispatch(GetAppointmentByStatus(data));
     };
-
+    const searchappointmentsByStatus = async (data) => {
+        return await dispatch(searchAppointmentByStatus(data));
+    };
     return {
         addappointments,
         getappointments,
@@ -45,6 +48,7 @@ const useappointmentsActions = () => {
         getappointmentsById,
         searchappointments,
         getappointmentsByStatus,
+        searchappointmentsByStatus,
     };
 };
 

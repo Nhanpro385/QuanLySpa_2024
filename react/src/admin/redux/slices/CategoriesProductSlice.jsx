@@ -14,20 +14,27 @@ const checkRoleAndLogout = (dispatch) => {
 };
 export const categoriesGet = createAsyncThunk(
     "categories/get",
-    async (config) => {
-        const { page, per_page } = config;
+    async (per_page) => {
+        try {
+            // Xây dựng query parameters chỉ với `per_page` nếu có
+            const queryParams = per_page ? `?per_page=${per_page}` : "";
 
-        if (page && per_page) {
+            // Gọi API
             const response = await axiosInstance.get(
-                `${endpoints.ProductsCategories.list}?per_page=${per_page}`
+                `${endpoints.ProductsCategories.list}${queryParams}`
             );
-            return response.data;
-        }
 
-        const response = await axiosInstance.get(
-            endpoints.ProductsCategories.list
-        );
-        return response.data;
+            // Trả về dữ liệu response
+            return response.data;
+        } catch (error) {
+            // Trả về lỗi với rejectWithValue
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi lấy danh sách người dùng",
+            });
+        }
     }
 );
 
@@ -94,8 +101,6 @@ export const categoriesUpdate = createAsyncThunk(
         }
 
         try {
-            console.log("data", data);
-
             const response = await axiosInstance.put(
                 endpoints.ProductsCategories.update(data.id),
                 data
@@ -125,7 +130,7 @@ export const categoriesSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.ProductsCategories.search}?search=${data.search}&page=${data.page}`
+                `${endpoints.ProductsCategories.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;
@@ -159,7 +164,7 @@ const categoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(categoriesGet.fulfilled, (state, action) => {
-                state.categories = action.payload.data;
+                state.categories = action.payload;
                 state.loading = false;
             })
             .addCase(categoriesGet.rejected, (state, action) => {
@@ -183,8 +188,6 @@ const categoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(categoriesDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
-
                 state.categories.data = state.categories.data.filter(
                     (cate) => cate.id !== action.payload
                 );
@@ -199,8 +202,6 @@ const categoriesSlice = createSlice({
                 state.error = null;
             })
             .addCase(categoriesUpdate.fulfilled, (state, action) => {
-                console.log(action.payload.data.id);
-
                 state.categories.data = state.categories.data.map((cate) =>
                     cate.id === action.payload.data.id
                         ? action.payload.data

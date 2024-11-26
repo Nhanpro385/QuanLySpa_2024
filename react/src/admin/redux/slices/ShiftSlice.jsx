@@ -15,7 +15,7 @@ const checkRoleAndLogout = (dispatch) => {
 export const shiftsGet = createAsyncThunk("shifts/get", async (per_page) => {
     // Xây dựng query parameters chỉ với `per_page` nếu có
     const queryParams = per_page ? `?per_page=${per_page}` : "";
-    console.log(`${endpoints.shifts.list}${queryParams}`);
+   ;
 
     // Gọi API
     const response = await axiosInstance.get(
@@ -176,7 +176,7 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
+              
 
                 state.shifts.data = state.shifts.data.filter(
                     (cate) => cate.id !== action.payload
@@ -220,7 +220,7 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsSearch.fulfilled, (state, action) => {
-                console.log(action);
+             
 
                 if (action.payload.data == undefined) {
                     state.shifts = {

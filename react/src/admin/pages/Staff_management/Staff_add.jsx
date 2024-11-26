@@ -48,8 +48,17 @@ const StaffsAdd = () => {
             const response = await dispatch(usersAdd(payload));
             if (usersAdd.fulfilled.match(response)) {
                 reset();
-                setSuccess("Thêm nhân viên thành công");
+                api.success({
+                    message: "Thêm nhân viên thành công",
+                    description: `Nhân viên ${data.full_name} đã được thêm vào hệ thống`,
+                    duration: 3,
+                });
             } else if (usersAdd.rejected.match(response)) {
+                api.error({
+                    message: "Thêm nhân viên thất bại",
+                    description: response.payload.message,
+                    duration: 3,
+                });
                 Object.keys(response.payload.errors).forEach((key) => {
                     setError(key, {
                         type: "manual",
@@ -66,21 +75,6 @@ const StaffsAdd = () => {
         <>
             <h1 className="text-center">Thêm nhân viên</h1>
             <Card>
-                {success && (
-                    <Alert
-                        message={success}
-                        type="success"
-                        showIcon
-                        closable
-                        afterClose={() => setSuccess(null)}
-                    />
-                )}
-                {error && (
-                    <Alert
-                        message={<span>{error.message}</span>}
-                        type="error"
-                    />
-                )}
                 <Spin spinning={loading} size="large" tip="Đang tải...">
                     <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                         <Row gutter={[16, 16]}>
@@ -114,7 +108,7 @@ const StaffsAdd = () => {
                                     )}
                                 </Form.Item>
                             </Col>
-                            
+
                             {/* Tên */}
                             <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                                 <Form.Item label="Giới tính">
@@ -139,7 +133,7 @@ const StaffsAdd = () => {
                                     )}
                                 </Form.Item>
                             </Col>
-                            
+
                             {/* Vai trò */}
                             <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                                 <Form.Item label="Vai trò">
@@ -155,7 +149,8 @@ const StaffsAdd = () => {
                                                     Quản trị viên
                                                 </Option>
                                                 <Option value={"2"}>
-                                                    Nhân viên tư vấn và chăm sóc khách hàng
+                                                    Nhân viên tư vấn và chăm sóc
+                                                    khách hàng
                                                 </Option>
                                                 <Option value={"1"}>
                                                     Nhân viên
@@ -171,37 +166,6 @@ const StaffsAdd = () => {
                                 </Form.Item>
                             </Col>
 
-                            {/* Mật khẩu */}
-                            <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                                <Form.Item label="Mật khẩu">
-                                    <Controller
-                                        name="password"
-                                        control={control}
-                                        rules={{
-                                            required: "Mật khẩu là bắt buộc",
-                                            minLength: {
-                                                value: 6,
-                                                message:
-                                                    "Mật khẩu phải có ít nhất 6 ký tự",
-                                            },
-                                            maxLength: {
-                                                value: 20,
-                                                message:
-                                                    "Mật khẩu không được vượt quá 20 ký tự",
-                                            },
-                                        }}
-                                        render={({ field }) => (
-                                            <Input.Password size="large" {...field} />
-                                        )}
-                                    />
-                                    {errors.password && (
-                                        <p style={{ color: "red" }}>
-                                            {errors.password.message}
-                                        </p>
-                                    )}
-                                </Form.Item>
-                            </Col>
-                            
                             {/* Số điện thoại */}
                             <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                                 <Form.Item label="Số điện thoại">
@@ -209,10 +173,12 @@ const StaffsAdd = () => {
                                         name="phone"
                                         control={control}
                                         rules={{
-                                            required: "Số điện thoại là bắt buộc",
+                                            required:
+                                                "Số điện thoại là bắt buộc",
                                             pattern: {
                                                 value: /^(0[3|5|7|8|9])+([0-9]{8})\b$/,
-                                                message: "Số điện thoại không hợp lệ",
+                                                message:
+                                                    "Số điện thoại không hợp lệ",
                                             },
                                         }}
                                         render={({ field }) => (
@@ -266,7 +232,6 @@ const StaffsAdd = () => {
                             </Col>
 
                             {/* Giới tính */}
-                            
 
                             {/* Ngày sinh */}
                             <Col xl={12} lg={12} md={12} sm={24} xs={24}>
@@ -281,7 +246,7 @@ const StaffsAdd = () => {
                                             <DatePicker
                                                 size="large"
                                                 style={{ width: "100%" }}
-                                                format="YYYY-MM-DD"
+                                                format="YYYY/MM/DD"
                                                 {...field}
                                             />
                                         )}
@@ -306,7 +271,9 @@ const StaffsAdd = () => {
                                             Thêm nhân viên
                                         </Button>
                                         <Link to="/admin/staffs">
-                                            <Button size="large">Quay lại</Button>
+                                            <Button size="large">
+                                                Quay lại
+                                            </Button>
                                         </Link>
                                     </Space>
                                 </Form.Item>
