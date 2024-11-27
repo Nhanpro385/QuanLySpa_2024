@@ -93,7 +93,7 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                     </h3>
                 </Col>
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <ControlsAdmin />
+                    <ControlsAdmin joined={joined} meetingId={meetingId} />
                 </Col>
             </Row>
 
@@ -109,7 +109,9 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                             xs={24}
                             key={participantId}
                         >
-                            <ParticipantViewAdmin participantId={participantId} />
+                            <ParticipantViewAdmin
+                                participantId={participantId}
+                            />
                         </Col>
                     ))}
                 </Row>
@@ -133,7 +135,7 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                     {/* Modal for Camera and Audio Review */}
                     <Modal
                         title="Xem trước Camera và Âm thanh"
-                        visible={isModalVisible}
+                        open={isModalVisible}
                         onCancel={handleCancel}
                         footer={[
                             <Button key="back" onClick={handleCancel}>

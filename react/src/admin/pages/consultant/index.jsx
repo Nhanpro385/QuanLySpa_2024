@@ -117,7 +117,7 @@ const Consultant = () => {
                     duration: 3,
                 });
                 navigate(
-                    "/admin/tuvantructuyen/videocall/" + id
+                    "/admin/tuvankhachhang/videocall/" + id
                 );
             } else {
                 api.success({

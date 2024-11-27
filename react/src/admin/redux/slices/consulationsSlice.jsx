@@ -102,7 +102,7 @@ export const consulationsUpdate = createAsyncThunk(
         try {
             const response = await axiosInstance.put(
                 endpoints.consulations.update(data.id),
-                data
+                data.data 
             );
             return response.data;
         } catch (error) {

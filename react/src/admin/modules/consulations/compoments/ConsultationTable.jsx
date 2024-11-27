@@ -30,19 +30,19 @@ const ConsultationTable = ({
             title: "Khách hàng",
             dataIndex: "customer",
             key: "customer",
-            render: (text) => text.full_name,
+            render: (text) => text?.full_name,
         },
         {
             title: "Nhân viên",
             dataIndex: "staff_id",
             key: "staff_id",
-            render: (text) => text.fullname,
+            render: (text) => text?.fullname,
         },
         {
             title: "Dịch vụ",
             dataIndex: "customer",
             key: "phone",
-            render: (text) => text.phone,
+            render: (text) => text?.phone,
         },
         {
             title: "Kế hoạch tư vấn",
@@ -58,6 +58,7 @@ const ConsultationTable = ({
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
+            render: (status) => (status === 1 ? "Đang chờ xác nhận" : ""),
         },
         {
             title: "Hành động",

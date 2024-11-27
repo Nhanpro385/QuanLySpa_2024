@@ -115,7 +115,7 @@ const PublicRoutes = [
     { path: "/khuyenmai/chinhsua/:id", element: <Promotions_Edit /> },
 
     // Consultant and Comments
-    { path: "/tuvantructuyen", element: <Consultant /> },
+    { path: "/tuvankhachhang", element: <Consultant /> },
     { path: "/CommentManagement", element: <CommentManagement /> },
 
     // Shift Management
@@ -130,7 +130,7 @@ const PublicRoutes = [
         element: <SupplierManagement />,
     },
     {
-        path: "/tuvantructuyen/videocall/:id",
+        path: "/tuvankhachhang/videocall/:idmeet",
         element: <VideocallAdmin />,
     },
 ];

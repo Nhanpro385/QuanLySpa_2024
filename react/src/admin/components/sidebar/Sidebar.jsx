@@ -408,7 +408,7 @@ const items = [
     getItem(
         <Link
             className="text-decoration-none text-black fs-4"
-            to="/admin/tuvantructuyen"
+            to="/admin/tuvankhachhang"
         >
             Quản lý Tư Vấn Trực Tuyến
         </Link>,
@@ -418,7 +418,7 @@ const items = [
             getItem(
                 <Link
                     className="text-decoration-none text-black fs-4"
-                    to="/admin/tuvantructuyen"
+                    to="/admin/tuvankhachhang"
                 >
                     Danh sách lịch hẹn tư vấn
                 </Link>,

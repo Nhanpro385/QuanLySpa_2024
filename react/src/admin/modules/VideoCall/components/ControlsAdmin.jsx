@@ -2,14 +2,44 @@ import React from "react";
 import { useMeeting } from "@videosdk.live/react-sdk";
 import { Button, Col, Row } from "antd";
 import useParticipantHook from "../hooks/useParticipant";
-function ControlsAdmin() {
-    const { leave, toggleMic, toggleWebcam, changeMic } = useMeeting();
-  
+import useconsulationsAction from "../../consulations/hooks/useconsulationsAction";
+function ControlsAdmin({ meetingId: idmeet, joined }) {
+    const { leave, toggleMic, toggleWebcam, changeMic, end, meetingId } =
+        useMeeting({
+            onMeetingStateChanged,
+        });
+    const { updateconsulations } = useconsulationsAction();
+    function onMeetingStateChanged(data) {
+        const { state } = data;
 
-    
-    
+        switch (state) {
+            case "CONNECTING":
+                console.log("Meeting is Connecting");
+                break;
+            case "CONNECTED":
+                console.log("Meeting is Connected");
+                break;
+            case "FAILED":
+                console.log("Meeting connection failed");
+                break;
+            case "DISCONNECTED":
+                console.log("Meeting connection disconnected abruptly");
+                break;
+            case "CLOSING":
+                console.log("Meeting is closing");
+                break;
+            case "CLOSED":
+                // updateconsulations({
+                //     id: idmeet,
+                //     data: {
+                //         status: 3,
+                //     },
+                // });
+                break;
+        }
+    }
     return (
-        <Row gutter={[8,8]} align="middle" justify="center">
+        <Row gutter={[8, 8]} align="middle" justify="center">
             <Col xl={6} lg={6} md={6} xs={12}>
                 <Button type="primary" block onClick={() => leave()}>
                     Rời khỏi cuộc họp
@@ -26,6 +56,15 @@ function ControlsAdmin() {
                     Tắt/Bật Webcam
                 </Button>
             </Col>
+            {joined == "JOINED" ? (
+                <Col xl={6} lg={6} md={6} xs={12}>
+                    <Button type="primary" block onClick={() => end()}>
+                        Kết thúc cuộc gọi
+                    </Button>
+                </Col>
+            ) : (
+                ""
+            )}
         </Row>
     );
 }
