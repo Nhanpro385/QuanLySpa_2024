@@ -15,20 +15,12 @@ import { ConfigProvider } from "antd";
 
 import { useSelector } from "react-redux";
 const App = () => {
-
     return (
         <ConfigProvider theme={{ token: { colorPrimary: "#E05265" } }}>
             <Router>
                 <Routes>
                     {/* Routes cho client */}
-                    <Route
-                        path="*"
-                        element={
-                            <DefaultLayout>
-                                <AppClient />
-                            </DefaultLayout>
-                        }
-                    />
+                    <Route path="*" element={<AppClient />} />
 
                     {/* Routes cho admin */}
                     <Route path="/admin/*" element={<AdminApp />} />

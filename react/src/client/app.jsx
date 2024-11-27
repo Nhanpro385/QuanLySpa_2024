@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import { PublicRoutes } from "./config/routes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalStyles from "../admin/components/GlobalStyles/index";
+import DefaultLayout from "./components/layout/DefaultLayout";
+import AuthMiddleware from "@/authMiddleware";
 
 const AppClient = () => {
     console.log(PublicRoutes);
@@ -14,7 +16,11 @@ const AppClient = () => {
                     <Route
                         key={index}
                         path={route.path}
-                        element={route.element}
+                        element={
+                            <AuthMiddleware requiredRole={route.requiredRole}>
+                                <DefaultLayout>{route.element}</DefaultLayout>
+                            </AuthMiddleware>
+                        }
                     />
                 ))}
                 {/* Nếu bạn cần phải xử lý các route con khác, bạn có thể thêm ở đây */}

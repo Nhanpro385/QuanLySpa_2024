@@ -47,11 +47,6 @@ export const consulationsGet = createAsyncThunk(
 export const consulationsAdd = createAsyncThunk(
     "consulations/add",
     async (data, { dispatch, rejectWithValue }) => {
-        const roleError = roleValidation(dispatch, "Quản trị viên");
-        if (roleError) {
-            return rejectWithValue(roleError);
-        }
-
         try {
             const response = await axiosInstance.post(
                 endpoints.consulations.create,
@@ -102,7 +97,7 @@ export const consulationsUpdate = createAsyncThunk(
         try {
             const response = await axiosInstance.put(
                 endpoints.consulations.update(data.id),
-                data.data 
+                data.data
             );
             return response.data;
         } catch (error) {

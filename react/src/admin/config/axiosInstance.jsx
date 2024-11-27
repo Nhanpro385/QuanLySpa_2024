@@ -35,14 +35,25 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
-        if (error.response.status === 401) {
-            notification.error({
-                message: "Phiên đăng nhập hết hạn",
-                description: "Vui lòng đăng nhập lại",
-            });
-            logout();
-            window.location.href = "/admin/dangnhap";
-            localStorage.removeItem("token");
+        if (error.response && error.response.status === 401) {
+            const currentPath = window.location.pathname;
+
+            // Kiểm tra xem đường dẫn hiện tại có chứa "/admin" hay không
+            if (currentPath.startsWith("/admin")) {
+                notification.error({
+                    message: "Phiên đăng nhập hết hạn",
+                    description: "Vui lòng đăng nhập lại",
+                });
+                localStorage.removeItem("token");
+                window.location.href = "/admin/dangnhap";
+            } else {
+                notification.error({
+                    message: "Phiên đăng nhập hết hạn",
+                    description: "Vui lòng đăng nhập lại",
+                });
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            }
         }
         return Promise.reject(error);
     }

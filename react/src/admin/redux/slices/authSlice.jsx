@@ -69,11 +69,120 @@ export const resetpassword = createAsyncThunk(
         }
     }
 );
-export const Getme = createAsyncThunk(
+export const GetmeAdmin = createAsyncThunk(
     "auth/getme",
     async (_, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(endpoints.Auth.me);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                error: error.response?.data?.errors || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
+//Client
+export const loginClient = createAsyncThunk(
+    "auth/loginClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(endpoints.AuthClient.login, data);
+            if (response.data.access_token) {
+                localStorage.setItem("token", response.data.access_token);
+            }
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                errors : error.response?.data?.errors || "Có lỗi xảy ra",
+
+            });
+        }
+    }
+);
+export const registerClient = createAsyncThunk(
+    "auth/registerClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(
+                endpoints.AuthClient.register,
+                data
+            );
+            if (response.data.access_token) {
+                localStorage.setItem("token", response.data.access_token);
+            }
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                errors : error.response?.data?.errors || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
+
+export const logoutClient = createAsyncThunk(
+    "auth/logoutClient",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.AuthClient.logout
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
+export const forgotpasswordClient = createAsyncThunk(
+    "auth/forgotpasswordClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.AuthClient.forgotpassword,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
+export const resetpasswordClient = createAsyncThunk(
+    "auth/resetpasswordClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.AuthClient.resetpassword,
+                data
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                error: error.response?.data?.errors || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
+export const GetmeClient = createAsyncThunk(
+    "auth/getmeClient",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(endpoints.AuthClient.me);
             return response.data;
         } catch (error) {
             return rejectWithValue({
@@ -160,17 +269,96 @@ const authSlice = createSlice({
 
                 state.error = action.payload;
             })
-            .addCase(Getme.pending, (state) => {
+            .addCase(GetmeAdmin.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(Getme.fulfilled, (state, action) => {
+            .addCase(GetmeAdmin.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.role = action.payload.data.role;
                 localStorage.setItem("role", action.payload.data.role);
                 state.loading = false;
             })
-            .addCase(Getme.rejected, (state, action) => {
+            .addCase(GetmeAdmin.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error = action.payload;
+            })
+            .addCase(loginClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(loginClient.fulfilled, (state, action) => {
+                state.user = action.payload;
+
+                state.loading = false;
+            })
+            .addCase(loginClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(registerClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(registerClient.fulfilled, (state, action) => {
+                state.user = action.payload;
+
+                state.loading = false;
+            })
+            .addCase(registerClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(logoutClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(logoutClient.fulfilled, (state, action) => {
+                state.user = null;
+                state.loading = false;
+            })
+            .addCase(logoutClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(forgotpasswordClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(forgotpasswordClient.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.loading = false;
+            })
+            .addCase(forgotpasswordClient.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error = action.payload;
+            })
+            .addCase(resetpasswordClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(resetpasswordClient.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.loading = false;
+            })
+            .addCase(resetpasswordClient.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error = action.payload;
+            })
+            .addCase(GetmeClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(GetmeClient.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.role = action.payload.data.role;
+                localStorage.setItem("role", action.payload.data.role);
+                state.loading = false;
+            })
+            .addCase(GetmeClient.rejected, (state, action) => {
                 state.loading = false;
 
                 state.error = action.payload;

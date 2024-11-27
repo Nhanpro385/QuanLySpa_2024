@@ -13,8 +13,9 @@ import {
     Card,
     Tag,
     notification,
+    
 } from "antd";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import { useSelector } from "react-redux";
 import "dayjs/locale/vi";
 
@@ -144,6 +145,14 @@ const Appointment_Edit = () => {
 
     const HandleShiftChange = async (value) => {
         try {
+            console.log("value", value);
+            
+            if (value === undefined) {
+                setValue("employee", []);
+                setValue("shift", null);
+                return;
+            }
+
             const res = await getshiftsById(value || getValues("shift"));
             if (res.meta.requestStatus === "fulfilled") {
                 const shift = res.payload.data;
@@ -200,6 +209,7 @@ const Appointment_Edit = () => {
                 users: data.employee.map((user) => ({
                     staff_id: user,
                 })),
+                shift_id: data.shift,
                 status: 2,
                 note: data.note,
             };
@@ -318,10 +328,30 @@ const Appointment_Edit = () => {
             ),
         },
     ];
-    async function fetchUserList(username) {
-        console.log("fetching user", username);
-    }
-
+    const handleChangeDate = (date) => {
+        console.log("Selected date:", date);
+        if (date) { // nếu có chọn ngày
+            setValue(
+                "expected_time",
+                calculateEndTime(
+                    dayjs(date).format("YYYY-MM-DD"),
+                    dayjs(date).format("HH:mm:ss"),
+                    appointments.appointment.data.expected_time
+                )
+            );
+            searchshifts({
+                search: dayjs(date).format("YYYY-MM-DD"),
+                page: 1,
+                per_page: 50,
+                status: 3,
+            });
+            setValue("shift", null);
+            setValue("employee", []);
+        
+        }else{ // nếu không chọn ngày
+            
+        }
+    };
     return (
         <Card title="Thêm lịch hẹn">
             {contextHolder}
@@ -336,7 +366,7 @@ const Appointment_Edit = () => {
                                     <Input
                                         {...field}
                                         disabled
-                                           size="large"
+                                        size="large"
                                         placeholder="Tên khách hàng"
                                     />
                                 )}
@@ -385,19 +415,8 @@ const Appointment_Edit = () => {
                                         showTime
                                         size="large"
                                         onChange={(date) => {
-                                            setValue(
-                                                "expected_time",
-                                                calculateEndTime(
-                                                    dayjs(date).format(
-                                                        "YYYY-MM-DD"
-                                                    ),
-                                                    dayjs(date).format(
-                                                        "HH:mm:ss"
-                                                    ),
-                                                    appointments.appointment
-                                                        .data.expected_time
-                                                )
-                                            );
+                                            field.onChange(date);
+                                            handleChangeDate(date);
                                         }}
                                     />
                                 )}
@@ -435,7 +454,7 @@ const Appointment_Edit = () => {
                                 }}
                                 render={({ field }) => (
                                     <Select
-                                    size="large"
+                                        size="large"
                                         {...field}
                                         allowClear
                                         style={{ width: "100%" }}
@@ -491,7 +510,7 @@ const Appointment_Edit = () => {
                                 rules={{ required: "Vui lòng chọn nhân viên" }}
                                 render={({ field }) => (
                                     <Select
-                                    size="large"
+                                        size="large"
                                         {...field}
                                         mode="multiple"
                                         allowClear

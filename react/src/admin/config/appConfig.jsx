@@ -3,6 +3,7 @@
 export const API_BASE_URL = "http://127.0.0.1:8000/api/v0.0.1/admin";
 
 const API_AUTH_URL = "http://127.0.0.1:8000/api/auth"; // Thay đổi theo URL API của bạn
+const API_AUTHCUSTOMER_URL = "http://127.0.0.1:8000/api/authCustomer"; // Thay đổi theo URL API của bạn
 const API_AUTH_URL2 = "http://127.0.0.1:8000/api";
 const endpoints = {
     ServiceCategories: {
@@ -60,6 +61,15 @@ const endpoints = {
         me: `${API_AUTH_URL}/me`,
         forgotpassword: `${API_AUTH_URL2}/forgot-password`,
         resetpassword: `${API_AUTH_URL2}/reset-password`,
+    },
+    AuthClient: {
+        register: `${API_AUTHCUSTOMER_URL}/register`,
+        login: `${API_AUTHCUSTOMER_URL}/login`,
+        logout: `${API_AUTHCUSTOMER_URL}/logout`,
+        refresh: `${API_AUTHCUSTOMER_URL}/refresh`,
+        me: `${API_AUTHCUSTOMER_URL}/me`,
+        forgotpassword: `${API_AUTHCUSTOMER_URL}/forgot-password`,
+        resetpassword: `${API_AUTHCUSTOMER_URL}/reset-password`,
     },
     Products: {
         list: `${API_BASE_URL}/products`,

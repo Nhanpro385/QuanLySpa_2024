@@ -17,7 +17,7 @@ const ForgotPasswordPage = () => (
                     <input type="text" id="phone" placeholder="Nhập số điện thoại" />
                 </div>
                 <div className={style.formInput}>
-                    <a href="/login">Quay lại đăng nhập</a>
+                    <a href="/dangnhap">Quay lại đăng nhập</a>
                 </div>
                 <div className={style.formInput}>
                     <button type="submit">GỬI YÊU CẦU</button>

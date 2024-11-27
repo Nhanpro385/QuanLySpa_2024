@@ -13,7 +13,7 @@ const LoginPage = () => {
     //     console.log("đây là token", csrfToken);
     //     axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
     // }, []);
-    const { authLogin, authGetme } = useAuthActions();
+    const { authLogin, authGetmeAdmin } = useAuthActions();
     const [loading, setLoading] = React.useState(false);
     const {
         control,
@@ -33,14 +33,14 @@ const LoginPage = () => {
     const onSubmit = async (data) => {
         const { email, password } = data;
         const res = await authLogin(email, password);
-        
+
         if (res.meta.requestStatus === "fulfilled") {
             openNotification(
                 "success",
                 "Đăng nhập thành công",
                 "Chuyển hướng đến trang quản trị..."
             );
-            await authGetme();
+            await authGetmeAdmin();
             setTimeout(() => {
                 setLoading(false);
                 navigate("/admin");

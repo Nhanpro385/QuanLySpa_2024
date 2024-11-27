@@ -4,7 +4,13 @@ import {
     logoutAdmin,
     forgotpassword,
     resetpassword,
-    Getme,
+    GetmeAdmin,
+    loginClient,
+    registerClient,
+    logoutClient,
+    forgotpasswordClient,
+    resetpasswordClient,
+    GetmeClient,
 } from "@admin/redux/slices/authSlice";
 const useAuthActions = () => {
     const dispatch = useDispatch();
@@ -22,8 +28,23 @@ const useAuthActions = () => {
     const authReset = async (data) => {
         return await dispatch(resetpassword(data));
     };
-    const authGetme = async () => {
-        return await dispatch(Getme());
+    const authGetmeAdmin = async () => {
+        return await dispatch(GetmeAdmin());
+    };
+    const authLoginClient = async (email, password) => {
+        return await dispatch(loginClient({ email, password }));
+    };
+    const authRegisterClient = async (data) => {
+        return await dispatch(registerClient(data));
+    };
+    const authLogoutClient = async () => {
+        return await dispatch(logoutClient());
+    };
+    const authForgotClient = async (data) => {
+        return await dispatch(forgotpasswordClient(data));
+    };
+    const authResetClient = async (data) => {
+        return await dispatch(resetpasswordClient(data));
     };
 
     return {
@@ -31,7 +52,12 @@ const useAuthActions = () => {
         authLogout,
         authForgot,
         authReset,
-        authGetme,
+        authGetmeAdmin,
+        authLoginClient,
+        authRegisterClient,
+        authLogoutClient,
+        authForgotClient,
+        authResetClient,
     };
 };
 

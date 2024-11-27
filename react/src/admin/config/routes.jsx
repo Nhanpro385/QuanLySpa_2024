@@ -63,75 +63,211 @@ import VideocallAdmin from "../pages/videocall";
 
 const PublicRoutes = [
     // Dashboard
-    { path: "/", element: <Dashboard /> },
+    {
+        path: "/",
+        element: <Dashboard />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
 
     // User Management
-    { path: "/khachhang", element: <Customer /> },
-    { path: "/khachhang/them", element: <CustomersAdd /> },
-    { path: "/khachhang/lichsutrilieu/:id", element: <HistoryService /> },
-    { path: "/khachhang/chitiet/:id", element: <CustomerDetail /> },
-    { path: "/khachhang/lichsutrilieu", element: <StreatMents /> },
-    { path: "/khachhang/lichsutrilieu/them", element: <StreatmentsAdd /> },
+    {
+        path: "/khachhang",
+        element: <Customer />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/khachhang/them",
+        element: <CustomersAdd />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/khachhang/lichsutrilieu/:id",
+        element: <HistoryService />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/khachhang/chitiet/:id",
+        element: <CustomerDetail />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/khachhang/lichsutrilieu",
+        element: <StreatMents />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/khachhang/lichsutrilieu/them",
+        element: <StreatmentsAdd />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     {
         path: "/khachhang/lichsutrilieu/chinhsua/:id",
         element: <StreatmentsEdit />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
     },
 
     // Appointments
-    { path: "/lichhen", element: <Appointments /> },
-    { path: "/lichhen/them", element: <Appointment_Add /> },
-    { path: "/lichhen/chinhsua/:id", element: <Appointment_Edit /> },
-    { path: "/lichhen/chitiet/:id", element: <Appointments_Detail /> },
+    {
+        path: "/lichhen",
+        element: <Appointments />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/lichhen/them",
+        element: <Appointment_Add />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/lichhen/chinhsua/:id",
+        element: <Appointment_Edit />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/lichhen/chitiet/:id",
+        element: <Appointments_Detail />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
 
     // Personnel Management
-    { path: "/nhanvien", element: <Staffs /> },
-    { path: "/nhanvien/:id", element: <StaffsDetail /> },
-    { path: "/nhanvien/them", element: <StaffAdd /> },
+    {
+        path: "/nhanvien",
+        element: <Staffs />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/nhanvien/:id",
+        element: <StaffsDetail />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/nhanvien/them",
+        element: <StaffAdd />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     // positions
-    { path: "/nhanvien/chucvu", element: <Positions /> },
+    {
+        path: "/nhanvien/chucvu",
+        element: <Positions />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     // Services
-    { path: "/dichvu", element: <Services /> },
-    { path: "/dichvu/them", element: <ServicesAdd /> },
+    {
+        path: "/dichvu",
+        element: <Services />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/dichvu/them",
+        element: <ServicesAdd />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     {
         path: "/danhmucdichvu",
         element: <ServiceCategories />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
     },
-    { path: "/dichvu/themsanphamdichvu/:id", element: <ProductServiceAdd /> },
+    {
+        path: "/dichvu/themsanphamdichvu/:id",
+        element: <ProductServiceAdd />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
 
     // Products
-    { path: "/products", element: <Products /> },
-    { path: "/products/add", element: <ProductsAdd /> },
-    { path: "/product_categories", element: <ProductCategories /> },
+    {
+        path: "/products",
+        element: <Products />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/products/add",
+        element: <ProductsAdd />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/product_categories",
+        element: <ProductCategories />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
 
     // Warehouse
-    { path: "/warehouse", element: <Warehouse /> },
-    { path: "/warehouse/import", element: <WarehouseImport /> },
-    { path: "/warehouse/import/:id", element: <ProductImportDetail /> },
-    { path: "/warehouse/export", element: <WarehouseExport /> },
-    { path: "/warehouse/inventory", element: <ProductInventory /> },
+    {
+        path: "/warehouse",
+        element: <Warehouse />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/warehouse/import",
+        element: <WarehouseImport />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/warehouse/import/:id",
+        element: <ProductImportDetail />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/warehouse/export",
+        element: <WarehouseExport />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/warehouse/inventory",
+        element: <ProductInventory />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     // Promotions
-    { path: "/khuyenmai", element: <Promotions /> },
-    { path: "/khuyenmai/them", element: <Promotions_add /> },
-    { path: "/khuyenmai/chinhsua/:id", element: <Promotions_Edit /> },
+    {
+        path: "/khuyenmai",
+        element: <Promotions />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/khuyenmai/them",
+        element: <Promotions_add />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/khuyenmai/chinhsua/:id",
+        element: <Promotions_Edit />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
 
     // Consultant and Comments
-    { path: "/tuvankhachhang", element: <Consultant /> },
+    {
+        path: "/tuvankhachhang",
+        element: <Consultant />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     { path: "/CommentManagement", element: <CommentManagement /> },
 
     // Shift Management
-    { path: "/shifmanagement", element: <ShiftManagement /> },
+    {
+        path: "/shifmanagement",
+        element: <ShiftManagement />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     // Contact Management
-    { path: "/contactmanagement", element: <ContactManagement /> },
+    {
+        path: "/contactmanagement",
+        element: <ContactManagement />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     // Payment Management
-    { path: "/thanhtoan", element: <PaymentManagement /> },
+    {
+        path: "/thanhtoan",
+        element: <PaymentManagement />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
     // supplierManagement
     {
         path: "/nhacungcap",
         element: <SupplierManagement />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
     },
     {
         path: "/tuvankhachhang/videocall/:idmeet",
         element: <VideocallAdmin />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
     },
 ];
 

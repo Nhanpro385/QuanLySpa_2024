@@ -16,14 +16,23 @@ const isTokenValid = (token) => {
 };
 
 const AuthMiddleware = ({ children, requiredRole }) => {
-    const location = useLocation();
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
+    if (!token) {
+        if (requiredRole.requiredRole === "private") {
+            if (requiredRole.role === "Client") {
+                return <Navigate to="/dangnhap" />;
+            } else {
+                return <Navigate to="/admin/dangnhap" />;
+            }
+        } else {
+            return children;
+        }
+    }
 
     // Kiểm tra token có hợp lệ không
-    if (!isTokenValid(token)) {
-        return <Navigate to="/admin/dangnhap" state={{ from: location }} />;
-    }
+    // if (!isTokenValid(token)) {
+    //     return <Navigate to="/admin/dangnhap" state={{ from: location }} />;
+    // }
 
     return children;
 };

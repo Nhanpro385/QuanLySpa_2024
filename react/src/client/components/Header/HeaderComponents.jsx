@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Col, Row, Layout, Drawer, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -11,6 +11,7 @@ import {
     CalendarOutlined,
     ShopOutlined,
     MenuOutlined,
+    UserOutlined,
 } from "@ant-design/icons"; // Thêm icon từ ant-design
 
 import logo from "../../assets/images/iconlogo.png";
@@ -20,6 +21,17 @@ const { Header } = Layout;
 const HeaderComponents = () => {
     const [visible, setVisible] = useState(false);
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);  // state to track login status
+
+    // Check login status when the component mounts
+    useEffect(() => {
+        const token = localStorage.getItem("auth_token");
+        if (token) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, []);
 
     const AppMenu = ({ isInline = false }) => {
         return (
@@ -40,18 +52,10 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "home",
-          
-                        style: {
-                            padding: "0 10px",
-                        },
                     },
                     {
                         label: "Giới Thiệu",
                         key: "about",
-
-                        style: {
-                            padding: "0 10px",
-                        },
                         children: [
                             {
                                 label: (
@@ -90,51 +94,36 @@ const HeaderComponents = () => {
                     },
                     {
                         label: (
-                            <Link to="/service" style={{ textDecoration: "none" }}>
+                            <Link
+                                to="/service"
+                                style={{ textDecoration: "none" }}
+                            >
                                 Dịch Vụ
                             </Link>
                         ),
                         key: "service",
-
-                        style: {
-                            padding: "0 10px",
-                        },
                     },
                     {
                         label: (
-                            <Link to="/pricing" style={{ textDecoration: "none" }}>
+                            <Link
+                                to="/pricing"
+                                style={{ textDecoration: "none" }}
+                            >
                                 Bảng Giá
                             </Link>
                         ),
                         key: "price",
-
-                        style: {
-                            padding: "0 10px",
-                        },
                     },
                     {
                         label: (
-                            <Link to="/effect" style={{ textDecoration: "none" }}>
-                                Hiệu Quả Điều Trị
-                            </Link>
-                        ),
-                        key: "effect",
-           
-                        style: {
-                            padding: "0 10px",
-                        },
-                    },
-                    {
-                        label: (
-                            <Link to="/promotion" style={{ textDecoration: "none" }}>
+                            <Link
+                                to="/promotion"
+                                style={{ textDecoration: "none" }}
+                            >
                                 Khuyến Mãi
                             </Link>
                         ),
                         key: "promotion",
-           
-                        style: {
-                            padding: "0 10px",
-                        },
                     },
                     {
                         label: (
@@ -148,7 +137,6 @@ const HeaderComponents = () => {
                                     cursor: "pointer",
                                     fontSize: "1.6rem",
                                 }}
-                                className="btn btn-primary"
                                 onClick={() => navigate("/booking")}
                             >
                                 Đặt Lịch Ngay
@@ -162,12 +150,36 @@ const HeaderComponents = () => {
                             </button>
                         ),
                         key: "contact",
-           
-                        style: {
-                            padding: "0 10px",
-                        },
                     },
-                ]}
+                    isLoggedIn && {
+                        label: <UserOutlined />,
+                        key: "user",
+                        children: [
+                            {
+                                label: (
+                                    <Link
+                                        to="/thongtincanhan"
+                                        style={{ textDecoration: "none" }}
+                                    >
+                                        Thông Tin Cá Nhân
+                                    </Link>
+                                ),
+                                key: "profile",
+                            },
+                            {
+                                label: (
+                                    <Link
+                                        to="/logout"
+                                        style={{ textDecoration: "none" }}
+                                    >
+                                        Đăng Xuất
+                                    </Link>
+                                ),
+                                key: "logout",
+                            },
+                        ],
+                    },
+                ].filter(Boolean)}  
             />
         );
     };
@@ -208,7 +220,13 @@ const HeaderComponents = () => {
                 <Col xs={0} sm={0} md={0} lg={18}>
                     <AppMenu isInline={true} />
                 </Col>
-                <Col xs={16} sm={24} md={24} lg={0} style={{ textAlign: "right" }}>
+                <Col
+                    xs={16}
+                    sm={24}
+                    md={24}
+                    lg={0}
+                    style={{ textAlign: "right" }}
+                >
                     <MenuOutlined
                         onClick={() => setVisible(true)}
                         style={{

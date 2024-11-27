@@ -12,22 +12,72 @@ import Profile from "../pages/Profile/Profile";
 import BookingConsultant from "../pages/BookingConsultant/BookingConsultant";
 import ServiceHistory from "../pages/ServiceHistory/ServiceHistory";
 
-
 const PublicRoutes = [
-    { path: "/", element: <Home /> },
-    { path: "/booking", element: <Appbooking /> },
-    { path: "/bookinginfo", element: <BookingInfo /> },
-    { path: "/pricing", element: <Pricingpage /> },
-    { path: "/tuvankhachhang/videocall/:idmeet", element: <VideoCall /> },
-    { path: "/login", element: <Login /> },
-    { path: "/register", element: <Register /> },
-    { path: "/services", element: <Services /> },
-    { path: "/quenmatkhau", element: <ForgotPassword /> },
-    { path: "/matkhaumoi", element: <NewPassword /> },
-    { path: "/profile", element: <Profile /> },
-    { path: "/tuvandatlich", element: <BookingConsultant /> },
-    { path: "/lichsudichvu", element: <ServiceHistory /> },
-
+    {
+        path: "/",
+        element: <Home />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/booking",
+        element: <Appbooking />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
+        path: "/bookinginfo",
+        element: <BookingInfo />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
+        path: "/pricing",
+        element: <Pricingpage />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/tuvankhachhang/videocall/:idmeet",
+        element: <VideoCall />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
+        path: "/dangnhap",
+        element: <Login />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/dangky",
+        element: <Register />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/services",
+        element: <Services />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/quenmatkhau",
+        element: <ForgotPassword />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/matkhaumoi",
+        element: <NewPassword />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/thongtincanhan",
+        element: <Profile />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
+        path: "/tuvandatlich",
+        element: <BookingConsultant />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
+        path: "/lichsudichvu",
+        element: <ServiceHistory />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    },
 ];
 
 export { PublicRoutes };

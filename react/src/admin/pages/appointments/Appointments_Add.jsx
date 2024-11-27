@@ -30,6 +30,7 @@ import {
     ContactsOutlined,
     UserOutlined,
 } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -96,7 +97,7 @@ const Appointment_Add = () => {
     }, [customer.customers]);
 
     useEffect(() => {
-        if (shifts.loading === false && shifts.shifts) {
+        if (!shifts.loading && shifts.shifts.data) {
             setShiftsOptions(
                 shifts.shifts.data.map((shift) => ({
                     value: shift.id,
@@ -223,6 +224,8 @@ const Appointment_Add = () => {
             const res = await getshiftsById(value);
             if (res.meta.requestStatus === "fulfilled") {
                 const shift = res.payload.data;
+                const { shift_date } = shift;
+                setValue("appointment_date", dayjs(shift_date));
                 setValue("employee", []);
                 // Ánh xạ vai trò
                 const roleMap = {
@@ -282,11 +285,19 @@ const Appointment_Add = () => {
         setSearchShift({ ...searchShift, search: value });
     }, 300);
     const handleChangeDate = (value) => {
-        setValue("appointment_date", value);
-        setSearchShift({
-            ...searchShift,
-            search: value.format("YYYY-MM-DD"),
-        });
+        if (value === null) {
+            setValue("appointment_date", null);
+            setSearchShift({
+                ...searchShift,
+                search: "",
+            });
+        } else {
+            setValue("appointment_date", value);
+            setSearchShift({
+                ...searchShift,
+                search: value.format("YYYY-MM-DD"),
+            });
+        }
     };
 
     return (
@@ -387,9 +398,6 @@ const Appointment_Add = () => {
                                 }}
                                 render={({ field }) => (
                                     <Select
-                                        onClear={() => {
-                                            console.log("clear");
-                                        }}
                                         {...field}
                                         allowClear
                                         style={{ width: "100%" }}
@@ -397,9 +405,20 @@ const Appointment_Add = () => {
                                         options={shiftsOptions}
                                         showSearch
                                         onChange={(value) => {
+                                            field.onChange(value); // Cập nhật giá trị vào React Hook Form
                                             HandleShiftChange(value);
                                         }}
                                         onSearch={OnsearchShift}
+                                        onClear={() => {
+                                            field.onChange(null); // Xóa giá trị của field
+                                            setValue("shift", null); // Xóa giá trị trong React Hook Form
+                                            setValue("employee", []); // Reset các trường khác nếu cần
+                                            setValue("appointment_date", null);
+                                            setSearchShift({
+                                                ...searchShift,
+                                                search: "",
+                                            });
+                                        }}
                                     />
                                 )}
                             />
