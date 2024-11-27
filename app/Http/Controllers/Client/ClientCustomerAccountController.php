@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\Customer\CustomerClientUpdateRequest;
 use App\Http\Requests\Client\Customer\PasswordUpdateRequest;
+use App\Http\Resources\Client\Customer\CustomerCollection;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +31,7 @@ class ClientCustomerAccountController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Thông tin tài khoản',
-            'data' => $customer,
+            'data' => new CustomerCollection([$customer])
         ]);
     }
 
