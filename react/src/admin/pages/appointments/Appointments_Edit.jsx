@@ -13,7 +13,6 @@ import {
     Card,
     Tag,
     notification,
-    
 } from "antd";
 import { useForm, Controller, set } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -101,8 +100,8 @@ const Appointment_Edit = () => {
                 ) || ""
             );
             setValue("note", appointments.appointment.data.note || "");
-
             setValue("shift", appointments.appointment.data.shift.id || "");
+            setValue("status", appointments.appointment.data.status || "");
         }
     }, [appointments.appointment.data]);
 
@@ -146,7 +145,7 @@ const Appointment_Edit = () => {
     const HandleShiftChange = async (value) => {
         try {
             console.log("value", value);
-            
+
             if (value === undefined) {
                 setValue("employee", []);
                 setValue("shift", null);
@@ -330,7 +329,8 @@ const Appointment_Edit = () => {
     ];
     const handleChangeDate = (date) => {
         console.log("Selected date:", date);
-        if (date) { // nếu có chọn ngày
+        if (date) {
+            // nếu có chọn ngày
             setValue(
                 "expected_time",
                 calculateEndTime(
@@ -347,9 +347,8 @@ const Appointment_Edit = () => {
             });
             setValue("shift", null);
             setValue("employee", []);
-        
-        }else{ // nếu không chọn ngày
-            
+        } else {
+            // nếu không chọn ngày
         }
     };
     return (
@@ -543,6 +542,41 @@ const Appointment_Edit = () => {
                                         {...field}
                                         placeholder="Ghi chú"
                                         rows={4}
+                                    />
+                                )}
+                            />
+                        </Form.Item>
+                    </Col>{" "}
+                    <Col span={12}>
+                        <Form.Item label="trạng thái">
+                            <Controller
+                                name="status"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        size="large"
+                                        {...field}
+                                        allowClear
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn trạng thái"
+                                        options={[
+                                            {
+                                                value: "Đã hủy lịch hẹn.",
+                                                label: "Đã hủy lịch hẹn.",
+                                            },
+                                            {
+                                                value: "Đã đặt lịch hẹn.",
+                                                label: "Đã đặt lịch hẹn.",
+                                            },
+                                            {
+                                                value: "Đang thực hiện.",
+                                                label: "Đang thực hiện.",
+                                            },
+                                            {
+                                                value: "Đã hoàn thành.",
+                                                label: "Đã hoàn thành.",
+                                            },
+                                        ]}
                                     />
                                 )}
                             />

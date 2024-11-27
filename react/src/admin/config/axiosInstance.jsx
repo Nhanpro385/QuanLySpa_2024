@@ -22,6 +22,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const accessToken = localStorage.getItem("token");
+        console.log(accessToken);
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
@@ -45,14 +46,14 @@ axiosInstance.interceptors.response.use(
                     description: "Vui lòng đăng nhập lại",
                 });
                 localStorage.removeItem("token");
-                window.location.href = "/admin/dangnhap";
+                // window.location.href = "/admin/dangnhap";
             } else {
                 notification.error({
                     message: "Phiên đăng nhập hết hạn",
                     description: "Vui lòng đăng nhập lại",
                 });
                 localStorage.removeItem("token");
-                window.location.href = "/login";
+                // window.location.href = "/dangnhap";
             }
         }
         return Promise.reject(error);

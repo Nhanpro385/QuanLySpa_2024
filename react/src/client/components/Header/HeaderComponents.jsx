@@ -1,37 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Col, Row, Layout, Drawer, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import {
-    HomeOutlined,
-    InfoCircleOutlined,
-    TeamOutlined,
-    DollarOutlined,
-    HeartOutlined,
-    GiftOutlined,
-    CalendarOutlined,
-    ShopOutlined,
-    MenuOutlined,
-    UserOutlined,
-} from "@ant-design/icons"; // Thêm icon từ ant-design
-
+import { UserOutlined, MenuOutlined } from "@ant-design/icons";
 import logo from "../../assets/images/iconlogo.png";
 import Icontori from "../../assets/images/tori.png";
+import { useAuth } from "../../config/AuthContext";
+
 const { Header } = Layout;
 
 const HeaderComponents = () => {
     const [visible, setVisible] = useState(false);
     const navigate = useNavigate();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);  // state to track login status
-
-    // Check login status when the component mounts
-    useEffect(() => {
-        const token = localStorage.getItem("auth_token");
-        if (token) {
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, []);
+    const { isLoggedIn, logout, user } = useAuth();
 
     const AppMenu = ({ isInline = false }) => {
         return (
@@ -52,10 +32,12 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "home",
+                        style: { padding: "0 10px" },
                     },
                     {
                         label: "Giới Thiệu",
                         key: "about",
+                        style: { padding: "0 10px" },
                         children: [
                             {
                                 label: (
@@ -102,6 +84,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "service",
+                        style: { padding: "0 10px" },
                     },
                     {
                         label: (
@@ -113,6 +96,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "price",
+                        style: { padding: "0 10px" },
                     },
                     {
                         label: (
@@ -124,6 +108,7 @@ const HeaderComponents = () => {
                             </Link>
                         ),
                         key: "promotion",
+                        style: { padding: "0 10px" },
                     },
                     {
                         label: (
@@ -137,6 +122,7 @@ const HeaderComponents = () => {
                                     cursor: "pointer",
                                     fontSize: "1.6rem",
                                 }}
+                                className="btn btn-primary"
                                 onClick={() => navigate("/booking")}
                             >
                                 Đặt Lịch Ngay
@@ -150,36 +136,59 @@ const HeaderComponents = () => {
                             </button>
                         ),
                         key: "contact",
+                        style: { padding: "0 10px" },
                     },
-                    isLoggedIn && {
-                        label: <UserOutlined />,
-                        key: "user",
-                        children: [
-                            {
-                                label: (
-                                    <Link
-                                        to="/thongtincanhan"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        Thông Tin Cá Nhân
-                                    </Link>
-                                ),
-                                key: "profile",
-                            },
-                            {
-                                label: (
-                                    <Link
-                                        to="/logout"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        Đăng Xuất
-                                    </Link>
-                                ),
-                                key: "logout",
-                            },
-                        ],
-                    },
-                ].filter(Boolean)}  
+                    // Hiển thị thông tin cá nhân và đăng xuất nếu đã đăng nhập
+                    isLoggedIn
+                        ? {
+                              label: (
+                                  <span>
+                                      Xin chào, {user?.full_name}
+                                      <UserOutlined
+                                          style={{ marginLeft: "10px" }}
+                                      />
+                                  </span>
+                              ),
+                              key: "user",
+                              style: { padding: "0 10px" },
+                              children: [
+                                  {
+                                      label: (
+                                          <Link
+                                              to="/thongtincanhan"
+                                              style={{ textDecoration: "none" }}
+                                          >
+                                              Thông Tin Cá Nhân
+                                          </Link>
+                                      ),
+                                      key: "profile",
+                                  },
+                                  {
+                                      label: (
+                                          <Link
+                                              onClick={logout}
+                                              style={{ textDecoration: "none" }}
+                                          >
+                                              Đăng Xuất
+                                          </Link>
+                                      ),
+                                      key: "logout",
+                                  },
+                              ],
+                          }
+                        : {
+                              label: (
+                                  <Link
+                                      to="/dangnhap"
+                                      style={{ textDecoration: "none" }}
+                                  >
+                                      Đăng Nhập
+                                  </Link>
+                              ),
+                              key: "login",
+                              style: { padding: "0 10px" },
+                          },
+                ]}
             />
         );
     };

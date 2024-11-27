@@ -46,6 +46,9 @@ const useAuthActions = () => {
     const authResetClient = async (data) => {
         return await dispatch(resetpasswordClient(data));
     };
+    const authGetmeClient = async () => {
+        return await dispatch(GetmeClient());
+    };
 
     return {
         authLogin,
@@ -58,6 +61,7 @@ const useAuthActions = () => {
         authLogoutClient,
         authForgotClient,
         authResetClient,
+        authGetmeClient,
     };
 };
 

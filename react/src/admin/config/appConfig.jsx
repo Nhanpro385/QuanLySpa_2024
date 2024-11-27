@@ -138,7 +138,7 @@ const endpoints = {
     consulations: {
         list: `${API_BASE_URL}/consulations`,
         detail: (id) => `${API_BASE_URL}/consulations/${id}`,
-        create: `${API_BASE_URL}/consulations`,
+        create: `http://127.0.0.1:8000/api/v0.0.1/client/consulations`,
         update: (id) => `${API_BASE_URL}/consulations/${id}`,
         delete: (id) => `${API_BASE_URL}/consulations/${id}`,
         search: `${API_BASE_URL}/consulations`,

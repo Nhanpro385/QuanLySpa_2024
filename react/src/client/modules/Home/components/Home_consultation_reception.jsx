@@ -1,6 +1,15 @@
 import React, { useState } from "react";
-import { Card, Col, Row, Input, Button, Checkbox, Image } from "antd";
-import { UserOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
+import {
+    Card,
+    Col,
+    Row,
+    Input,
+    Button,
+    Checkbox,
+    notification,
+    Image,
+} from "antd";
+
 import { useForm, Controller } from "react-hook-form";
 import "../styles/Home_consultation_reception.scss"; // Import SCSS
 import { createMeeting, VIDEOSDK_TOKEN } from "../../VideoCall/services/API";
@@ -52,7 +61,8 @@ const options = [
         url: "https://vinmec-prod.s3.amazonaws.com/images/20190529_075246_910718_mun-rop-sinh-duc.max-800x800.jpg",
     },
 ];
-
+import { useAuth } from "../../../config/AuthContext";
+import useconsulationsAction from "../../../../admin/modules/consulations/hooks/useconsulationsAction";
 const Home_consultation_reception = () => {
     const {
         control,
@@ -61,26 +71,39 @@ const Home_consultation_reception = () => {
         reset,
         formState: { errors },
     } = useForm();
+    const { isLoggedIn, user } = useAuth();
+    const [api, contextHolder] = notification.useNotification();
+    const { addconsulations } = useconsulationsAction();
+    const [isVideoCall, setIsVideoCall] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // State để theo dõi trạng thái loading
 
     const onSubmit = async (data) => {
+        setIsLoading(true); // Bắt đầu loading
         try {
             if (data.issues) {
                 const skinconditions = data.issues.join(", ");
-
                 const meetingId = await createMeeting({
                     token: VIDEOSDK_TOKEN,
                 });
                 const payload = {
-                    name: data.name,
-                    email: data.email,
-                    phone: data.phone,
                     description: data.description,
-                    skinconditions,
-                    codemeeting: meetingId,
+                    skin_condition: skinconditions,
+                    id: meetingId,
                 };
-                console.log(payload);
-
-                // reset();
+                const res = await addconsulations(payload);
+                if (res.payload.status === "true") {
+                    api.success({
+                        message: "Yêu cầu của bạn đã được gửi thành công",
+                        placement: "topRight",
+                    });
+                } else {
+                    api.error({
+                        message: "Yêu cầu của bạn đã được gửi thất bại",
+                        description: "vui lòng thử lại sau",
+                        placement: "topRight",
+                    });
+                }
+                reset();
             } else {
                 setError("issues", {
                     type: "manual",
@@ -89,14 +112,17 @@ const Home_consultation_reception = () => {
             }
         } catch (err) {
             console.log(err);
+        } finally {
+            setIsLoading(false); // Dừng loading
         }
     };
-
+    
     return (
         <section className="consultation-section">
             <h1 className="section-title">
                 “các vấn đề về mụn mà bạn đang gặp phải”
             </h1>
+            {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col xs={24} lg={12}>
                     <Row gutter={[16, 16]}>
@@ -121,7 +147,8 @@ const Home_consultation_reception = () => {
                 <Col xs={24} lg={12} className="form-container">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <h3 className="form-title">
-                            bạn đang gặp những vấn đề nào ?
+                            bạn đang gặp những vấn đề nào về mụn để tư vấn qua
+                            video call với chuyên gia?
                         </h3>
                         <p className="form-description">
                             Đừng để những mụn làm bạn mất tự tin. Hãy liên hệ
@@ -165,85 +192,6 @@ const Home_consultation_reception = () => {
                                     </p>
                                 )}
                             </Col>
-                            <Col span={12}>
-                                <Controller
-                                    name="name"
-                                    control={control}
-                                    rules={{
-                                        required: "Họ và tên là bắt buộc",
-                                    }}
-                                    render={({ field }) => (
-                                        <Input
-                                            {...field}
-                                            size="large"
-                                            prefix={<UserOutlined />}
-                                            placeholder="Họ và tên của bạn *"
-                                        />
-                                    )}
-                                />
-                                {errors.name && (
-                                    <p
-                                        className="error-text"
-                                        style={{
-                                            color: "red",
-                                        }}
-                                    >
-                                        {errors.name.message}
-                                    </p>
-                                )}
-                            </Col>
-                            <Col span={12}>
-                                <Controller
-                                    name="email"
-                                    control={control}
-                                    rules={{ required: "Email là bắt buộc" }}
-                                    render={({ field }) => (
-                                        <Input
-                                            {...field}
-                                            size="large"
-                                            prefix={<MailOutlined />}
-                                            placeholder="Email của bạn *"
-                                        />
-                                    )}
-                                />
-                                {errors.email && (
-                                    <p
-                                        className="error-text"
-                                        style={{
-                                            color: "red",
-                                        }}
-                                    >
-                                        {errors.email.message}
-                                    </p>
-                                )}
-                            </Col>
-                            <Col span={12}>
-                                <Controller
-                                    name="phone"
-                                    control={control}
-                                    rules={{
-                                        required: "Số điện thoại là bắt buộc",
-                                    }}
-                                    render={({ field }) => (
-                                        <Input
-                                            {...field}
-                                            size="large"
-                                            prefix={<PhoneOutlined />}
-                                            placeholder="Số điện thoại của bạn *"
-                                        />
-                                    )}
-                                />
-                                {errors.phone && (
-                                    <p
-                                        className="error-text"
-                                        style={{
-                                            color: "red",
-                                        }}
-                                    >
-                                        {errors.phone.message}
-                                    </p>
-                                )}
-                            </Col>
                             <Col span={24}>
                                 <Controller
                                     name="description"
@@ -267,28 +215,6 @@ const Home_consultation_reception = () => {
                                     </p>
                                 )}
                             </Col>
-                            {/* <Col
-                                xxl={24}
-                                xl={24}
-                                lg={24}
-                                md={24}
-                                sm={24}
-                                xs={24}
-                            >
-                                <Controller
-                                    name="videoCall"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Checkbox
-                                            {...field}
-                                            className="checkbox-video-call"
-                                        >
-                                            Bạn có muốn gọi Video trực tiếp với
-                                            chuyên gia?
-                                        </Checkbox>
-                                    )}
-                                />
-                            </Col> */}
                         </Row>
 
                         <Button
@@ -296,8 +222,12 @@ const Home_consultation_reception = () => {
                             type="primary"
                             htmlType="submit"
                             className="submit-button mt-3"
+                            loading={isLoading} // Hiển thị loading
+                            {...(isLoggedIn ? {} : { disabled: true })}
                         >
-                            Đăng ký tư vấn qua Video Call
+                            {isLoggedIn
+                                ? "Gửi yêu cầu"
+                                : "Đăng nhập để gửi yêu cầu"}
                         </Button>
                     </form>
                 </Col>

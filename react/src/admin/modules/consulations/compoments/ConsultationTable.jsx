@@ -3,86 +3,117 @@ import { Table, Button, Dropdown, Space, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 const ConsultationTable = ({
-    consultationsData,
+    consultationsData = [],
     onClick,
-    pagination,
+    pagination = { current_page: 1, per_page: 10, total: 0 },
     onchangePage,
-    loading,
+    loading = false,
 }) => {
-    const items = [
-        {
-            key: "1",
-            label: <Button block> Sửa </Button>,
-        },
-        {
-            key: "2",
-            label: <Button block> Chấp nhận Cuộc gọi Video </Button>,
-        },
-    ];
-
     const columns = [
         {
             title: "#",
             key: "index",
+            align: "center",
+            width: 50,
             render: (text, record, index) => index + 1,
         },
         {
             title: "Khách hàng",
             dataIndex: "customer",
             key: "customer",
-            render: (text) => text?.full_name,
+            width: 200,
+            ellipsis: true,
+            render: (text) => text?.full_name || "Không tìm thấy",
         },
         {
             title: "Nhân viên",
             dataIndex: "staff_id",
             key: "staff_id",
-            render: (text) => text?.fullname,
+            width: 200,
+            ellipsis: true,
+            render: (text) => text?.fullname || "Không tìm thấy",
         },
         {
-            title: "Dịch vụ",
+            title: "Số điện thoại",
             dataIndex: "customer",
             key: "phone",
-            render: (text) => text?.phone,
+            width: 150,
+            align: "center",
+            render: (text) => text?.phone || "Không tìm thấy",
         },
         {
             title: "Kế hoạch tư vấn",
             dataIndex: "treatment_plan",
             key: "treatment_plan",
+            width: 250,
+            ellipsis: true,
+            render: (plan) => plan || "Không tìm thấy",
         },
         {
             title: "Tình trạng da",
             dataIndex: "skin_condition",
             key: "skin_condition",
+            width: 250,
+            ellipsis: true,
+            render: (condition) => condition || "Không tìm thấy",
         },
         {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (status) => (status === 1 ? "Đang chờ xác nhận" : ""),
+            width: 150,
+            align: "center",
+            render: (status) =>
+                status === 0 ? (
+                    <Tag color="warning">Đang chờ xác nhận</Tag>
+                ) : status === 1 ? (
+                    <Tag color="processing"> Đã xác nhận đang chờ tư vấn</Tag>
+                ) : (
+                    <Tag color="success">Hoàn thành</Tag>
+                ),
         },
         {
             title: "Hành động",
             key: "action",
+            align: "center",
+            width: 200,
             render: (text, record) => (
-                <span>
-                    <Dropdown
-                        menu={{
-                            items,
-                            onClick: (e) => onClick({ key: e.key, record }),
-                        }}
-                        trigger={["click"]}
-                    >
-                        <Button
-                            type="primary"
-                            onClick={(e) => e.preventDefault()}
-                        >
-                            <Space>
-                                Hành động
-                                <DownOutlined />
-                            </Space>
-                        </Button>
-                    </Dropdown>
-                </span>
+                <Dropdown
+                    menu={{
+                        items: [
+                            {
+                                key: "1",
+                                label: <Button block>Sửa</Button>,
+                            },
+                            {
+                                key: "2",
+                                label: (
+                                    <Button
+                                        {...(record.status === 3
+                                            ? { disabled: true }
+                                            : {})}
+                                        block
+                                    >
+                                        {record.status === 1
+                                            ? "Vào tư vấn"
+                                            : record.status === 0
+                                            ? "Xác nhận"
+                                            : "Hoàn thành"}
+                                    </Button>
+                                ),
+                            },
+                        ],
+                        onClick: (e) => onClick({ key: e.key, record }),
+                    }}
+                    trigger={["click"]}
+                >
+                    <Button type="primary" onClick={(e) => e.stopPropagation()}>
+                        <Space>
+                            Hành động
+                            <DownOutlined />
+                        </Space>
+                    </Button>
+                </Dropdown>
             ),
         },
     ];
@@ -92,7 +123,7 @@ const ConsultationTable = ({
             columns={columns}
             dataSource={consultationsData}
             loading={loading}
-            rowKey={(record) => record.key}
+            rowKey={(record) => record.id || record.key}
             pagination={{
                 current: pagination.current_page,
                 pageSize: pagination.per_page,
@@ -103,6 +134,7 @@ const ConsultationTable = ({
                 onChange: onchangePage,
                 showTotal: (total) => `Tổng ${total} khách hàng`,
             }}
+            scroll={{ x: "100%" }}
         />
     );
 };

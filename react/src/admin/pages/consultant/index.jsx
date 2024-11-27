@@ -106,27 +106,30 @@ const Consultant = () => {
             getconsulations();
         }
     }, [searchquery]);
-    const handleAccept = async (id) => {
+    const handleAccept = async (id, status) => {
         try {
-            const res = await acceptConsulations(id);
-            if (res.payload.status === "true") {
-                api.success({
-                    message:
-                        res.payload.message || "Chấp nhận thành công lịch hẹn",
-                    description: "Duyệt lịch hẹn",
-                    duration: 3,
-                });
-                navigate(
-                    "/admin/tuvankhachhang/videocall/" + id
-                );
-            } else {
-                api.success({
-                    message:
-                        res.payload.message ||
-                        "Chấp nhận không thành công lịch hẹn",
-                    description: "Duyệt lịch hẹn",
-                    duration: 3,
-                });
+            if (status === 1) {
+                navigate("/admin/tuvankhachhang/videocall/" + id);
+            } else if (status === 0) {
+                const res = await acceptConsulations(id);
+                if (res.payload.status === "true") {
+                    api.success({
+                        message:
+                            res.payload.message ||
+                            "Chấp nhận thành công lịch hẹn",
+                        description: "Duyệt lịch hẹn",
+                        duration: 3,
+                    });
+                    getconsulations();
+                } else {
+                    api.success({
+                        message:
+                            res.payload.message ||
+                            "Chấp nhận không thành công lịch hẹn",
+                        description: "Duyệt lịch hẹn",
+                        duration: 3,
+                    });
+                }
             }
         } catch (err) {
             console.log(err);
@@ -138,7 +141,7 @@ const Consultant = () => {
                 handleEdit(record);
                 break;
             case "2":
-                handleAccept(record.id);
+                handleAccept(record.id, record.status);
                 break;
             default:
                 break;

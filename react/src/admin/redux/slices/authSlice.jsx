@@ -98,8 +98,7 @@ export const loginClient = createAsyncThunk(
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
-                errors : error.response?.data?.errors || "Có lỗi xảy ra",
-
+                errors: error.response?.data?.errors || "Có lỗi xảy ra",
             });
         }
     }
@@ -120,7 +119,7 @@ export const registerClient = createAsyncThunk(
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
-                errors : error.response?.data?.errors || "Có lỗi xảy ra",
+                errors: error.response?.data?.errors || "Có lỗi xảy ra",
             });
         }
     }
@@ -182,6 +181,9 @@ export const GetmeClient = createAsyncThunk(
     "auth/getmeClient",
     async (_, { rejectWithValue }) => {
         try {
+            console.log("đây là getme");
+            console.log("đây là token", localStorage.getItem("token"));
+
             const response = await axiosInstance.get(endpoints.AuthClient.me);
             return response.data;
         } catch (error) {
@@ -209,8 +211,6 @@ const authSlice = createSlice({
             state.user = action.payload;
         },
         logout: (state) => {
-            onsole.log("Logout reducer called"); // Log kiểm tra
-
             state.token = null;
             state.user = null;
             localStorage.removeItem("token");
@@ -354,8 +354,7 @@ const authSlice = createSlice({
             })
             .addCase(GetmeClient.fulfilled, (state, action) => {
                 state.user = action.payload;
-                state.role = action.payload.data.role;
-                localStorage.setItem("role", action.payload.data.role);
+
                 state.loading = false;
             })
             .addCase(GetmeClient.rejected, (state, action) => {

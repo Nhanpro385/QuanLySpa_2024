@@ -95,9 +95,10 @@ const VideoCall_ContentAdmin = () => {
             id == null ? await createMeeting({ token: VIDEOSDK_TOKEN }) : id;
         setMeetingId(meetingId);
     };
-
+    console.log(meetingId);
+    
     const onMeetingLeave = () => {
-        setMeetingId(null);
+        
     };
 
     return (

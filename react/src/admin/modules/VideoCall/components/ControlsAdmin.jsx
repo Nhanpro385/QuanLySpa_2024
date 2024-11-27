@@ -3,7 +3,9 @@ import { useMeeting } from "@videosdk.live/react-sdk";
 import { Button, Col, Row } from "antd";
 import useParticipantHook from "../hooks/useParticipant";
 import useconsulationsAction from "../../consulations/hooks/useconsulationsAction";
-function ControlsAdmin({ meetingId: idmeet, joined }) {
+import { useNavigate } from "react-router-dom";
+function ControlsAdmin({ meetingId: idmeet, joined, setJoined }) {
+    const navigate = useNavigate();
     const { leave, toggleMic, toggleWebcam, changeMic, end, meetingId } =
         useMeeting({
             onMeetingStateChanged,
@@ -26,7 +28,8 @@ function ControlsAdmin({ meetingId: idmeet, joined }) {
                 console.log("Meeting connection disconnected abruptly");
                 break;
             case "CLOSING":
-                console.log("Meeting is closing");
+                setJoined(null);
+                navigate("/admin/tuvankhachhang/videocall/" + idmeet);
                 break;
             case "CLOSED":
                 // updateconsulations({

@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Button, Form, Input, Divider, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import style from "../style/Login.module.scss";
 import { useNavigate } from "react-router-dom";
 import useAuthActions from "../../../../admin/modules/authen/hooks/useAuth";
+import { useAuth } from "../../../config/AuthContext";
 
 const Login = () => {
     const [api, contextHolder] = notification.useNotification();
-    const { authLoginClient } = useAuthActions();
+    const { authLoginClient, authGetmeAdmin } = useAuthActions();
     const navigate = useNavigate();
     const {
         control,
@@ -15,11 +16,13 @@ const Login = () => {
         setError,
         formState: { errors },
     } = useForm();
-
+    const { login } = useAuth();
+    useEffect(() => {
+        authGetmeAdmin();
+    }, []);
     const onSubmit = async (data) => {
         try {
             const response = await authLoginClient(data.email, data.password);
-            console.log("API response:", response); // Check the structure of the response
 
             if (response.payload.status == 422) {
                 // Loop through errors object and set each field error
@@ -35,8 +38,14 @@ const Login = () => {
                     });
                 });
             } else if (response.payload.access_token) {
-                // Handle successful login
-                navigate("/"); // Redirect to the home page or another page
+                api.success({
+                    message: "Đăng nhập thành công",
+                    description: "Chào mừng bạn trở lại",
+                    duration: 3,
+                });
+                login(response.payload.access_token);
+
+                navigate("/");
             } else {
                 // Handle other errors
                 api.error({

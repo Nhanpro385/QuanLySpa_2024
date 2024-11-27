@@ -10,7 +10,7 @@ const { SubMenu } = Menu;
 const MenuProfile = () => (
     <Menu mode="vertical" defaultSelectedKeys={['1']} className={style.menu}>
         <Menu.Item key="1" icon={<UserOutlined />} className={style.menuItem}>
-            <Link className={style.nameItemMenu} to="/profile">Thông tin cá nhân</Link>
+            <Link className={style.nameItemMenu} to="/thongtincanhan">Thông tin cá nhân</Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<AppstoreOutlined />} className={style.menuItem}>
             <Link className={style.nameItemMenu} to="/tuvandatlich">Tư vấn đặt lịch</Link>

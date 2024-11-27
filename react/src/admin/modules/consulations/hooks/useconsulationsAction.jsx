@@ -38,7 +38,6 @@ const useconsulationsAction = () => {
         getconsulations,
         addconsulations,
         getbyidconsulations,
-        getconsulations,
         searchconsulations,
         updateconsulations,
         deleteconsulations,

@@ -12,11 +12,9 @@ import "slick-carousel/slick/slick-theme.css";
 import "animate.css";
 
 root.render(
-    <React.StrictMode>
-        <GlobalStyles>
-            <Provider store={store}>
-                <App />
-            </Provider>
-        </GlobalStyles>
-    </React.StrictMode>
+    <GlobalStyles>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </GlobalStyles>
 );

@@ -80,6 +80,7 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
             audioTrack.enabled = !audioTrack.enabled; // Toggle microphone track
         }
     };
+    console.log(joined);
 
     return (
         <div className="container">
@@ -93,7 +94,11 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                     </h3>
                 </Col>
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <ControlsAdmin joined={joined} meetingId={meetingId} />
+                    <ControlsAdmin
+                        setJoined={setJoined}
+                        joined={joined}
+                        meetingId={meetingId}
+                    />
                 </Col>
             </Row>
 
