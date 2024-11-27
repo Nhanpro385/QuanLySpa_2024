@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Client\ClientCustomerUpdateRequest;
+use App\Http\Requests\Client\Customer\CustomerClientUpdateRequest;
+use App\Http\Requests\Client\Customer\PasswordUpdateRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+
 
 class ClientCustomerAccountController extends Controller
 {
-    // Xem thông tin tài khoản của khách hàng đã đăng nhập
+
     public function viewProfile()
     {
         $customer = Auth::user();
@@ -26,86 +30,141 @@ class ClientCustomerAccountController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Thông tin tài khoản',
-            'data' => $customer,  // Trả về thông tin chi tiết của khách hàng
+            'data' => $customer,
         ]);
     }
 
-    // Cập nhật thông tin khách hàng đã đăng nhập
-    public function updateProfile(ClientCustomerUpdateRequest $request)
+    public function update(CustomerClientUpdateRequest $request, $id)
 {
-    $customer = Auth::user();
-
-    if (!$customer) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Vui lòng đăng nhập để cập nhật thông tin.',
-        ], 401);
-    }
-
-    $validated = $request->validated();
-
-    // Nếu mật khẩu được cập nhật, hash lại mật khẩu
-    if (isset($validated['password'])) {
-        $validated['password'] = Hash::make($validated['password']);
-    } else {
-        unset($validated['password']);
-    }
-
-    // Loại bỏ các trường không được phép cập nhật
-    $fieldsToRemove = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'];
-    $validated = array_diff_key($validated, array_flip($fieldsToRemove));
-
     try {
-        // Cập nhật thông tin khách hàng
-        $customer->fill($validated);
-        $customer->save();
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Lỗi khi cập nhật thông tin.',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
-
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Cập nhật thông tin thành công!',
-        'data' => $customer,  // Trả về thông tin khách hàng đã cập nhật
-    ]);
-}
+        $customer = Customer::findOrFail($id);
+        $validatedData = $request->validated();
 
 
+        if (isset($validatedData['password'])) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        }
+        $this->mapGender($validatedData);
 
-    // Thay đổi mật khẩu cho khách hàng đã đăng nhập
-    public function changePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
 
-        $customer = Auth::user();
+        $updatedById = Auth::id();
 
-        if (!$customer) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Vui lòng đăng nhập để đổi mật khẩu.',
-            ], 401);
+
+        $userExists = \App\Models\User::where('id', $updatedById)->exists();
+
+        if ($userExists) {
+
+            $validatedData['updated_by'] = $updatedById;
+        } else {
+
+            $validatedData['updated_by'] = null;
         }
 
-        if (!Hash::check($request->current_password, $customer->password)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Mật khẩu hiện tại không đúng.',
-            ], 400);
-        }
 
-        // Cập nhật mật khẩu mới
-        $customer->update(['password' => Hash::make($request->new_password)]);
+        $customer->update($validatedData);
+
+        $customer->load(['createdBy', 'updatedBy']);
+
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Đổi mật khẩu thành công!',
+            'message' => 'Cập nhật khách hàng thành công!',
+            'data' => [
+                'id' => $customer->id,
+                'full_name' => $customer->full_name,
+                'gender' => $customer->gender,
+                'contact_email' => $customer->email ?? 'gmail',
+                'phone' => $customer->phone ?? 'phone',
+                'date_of_birth' => $customer->date_of_birth,
+                'address' => $customer->address,
+                'created_by' => $this->formatUserRole($customer->createdBy),
+                'updated_by' => $customer->updatedBy ? $this->formatUserRole($customer->updatedBy) : null,
+                'created_at' => $customer->created_at->format('d-m-Y H:i'),
+                'updated_at' => $customer->updated_at->format('d-m-Y H:i'),
+            ],
         ]);
+    } catch (ModelNotFoundException $e) {
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Khách hàng không tồn tại!',
+        ], 404);
+    } catch (\Throwable $th) {
+
+        return $this->errorResponse('Đã xảy ra lỗi trong quá trình xử lý.', $th);
     }
+}
+
+public function updatePassword(PasswordUpdateRequest $request, $id)
+{
+    $validatedData = $request->validated();
+
+    if (!Hash::check($request->current_password, auth('customer_api')->user()->password)) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Mật khẩu cũ không khớp.'
+        ], 400);
+    }
+
+    $customer = Customer::findOrFail($id);
+    $password = Hash::make($request->password);
+    $resetStatus = $customer->update([
+        'password' => $password,
+    ]);
+
+    if (!$resetStatus) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Mật khẩu không được cập nhật thành công.'
+        ], 400);
+    }
+
+    auth('customer_api')->logout();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Mật khẩu đã được cập nhật thành công. Yêu cầu đăng nhập lại tài khoản.'
+    ], 200);
+}
+
+        protected function errorResponse($message, $th)
+    {
+        return response()->json([
+            'status' => 'error',
+            'message' => $message,
+            'error' => $th->getMessage(),
+        ], 500);
+    }
+    private function formatUserRole($role)
+    {
+        switch ($role) {
+            case 0:
+                return 'Quản trị viên';
+            default:
+                return 'Nhân viên';
+        }
+    }
+
+    private function mapGender(&$validatedData)
+    {
+        if (isset($validatedData['gender'])) {
+            switch (strtolower($validatedData['gender'])) {
+                case 'nam':
+                    $validatedData['gender'] = 1;
+                    break;
+                case 'nữ':
+                    $validatedData['gender'] = 2;
+                    break;
+                case 'khác':
+                    $validatedData['gender'] = 3;
+                    break;
+                default:
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Giá trị của trường giới tính không hợp lệ.',
+                    ], 400);
+            }
+        }
+    }
+
 }

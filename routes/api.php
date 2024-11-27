@@ -32,6 +32,7 @@ use App\Http\Controllers\Client\ServiceController as ClientServiceController;
 use App\Http\Controllers\Client\UserController as ClientUserController;
 use App\Http\Controllers\Client\ClientCustomerAccountController;
 use App\Http\Controllers\Client\ConsulationController as ClientConsulationController;
+use App\Http\Controllers\Client\ClientCommentController;
 
 require __DIR__ . '/authCustomer.php';
 require __DIR__ . '/auth.php';
@@ -222,9 +223,20 @@ Route::group([
 
 });
 Route::group([
-    'middleware' => 'auth:api',
+    'middleware' => ['api'],
     'prefix' => 'v0.0.1/client',
 ], function ($router) {
+
+    Route::get('/customer', [ClientCustomerAccountController::class, 'viewProfile'])->middleware('auth:customer_api');
+    Route::put('/customer/{id}', [ClientCustomerAccountController::class, 'update'])->middleware('auth:customer_api');
+    Route::post('/customer/{id}', [ClientCustomerAccountController::class, 'updatePassword'])->middleware('auth:customer_api');
+
+    //comment
+    Route::get('/comment', [ClientCommentController::class, 'index']);
+    Route::get('/comment/{id}', [ClientCommentController::class, 'show']);
+    Route::post('/comment', [ClientCommentController::class, 'store']);
+    Route::put('/comment/{id}', [ClientCommentController::class, 'update']);
+    Route::delete('/comment/{id}', [ClientCommentController::class, 'destroy']);
 
     Route::get('/customers', [ClientCustomerAccountController::class, 'index']);
 
