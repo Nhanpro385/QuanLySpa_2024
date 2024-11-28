@@ -234,7 +234,7 @@ Route::group([
     Route::post('/customer/{id}', [ClientCustomerAccountController::class, 'updatePassword'])->middleware('auth:customer_api');
 
     //comment
-    Route::get('/comment', [ClientCommentController::class, 'index'])->middleware('auth:customer_api');
+    Route::get('/comment', [ClientCommentController::class, 'index']);
     Route::get('/comment/{id}', [ClientCommentController::class, 'show'])->middleware('auth:customer_api');
     Route::post('/comment', [ClientCommentController::class, 'store'])->middleware('auth:customer_api');
     Route::post('/comment/{id}', [ClientCommentController::class, 'update'])->middleware('auth:customer_api');
@@ -243,31 +243,7 @@ Route::group([
 
     //Promotion
 
-    Route::get('/promotion', [PromotionPromotionController::class, 'index'])->middleware('auth:customer_api');
-    Route::get('/customers', [ClientCustomerAccountController::class, 'index']);
-
-
-    Route::get('/customer/{id}', [ClientCustomerAccountController::class, 'show']);
-
-
-    Route::post('/customer', [ClientCustomerAccountController::class, 'store']);
-
-
-    Route::put('/customer/{id}', [ClientCustomerAccountController::class, 'update']);
-
-    Route::delete('/customer/{id}', [ClientCustomerAccountController::class, 'destroy']);
-
-
-
-    Route::get('/shifts', [ClientShiftsController::class, 'index']);
-
-    Route::get('/shifts/{id}', [ClientShiftsController::class, 'show']);
-
-
-
-    Route::get('/contacts', [ClientContactsController::class, 'index']);
-
-    Route::get('/contacts/{id}', [ClientContactsController::class, 'show']);
+    Route::get('/promotion', [PromotionPromotionController::class, 'index']);
 });
 
 
