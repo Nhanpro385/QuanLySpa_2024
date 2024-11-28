@@ -25,15 +25,20 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'service_id' => $this->service_id,
+            'service' => $this->service,
             'customer_id' => $this->customer_id,
+            'customer' => $this->customer,
             'comment' => $this->comment,
             'rate' => $this->rate,
             'status' => $this->status,
             'type' => $this->type,
             'image_url' => $images,
 
-            
 
+            'created_by' => $this->created_by ? $this->createdBy : null,
+            'updated_by' => $this->updated_by ? $this->updatedBy : null,
+
+       
             'created_at' => $this->created_at ? $this->created_at->format('d-m-Y H:i') : null,
             'updated_at' => $this->updated_at ? $this->updated_at->format('d-m-Y H:i') : null,
         ];

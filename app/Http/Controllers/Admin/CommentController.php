@@ -238,21 +238,28 @@ class CommentController extends Controller
     public function destroy($id)
     {
         try {
-
             $comment = Comment::findOrFail($id);
+            $userId = Auth::id();
 
+            if (!$userId) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Bạn cần đăng nhập để thêm bình luận.',
+                ], 401);
+            }
+            $commentImages = CommentImage::where('comment_id', $comment->id)->get();
+            if ($commentImages->isNotEmpty()) {
+                foreach ($commentImages as $commentImage) {
+                    $oldImagePath = Storage::disk('public')->path('uploads/comments/' . $commentImage->image_url);
 
-            if ($comment->image_url) {
-                $oldImagePath = storage_path('app/public/uploads/comments/' . $comment->image_url);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+                    if (Storage::disk('public')->exists('uploads/comments/' . $commentImage->image_url)) {
+                        Storage::disk('public')->delete('uploads/comments/' . $commentImage->image_url);
+                    }
+                    $commentImage->delete();
                 }
             }
 
-
             $comment->replies()->delete();
-
-
             if ($comment->forceDelete()) {
                 return response()->json([
                     'status' => 'success',
@@ -277,6 +284,7 @@ class CommentController extends Controller
             ], 500);
         }
     }
+
 
 
 

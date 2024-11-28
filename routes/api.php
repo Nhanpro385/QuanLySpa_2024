@@ -33,6 +33,7 @@ use App\Http\Controllers\Client\UserController as ClientUserController;
 use App\Http\Controllers\Client\ClientCustomerAccountController;
 use App\Http\Controllers\Client\ConsulationController as ClientConsulationController;
 use App\Http\Controllers\Client\ClientCommentController;
+use App\Http\Controllers\Client\Promotion\PromotionController as PromotionPromotionController;
 
 require __DIR__ . '/authCustomer.php';
 require __DIR__ . '/auth.php';
@@ -227,6 +228,7 @@ Route::group([
     'prefix' => 'v0.0.1/client',
 ], function ($router) {
 
+    //customer
     Route::get('/customer', [ClientCustomerAccountController::class, 'viewProfile'])->middleware('auth:customer_api');
     Route::put('/customer/{id}', [ClientCustomerAccountController::class, 'update'])->middleware('auth:customer_api');
     Route::post('/customer/{id}', [ClientCustomerAccountController::class, 'updatePassword'])->middleware('auth:customer_api');
@@ -235,9 +237,13 @@ Route::group([
     Route::get('/comment', [ClientCommentController::class, 'index'])->middleware('auth:customer_api');
     Route::get('/comment/{id}', [ClientCommentController::class, 'show'])->middleware('auth:customer_api');
     Route::post('/comment', [ClientCommentController::class, 'store'])->middleware('auth:customer_api');
-    Route::put('/comment/{id}', [ClientCommentController::class, 'update'])->middleware('auth:customer_api');
+    Route::post('/comment/{id}', [ClientCommentController::class, 'update'])->middleware('auth:customer_api');
     Route::delete('/comment/{id}', [ClientCommentController::class, 'destroy'])->middleware('auth:customer_api');
+    Route::post('/comment/{id}/reply', [ClientCommentController::class, 'reply'])->middleware('auth:customer_api');
 
+    //Promotion
+
+    Route::get('/promotion', [PromotionPromotionController::class, 'index'])->middleware('auth:customer_api');
     Route::get('/customers', [ClientCustomerAccountController::class, 'index']);
 
 

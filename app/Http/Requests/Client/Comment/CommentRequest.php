@@ -23,10 +23,11 @@ class CommentRequest extends FormRequest
     {
         return [
             'id' => 'required|digits_between:10,20|integer|unique:comments,id',
-
-
+            'customer_id' => 'required|integer|exists:customers,id',
+            'service_id' => 'required|integer|exists:services,id',
             'parent_comment_id' => 'nullable|exists:comments,id|integer',
             'comment' => 'required|string|max:500',
+
 
             // 'status' => 'required|boolean',
             'image_urls' => 'nullable|array',
