@@ -24,21 +24,29 @@ import { useSelector } from "react-redux";
 import formatDate from "../../utils/formatedate";
 import { generateSnowflakeId } from "../../utils";
 import { UploadOutlined } from "@ant-design/icons";
-
+import debounce from "lodash/debounce";
 const Product_add = () => {
     const {
         control,
         handleSubmit,
         setError,
+        reset,
         formState: { errors },
-    } = useForm();
+    } = useForm({
+        shouldFocusError: false,
+    });
     const { addproduct } = useproductActions();
-    const { getcategories } = usecategoriesActions();
+    const { getcategories, searchcategories } = usecategoriesActions();
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+        per_page: 100,
+    });
     const { categories, loading, error, category } = useSelector(
         (state) => state.categories
     );
     useEffect(() => {
-        getcategories({ page: 1, per_page: 50 });
+        getcategories(50);
     }, []);
     const [file, setFile] = useState([]);
     const editor = useRef(null);
@@ -63,8 +71,14 @@ const Product_add = () => {
             }
 
             const res = await addproduct(formData);
-            if (res.meta.requestStatus === "fulfilled") {
+            console.log(res);
+            
+            if (res.payload.status === "success") {
                 message.success("Thêm sản phẩm thành công!");
+                reset();
+                setFile([]);
+                setContent("");
+
             } else {
                 Object.keys(res.payload.errors).map((key) => {
                     setError(key, {
@@ -79,7 +93,16 @@ const Product_add = () => {
             console.log("error", error);
         }
     };
-
+    const debouncedSearch = debounce((value) => {
+        searchcategories({ search: value, page: 1, per_page: 50 });
+    }, 500);
+    useEffect(() => {
+        if (searchQuery.search !== "") {
+            searchcategories(searchQuery);
+        } else {
+            getcategories(50);
+        }
+    }, [searchQuery]);
     return (
         <>
             <h1 className="text-center">Thêm sản phẩm</h1>
@@ -134,6 +157,18 @@ const Product_add = () => {
                                                             label: item.name,
                                                         })
                                                     )}
+                                                    filterOption={(
+                                                        input,
+                                                        option
+                                                    ) =>
+                                                        option.label
+                                                            .toLowerCase()
+                                                            .indexOf(
+                                                                input.toLowerCase()
+                                                            ) >= 0
+                                                    }
+                                                    showSearch
+                                                    onSearch={debouncedSearch}
                                                 />
                                             )}
                                         />
@@ -209,13 +244,13 @@ const Product_add = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col xl={12} md={12} sm={24} xs={24}>
-                                    <Form.Item label="Ngày sản xuất" required>
+                                    <Form.Item label="Hạn sử dụng" required>
                                         <Controller
                                             name="date"
                                             control={control}
                                             rules={{
                                                 required:
-                                                    "Vui lòng chọn ngày sản xuất!",
+                                                    "Vui lòng chọn Hạn sử dụng!",
                                             }}
                                             render={({ field }) => (
                                                 <DatePicker
@@ -229,6 +264,31 @@ const Product_add = () => {
                                         {errors.date && (
                                             <p style={{ color: "red" }}>
                                                 {errors.date.message}
+                                            </p>
+                                        )}
+                                    </Form.Item>
+                                </Col>
+                                <Col xl={12} md={12} sm={24} xs={24}>
+                                    <Form.Item label="Độ ưu tiên" required>
+                                        <Controller
+                                            name="priority"
+                                            control={control}
+                                            rules={{
+                                                required:
+                                                    "vui lòng nhập độ ưu tiên",
+                                            }}
+                                            render={({ field }) => (
+                                                <InputNumber
+                                                    size="large"
+                                                    className="w-100"
+                                                    {...field}
+                                                    placeholder="Độ ưu tiên"
+                                                />
+                                            )}
+                                        />
+                                        {errors.priority && (
+                                            <p style={{ color: "red" }}>
+                                                {errors.priority.message}
                                             </p>
                                         )}
                                     </Form.Item>

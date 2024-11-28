@@ -270,7 +270,7 @@ const StaffsAdd = () => {
                                         >
                                             Thêm nhân viên
                                         </Button>
-                                        <Link to="/admin/staffs">
+                                        <Link to="/admin/nhanvien">
                                             <Button size="large">
                                                 Quay lại
                                             </Button>

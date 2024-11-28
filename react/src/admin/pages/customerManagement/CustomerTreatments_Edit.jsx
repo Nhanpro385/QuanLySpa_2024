@@ -56,11 +56,11 @@ const StreatmentsEdit = () => {
     useEffect(() => {
         if (!streatments.loading && streatments.streament) {
             console.log(strreatmentData);
-            setStrreatmentData(streatments.streament.data);
-            setValue("evaluete", streatments.streament.data.evaluete || 0);
-            setValue("feedback", streatments.streament.data.feedback);
-            setValue("note", streatments.streament.data.note);
-            setValue("status", streatments.streament.data.status);
+            setStrreatmentData(streatments?.streament?.data);
+
+            setValue("feedback", streatments?.streament?.data?.feedback);
+            setValue("note", streatments?.streament?.data?.note);
+            setValue("status", streatments?.streament?.data?.status);
         }
     }, [streatments.streament]);
 
@@ -70,7 +70,7 @@ const StreatmentsEdit = () => {
             const payload = {
                 id: id,
                 note: data.note,
-                evaluete: data.evaluete,
+
                 feedback: data.feedback,
                 status: data.status,
             };
@@ -111,7 +111,6 @@ const StreatmentsEdit = () => {
                     message: "Cập nhật trị liệu thành công",
                     description: "Dữ liệu đã được cập nhật.",
                 });
-                
             }
 
             // Xử lý thông báo dựa trên kết quả trả về
@@ -189,7 +188,7 @@ const StreatmentsEdit = () => {
                                     )}
                                 </Form.Item>
                             </Col>
-                            <Col
+                            {/* <Col
                                 xxl={12}
                                 xl={16}
                                 lg={12}
@@ -230,7 +229,7 @@ const StreatmentsEdit = () => {
                                         />
                                     )}
                                 </Form.Item>
-                            </Col>
+                            </Col> */}
                             <Col xxl={6} xl={8} lg={12} md={12} sm={24} xs={24}>
                                 <Form.Item
                                     label="Trạng thái"

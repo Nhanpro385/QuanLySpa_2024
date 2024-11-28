@@ -12,40 +12,7 @@ const StatisticsSection = ({
     dailyRevenues,
     revenueAppointment,
     revenueConsulation,
-   
 }) => {
-
-
-    const renvenAppointment = (revenueAppointment) => {
-        if (!Array.isArray(revenueAppointment)) {
-            console.error(
-                "revenueAppointment is not an array",
-                revenueAppointment
-            );
-            return { pending: 0, cancelled: 0, inProgress: 0, completed: 0 };
-        }
-
-        const countAppointment = revenueAppointment.reduce(
-            (accumulator, currentValue) => {
-                const status = currentValue.status;
-                if (status === "Đã đặt lịch hẹn.") {
-                    accumulator.pending++;
-                } else if (status === "Đã hủy lịch hẹn.") {
-                    accumulator.cancelled++;
-                } else if (status === "Đang thực hiện.") {
-                    accumulator.inProgress++;
-                } else if (status === "Đã hoàn thành.") {
-                    accumulator.completed++;
-                }
-
-                return accumulator;
-            },
-            { pending: 0, cancelled: 0, inProgress: 0, completed: 0 } // Initialize the accumulator
-        );
-
-        return countAppointment;
-    };
-
     return (
         <Row gutter={[16, 16]}>
             <Col xl={6} md={24} sm={24} xs={24}>
@@ -90,13 +57,17 @@ const StatisticsSection = ({
                                 Đã hoàn thành:{" "}
                                 {dailyRevenues?.completed_revenue || 0} VND
                             </Text>
+                            <br />
+                            <Text type="success">Đã hoàn thành: </Text>
                         </Card>
                     </Col>
                     <Col xl={8} md={12} sm={24} xs={24}>
                         <Card>
                             <Statistic
                                 title="Số lượt đặt lịch Hôm nay"
-                                value={revenueAppointment.length}
+                                value={
+                                    revenueAppointment.today_appointment || 0
+                                }
                                 precision={0}
                                 valueStyle={{ color: "#1890ff" }}
                                 suffix="lượt"
@@ -104,16 +75,20 @@ const StatisticsSection = ({
                             />
                             <Text type="secondary">
                                 Đang chờ:{" "}
-                                {renvenAppointment(revenueAppointment).pending}{" "}
+                                {revenueAppointment.progress_appointment || 0}{" "}
                                 lượt
                             </Text>
                             <br />
                             <Text type="success">
                                 Đã hoàn thành:{" "}
-                                {
-                                    renvenAppointment(revenueAppointment)
-                                        .completed
-                                }{" "}
+                                {revenueAppointment.progress_appointment || 0}{" "}
+                                lượt
+                            </Text>{" "}
+                            <br />
+                            <Text type="danger">
+                                Đã hủy:
+                                {revenueAppointment.cancel_appointment ||
+                                    0}{" "}
                                 lượt
                             </Text>
                         </Card>
@@ -121,16 +96,33 @@ const StatisticsSection = ({
                     <Col xl={8} md={12} sm={24} xs={24}>
                         <Card>
                             <Statistic
-                                title="Lịch hẹn tư vấn"
-                                value={25}
+                                title="Lịch hẹn tư vấn Hôm nay"
+                                value={
+                                    revenueConsulation.today_consulation || 0
+                                }
                                 precision={0}
                                 valueStyle={{ color: "#1890ff" }}
                                 suffix="lượt"
                                 formatter={formatter}
                             />
-                            <Text type="secondary">Đang chờ: 8 lượt</Text>
+
+                            <Text type="warning">
+                                Đang yêu cầu:{" "}
+                                {revenueConsulation.request_consulation || 0}{" "}
+                                lượt
+                            </Text>
                             <br />
-                            <Text type="success">Đã hoàn thành: 17 lượt</Text>
+                            <Text type="secondary">
+                                Đang chờ tư vấn:{" "}
+                                {revenueConsulation.progress_consulation || 0}{" "}
+                                lượt
+                            </Text>
+                            <br />
+                            <Text type="success">
+                                Đã hoàn thành:{" "}
+                                {revenueConsulation.complete_consulation || 0}{" "}
+                                lượt
+                            </Text>
                         </Card>
                     </Col>
                     <Col xl={8} md={12} sm={24} xs={24}>
@@ -138,8 +130,9 @@ const StatisticsSection = ({
                             <Statistic
                                 title="Lịch hủy"
                                 value={
-                                    renvenAppointment(revenueAppointment)
-                                        .cancelled
+                                    (revenueConsulation.cancel_consulation ||
+                                        0) +
+                                    (revenueAppointment.cancel_appointment || 0)
                                 }
                                 precision={0}
                                 valueStyle={{ color: "#cf1322" }}
@@ -147,22 +140,19 @@ const StatisticsSection = ({
                                 formatter={formatter}
                             />
                             <Text type="secondary">
-                                Đang chờ:{" "}
-                                {renvenAppointment(revenueAppointment).pending}{" "}
+                                Lịch hủy tư vấn:{" "}
+                                {revenueConsulation.cancel_consulation || 0}{" "}
                                 lượt
                             </Text>
                             <br />
                             <Text type="danger">
-                                Đã hủy:{" "}
-                                {
-                                    renvenAppointment(revenueAppointment)
-                                        .cancelled
-                                }{" "}
+                                Lịch hủy dịch vụ:{" "}
+                                {revenueAppointment.cancel_appointment || 0}{" "}
                                 lượt
                             </Text>
                         </Card>
                     </Col>
-                    <Col xl={8} md={12} sm={24} xs={24}>
+                    {/* <Col xl={8} md={12} sm={24} xs={24}>
                         <Card>
                             <Statistic
                                 title="Khách mới/trở lại"
@@ -175,7 +165,7 @@ const StatisticsSection = ({
                             <br />
                             <Text type="success">Khách quay lại: 46</Text>
                         </Card>
-                    </Col>
+                    </Col> */}
                 </Row>
             </Col>
         </Row>

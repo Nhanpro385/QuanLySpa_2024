@@ -11,6 +11,7 @@ import useServicesActions from "../../modules/services/hooks/useServices";
 import debounce from "lodash/debounce";
 import { useNavigate } from "react-router-dom";
 import { set } from "lodash";
+import ServiceModalDetail from "../../modules/services/compoments/ServiceModalDetail";
 function Services() {
     const {
         addservices,
@@ -24,7 +25,7 @@ function Services() {
     const [ServiceData, setServiceData] = useState([]);
     const Navigate = useNavigate();
     const services = useSelector((state) => state.services);
-
+    const [DetailService, setDetailService] = useState(null);
     const [errorEdit, setErrorEdit] = useState(null);
 
     const pagination = services.services.meta || {};
@@ -39,6 +40,12 @@ function Services() {
         showModal: showModal2,
         handleOk: handleOk2,
         handleCancel: handleCancel2,
+    } = useModal();
+    const {
+        isModalOpen: isModalOpen3,
+        showModal: showModal3,
+        handleOk: handleOk3,
+        handleCancel: handleCancel3,
     } = useModal();
     const [editService, setEditService] = useState(null);
     useEffect(() => {
@@ -69,19 +76,22 @@ function Services() {
         }
     };
 
-    const handleViewDetails = (record) => {
-        Modal.info({
-            title: "Chi tiết dịch vụ",
-            content: (
-                <div>
-                    <p>Tên dịch vụ: {record.name}</p>
-                    <p>Giá: {record.price}</p>
-                    <p>Thời gian: {record.duration}</p>
-                    <p>Trạng thái: {record.status}</p>
-                </div>
-            ),
-            onOk() {},
-        });
+    const handleViewDetails = async (record) => {
+        try {
+            const res = await getservicesById(record.key);
+            if (res.payload.status === "success") {
+                setDetailService(res.payload.data);
+                showModal3();
+
+            }else{
+                api.error({
+                    message: "Lấy thông tin dịch vụ thất bại",
+                });
+                
+            }
+        } catch (err) {
+            console.log(err);
+        }
     };
     const onSearch = debounce((value) => {
         setSearchquery({ ...Searchquery, search: value });
@@ -216,6 +226,11 @@ function Services() {
                 service={editService}
                 handleSubmitEdit={handleSubmitEdit}
                 error={errorEdit}
+            />
+            <ServiceModalDetail
+            isOpen={isModalOpen3}
+            onClose={handleCancel3}
+            servicedata={DetailService}
             />
         </div>
     );

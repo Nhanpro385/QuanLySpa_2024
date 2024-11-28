@@ -26,8 +26,8 @@ const AppointmentsTable = ({
         {
             key: "2",
             label: (
-                <Button block onClick={onViewDetail}>
-                    Chi tiết
+                <Button block onClick={onViewDetail} disabled>
+                    Chi tiết (Chưa hoàn thành)
                 </Button>
             ),
         },

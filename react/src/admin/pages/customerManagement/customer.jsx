@@ -163,7 +163,7 @@ function Customer() {
             </Row>
 
             {/* Search */}
-            <Row gutter={[16, 16]}>
+            <Row gutter={[16, 16]} className="mb-3">
                 <Col xl={12} md={12} sm={12} xs={24}>
                     <Input.Search
                         placeholder="Tìm kiếm..."

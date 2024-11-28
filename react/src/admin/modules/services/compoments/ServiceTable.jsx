@@ -23,7 +23,19 @@ const ServiceTable = ({
         },
         { title: "Tên dịch vụ", dataIndex: "name", key: "name" },
 
-        { title: "Giá", dataIndex: "price", key: "price" },
+        {
+            title: "Giá",
+            dataIndex: "price",
+            key: "price",
+            render: (text, record) => (
+                <span>
+                    {Number(record.price).toLocaleString("it-IT", {
+                        style: "currency",
+                        currency: "VND",
+                    })}
+                </span>
+            ),
+        },
         { title: "Thời gian dự kiến", dataIndex: "duration", key: "duration" },
 
         {

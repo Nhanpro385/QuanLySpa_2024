@@ -33,6 +33,9 @@ export default function AppointmentsCalendar({ data }) {
                         "Của khách hàng ngày " + item.appointment_date,
                     start: startDateTime,
                     end: endDateTime,
+                    service_name: item?.services
+                        ?.map((service) => service.name)
+                        .join(", "),
                 };
             });
 
@@ -49,7 +52,7 @@ export default function AppointmentsCalendar({ data }) {
                 defaultView="month"
                 events={eventsData}
                 style={{ height: "100vh" }}
-                onSelectEvent={(event) => console.log(event)}
+                onSelectEvent={(event) => console.log(event.service_name)}
                 messages={{
                     allDay: "Cả ngày",
                     previous: "Trước",
@@ -65,9 +68,10 @@ export default function AppointmentsCalendar({ data }) {
                 }}
                 components={{
                     event: ({ event }) => (
-                        <Popover content={event.title}
-                        
-                        trigger={"click"}>
+                        <Popover
+                            content={"Dịch vụ: " + event.service_name}
+                            trigger={"click"}
+                        >
                             <div>
                                 <strong>{event.title}</strong>
                                 <br />

@@ -223,10 +223,17 @@ const ShiftManagement = () => {
             ),
         },
     ];
-    const handleaddstaff = (record) => {
-        if (record) {
-            setShiftSelected(record);
-            showModal3();
+    const handleaddstaff = async (record) => {
+        try {
+            if (record) {
+                const res = await getshiftsById(record.key);
+                if (res.meta.requestStatus === "fulfilled") {
+                    setShiftSelected(res.payload.data);
+                    showModal3();
+                }
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
     const onaddstaff = async (value) => {

@@ -122,6 +122,16 @@ export const replyComment = createAsyncThunk(
         }
     }
 );
+export const searchComments = createAsyncThunk(
+    "comments/search",
+    async (params) => {
+        const response = await axiosInstance.get(
+            `${endpoints.comments.search}?search=${params.search}&page=${params.page}&per_page=${params.per_page}`
+        );
+        return response.data;
+    }
+);
+
 const initialState = {
     comments: {
         data: [],
@@ -218,6 +228,18 @@ const commentsSlice = createSlice({
                 state.loading = false;
 
                 state.error = action;
+            })
+            .addCase(searchComments.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(searchComments.fulfilled, (state, action) => {
+                state.comments = action.payload;
+                state.loading = false;
+            })
+            .addCase(searchComments.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
     },
 });

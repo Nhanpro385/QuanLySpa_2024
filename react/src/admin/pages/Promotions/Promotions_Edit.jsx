@@ -34,9 +34,10 @@ const Promotions_Edit = () => {
         reset,
         setValue,
         formState: { errors },
-    } = useForm({});
+    } = useForm({
+        shouldFocusError: false,
+    });
 
-    const [form] = Form.useForm();
     const [fileList, setFileList] = useState([]);
     const editor = useRef(null);
     const [content, setContent] = useState("");
@@ -94,91 +95,58 @@ const Promotions_Edit = () => {
                 duration: 3,
             });
         }
-    }, [promotions]);
+    }, [promotions.promotion]);
     const onFinish = async (values) => {
         try {
-            // Remove validation temporarily to allow submission
-            form.validateFields()
-                .then(async () => {
-                    const payload = {
-                        id: generateSnowflakeId(),
-                        name: values.name,
-                        description: values.description,
-                        start_date:
-                            values.startDateAndEndDate[0].format("YYYY-MM-DD"),
-                        end_date:
-                            values.startDateAndEndDate[1].format("YYYY-MM-DD"),
-                        promotion_type: values.promotion_type,
-                        discount_percent: values.discount_percent,
-                        min_order_amount: values.min_order_amount,
-                        min_quantity: values.min_quantity,
-                        status: true,
-                    };
+            const payload = {
+                name: values.name,
+                description: values.description,
+                start_date: values.startDateAndEndDate[0].format("YYYY-MM-DD"),
+                end_date: values.startDateAndEndDate[1].format("YYYY-MM-DD"),
+                promotion_type: values.promotion_type,
+                discount_percent: values.discount_percent,
+                min_order_amount: values.min_order_amount,
+                min_quantity: values.min_quantity,
+                status: true,
+            };
 
-                    if (fileList[0].tag === "old") {
-                        console.log("Đây là ảnh cũ");
-                    } else {
-                        payload.image_url = fileList[0].originFileObj;
-                        console.log("Đây là ảnh mới");
-                    }
+            if (fileList[0].tag === "old") {
+                console.log("Đây là ảnh cũ");
+            } else {
+                payload.image_url = fileList[0].originFileObj;
+                console.log("Đây là ảnh mới");
+            }
+            const res = await updatePromotions({
+                id: idpromotion,
+                data: payload,
+            });
+            console.log(res);
 
-                    const formData = new FormData();
-                    Object.keys(payload).map((key) => {
-                        formData.append(key, payload[key]);
-                    });
-
-                    const response = await updatePromotions({
-                        id: idpromotion,
-                        data: formData,
-                    });
-
-                    if (response.payload.status === "success") {
-                        console.log(response);
-                        api.success({
-                            message:
-                                "Chỉnh sửa chương trình khuyến mãi thành công",
-                            description: response.payload.message,
-                            duration: 3,
-                        });
-                        reset();
-                        setFileList([]);
-                        setContent("");
-                    } else {
-                        Object.keys(response.payload.errors).map((key) => {
-                            if (key === "start_date") {
-                                setError("startDateAndEndDate", {
-                                    type: "manual",
-                                    message: response.payload.errors[key][0],
-                                });
-                            }
-                            if (key === "end_date") {
-                                setError("startDateAndEndDate", {
-                                    type: "manual",
-                                    message: response.payload.errors[key][0],
-                                });
-                            }
-
-                            setError(key, {
-                                type: "manual",
-                                message: response.payload.errors[key][0],
-                            });
-                        });
-                    }
-                })
-                .catch(() => {
-                    // If validation fails, you can log or handle the errors
+            if (res.payload.status == 422) {
+                Object.keys(res.payload.data.errors).map((key) => {
                     api.error({
-                        message: "Lỗi khi kiểm tra dữ liệu",
-                        description: "Vui lòng kiểm tra lại dữ liệu đã nhập.",
+                        message: res.payload.data.errors[key][0],
                         duration: 3,
                     });
                 });
-        } catch (error) {
-            console.log(error);
+            } else {
+                api.success({
+                    message: "Chỉnh sửa chương trình khuyến mãi thành công",
+                    duration: 3,
+                });
+            }
+        } catch (err) {
+            console.log(err);
         }
     };
 
     useEffect(() => {
+        Object.keys(errors).map((key) => {
+            setError(key, {
+                type: "manual",
+                message: errors[key].message,
+            });
+        });
         console.log(errors);
     }, [errors]);
     return (
@@ -189,11 +157,7 @@ const Promotions_Edit = () => {
                 title={<h2>Thông tin chương trình khuyến mãi</h2>}
                 style={{ width: "100%" }}
             >
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={handleSubmit(onFinish)}
-                >
+                <Form layout="vertical" onFinish={handleSubmit(onFinish)}>
                     <Row gutter={16}>
                         <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
@@ -288,7 +252,6 @@ const Promotions_Edit = () => {
                                             placeholder="Nhập giảm giá"
                                             style={{ width: "100%" }}
                                             min={0}
-                                            max={100}
                                         />
                                     )}
                                 />
@@ -396,34 +359,25 @@ const Promotions_Edit = () => {
                         </Col>
 
                         <Col xl={6} md={6} sm={24} xs={24}>
-                            <Form.Item name="image_url" label="Tải ảnh lên">
-                                <Controller
-                                    name="image_url"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Upload
-                                            {...field}
-                                            listType="picture-card"
-                                            fileList={fileList}
-                                            onChange={({ fileList }) =>
-                                                setFileList(fileList)
-                                            }
-                                            beforeUpload={() => false}
-                                            maxCount={1}
-                                        >
-                                            {fileList.length < 1 && (
-                                                <div>
-                                                    <UploadOutlined />
-                                                    <div
-                                                        style={{ marginTop: 8 }}
-                                                    >
-                                                        Tải ảnh lên
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </Upload>
+                            <Form.Item label="Tải ảnh lên">
+                                <Upload
+                                    listType="picture-card"
+                                    fileList={fileList}
+                                    onChange={({ fileList }) =>
+                                        setFileList(fileList)
+                                    }
+                                    beforeUpload={() => false}
+                                    maxCount={1}
+                                >
+                                    {fileList.length < 1 && (
+                                        <div>
+                                            <UploadOutlined />
+                                            <div style={{ marginTop: 8 }}>
+                                                Tải ảnh lên
+                                            </div>
+                                        </div>
                                     )}
-                                />
+                                </Upload>
                             </Form.Item>
                         </Col>
                         <Col xl={24} md={24} sm={24} xs={24}>

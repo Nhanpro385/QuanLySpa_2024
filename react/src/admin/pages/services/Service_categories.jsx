@@ -91,6 +91,9 @@ const ServiceCategories = () => {
         const resultAction = await deleteServiceCategories(record.key);
         if (resultAction.meta.requestStatus === "fulfilled") {
             messageApi.success("Xóa thành công");
+            getServiceCategories();
+        } else {
+            messageApi.error("Xóa thất bại");
         }
     };
 

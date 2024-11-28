@@ -10,11 +10,21 @@ const items = [
     },
     {
         key: "2",
-        label: <Button block> Chi tiết </Button>,
+        label: (
+            <Button block disabled>
+                {" "}
+                Chi tiết (Chưa hoàn thành)
+            </Button>
+        ),
     },
     {
         key: "3",
-        label: <Button block> Lịch sử làm việc </Button>,
+        label: (
+            <Button block disabled>
+                {" "}
+                Lịch sử làm việc (Chưa hoàn thành)
+            </Button>
+        ),
     },
     {
         key: "4",

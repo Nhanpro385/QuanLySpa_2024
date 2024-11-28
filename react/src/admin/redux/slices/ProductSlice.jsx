@@ -18,11 +18,11 @@ export const productGet = createAsyncThunk(
     async (per_page, { rejectWithValue }) => {
         try {
             // Xây dựng query parameters chỉ với `per_page` nếu có
-            const queryParams = per_page ? `?per_page=${per_page}` : "";
+            const queryParams = per_page ? `?per_page=${per_page}&productImages=true` : "";
 
             // Gọi API
             const response = await axiosInstance.get(
-                `${endpoints.Products.list}${queryParams}`
+                `${endpoints.Products.list}${queryParams}?productImages=true`
             );
 
             // Trả về dữ liệu response
@@ -203,7 +203,7 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productAdd.fulfilled, (state, action) => {
-                if (!state.product.data) {
+                if (!state.products.data) {
                     state.products.data = [];
                 }
                 state.products.data.push(action.payload.data);

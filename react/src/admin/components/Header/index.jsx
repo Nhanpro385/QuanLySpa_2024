@@ -1,19 +1,9 @@
 import React, { useState } from "react";
-import {
-    Layout,
-    Menu,
-    Drawer,
-    Button,
-    notification,
-    Row,
-    Col,
-} from "antd";
-import {
-    SettingOutlined,
-    MenuOutlined,
-} from "@ant-design/icons";
+import { Layout, Menu, Drawer, Button, notification, Row, Col } from "antd";
+import { SettingOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
 import NotificationModule from "../../modules/Notification/NotificationModule";
 import useAuthActions from "../../modules/authen/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const { Header } = Layout;
 
@@ -32,35 +22,44 @@ const HeaderAdmin = () => {
     const menuItems = [
         {
             key: "1",
+            icon: <UserOutlined />,
+            label: (
+                <Link
+                    to="/admin/tuvankhachhang"
+                    style={{
+                        textDecoration: "none",
+                    }}
+                >
+                    Quản lý Tư vấn trực tuyến
+                </Link>
+            ),
+        },
+
+        {
+            key: "2",
             label: <NotificationModule />,
         },
         {
-            key: "2",
+            key: "3",
             icon: <SettingOutlined />,
             label: "Đăng xuất",
             onClick: async () => {
                 try {
                     const res = await authLogout();
-                    if (res.meta.requestStatus === "fulfilled") {
-                        notification.success({
-                            message: "Đăng xuất thành công",
-                            description: "Chuyển hướng đến trang đăng nhập...",
-                            placement: "topRight",
-                        });
-                        setTimeout(() => {
-                            window.location.href = "/admin/dangnhap";
-                        }, 1000);
-                    } else {
-                        notification.error({
-                            message: "Đăng xuất thất bại",
-                            description: "Đã xảy ra lỗi. Vui lòng thử lại.",
-                            placement: "topRight",
-                        });
-                    }
+
+                    notification.success({
+                        message: "Đăng xuất thành công",
+                        description: "Chuyển hướng đến trang đăng nhập...",
+                        placement: "topRight",
+                    });
+                    setTimeout(() => {
+                        window.location.href = "/admin/dangnhap";
+                    }, 1000);
                 } catch {
                     notification.error({
                         message: "Lỗi hệ thống",
-                        description: "Không thể đăng xuất. Vui lòng thử lại sau.",
+                        description:
+                            "Không thể đăng xuất. Vui lòng thử lại sau.",
                         placement: "topRight",
                     });
                 }

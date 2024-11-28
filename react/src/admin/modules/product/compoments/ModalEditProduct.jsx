@@ -69,7 +69,6 @@ const ModalEditProduct = ({
     }, [searchQuery]);
     useEffect(() => {
         getcategories(50);
-        console.log("Product Data:", productData);
 
         if (productData) {
             Object.keys(productData).forEach((key) => {
@@ -88,29 +87,49 @@ const ModalEditProduct = ({
     }, [productData, setValue]);
 
     const onSubmit = async (data) => {
-        const payload = {
-            id: productData.id,
-            name: data.name,
-            price: data.price,
-            cost: data.cost,
-            capacity: data.capacity,
-            bar_code: data.bar_code,
-            date: dayjs(data.date).format("YYYY-MM-DD"),
-            image_url: fileList[0]?.originFileObj || null,
-            description: data.description,
-            category_id: data.category_id.value,
-            priority: 1,
-        };
-        handleSubmitEdit({
-            id: productData.id,
-            data: payload,
-        }).then((result) => {
-            if (result) {
-                setFileList([]);
-                reset();
-                handleCancel();
-            }
-        });
+        if (fileList.length === 0) {
+            const payload = {
+                id: productData.id,
+                name: data.name,
+                price: data.price,
+                cost: data.cost,
+                capacity: data.capacity,
+                bar_code: data.bar_code,
+                date: dayjs(data.date).format("YYYY-MM-DD"),
+
+                description: data.description,
+                category_id: data.category_id.value,
+                priority: 1,
+            };
+            handleSubmitEdit(payload.id, payload).then((result) => {
+                if (result) {
+                    setFileList([]);
+                    reset();
+                    handleCancel();
+                }
+            });
+        } else {
+            const payload = {
+                id: productData.id,
+                name: data.name,
+                price: data.price,
+                cost: data.cost,
+                capacity: data.capacity,
+                bar_code: data.bar_code,
+                date: dayjs(data.date).format("YYYY-MM-DD"),
+
+                description: data.description,
+                category_id: data.category_id.value,
+                priority: 1,
+            };
+            handleSubmitEdit(payload.id, payload).then((result) => {
+                if (result) {
+                    setFileList([]);
+                    reset();
+                    handleCancel();
+                }
+            });
+        }
     };
 
     return (

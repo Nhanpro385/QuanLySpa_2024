@@ -87,6 +87,7 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/comment/${id}`,
         delete: (id) => `${API_BASE_URL}/comment/${id}`,
         reply: (id) => `${API_BASE_URL}/comment/${id}/reply`,
+        search: `${API_BASE_URL}/comment`,
     },
     services: {
         list: `${API_BASE_URL}/services`,
@@ -165,9 +166,9 @@ const endpoints = {
         dailyRevenues: (data) =>
             `${API_BASE_URL}/statistical/dailyRevenues?day=${data.day}`,
         revenueAppointment: (data) =>
-            `${API_BASE_URL}/appointments?shift_date=${data.date}&per_page=100`,
+            `${API_BASE_URL}/statistical/appointments?day=${data.day}`,
         revenueConsulation: (data) =>
-            `${API_BASE_URL}/consulations?search=${data.date}?per_page=100`,
+            `${API_BASE_URL}/statistical/consulations?day=${data.day}`,
     },
 };
 

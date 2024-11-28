@@ -9,8 +9,9 @@ import { useSelector } from "react-redux";
 import useDate from "../../modules/home/hooks/useDate";
 import usepaymentActions from "../../modules/payments/hooks/usepaymentAction";
 import useconsulationsAction from "../../modules/consulations/hooks/useconsulationsAction";
-
+import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
+    const navigate = useNavigate();
     const [transactionData, setTransactionData] = useState([]);
     const [appointmentData, setAppointmentData] = useState([]); // Fixed here
     const [transactionColumns, setTransactionColumns] = useState([
@@ -62,11 +63,16 @@ const Dashboard = () => {
                         items: [
                             {
                                 key: "2",
-                                label: <Button block>Chi tiết</Button>,
-                            },
-                            {
-                                key: "3",
-                                label: <Button block>Thanh Toán</Button>,
+                                label: (
+                                    <Button
+                                        onClick={() => {
+                                            navigate(`/admin/thanhtoan`);
+                                        }}
+                                        block
+                                    >
+                                        Chi tiết
+                                    </Button>
+                                ),
                             },
                         ],
                     }}
@@ -82,7 +88,6 @@ const Dashboard = () => {
             ),
         },
     ]);
-
     const [appointmentColumns, setAppointmentColumns] = useState([
         {
             title: "#",
@@ -156,23 +161,15 @@ const Dashboard = () => {
                     menu={{
                         items: [
                             {
-                                key: "1",
-                                label: <Button block>Sửa</Button>,
-                            },
-                            {
                                 key: "2",
                                 label: (
                                     <Button
-                                        {...(record.status === 3
-                                            ? { disabled: true }
-                                            : {})}
+                                        onClick={() => {
+                                            navigate(`/admin/tuvankhachhang`);
+                                        }}
                                         block
                                     >
-                                        {record.status === 1
-                                            ? "Vào tư vấn"
-                                            : record.status === 0
-                                            ? "Xác nhận"
-                                            : "Hoàn thành"}
+                                        Chi tiết
                                     </Button>
                                 ),
                             },
@@ -195,8 +192,8 @@ const Dashboard = () => {
     const [monthlyRevenues, setMonthlyRevenues] = useState({});
     const [weeklyRevenues, setWeeklyRevenues] = useState({});
     const [dailyRevenues, setDailyRevenues] = useState({});
-    const [revenueAppointment, setRevenueAppointment] = useState([]);
-    const [revenueConsulation, setRevenueConsulation] = useState([]);
+    const [revenueAppointment, setRevenueAppointment] = useState({});
+    const [revenueConsulation, setRevenueConsulation] = useState({});
 
     const {
         formattedDate,
@@ -236,12 +233,13 @@ const Dashboard = () => {
             day: day,
         });
         getRevenueAppointment({
-            date: formatDate2,
+            day: formatDate2,
         });
         getRevenueConsulation({
-            date: formatDate2,
+            day: formatDate2,
         });
         getpayment(100);
+        getconsulations(100);
     }, []);
 
     useEffect(() => {
@@ -268,11 +266,17 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (payment.Payments) {
-            setTransactionData(payment.Payments?.data);
+            setTransactionData(
+                payment.Payments?.data.map((item) => ({
+                    ...item,
+                    key: item.id,
+                }))
+            );
         }
     }, [payment]);
 
     useEffect(() => {
+        console.log(consulations);
         if (consulations.consulations) {
             setAppointmentData(
                 consulations.consulations?.data.map((item) => ({

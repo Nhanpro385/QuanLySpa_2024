@@ -25,6 +25,7 @@ function getItem(label, key, icon, children) {
         icon,
         children,
         label,
+        disabled: false,
     };
 }
 
@@ -405,27 +406,28 @@ const items = [
             ),
         ]
     ),
-    getItem(
-        <Link
-            className="text-decoration-none text-black fs-4"
-            to="/admin/tuvankhachhang"
-        >
-            Quản lý Tư Vấn Trực Tuyến
-        </Link>,
-        "39",
-        <FileOutlined />,
-        [
-            getItem(
-                <Link
-                    className="text-decoration-none text-black fs-4"
-                    to="/admin/tuvankhachhang"
-                >
-                    Danh sách lịch hẹn tư vấn
-                </Link>,
-                "40"
-            ),
-        ]
-    ),
+
+    // getItem(
+    //     <Link
+    //         className="text-decoration-none text-black fs-4"
+    //         to="/admin/tuvankhachhang"
+    //     >
+    //         Quản lý Tư Vấn Trực Tuyến
+    //     </Link>,
+    //     "39",
+    //     <FileOutlined />,
+    //     [
+    //         getItem(
+    //             <Link
+    //                 className="text-decoration-none text-black fs-4"
+    //                 to="/admin/tuvankhachhang"
+    //             >
+    //                 Danh sách lịch hẹn tư vấn
+    //             </Link>,
+    //             "40"
+    //         ),
+    //     ]
+    // ),
 ];
 
 const Sidebar = () => {

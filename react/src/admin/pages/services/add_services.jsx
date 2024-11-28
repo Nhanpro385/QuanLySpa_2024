@@ -10,6 +10,7 @@ import {
     Upload,
     Spin,
     notification,
+    InputNumber,
 } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import useServiceCategoriesActions from "../../modules/services/hooks/useServiceCategories";
@@ -227,10 +228,35 @@ const ServicesAdd = () => {
                                             }
                                             help={errors.price?.message}
                                         >
-                                            <Input
+                                            {/* <InputNumber
                                                 {...field}
                                                 type="number"
+                                                formatter={(value) =>
+                                                    `${value}`.replace(
+                                                        /\B(?=(\d{3})+(?!\d))/g,
+                                                        ","
+                                                    )
+                                                }
                                                 placeholder="Giá dịch vụ"
+                                            /> */}
+                                            <InputNumber
+                                                style={{ width: "100%" }}
+                                                {...field}
+                                                formatter={(value) =>
+                                                    `${value}`.replace(
+                                                        /\B(?=(\d{3})+(?!\d))/g,
+                                                        ","
+                                                    )
+                                                }
+                                                parser={(value) =>
+                                                    value?.replace(
+                                                        /\$\s?|(,*)/g,
+                                                        ""
+                                                    )
+                                                }
+                                                onChange={(value) => {
+                                                    field.onChange(value);
+                                                }}
                                             />
                                         </Form.Item>
                                     )}

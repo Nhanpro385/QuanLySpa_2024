@@ -59,9 +59,7 @@ function Products() {
                 product.products.data.map((item) => ({
                     key: item.id,
                     name: item.name,
-                    image_url: (
-                        <Image src="http://127.0.0.1:8000/storage/app/uploads/1729000364_123.png" />
-                    ),
+                    image_url: item.image_url,
                     price: item.price,
                     quantity: item.quantity || "Dữ liệu không có",
                     capacity: item.capacity || "Dữ liệu không có",
@@ -115,9 +113,19 @@ function Products() {
     const handlechangepage = (page, pagination) => {
         setSearchQuery({ ...searchQuery, page, per_page: pagination });
     };
-    const handleSubmitEdit = async (data) => {
+    const handleSubmitEdit = async (id, data) => {
         try {
-            const result = await updateproduct(data);
+            const formData = new FormData();
+
+            for (let key in data) {
+                formData.append(key, data[key]);
+            }
+
+            const result = await updateproduct({
+                id,
+                data: formData,
+            });
+
             if (result.meta.requestStatus === "fulfilled") {
                 message.success("Cập nhật sản phẩm thành công");
                 getproduct();

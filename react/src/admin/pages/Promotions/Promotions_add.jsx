@@ -26,6 +26,7 @@ const PromotionsAdd = () => {
         handleSubmit,
         setError,
         reset,
+
         formState: { errors },
     } = useForm({
         shouldFocusError: false,
@@ -68,7 +69,6 @@ const PromotionsAdd = () => {
                 setFileList([]);
                 setContent("");
             } else {
-                
                 Object.keys(response.payload.errors).map((key) => {
                     setError(key, {
                         type: "manual",

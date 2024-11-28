@@ -233,7 +233,7 @@ const CustomersAdd = () => {
                                 </Button>
                             </Col>
                             <Col xl={4} lg={24} md={24} sm={24} xs={24}>
-                                <Link to="/admin/user">
+                                <Link to="/admin/khachhang">
                                     <Button block>Quay lại</Button>
                                 </Link>
                             </Col>

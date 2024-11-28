@@ -56,8 +56,16 @@ const CustomerTable = ({
 
     const items = [
         { key: "1", label: <Button block> Sửa </Button> },
-        { key: "2", label: <Button block> Chi tiết </Button> },
-        { key: "3", label: <Button block> Lịch sử giao dịch </Button> },
+        {
+            key: "2",
+            label: (
+                <Button block disabled>
+                    {" "}
+                    Chi tiết (Chưa hoàn thành){" "}
+                </Button>
+            ),
+        },
+        { key: "3", label: <Button block disabled> Lịch sử trị liệu  (Chưa hoàn thành) </Button> },
         {
             key: "4",
             label: (

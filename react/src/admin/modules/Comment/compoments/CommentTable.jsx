@@ -9,13 +9,16 @@ const CommentTable = ({
     handleViewDetail,
     handleDelete,
     handleEdit,
+    pagination,
     handleReplyClick,
+    handlePageChange,
 }) => {
     const columns = [
         {
             title: "#",
-            dataIndex: "key",
-            key: "key",
+            dataIndex: "index",
+            key: "index",
+            render: (text, record, index) => index + 1,
         },
         {
             title: "Tên người dùng",
@@ -45,7 +48,7 @@ const CommentTable = ({
             render: (admin_reply) => (
                 <Text type={admin_reply ? "success" : "danger"}>
                     {admin_reply ? "Đã trả lời" : "Chưa trả lời"}
-                </Text> 
+                </Text>
             ),
         },
         {
@@ -82,9 +85,7 @@ const CommentTable = ({
                                 label: (
                                     <Button
                                         block
-                                        onClick={() =>
-                                            handleReplyClick(record)
-                                        }
+                                        onClick={() => handleReplyClick(record)}
                                     >
                                         Trả lời
                                     </Button>
@@ -121,7 +122,17 @@ const CommentTable = ({
         <Table
             columns={columns}
             dataSource={dataSource}
-            pagination={{ pageSize: 5 }}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total) => `Tổng ${total} mục`,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                responsive: true,
+                onChange: handlePageChange,
+            }}
         />
     );
 };

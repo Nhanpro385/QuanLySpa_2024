@@ -12,7 +12,7 @@ import usePromotionActions from "../../modules/promotion/hooks/usepromotionActio
 import { useSelector } from "react-redux";
 function Promotions() {
     const navigate = useNavigate();
-    const { getPromotions } = usePromotionActions();
+    const { getPromotions, deletePromotions } = usePromotionActions();
     const [PromotionsData, setPromotionsData] = useState([]);
     const promotions = useSelector((state) => state.promotions);
     useEffect(() => {
@@ -35,8 +35,15 @@ function Promotions() {
         navigate(`/admin/khuyenmai/chinhsua/${key}`);
     };
 
-    const handleDelete = (key) => {
-        console.log("Delete", key);
+    const handleDelete = async (key) => {
+        try {
+            const res = await deletePromotions(key);
+            if (res.meta.requestStatus === "fulfilled") {
+                getPromotions();
+            }
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const handleAdd = () => {

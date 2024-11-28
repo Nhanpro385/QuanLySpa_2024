@@ -11,6 +11,7 @@ import {
     Switch,
     Spin,
     Upload,
+    InputNumber,
 } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useForm, Controller } from "react-hook-form";
@@ -45,7 +46,6 @@ function ServiceModalEdit({
         getServiceCategoriesById,
     } = useServiceCategoriesActions();
     const serviceCategories = useSelector((state) => state.serviceCategories);
-    
 
     const [datacate, setdatacate] = useState([]);
 
@@ -166,10 +166,30 @@ function ServiceModalEdit({
                                                     "Vui lòng nhập giá dịch vụ",
                                             }}
                                             render={({ field }) => (
-                                                <Input
+                                                // <Input
+                                                //     {...field}
+                                                //     type="number"
+                                                //     placeholder="Giá dịch vụ"
+
+                                                // />
+                                                <InputNumber
+                                                    style={{ width: "100%" }}
                                                     {...field}
-                                                    type="number"
-                                                    placeholder="Giá dịch vụ"
+                                                    formatter={(value) =>
+                                                        `${value}`.replace(
+                                                            /\B(?=(\d{3})+(?!\d))/g,
+                                                            ","
+                                                        )
+                                                    }
+                                                    parser={(value) =>
+                                                        value?.replace(
+                                                            /\$\s?|(,*)/g,
+                                                            ""
+                                                        )
+                                                    }
+                                                    onChange={(value) => {
+                                                        field.onChange(value);
+                                                    }}
                                                     status={
                                                         errors.price
                                                             ? "error"

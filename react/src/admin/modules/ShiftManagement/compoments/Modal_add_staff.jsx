@@ -11,6 +11,7 @@ import {
     Button,
     Space,
     Select,
+    Table,
 } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import useUsersActions from "../../staffManagement/hooks/useUserAction";
@@ -47,7 +48,7 @@ function ModalAddstaff({
     }, [shift]);
 
     useEffect(() => {
-        getstaffshift(50);
+        getstaffshift(100);
     }, [isModalOpen]);
     useEffect(() => {
         if (user?.users?.data && !user.loading) {
@@ -60,7 +61,7 @@ function ModalAddstaff({
     const onSubmit = (data) => {
         handleAddShift({
             staff_id: data.user_id,
-            shift_id: shift.key,
+            shift_id: shift.id,
         });
     };
 
@@ -111,6 +112,24 @@ function ModalAddstaff({
                                 )}
                             />
                         </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Table
+                            dataSource={shift?.staffs}
+                            columns={[
+                                {
+                                    title: "STT",
+                                    dataIndex: "index",
+                                    key: "index",
+                                    render: (text, record, index) => index + 1,
+                                },
+                                {
+                                    title: "Tên nhân viên",
+                                    dataIndex: "name",
+                                    key: "name",
+                                },
+                            ]}
+                        />
                     </Col>
                 </Row>
             </Form>
