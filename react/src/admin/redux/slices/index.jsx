@@ -16,3 +16,4 @@ export { default as promotionsSlice } from "./promotionSlice";
 export {default as consulationslice} from "./consulationsSlice"
 export {default as notificationSlice} from "./NotificationSlice"
 export {default as paymentsSlice} from "./paymentsSlice"
+export {default as statisticalSlice} from "./statisticalSlice"

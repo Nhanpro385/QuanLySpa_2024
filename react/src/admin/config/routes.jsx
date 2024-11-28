@@ -1,4 +1,4 @@
-import Dashboard from "@admin/pages/Dashboard";
+import Dashboard from "@admin/pages/home/Dashboard";
 
 // User Management
 import Customer from "@admin/pages/customerManagement/customer";

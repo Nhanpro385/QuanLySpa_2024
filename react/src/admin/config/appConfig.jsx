@@ -157,6 +157,18 @@ const endpoints = {
         delete: (id) => `${API_BASE_URL}/payments/${id}`,
         search: `${API_BASE_URL}/payments`,
     },
+    statistical: {
+        monthlyRevenues: (data) =>
+            `${API_BASE_URL}/statistical/monthlyRevenues?year=${data.year}&month=${data.month}`,
+        weeklyRevenues: (data) =>
+            `${API_BASE_URL}/statistical/weeklyRevenues?year=${data.year}&week=${data.week}`,
+        dailyRevenues: (data) =>
+            `${API_BASE_URL}/statistical/dailyRevenues?day=${data.day}`,
+        revenueAppointment: (data) =>
+            `${API_BASE_URL}/appointments?shift_date=${data.date}&per_page=100`,
+        revenueConsulation: (data) =>
+            `${API_BASE_URL}/consulations?search=${data.date}?per_page=100`,
+    },
 };
 
 export default endpoints;
