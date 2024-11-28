@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\Consulation;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -250,6 +251,34 @@ class StatisticalController extends Controller
                 'progress_appointment' => $progress_appointment,
                 'completed_appointment' => $completed_appointment,
 
+            ],
+        ];
+        return response($arr, 200);
+
+    }
+
+    public function consulations(Request $request)
+    {
+        $day = Carbon::today()->format('Y-m-d');
+        if ($request->input('day')) {
+            $day = $request->input('day');
+        }
+        $today_consulation = Consulation::whereDate('created_at', $day)->count();
+
+        $complete_consulation = Consulation::whereDate('created_at', $day)->where('status', 2)->count();
+
+        $request_consulation = Consulation::whereDate('created_at', $day)->where('status', 0)->count();
+
+        $progress_consulation = Consulation::whereDate('created_at', $day)->where('status', 1)->count();
+
+        $arr = [
+            'status' => true,
+            'messager' => 'Thống kê lịch hẹn: ' . $day,
+            'data' => [
+                'today_consulation' => $today_consulation,
+                'complete_consulation' => $complete_consulation,
+                'request_consulation' => $request_consulation,
+                'progress_consulation' => $progress_consulation,
             ],
         ];
         return response($arr, 200);

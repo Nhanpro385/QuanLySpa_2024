@@ -220,7 +220,7 @@ Route::group([
 
     Route::get('/statistical/appointments', [StatisticalController::class, 'appointments']);
 
-
+    Route::get('/statistical/consulations', [StatisticalController::class, 'consulations']);
 
 });
 Route::group([

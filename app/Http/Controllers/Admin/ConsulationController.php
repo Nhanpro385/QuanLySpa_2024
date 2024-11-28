@@ -48,7 +48,8 @@ class ConsulationController extends Controller
                     $query->where('full_name', 'like', '%' . $value . '%')
                         ->orWhere('phone', 'like', '%' . $value . '%')
                         ->orWhere('email', 'like', '%' . $value . '%');
-                });
+                })->orWhere('created_at', 'like', '%' . $value . '%')
+                ;
             }
 
             foreach ($queryResult['relations'] as $relationFilter) {
