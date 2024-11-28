@@ -232,11 +232,11 @@ Route::group([
     Route::post('/customer/{id}', [ClientCustomerAccountController::class, 'updatePassword'])->middleware('auth:customer_api');
 
     //comment
-    Route::get('/comment', [ClientCommentController::class, 'index']);
-    Route::get('/comment/{id}', [ClientCommentController::class, 'show']);
-    Route::post('/comment', [ClientCommentController::class, 'store']);
-    Route::put('/comment/{id}', [ClientCommentController::class, 'update']);
-    Route::delete('/comment/{id}', [ClientCommentController::class, 'destroy']);
+    Route::get('/comment', [ClientCommentController::class, 'index'])->middleware('auth:customer_api');
+    Route::get('/comment/{id}', [ClientCommentController::class, 'show'])->middleware('auth:customer_api');
+    Route::post('/comment', [ClientCommentController::class, 'store'])->middleware('auth:customer_api');
+    Route::put('/comment/{id}', [ClientCommentController::class, 'update'])->middleware('auth:customer_api');
+    Route::delete('/comment/{id}', [ClientCommentController::class, 'destroy'])->middleware('auth:customer_api');
 
     Route::get('/customers', [ClientCustomerAccountController::class, 'index']);
 

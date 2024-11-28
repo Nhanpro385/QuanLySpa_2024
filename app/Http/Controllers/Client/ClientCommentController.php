@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Filters\Admin\CommentFilter;
 
 
 use Kra8\Snowflake\Snowflake;
@@ -20,86 +22,89 @@ use Kra8\Snowflake\Snowflake;
 class ClientCommentController extends Controller
 {
 
-    public function index()
+    public function index(Request $request, CommentFilter $filter)
     {
-
-        $comments = Comment::with(['createdByUser', 'updatedByUser'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        try {
+            $query = Comment::with(['createdByUser', 'updatedByUser']);
 
 
-        return new CommentCollection($comments);
+            $comments = $filter->apply($request, $query)->paginate($request->input('per_page', 5));
+            return new CommentCollection($comments);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình lấy danh sách bình luận.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
+
 
 
 
     public function store(CommentRequest $request)
-{
+    {
+        try {
+            $userId = Auth::id();
+            if (!$userId) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Bạn cần đăng nhập để thêm bình luận.',
+                ], 401);
+            }
+            $validatedData['created_by'] = Auth::id();
+            $validatedData = $request->validated();
+            $parentComment = null;
+            if (!empty($validatedData['parent_comment_id'])) {
+                $parentComment = Comment::find($validatedData['parent_comment_id']);
+                if (!$parentComment) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Bình luận cha không tồn tại.',
+                    ], 404);
+                }
+            }
 
-    if (!Auth::check()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Bạn cần đăng nhập để thêm bình luận.',
-        ], 401);
-    }
+            $comment = Comment::create([
+                'id' => $validatedData['id'],
+                'parent_comment_id' => $parentComment?->id,
+                'service_id' => $validatedData['service_id'] ?? null,
+                'comment' => $validatedData['comment'],
+                'created_by' => $userId,
+            ]);
+            if ($request->hasFile('image_url')) {
+                $images = $request->file('image_url');
+                if (is_array($images)) {
+                    foreach ($images as $index => $file) {
 
-    try {
+                        $imageName = time() . '_' . $index . '_' . $file->getClientOriginalName();
+                        $file->storeAs('public/uploads/comments', $imageName);
 
-        $validatedData = $request->validated();
-        $validatedData['created_by'] = Auth::id();
+                        CommentImage::create([
+                            'id' => app(Snowflake::class)->next(),
+                            'comment_id' => $comment->id,
+                            'image_url' => $imageName,
+                            'created_by' => $userId,
+                        ]);
+                    }
+                }
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm bình luận thành công.',
+                'data' => $comment,
+            ]);
+        } catch (\Throwable $th) {
 
-        $hasUsedService = DB::table('appointments')
-            ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
-            ->join('services', 'services.id', '=', 'appointment_services.service_id')
-            ->join('customers', 'customers.id', '=', 'appointments.customer_id')
-            ->where('appointments.customer_id', '=', $validatedData['customer_id'])
-            ->where('appointment_services.service_id', '=', $validatedData['service_id'])
-            ->exists();
-
-        if (!$hasUsedService) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Bạn chỉ có thể bình luận nếu đã sử dụng dịch vụ này.',
-            ], 403);
+                'message' => 'Đã xảy ra lỗi trong quá trình thêm bình luận.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-
-        $comment = Comment::create([
-            'id' => app(Snowflake::class)->next(),
-            'service_id' => $validatedData['service_id'] ?? null,
-            'comment' => $validatedData['comment'],
-            'created_by' => Auth::id(),
-        ]);
-
-
-        if ($request->hasFile('image_url')) {
-            $image = $request->file('image_url');
-
-
-            $imagePath = $image->store('public/uploads/comments');
-
-
-            CommentImage::create([
-                'id' => app(Snowflake::class)->next(),
-                'comment_id' => $comment->id,
-                'image_url' => basename($imagePath),
-                'created_by' => Auth::id(),
-            ]);
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Thêm bình luận thành công.',
-            'data' => new CommentResource($comment),
-        ], 201);
-    } catch (\Throwable $th) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Đã xảy ra lỗi khi thêm bình luận.',
-            'error' => $th->getMessage(),
-        ], 500);
     }
-}
+
+
 
 
 
@@ -203,7 +208,7 @@ class ClientCommentController extends Controller
                 ], 403);
             }
 
-         
+
             $comment->delete();
 
             return response()->json([

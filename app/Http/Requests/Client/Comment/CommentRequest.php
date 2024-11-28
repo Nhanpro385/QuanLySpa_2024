@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Client\Comment;
 
 use Illuminate\Foundation\Http\FormRequest;
-
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -14,17 +13,19 @@ class CommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-
+    /**
+     * Validation rules.
+     */
     public function rules()
     {
         return [
             'id' => 'required|digits_between:10,20|integer|unique:comments,id',
 
 
-            'parent_comment_id' => 'required|exists:comments,id|integer',
+            'parent_comment_id' => 'nullable|exists:comments,id|integer',
             'comment' => 'required|string|max:500',
 
             // 'status' => 'required|boolean',
@@ -61,6 +62,9 @@ class CommentRequest extends FormRequest
         ];
     }
 
+    /**
+     * Handle failed validation.
+     */
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(
@@ -70,5 +74,5 @@ class CommentRequest extends FormRequest
                 'errors' => $validator->errors(),
             ], 422)
         );
-}
+    }
 }

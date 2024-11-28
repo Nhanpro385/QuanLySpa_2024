@@ -11,7 +11,7 @@ class CommentUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -47,7 +47,7 @@ class CommentUpdateRequest extends FormRequest
         ];
     }
 
-    
+
     public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         throw new \Illuminate\Http\Exceptions\HttpResponseException(
