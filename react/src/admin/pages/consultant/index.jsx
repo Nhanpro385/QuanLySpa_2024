@@ -32,7 +32,7 @@ const Consultant = () => {
     } = useconsulationsAction();
     const consulations = useSelector((state) => state.consulations);
     const [consultationsData, setConsultationsData] = useState([]);
-    const pagnation = consulations.consulations.meta || {};
+    const pagnation = consulations?.consulations?.meta || {};
     const [searchquery, setsearchquery] = useState({
         search: "",
         page: 1,
@@ -43,13 +43,20 @@ const Consultant = () => {
     }, []);
 
     useEffect(() => {
-        if (!consulations.loading && consulations.consulations) {
+        console.log(consulations);
+        if (
+            !consulations?.loading &&
+            consulations?.consulations &&
+            consulations?.consulations?.data
+        ) {
             setConsultationsData(
-                consulations.consulations.data.map((e) => ({
+                consulations?.consulations?.data.map((e) => ({
                     ...e, // Spread tất cả các thuộc tính từ e
                     key: e.id, // Thêm trường key từ e.id
                 }))
             );
+        } else {
+            setConsultationsData([]);
         }
     }, [consulations]);
 

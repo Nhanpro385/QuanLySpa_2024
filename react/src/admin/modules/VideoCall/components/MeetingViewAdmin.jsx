@@ -91,7 +91,11 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                 </Col>
 
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <ControlsAdmin />
+                    <ControlsAdmin
+                        setJoined={setJoined}
+                        joined={joined}
+                        meetingId={meetingId}
+                    />
                 </Col>
             </Row>
 
@@ -107,7 +111,9 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                             xs={24}
                             key={participantId}
                         >
-                            <ParticipantViewAdmin participantId={participantId} />
+                            <ParticipantViewAdmin
+                                participantId={participantId}
+                            />
                         </Col>
                     ))}
                 </Row>

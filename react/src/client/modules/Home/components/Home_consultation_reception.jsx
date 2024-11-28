@@ -116,7 +116,7 @@ const Home_consultation_reception = () => {
             setIsLoading(false); // Dừng loading
         }
     };
-    
+
     return (
         <section className="consultation-section">
             <h1 className="section-title">

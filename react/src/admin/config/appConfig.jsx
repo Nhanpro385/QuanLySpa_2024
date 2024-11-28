@@ -149,6 +149,14 @@ const endpoints = {
     Notification: {
         list: `${API_BASE_URL}/notifications`,
     },
+    Payments: {
+        list: `${API_BASE_URL}/payments`,
+        detail: (id) => `${API_BASE_URL}/payments/${id}`,
+        create: `${API_BASE_URL}/payments`,
+        update: (id) => `${API_BASE_URL}/payments/${id}`,
+        delete: (id) => `${API_BASE_URL}/payments/${id}`,
+        search: `${API_BASE_URL}/payments`,
+    },
 };
 
 export default endpoints;
