@@ -59,9 +59,13 @@ function Appointments() {
                         key: item.id,
                         id: item.id,
                         title: item.title || "Không có tiêu đề",
-                        service_name: item.services?.map((service) => service.name).join(", "),
+                        service_name: item.services
+                            ?.map((service) => service.name)
+                            .join(", "),
                         customer_id: item.customer?.full_name,
-                        employee_name: item.users?.map((user) => user.full_name).join(", "),
+                        employee_name: item.users
+                            ?.map((user) => user.full_name)
+                            .join(", "),
                         start: item.start_time || "Không có thời gian bắt đầu",
                         end: item.end || "Không có thời gian kết thúc",
                         status: item.status || "Không có trạng thái",
@@ -90,7 +94,17 @@ function Appointments() {
     const handlePageChange = (page, pagination, filters, sorter) => {
         setSearchQuery({ ...searchQuery, page, per_page: pagination });
     };
-
+    const handledelete = async (id) => {
+        console.log(id);
+        
+        try {
+            const res = deleteappointments(id)
+            console.log(res);
+            
+        } catch (err) {
+            console.log(err);
+        }
+    };
     return (
         <>
             <h1 className="text-center">Quản lý lịch hẹn</h1>
@@ -139,6 +153,7 @@ function Appointments() {
                             onViewDetail={(id) => {
                                 navigate("/admin/appointments/detail/" + id);
                             }}
+                            ondelete={(id) => handledelete(id)}
                             pagination={pagination}
                             handlePageChange={handlePageChange}
                         />

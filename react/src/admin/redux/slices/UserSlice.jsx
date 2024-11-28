@@ -155,6 +155,29 @@ export const userSearch = createAsyncThunk(
         }
     }
 );
+export const getUsersShift = createAsyncThunk(
+    "users/getShift",
+    async (per_page, { rejectWithValue }) => {
+        try {
+            const queryParams = per_page ? `&per_page=${per_page}` : "";
+
+            // Gọi API
+            const response = await axiosInstance.get(
+                `${endpoints.Users.getstaffshift}${queryParams}`
+            );
+
+            // Trả về dữ liệu response
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi lấy thông tin ca làm việc",
+            });
+        }
+    }
+);
 
 const initialState = {
     users: {
@@ -265,6 +288,18 @@ const userSlice = createSlice({
                 state.loading = false;
             })
             .addCase(userSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(getUsersShift.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getUsersShift.fulfilled, (state, action) => {
+                state.users = action.payload;
+                state.loading = false;
+            })
+            .addCase(getUsersShift.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

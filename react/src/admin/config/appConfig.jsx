@@ -37,6 +37,7 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/users/${id}`,
         delete: (id) => `${API_BASE_URL}/users/${id}`,
         search: `${API_BASE_URL}/users`,
+        getstaffshift: `${API_BASE_URL}/users?shifts=true&shifts_after=true&shifts_before=true`,
     },
     Positions: {
         list: `${API_BASE_URL}/positions`,
@@ -104,6 +105,7 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/shifts/${id}`,
         delete: (id) => `${API_BASE_URL}/shifts/${id}`,
         search: `${API_BASE_URL}/shifts`,
+        addstaff: `${API_BASE_URL}/staff-shifts`,
     },
     warehouse: {
         import: `${API_BASE_URL}/warehouse/import`,
@@ -143,6 +145,9 @@ const endpoints = {
         delete: (id) => `${API_BASE_URL}/consulations/${id}`,
         search: `${API_BASE_URL}/consulations`,
         accept: (id) => `${API_BASE_URL}/consulations/${id}/browse`,
+    },
+    Notification: {
+        list: `${API_BASE_URL}/notifications`,
     },
 };
 

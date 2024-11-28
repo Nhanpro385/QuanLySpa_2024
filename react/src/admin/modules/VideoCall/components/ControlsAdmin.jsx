@@ -15,18 +15,6 @@ function ControlsAdmin({ meetingId: idmeet, joined, setJoined }) {
         const { state } = data;
 
         switch (state) {
-            case "CONNECTING":
-                console.log("Meeting is Connecting");
-                break;
-            case "CONNECTED":
-                console.log("Meeting is Connected");
-                break;
-            case "FAILED":
-                console.log("Meeting connection failed");
-                break;
-            case "DISCONNECTED":
-                console.log("Meeting connection disconnected abruptly");
-                break;
             case "CLOSING":
                 setJoined(null);
                 navigate("/admin/tuvankhachhang/videocall/" + idmeet);

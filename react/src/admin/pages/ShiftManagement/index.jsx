@@ -26,8 +26,10 @@ import { useSelector } from "react-redux";
 import useShiftAction from "../../modules/ShiftManagement/hooks/useShiftAction";
 
 import debounce from "lodash/debounce";
+import ModalAddstaff from "../../modules/ShiftManagement/compoments/Modal_add_staff";
 const ShiftManagement = () => {
     const [api, contextHolder] = notification.useNotification();
+    const [shiftselected, setShiftSelected] = React.useState(null);
     const { shifts, shift, loading, error } = useSelector(
         (state) => state.shifts
     );
@@ -39,6 +41,7 @@ const ShiftManagement = () => {
         shiftadd,
         searchshifts,
         shiftdelete,
+        addShiftStaffAction,
     } = useShiftAction();
     useEffect(() => {
         getshifts();
@@ -52,10 +55,17 @@ const ShiftManagement = () => {
         handleCancel: handleCancel2,
         showModal: showModal2,
     } = useModal();
+    const {
+        isModalOpen: isModalOpen3,
+        handleOk: handleOk3,
+        handleCancel: handleCancel3,
+        showModal: showModal3,
+    } = useModal();
+
     const [searchquery, setSearchQuery] = React.useState({
         search: "",
         page: 1,
-        status: 1,
+        per_page: 5,
     });
     const handleSearch = debounce((value) => {
         if (value === "Invalid Date") {
@@ -64,7 +74,6 @@ const ShiftManagement = () => {
         }
 
         setSearchQuery((prev) => ({ ...prev, search: value }));
-        
     }, 300);
     const pagnation = shifts.meta || {};
     const handleDelete = async (id) => {
@@ -74,6 +83,7 @@ const ShiftManagement = () => {
                 api.success({
                     message: "Xóa ca làm việc thành công",
                 });
+                getshifts();
             } else if (res.meta.requestStatus === "rejected") {
                 api.error({
                     message: "Xóa ca làm việc thất bại",
@@ -85,13 +95,23 @@ const ShiftManagement = () => {
         }
     };
     useEffect(() => {
-        if (searchquery.search || searchquery.page !== 1) {
+        if (
+            searchquery.search ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 5
+        ) {
             searchshifts(searchquery);
+        } else {
+            getshifts();
         }
     }, [searchquery]);
 
-    const handlechangePage = (page) => {
-        setSearchQuery((prev) => ({ ...prev, page: page }));
+    const handlechangePage = (page, pagination) => {
+        setSearchQuery((prev) => ({
+            ...prev,
+            page: page,
+            per_page: pagination,
+        }));
     };
 
     const handleAddShift = async (value) => {
@@ -203,7 +223,30 @@ const ShiftManagement = () => {
             ),
         },
     ];
+    const handleaddstaff = (record) => {
+        if (record) {
+            setShiftSelected(record);
+            showModal3();
+        }
+    };
+    const onaddstaff = async (value) => {
+        try {
+            console.log(value);
 
+            const res = await addShiftStaffAction(value);
+            if (res.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Thêm nhân viên vào ca làm việc thành công",
+                });
+                handleCancel3();
+            } else {
+                api.error({
+                    message: "Thêm nhân viên vào ca làm việc thất bại",
+                    description: res.payload.errors.shift_id[0],
+                });
+            }
+        } catch (error) {}
+    };
     const handleActionClick = (key, record) => {
         switch (key.key) {
             case "1":
@@ -212,6 +255,9 @@ const ShiftManagement = () => {
             case "2":
                 navigate(`/admin/staffs/${record.key}`);
                 break;
+            case "3":
+                handleaddstaff(record);
+                break;
             case "4":
                 handleDelete(record.key);
                 break;
@@ -219,6 +265,7 @@ const ShiftManagement = () => {
                 break;
         }
     };
+    const handleAddstaff = async (value) => {};
 
     return (
         <div>
@@ -276,6 +323,15 @@ const ShiftManagement = () => {
                 data={shift.data}
                 handleEditSubmit={handleEditSubmit}
                 error={errorEdit}
+            />
+            <ModalAddstaff
+                isModalOpen={isModalOpen3}
+                handleOk={handleOk3}
+                handleCancel={handleCancel3}
+                loading={loading}
+                shift={shiftselected}
+                handleAddShift={onaddstaff}
+                error={error}
             />
             <ShiftCalendar />
             {contextHolder}

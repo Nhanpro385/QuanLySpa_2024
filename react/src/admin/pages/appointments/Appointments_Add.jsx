@@ -151,9 +151,8 @@ const Appointment_Add = () => {
                 customer_id: data.customer_id,
                 start_time: formatTime(data.appointment_date),
                 appointment_date: formatDate(data.appointment_date),
-                note: data.note,
+                note: data.note || "đã note",
                 users: data.employee.map((employee) => ({
-                    key: employee,
                     staff_id: employee,
                 })),
                 services: selectedServices.map((service) => ({

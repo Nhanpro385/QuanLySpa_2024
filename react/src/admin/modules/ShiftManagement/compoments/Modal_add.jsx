@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Modal,
     Form,
@@ -11,7 +11,7 @@ import {
     Button,
     Space,
 } from "antd";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 
 import "dayjs/locale/vi";
 import dayjs from "dayjs";
@@ -22,14 +22,40 @@ function ModalAddShift({
     handleOk,
     handleCancel,
     handleAddShift,
+    error,
 }) {
     const {
         control,
         handleSubmit,
         formState: { errors },
         setValue,
+        setError,
         reset,
     } = useForm();
+    useEffect(() => {
+        if (error?.errors?.shift_time) {
+            setError("start_time", {
+                type: "manual",
+                message: error?.errors?.shift_time[0],
+            });
+            setError("end_time", {
+                type: "manual",
+                message: error?.errors?.shift_time[0],
+            });
+        }
+        if (error?.errors?.shift_date) {
+            setError("shift_date", {
+                type: "manual",
+                message: error?.errors?.shift_date[0],
+            });
+        }
+        if (error?.errors?.max_customers) {
+            setError("max_customers", {
+                type: "manual",
+                message: error?.errors?.max_customers[0],
+            });
+        }
+    }, [error, setError]);
 
     const onSubmit = (data) => {
         console.log("Submitted data:", data); // Log data for testing

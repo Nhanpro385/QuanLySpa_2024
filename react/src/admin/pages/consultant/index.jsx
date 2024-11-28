@@ -23,8 +23,13 @@ const Consultant = () => {
     const [form] = Form.useForm();
     const [api, contextHolder] = notification.useNotification();
     const [editForm] = Form.useForm(); // Form instance for editing
-    const { getconsulations, searchconsulations, acceptConsulations } =
-        useconsulationsAction();
+    const {
+        getconsulations,
+        searchconsulations,
+        acceptConsulations,
+        getbyidconsulations,
+        updateconsulations,
+    } = useconsulationsAction();
     const consulations = useSelector((state) => state.consulations);
     const [consultationsData, setConsultationsData] = useState([]);
     const pagnation = consulations.consulations.meta || {};
@@ -59,28 +64,42 @@ const Consultant = () => {
         form.resetFields();
     };
 
-    const handleEdit = (record) => {
-        setSelectedConsultation(record);
-        editForm.setFieldsValue(record); // Set form values
-        setIsEditModalOpen(true); // Show modal
+    const handleEdit = async (record) => {
+        try {
+            const res = await getbyidconsulations(record.id);
+            if (res.payload.status === "success") {
+                setSelectedConsultation(res.payload.data);
+                editForm.setFieldsValue(res.payload.data);
+
+                setIsEditModalOpen(true);
+            }
+        } catch (err) {
+            console.log(err);
+        }
     };
 
-    const handleEditOk = () => {
-        editForm
-            .validateFields()
-            .then((values) => {
-                const updatedData = consultationsData.map((item) =>
-                    item.key === selectedConsultation.key
-                        ? { ...values, key: item.key }
-                        : item
-                );
-                setConsultationsData(updatedData);
-                setIsEditModalOpen(false); // Close modal
-                setSelectedConsultation(null); // Clear selected record
-            })
-            .catch((info) => {
-                console.log("Validate Failed:", info);
+    const handleEditOk = async () => {
+        try {
+            const payload = {
+                status: editForm.getFieldValue("status"),
+                consulation: editForm.getFieldValue("consulation"),
+                treatment_plan: editForm.getFieldValue("treatment_plan"),
+                skin_condition: editForm.getFieldValue("skin_condition"),
+            };
+            const res = await updateconsulations({
+                id: selectedConsultation.id,
+                data: payload,
             });
+            if (res.payload.status == 404) {
+                api.error({
+                    message: res.payload.message || "Không tìm thấy lịch hẹn",
+                    description: "Cập nhật lịch hẹn",
+                    duration: 3,
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const handleEditCancel = () => {
@@ -88,8 +107,6 @@ const Consultant = () => {
         setSelectedConsultation(null); // Clear selected record
     };
     const Onsearch = debounce((value) => {
-        console.log(value);
-
         setsearchquery({ ...searchquery, search: value });
     }, 500);
     const onchangePage = (page, pagination) => {
@@ -188,18 +205,6 @@ const Consultant = () => {
             >
                 <Form form={editForm} layout="vertical">
                     <Form.Item
-                        label="Tên khách hàng"
-                        name="customerName"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập tên khách hàng!",
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
                         label="Trạng thái"
                         name="status"
                         rules={[
@@ -210,32 +215,16 @@ const Consultant = () => {
                         ]}
                     >
                         <Select placeholder="Trạng thái">
-                            <Option value="Đang chờ">Đang chờ</Option>
-                            <Option value="Đang tư vấn">Đang tư vấn</Option>
-                            <Option value="Hoàn thành">Hoàn thành</Option>
+                            <Option value={1}>Đang Tư Vấn</Option>
+                            <Option value={2}>Đã tư vấn</Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item
-                        label="Dịch vụ"
-                        name="service"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng chọn dịch vụ!",
-                            },
-                        ]}
-                    >
-                        <Select placeholder="Dịch vụ">
-                            <Option value="Dịch vụ A">Dịch vụ A</Option>
-                            <Option value="Dịch vụ B">Dịch vụ B</Option>
-                            <Option value="Dịch vụ C">Dịch vụ C</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item label="Kế hoạch tư vấn" name="consultationPlan">
+
+                    <Form.Item label="Kế hoạch tư vấn" name="treatment_plan">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Tình trạng da" name="skinStatus">
-                        <Input />
+                    <Form.Item label="Tình trạng da" name="skin_condition">
+                        <Input.TextArea />
                     </Form.Item>
                 </Form>
             </Modal>

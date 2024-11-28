@@ -3,29 +3,68 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 // Tạo Context
 const AuthContext = createContext();
 import useAuthActions from "../../admin/modules/authen/hooks/useAuth";
+
 // Tạo Provider để cung cấp context cho toàn bộ ứng dụng
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const storedUser = localStorage.getItem("user");
+    const [user, setUser] = useState(
+        storedUser ? JSON.parse(storedUser) : null
+    ); // Lấy user từ localStorage nếu có
+    const [isLoggedIn, setIsLoggedIn] = useState(
+        !!localStorage.getItem("token")
+    );
     const { authGetmeClient } = useAuthActions();
-    // Kiểm tra thông tin user từ localStorage hoặc bất kỳ nơi nào lưu trữ
+
     useEffect(() => {
         const token = localStorage.getItem("token");
-        if (token) {
-            setIsLoggedIn(true);
+        
+        if (token && !user) {
+            authGetmeClient()
+                .then((userData) => {
+                    setUser(userData.payload.data);
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify({
+                            name: userData.payload.data.full_name,
+                            id: userData.payload.data.id,
+                        })
+                    );
+                })
+                .catch((error) => {
+                    console.error("Error fetching user data:", error);
+                    // Nếu lỗi (ví dụ token không hợp lệ), thực hiện logout
+                    logout();
+                });
         }
+    }, [user, authGetmeClient]);
+
+    // Theo dõi sự thay đổi của token
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                logout(); // Token bị xóa hoặc không hợp lệ, tự động logout
+            }
+        }, 1000); // Kiểm tra token mỗi giây
+
+        return () => clearInterval(interval); // Dọn dẹp khi unmount
     }, []);
 
     const login = async (token) => {
         try {
-            setUser(user);
             setIsLoggedIn(true);
             localStorage.setItem("token", token);
 
-            if (token) {
-                const user = await authGetmeClient();
-                setUser(user.payload.data);
-            }
+            // Lấy thông tin user sau khi đăng nhập thành công
+            const user = await authGetmeClient();
+            setUser(user.payload.data);
+            localStorage.setItem(
+                "user",
+                JSON.stringify({
+                    full_name: user.payload.data.full_name,
+                    id: user.payload.data.id,
+                })
+            );
         } catch (e) {
             console.log(e);
         }
@@ -35,6 +74,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setIsLoggedIn(false);
         localStorage.removeItem("token"); // Xóa token khi đăng xuất
+        localStorage.removeItem("user"); // Xóa thông tin user khi đăng xuất
     };
 
     return (

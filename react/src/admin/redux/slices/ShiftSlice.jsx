@@ -15,8 +15,6 @@ const checkRoleAndLogout = (dispatch) => {
 export const shiftsGet = createAsyncThunk("shifts/get", async (per_page) => {
     // Xây dựng query parameters chỉ với `per_page` nếu có
     const queryParams = per_page ? `?per_page=${per_page}` : "";
-   ;
-
     // Gọi API
     const response = await axiosInstance.get(
         `${endpoints.shifts.list}${queryParams}`
@@ -116,8 +114,14 @@ export const shiftsSearch = createAsyncThunk(
     "shifts/search",
     async (data, { rejectWithValue }) => {
         try {
+            if (data.search == "") {
+                const response = await axiosInstance.get(
+                    `${endpoints.shifts.search}?page=${data.page}&per_page=${data.per_page}`
+                );
+                return response.data;
+            }
             const response = await axiosInstance.get(
-                `${endpoints.shifts.search}?shift_date=${data.search}&status=${data.status}&page=${data.page}&per_page=${data.per_page}`
+                `${endpoints.shifts.search}?shift_date=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;
@@ -127,6 +131,24 @@ export const shiftsSearch = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi tìm kiếm ca làm việc",
+            });
+        }
+    }
+);
+export const addShiftStaff = createAsyncThunk(
+    "shifts/addShiftStaff",
+    async (data, { dispatch, rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                `${endpoints.shifts.addstaff}`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                errors: error.response?.data?.errors || [],
             });
         }
     }
@@ -164,7 +186,9 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsAdd.fulfilled, (state, action) => {
-                state.shifts.data.push(action.payload);
+                
+                
+                state.shifts.data.push(action.payload.data);
                 state.loading = false;
             })
             .addCase(shiftsAdd.rejected, (state, action) => {
@@ -176,8 +200,6 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsDelete.fulfilled, (state, action) => {
-              
-
                 state.shifts.data = state.shifts.data.filter(
                     (cate) => cate.id !== action.payload
                 );
@@ -220,8 +242,6 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsSearch.fulfilled, (state, action) => {
-             
-
                 if (action.payload.data == undefined) {
                     state.shifts = {
                         data: [],
@@ -237,6 +257,17 @@ const shiftsSlice = createSlice({
                     data: [],
                 };
 
+                state.error = action.payload.message;
+            })
+            .addCase(addShiftStaff.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addShiftStaff.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(addShiftStaff.rejected, (state, action) => {
+                state.loading = false;
                 state.error = action.payload.message;
             });
     },

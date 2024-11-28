@@ -43,9 +43,12 @@ const Login = () => {
                     description: "Chào mừng bạn trở lại",
                     duration: 3,
                 });
-                login(response.payload.access_token);
 
-                navigate("/");
+                setTimeout(() => {
+                    login(response.payload.access_token);
+
+                    navigate("/");
+                }, 1500);
             } else {
                 // Handle other errors
                 api.error({
@@ -140,7 +143,7 @@ const Login = () => {
                     <a onClick={() => navigate("/dangky")}>Đăng ký ngay</a>
                 </p>
                 <p>Hoặc</p>
-                <Button block className={style.btnLoginGoogle}>
+                <Button disabled block className={style.btnLoginGoogle}>
                     ĐĂNG NHẬP VỚI GOOGLE
                 </Button>
             </Col>

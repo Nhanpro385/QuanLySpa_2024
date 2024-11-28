@@ -46,7 +46,6 @@ function ParticipantViewAdmin({ participantId, nameuser }) {
                                 Mic đã tắt
                             </p>
                         )}
-                       
                     </Col>
                 </Row>
             ) : (

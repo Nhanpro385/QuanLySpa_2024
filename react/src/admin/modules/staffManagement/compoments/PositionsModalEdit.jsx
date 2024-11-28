@@ -20,25 +20,18 @@ const PositionsModalEdit = ({
     useEffect(() => {
         if (Position.data) {
             setValue("name", Position.data.name);
-            setValue("wage", ()=>{
-                if (typeof Position.data.wage === "number") {
-                    return Position.data.wage;
-                } else {
-                    return Position.data.wage.replace(/\$\s?|(,*)/g, "");
-                }
-            });
+            const wage = parseInt(Position.data.wage.replace(/,/g, ""), 10);
+            setValue("wage", wage);
             setValue("note", Position.data.note);
         }
     }, [Position.data, setValue]);
 
     const onSubmit = (data) => {
         // Check if wage is a string before trying to replace characters
-        if (typeof data.wage === "string") {
-            data.wage = data.wage.replace(/\$\s?|(,*)/g, "");
-        }
+        console.log(data.wage);
+
         handleEditSubmit({ ...data, id: Position.data.id });
     };
-    
 
     return (
         <Modal
@@ -91,10 +84,9 @@ const PositionsModalEdit = ({
                                 parser={(value) =>
                                     value?.replace(/\$\s?|(,*)/g, "")
                                 }
-                               onChange={(value) => {
-                                field.onChange(value);
-                               }
-                            }
+                                onChange={(value) => {
+                                    field.onChange(value);
+                                }}
                             />
                         )}
                     />

@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { PublicRoutes } from "./config/routes";
 
-import AuthMiddleware from "@/authMiddleware";
+import AuthMiddleware from "../authMiddleware";
 import AdminLayout from "@admin/components/layout/AdminLayout";
 import { Button, Result } from "antd";
 import LoginPage from "./pages/authen/loginPage";
@@ -14,7 +14,7 @@ import Newpassword from "./modules/authen/compoment/newpassPage";
 const AppAdmin = () => {
     return (
    
-            <Routes>
+            <Routes >
                 {PublicRoutes.map((route, index) => (
                     <Route
                         key={index}

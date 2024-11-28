@@ -6,7 +6,7 @@ import { logout } from "./authSlice";
 
 const checkRoleAndLogout = (dispatch) => {
     const userRole = localStorage.getItem("role");
-
+    
     if (!userRole) {
         dispatch(logout());
     }
@@ -37,7 +37,6 @@ export const appointmentsAdd = createAsyncThunk(
                 endpoints.appointments.create,
                 data
             );
-            console.log(data);
 
             return response.data;
         } catch (error) {
@@ -202,8 +201,6 @@ const appointmentsSlice = createSlice({
                 state.error = null;
             })
             .addCase(appointmentsDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
-
                 state.appointments.data = state.appointments.data.filter(
                     (cate) => cate.id !== action.payload
                 );
@@ -218,8 +215,6 @@ const appointmentsSlice = createSlice({
                 state.error = null;
             })
             .addCase(appointmentsUpdate.fulfilled, (state, action) => {
-                console.log(action.payload.data.id);
-
                 state.appointments.data = state.appointments.data.map((cate) =>
                     cate.id === action.payload.data.id
                         ? action.payload.data

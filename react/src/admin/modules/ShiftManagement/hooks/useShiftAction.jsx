@@ -6,6 +6,7 @@ import {
     shiftsUpdate,
     shiftsGetById,
     shiftsSearch,
+    addShiftStaff,
 } from "@admin/redux/slices/ShiftSlice";
 
 const useShiftAction = () => {
@@ -37,6 +38,9 @@ const useShiftAction = () => {
 
         return await dispatch(shiftsGet(config));
     };
+    const addShiftStaffAction = async (data) => {
+        return await dispatch(addShiftStaff(data));
+    };
 
     return {
         shiftadd,
@@ -45,6 +49,7 @@ const useShiftAction = () => {
         getshiftsById,
         searchshifts,
         getshifts,
+        addShiftStaffAction,
     };
 };
 

@@ -6,6 +6,7 @@ const ShiftActions = ({ onClick, record }) => {
     const items = [
         { key: "1", label: <Button block>Sửa Ca Làm</Button> },
         { key: "2", label: <Button block>Chi tiết Ca</Button> },
+        { key: "3", label: <Button block>thêm nhân viên </Button> },
         {
             key: "4",
             label: (

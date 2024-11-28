@@ -85,13 +85,11 @@ function MeetingView({ meetingId, onMeetingLeave }) {
         <div className="container">
             <Row className="mb-4" gutter={[16, 16]}>
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <h1 style={{ textAlign: "center" }}>Cuộc họp</h1>
+                    <h1 style={{ textAlign: "center" }}>
+                        Gọi thoại tư vấn trực tuyến
+                    </h1>
                 </Col>
-                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <h3 style={{ textAlign: "center" }}>
-                        Mã cuộc họp: {meetingId}
-                    </h3>
-                </Col>
+
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Controls />
                 </Col>

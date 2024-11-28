@@ -9,6 +9,7 @@ const AppointmentsTable = ({
     onViewDetail,
     pagination,
     loading,
+    ondelete,
     handlePageChange,
 }) => {
     console.log(dataSource);
@@ -33,7 +34,7 @@ const AppointmentsTable = ({
         {
             key: "4",
             label: (
-                <Button block danger>
+                <Button block danger onClick={ondelete}>
                     Xóa
                 </Button>
             ),
@@ -88,6 +89,7 @@ const AppointmentsTable = ({
                                 const key = e.key;
                                 if (key === "1") onEdit(record.key);
                                 if (key === "2") onViewDetail(record.key);
+                                if (key === "4") ondelete(record.key);
                             },
                         }}
                         trigger={["click"]}

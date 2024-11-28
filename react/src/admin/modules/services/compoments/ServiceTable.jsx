@@ -65,6 +65,8 @@ const ServiceTable = ({
                 total: pagination.total,
                 showSizeChanger: true,
                 showQuickJumper: true,
+
+                pageSizeOptions: ["5", "10", "20", "50"],
                 showTotal: (total) => `Tổng ${total} mục`,
                 onChange: handleChangepage,
             }}

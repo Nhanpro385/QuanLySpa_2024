@@ -108,7 +108,6 @@ const Positions = () => {
 
         try {
             const resultAction = await getPositionsById(record.key);
-            console.log(resultAction);
 
             // Check if the request was successful and payload is valid
             if (
@@ -156,6 +155,8 @@ const Positions = () => {
         }
 
         try {
+            console.log(data);
+            
             const resultAction = await updatePositions(data);
 
             // Check if the request was successful and the payload is valid

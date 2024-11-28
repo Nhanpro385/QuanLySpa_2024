@@ -80,25 +80,18 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
             audioTrack.enabled = !audioTrack.enabled; // Toggle microphone track
         }
     };
-    console.log(joined);
 
     return (
         <div className="container">
             <Row className="mb-4" gutter={[16, 16]}>
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <h1 style={{ textAlign: "center" }}>Cuộc họp</h1>
+                    <h1 style={{ textAlign: "center" }}>
+                        Gọi thoại tư vấn trực tuyến
+                    </h1>
                 </Col>
+
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <h3 style={{ textAlign: "center" }}>
-                        Mã cuộc họp: {meetingId}
-                    </h3>
-                </Col>
-                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <ControlsAdmin
-                        setJoined={setJoined}
-                        joined={joined}
-                        meetingId={meetingId}
-                    />
+                    <ControlsAdmin />
                 </Col>
             </Row>
 
@@ -114,9 +107,7 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                             xs={24}
                             key={participantId}
                         >
-                            <ParticipantViewAdmin
-                                participantId={participantId}
-                            />
+                            <ParticipantViewAdmin participantId={participantId} />
                         </Col>
                     ))}
                 </Row>
@@ -140,7 +131,7 @@ function MeetingViewAdmin({ meetingId, onMeetingLeave }) {
                     {/* Modal for Camera and Audio Review */}
                     <Modal
                         title="Xem trước Camera và Âm thanh"
-                        open={isModalVisible}
+                        visible={isModalVisible}
                         onCancel={handleCancel}
                         footer={[
                             <Button key="back" onClick={handleCancel}>

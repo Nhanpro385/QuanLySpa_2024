@@ -6,6 +6,7 @@ import {
     usersDelete,
     usersGetById,
     userSearch,
+    getUsersShift,
 } from "@admin/redux/slices/UserSlice";
 const useUsersActions = () => {
     const dispatch = useDispatch();
@@ -36,7 +37,12 @@ const useUsersActions = () => {
     const searchusers = async (data) => {
         return await dispatch(userSearch(data));
     };
-
+    const getstaffshift = async (config) => {
+        if (!config) {
+            return await dispatch(getUsersShift());
+        }
+        return await dispatch(getUsersShift(config));
+    };
     return {
         addusers,
         getusers,
@@ -44,6 +50,7 @@ const useUsersActions = () => {
         deleteusers,
         getusersById,
         searchusers,
+        getstaffshift,
     };
 };
 

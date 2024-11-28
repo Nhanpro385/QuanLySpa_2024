@@ -48,9 +48,9 @@ const ProductServiceAdd = () => {
     }, [services.service.data]);
 
     useEffect(() => {
-        if (product.product.data) {
+        if (product?.products?.data) {
             setProductData(
-                product.product.data.map((item) => ({
+                product?.products?.data.map((item) => ({
                     key: item.id,
                     ...item,
                 }))
@@ -168,7 +168,9 @@ const ProductServiceAdd = () => {
                 (item) => item.tag === "edit"
             );
             if (existProduct.length === 0) {
-                return messageApi.error("Không có sản phẩm nào được chỉnh sửa!");
+                return messageApi.error(
+                    "Không có sản phẩm nào được chỉnh sửa!"
+                );
             }
             const productEdit = productSelected;
             const productServiceEdit = ProductService;

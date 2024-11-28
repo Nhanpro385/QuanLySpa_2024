@@ -181,9 +181,6 @@ export const GetmeClient = createAsyncThunk(
     "auth/getmeClient",
     async (_, { rejectWithValue }) => {
         try {
-            console.log("đây là getme");
-            console.log("đây là token", localStorage.getItem("token"));
-
             const response = await axiosInstance.get(endpoints.AuthClient.me);
             return response.data;
         } catch (error) {

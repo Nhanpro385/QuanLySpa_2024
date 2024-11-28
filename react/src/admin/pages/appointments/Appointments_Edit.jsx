@@ -39,11 +39,11 @@ const Appointment_Edit = () => {
     const [api, contextHolder] = notification.useNotification();
     const { getservices } = useServicesActions();
     const { getusers } = useUsersActions();
-    const { getshiftsById, searchshifts } = useShiftAction();
+    const { getshiftsById, searchshifts, getshifts } = useShiftAction();
     const { getappointmentsById, updateappointments } =
         useappointmentsActions();
     const service = useSelector((state) => state.services);
-    const users = useSelector((state) => state.user);
+    // const users = useSelector((state) => state.user);
     const shifts = useSelector((state) => state.shifts);
     const appointments = useSelector((state) => state.appointments);
     const {
@@ -56,52 +56,52 @@ const Appointment_Edit = () => {
 
     useEffect(() => {
         getservices(50);
-        getusers(50);
+
         getappointmentsById(idAppointment);
     }, []);
+
     useEffect(() => {
         if (!appointments.loading && appointments.appointment.data) {
-            searchshifts({
-                search: appointments.appointment.data.shift.shift_date,
-                page: 1,
-                per_page: 50,
-                status: 3,
-            });
-        }
-    }, [appointments.appointment.data]);
-    useEffect(() => {
-        if (!appointments.loading && appointments.appointment.data) {
-            setValue(
-                "full_name",
-                appointments.appointment.data.customer?.full_name ||
-                    "Không tìm thấy"
-            );
-            setValue(
-                "phone",
-                appointments.appointment.data.customer?.phone ||
-                    "Không tìm thấy"
-            );
-            setValue(
-                "appointment_date",
-                [
-                    dayjs(
-                        appointments.appointment.data.appointment_date +
-                            " " +
-                            appointments.appointment.data.start_time
-                    ),
-                ] || []
-            );
-            setValue(
-                "expected_time",
-                calculateEndTime(
-                    appointments.appointment.data.appointment_date,
-                    appointments.appointment.data.start_time,
-                    appointments.appointment.data.expected_time
-                ) || ""
-            );
-            setValue("note", appointments.appointment.data.note || "");
-            setValue("shift", appointments.appointment.data.shift.id || "");
-            setValue("status", appointments.appointment.data.status || "");
+            if (!appointments.loading && appointments.appointment.data) {
+                setValue(
+                    "full_name",
+                    appointments.appointment.data.customer?.full_name ||
+                        "Không tìm thấy"
+                );
+                setValue(
+                    "phone",
+                    appointments.appointment.data.customer?.phone ||
+                        "Không tìm thấy"
+                );
+                setValue(
+                    "appointment_date",
+                    [
+                        dayjs(
+                            appointments.appointment.data.appointment_date +
+                                " " +
+                                appointments.appointment.data.start_time
+                        ),
+                    ] || []
+                );
+                setValue(
+                    "expected_time",
+                    calculateEndTime(
+                        appointments.appointment.data.appointment_date,
+                        appointments.appointment.data.start_time,
+                        appointments.appointment.data.expected_time
+                    ) || ""
+                );
+                setValue("note", appointments.appointment.data.note || "");
+                setValue("shift", appointments.appointment.data.shift.id || "");
+                setValue("status", appointments.appointment.data.status || "");
+                setValue(
+                    "service",
+                    appointments.appointment.data.services.map(
+                        (service) => service.id
+                    ) || []
+                );
+            }
+            getshiftsById(appointments.appointment.data.shift.id);
         }
     }, [appointments.appointment.data]);
 
@@ -117,42 +117,96 @@ const Appointment_Edit = () => {
             }))
         );
 
-        setShiftsOptions(
-            shifts.shifts.data.map((shift) => ({
-                value: shift.id,
+        setShiftsOptions([
+            {
+                value: shifts.shift?.data?.id,
                 label: (
                     <>
                         <Tag color="blue">
-                            <ContactsOutlined /> {shift.shift_date}
+                            <ContactsOutlined />{" "}
+                            {shifts.shift?.data?.shift_date}
                         </Tag>
 
                         <Tag color="green">
-                            <ClockCircleOutlined /> {shift.start_time}
+                            <ClockCircleOutlined />{" "}
+                            {shifts.shift?.data?.start_time}
                         </Tag>
 
                         <Tag color="red">
-                            <ClockCircleOutlined /> {shift.end_time}
+                            <ClockCircleOutlined />{" "}
+                            {shifts.shift?.data?.end_time}
                         </Tag>
-                        <Tag color={shift.staffs.length > 0 ? "green" : "red"}>
-                            <UserOutlined /> {shift.staffs.length} nhân viên
+                        <Tag
+                            color={
+                                shifts.shift?.data?.staffs.length > 0
+                                    ? "green"
+                                    : "red"
+                            }
+                        >
+                            <UserOutlined /> {shifts.shift?.data?.staffs.length}{" "}
+                            nhân viên
+                        </Tag>
+                    </>
+                ),
+            },
+        ]);
+        setUserOptions(
+            shifts.shift?.data?.staffs.map((employee) => ({
+                value: employee.id,
+                label: (
+                    <>
+                        <Tag color="blue">
+                            <UserOutlined /> {employee.name}
                         </Tag>
                     </>
                 ),
             }))
         );
-    }, [service.services, users.users, shifts.shifts]);
-
+        setValue(
+            "employee",
+            appointments.appointment?.data?.users.map((user) => user.id)
+        );
+    }, [shifts.shift]);
+    useEffect(() => {
+        if (shifts.shifts.data.length > 0) {
+            setShiftsOptions(
+                shifts.shifts.data.map((shift) => ({
+                    value: shift.id,
+                    label: (
+                        <>
+                            <Tag color="blue">
+                                <ContactsOutlined /> {shift.shift_date}
+                            </Tag>
+                            <Tag color="green">
+                                <ClockCircleOutlined /> {shift.start_time}
+                            </Tag>
+                            <Tag color="red">
+                                <ClockCircleOutlined /> {shift.end_time}
+                            </Tag>
+                            <Tag
+                                color={
+                                    shift.staffs.length > 0 ? "green" : "red"
+                                }
+                            >
+                                <UserOutlined /> {shift.staffs.length} nhân viên
+                            </Tag>
+                        </>
+                    ),
+                }))
+            );
+        } else {
+            setShiftsOptions([]);
+            setUserOptions([]);
+        }
+    }, [shifts.shifts.data]);
     const HandleShiftChange = async (value) => {
         try {
-            console.log("value", value);
-
-            if (value === undefined) {
-                setValue("employee", []);
-                setValue("shift", null);
+            if (!value) {
                 return;
             }
 
             const res = await getshiftsById(value || getValues("shift"));
+
             if (res.meta.requestStatus === "fulfilled") {
                 const shift = res.payload.data;
                 setValue("employee", []);
@@ -180,10 +234,6 @@ const Appointment_Edit = () => {
                 }));
                 setUserOptions(employees);
                 setValue("shift", value);
-                setValue(
-                    "employee",
-                    employees.map((employee) => employee.value)
-                );
             } else {
                 console.warn("Failed to fetch shift data:", res);
             }
@@ -191,11 +241,6 @@ const Appointment_Edit = () => {
             console.error("Error in HandleShiftChange:", error);
         }
     };
-    useEffect(() => {
-        if (getValues("shift")) {
-            HandleShiftChange(getValues("shift"));
-        }
-    }, [getValues("shift")]);
 
     const onSubmit = async (data) => {
         try {
@@ -209,15 +254,25 @@ const Appointment_Edit = () => {
                     staff_id: user,
                 })),
                 shift_id: data.shift,
-                status: 2,
+                status:
+                    data.status === "Đã hủy lịch hẹn."
+                        ? 0
+                        : data.status === "Đã đặt lịch hẹn."
+                        ? 1
+                        : data.status === "Đang thực hiện."
+                        ? 2
+                        : data.status === "Đã hoàn thành."
+                        ? 3
+                        : null, // Trường hợp không khớp với trạng thái nào
+
                 note: data.note,
             };
             const res = await updateappointments(payload);
-            console.log("res", res);
-
+            console.log(res);
+            
             if (res.meta.requestStatus === "fulfilled") {
                 api.success({
-                    message: "Thêm lịch hẹn thành công",
+                    message: res.payload.message || "Thêm lịch hẹn thành công",
                     description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
                 });
                 // reset all
@@ -236,7 +291,6 @@ const Appointment_Edit = () => {
                         <span>{res.payload.errors}</span>
                     </div>
                 );
-
                 api.error({
                     message: "Thêm lịch hẹn thất bại",
                     duration: 5,
@@ -328,9 +382,7 @@ const Appointment_Edit = () => {
         },
     ];
     const handleChangeDate = (date) => {
-        console.log("Selected date:", date);
         if (date) {
-            // nếu có chọn ngày
             setValue(
                 "expected_time",
                 calculateEndTime(
@@ -339,6 +391,7 @@ const Appointment_Edit = () => {
                     appointments.appointment.data.expected_time
                 )
             );
+
             searchshifts({
                 search: dayjs(date).format("YYYY-MM-DD"),
                 page: 1,
@@ -349,6 +402,7 @@ const Appointment_Edit = () => {
             setValue("employee", []);
         } else {
             // nếu không chọn ngày
+            getshifts(50);
         }
     };
     return (
@@ -456,12 +510,14 @@ const Appointment_Edit = () => {
                                         size="large"
                                         {...field}
                                         allowClear
+                                        onClear={() => {
+                                            field.onChange(null);
+                                            setValue("employee", []);
+                                        }}
                                         style={{ width: "100%" }}
                                         placeholder="Chọn ca làm việc"
                                         options={shiftsOptions}
-                                        onChange={(value) =>
-                                            HandleShiftChange(value)
-                                        }
+                                        onChange={HandleShiftChange}
                                     />
                                 )}
                             />
@@ -548,37 +604,47 @@ const Appointment_Edit = () => {
                         </Form.Item>
                     </Col>{" "}
                     <Col span={12}>
-                        <Form.Item label="trạng thái">
+                        <Form.Item label="Trạng thái">
                             <Controller
                                 name="status"
                                 control={control}
-                                render={({ field }) => (
-                                    <Select
-                                        size="large"
-                                        {...field}
-                                        allowClear
-                                        style={{ width: "100%" }}
-                                        placeholder="Chọn trạng thái"
-                                        options={[
-                                            {
-                                                value: "Đã hủy lịch hẹn.",
-                                                label: "Đã hủy lịch hẹn.",
-                                            },
-                                            {
-                                                value: "Đã đặt lịch hẹn.",
-                                                label: "Đã đặt lịch hẹn.",
-                                            },
-                                            {
-                                                value: "Đang thực hiện.",
-                                                label: "Đang thực hiện.",
-                                            },
-                                            {
-                                                value: "Đã hoàn thành.",
-                                                label: "Đã hoàn thành.",
-                                            },
-                                        ]}
-                                    />
-                                )}
+                                render={({ field }) => {
+                                    // Lấy giá trị hiện tại từ field
+                                    const currentValue = field.value;
+
+                                    return (
+                                        <Select
+                                            size="large"
+                                            {...field}
+                                            allowClear
+                                            style={{ width: "100%" }}
+                                            placeholder="Chọn trạng thái"
+                                            disabled={
+                                                currentValue ===
+                                                "Đã hoàn thành."
+                                            } // Vô hiệu hóa nếu là "Đã hoàn thành"
+                                        >
+                                            {/* Hiển thị tùy chọn "Đã hủy lịch hẹn" chỉ khi trạng thái hiện tại không phải "Hoàn thành" hoặc "Đang thực hiện" */}
+                                            {currentValue !==
+                                                "Đang thực hiện." &&
+                                                currentValue !==
+                                                    "Đã hoàn thành." && (
+                                                    <Select.Option value="Đã hủy lịch hẹn.">
+                                                        Đã hủy lịch hẹn.
+                                                    </Select.Option>
+                                                )}
+                                            <Select.Option value="Đã đặt lịch hẹn.">
+                                                Đã đặt lịch hẹn.
+                                            </Select.Option>
+                                            <Select.Option value="Đang thực hiện.">
+                                                Đang thực hiện.
+                                            </Select.Option>
+                                            <Select.Option value="Đã hoàn thành.">
+                                                Đã hoàn thành.
+                                            </Select.Option>
+                                        </Select>
+                                    );
+                                }}
                             />
                         </Form.Item>
                     </Col>

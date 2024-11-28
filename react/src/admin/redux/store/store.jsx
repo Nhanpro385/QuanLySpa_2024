@@ -16,6 +16,7 @@ import {
     streatmentSlice,
     promotionsSlice,
     consulationslice,
+    notificationSlice,
 } from "../slices";
 
 const store = configureStore({
@@ -36,6 +37,7 @@ const store = configureStore({
         streatments: streatmentSlice,
         promotions: promotionsSlice,
         consulations: consulationslice,
+        notification: notificationSlice,
     },
 });
 

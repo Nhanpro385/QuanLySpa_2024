@@ -26,10 +26,12 @@ function Services() {
     const services = useSelector((state) => state.services);
 
     const [errorEdit, setErrorEdit] = useState(null);
-    const pagination = services.meta || {};
+
+    const pagination = services.services.meta || {};
     const [Searchquery, setSearchquery] = useState({
         search: "",
         page: 1,
+        per_page: 5,
     });
 
     const {
@@ -84,15 +86,19 @@ function Services() {
     const onSearch = debounce((value) => {
         setSearchquery({ ...Searchquery, search: value });
     }, 500);
-    const handleChangepage = (page) => {
-        setSearchquery({ ...Searchquery, page });
+    const handleChangepage = (page, pagination) => {
+        setSearchquery({ ...Searchquery, page, per_page: pagination });
     };
 
     useEffect(() => {
         getservices();
     }, []);
     useEffect(() => {
-        if (Searchquery.search || Searchquery.page !== 1) {
+        if (
+            Searchquery.search ||
+            Searchquery.page !== 1 ||
+            Searchquery.per_page !== 5
+        ) {
             searchservices(Searchquery);
         } else {
             getservices();
@@ -144,7 +150,9 @@ function Services() {
         }
     };
     const onAddproduct = (record) => {
-        Navigate("/admin/dichvu/themsanphamdichvu/" + record.id);
+        console.log(record);
+
+        Navigate("/admin/dichvu/themsanphamdichvu/" + record.key);
     };
     const onEditproduct = (record) => {
         Navigate("/admin/dichvu/chinhsuasanpham/" + record.id);

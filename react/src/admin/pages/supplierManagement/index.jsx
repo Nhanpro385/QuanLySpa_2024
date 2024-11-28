@@ -38,6 +38,7 @@ const SupplierManagement = () => {
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
+        per_page: 5
     });
     // Modal handling
     const [messageApi, contextHolder] = message.useMessage();

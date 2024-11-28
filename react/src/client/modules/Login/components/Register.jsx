@@ -1,13 +1,14 @@
 import React from "react";
-import { Row, Col, Button, Form, Input } from "antd";
+import { Row, Col, Button, Form, Input, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import style from "../style/Register.module.scss";
 import useAuthActions from "../../../../admin/modules/authen/hooks/useAuth";
-
+import { useAuth } from "../../../config/AuthContext";
 const Register = () => {
     const { authRegisterClient } = useAuthActions();
     const navigate = useNavigate();
+    const [api, contextHolder] = notification.useNotification();
     const {
         control,
         handleSubmit,
@@ -15,13 +16,15 @@ const Register = () => {
         setError,
         formState: { errors },
     } = useForm();
-
+    const { login } = useAuth();
     // Lấy giá trị mật khẩu để so sánh
     const password = watch("password", "");
 
     const onSubmit = async (data) => {
         try {
             const res = await authRegisterClient(data);
+            console.log(res);
+
             if (res.payload.status == 422) {
                 // Loop through errors object and set each field error
                 Object.keys(res.payload.errors).forEach((key) => {
@@ -35,8 +38,15 @@ const Register = () => {
                         message: res.payload.errors[key][0], // Access the first error message
                     });
                 });
-            } else if (res.status === 200) {
-                // Handle successful login
+            }
+            if (res.payload.access_token) {
+                api.success({
+                    message: "Đăng ký thành công",
+                    description: "Chào mừng bạn mới ",
+                    duration: 3,
+                });
+                login(res.payload.access_token);
+
                 navigate("/"); // Redirect to the home page or another page
             } else {
                 // Handle other errors
@@ -52,6 +62,7 @@ const Register = () => {
 
     return (
         <Row justify="center" align="middle" className={style.container}>
+            {contextHolder}
             <Col
                 xs={22}
                 sm={16}

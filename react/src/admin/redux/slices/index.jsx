@@ -14,3 +14,4 @@ export { default as CustomerSlice } from "./CustomerSlice";
 export { default as streatmentSlice } from "./strearmentSlice";
 export { default as promotionsSlice } from "./promotionSlice";
 export {default as consulationslice} from "./consulationsSlice"
+export {default as notificationSlice} from "./NotificationSlice"

@@ -49,7 +49,7 @@ const PublicRoutes = [
         requiredRole: { requiredRole: "public", role: "Client" },
     },
     {
-        path: "/services",
+        path: "/dichvu",
         element: <Services />,
         requiredRole: { requiredRole: "public", role: "Client" },
     },
