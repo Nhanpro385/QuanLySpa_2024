@@ -10,6 +10,7 @@ const PositionsTable = ({
     pagination,
     onChangePage,
 }) => {
+    
     const columns = [
         {
             title: "STT",

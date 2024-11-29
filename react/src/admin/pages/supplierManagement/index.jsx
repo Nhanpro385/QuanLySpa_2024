@@ -10,9 +10,10 @@ import {
     Dropdown,
     Space,
 } from "antd";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Snowflake } from "@theinternetfolks/snowflake";
+import { Link, useNavigate } from "react-router-dom";
+// import { Snowflake } from "@theinternetfolks/snowflake";
 
 import { useSelector } from "react-redux";
 import ModalEditSupplier from "../../modules/SuppliersManagement/compoment/SuppliersModalEdit";
@@ -21,7 +22,9 @@ import { DownOutlined } from "@ant-design/icons";
 import SupplierForm from "../../modules/SuppliersManagement/compoment/SupplierForm";
 import SupplierTable from "../../modules/SuppliersManagement/compoment/SupplierTable";
 import useSupplierActions from "../../modules/SuppliersManagement/hooks/useSupplierActions";
-import debounce from "lodash/debounce";
+// import debounce from "lodash/debounce";
+import { generateSnowflakeId } from "../../utils";
+
 const SupplierManagement = () => {
     const {
         addSupplier,
@@ -32,19 +35,53 @@ const SupplierManagement = () => {
         searchSupplier,
     } = useSupplierActions();
 
-    const { Suppliers, loading, error, Supplier } = useSelector(
-        (state) => state.Suppliers
-    );
+    const Suppliers = useSelector((state) => state.supplier);
+
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
-        per_page: 5
+        per_page: 5,
     });
-    // Modal handling
-    const [messageApi, contextHolder] = message.useMessage();
-    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const [SupplierData, setSupplierData] = useState([]);
+    const [editSupplier, setEditSupplier] = useState(null);
     const [errorEdit, setErrorEdit] = useState(null);
-    // Form handling
+    const navigate = useNavigate();
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+
+    const pagination = Suppliers?.Suppliers?.meta || {};
+
+    useEffect(() => {
+        getSupplier();
+    }, []);
+
+    useEffect(() => {
+        if (
+            searchQuery.search ||
+            searchQuery.page !== 1 ||
+            searchQuery.per_page !== 5
+        ) {
+            searchSupplier(searchQuery);
+        }
+    }, [searchQuery]);
+
+    useEffect(() => {
+        if (Suppliers?.Suppliers?.data && !Suppliers.loading) {
+            setSupplierData(
+                Suppliers?.Suppliers?.data.map((item) => ({
+                    key: item.id,
+                    ...item,
+                }))
+                // Suppliers.data.map((supplier) => ({
+                //     id: supplier.id,
+                //     name: supplier.name,
+                //     country: supplier.country,
+                //     contact_email: supplier.contact_email,
+                //     code: supplier.code,
+                // }))
+            )
+        }
+    }, [Suppliers?.Suppliers?.data]);
+
     const {
         control,
         handleSubmit,
@@ -53,95 +90,37 @@ const SupplierManagement = () => {
         setError,
     } = useForm();
 
-    // Fetch suppliers on mount
-    useEffect(() => {
-        getSupplier();
-    }, []);
-    useEffect(() => {
-        if (searchQuery.search || searchQuery.page !== 1) {
-            searchSupplier(searchQuery);
+    // Handle
+    const handleEdit = async (record) => {
+        try {
+            const response = await getSupplierById(record.id);
+            if (response.meta.requestStatus === "fulfilled") {
+                setEditSupplier(response.payload.data)
+                showModal();
+            }
+        } catch {
+            messageApi.error("Có lỗi xảy ra khi tải nhà cung cấp.");
         }
-    }, [searchQuery]);
-    // Prepare data for table
-    const dataSource = (Suppliers.data.data || []).map((supplier) => ({
-        id: supplier.id,
-        name: supplier.name,
-        country: supplier.country,
-        contact_email: supplier.contact_email,
-        code: supplier.code,
-    }));
-    const pagination = Suppliers.data.meta || {};
-    // Define table columns
-    const columns = [
-        {
-            title: "#",
-            dataIndex: "id",
-            key: "id",
-            render: (text, record, index) => index + 1,
-        },
-        {
-            title: "Tên Nhà cung cấp",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "Địa chỉ",
-            dataIndex: "country",
-            key: "country",
-        },
-        {
-            title: "Địa chỉ Email",
-            dataIndex: "contact_email",
-            key: "contact_email",
-        },
-        {
-            title: "Mã số",
-            dataIndex: "code",
-            key: "code",
-        },
-        {
-            title: "Hành động",
-            dataIndex: "action",
-            key: "action",
-            render: (text, record) => (
-                <Dropdown
-                    menu={{
-                        items,
-                        onClick: (e) => onClick({ key: e.key, record }),
-                    }}
-                    trigger={["click"]}
-                >
-                    <Button type="primary" onClick={(e) => e.preventDefault()}>
-                        <Space>
-                            Hành động
-                            <DownOutlined />
-                        </Space>
-                    </Button>
-                </Dropdown>
-            ),
-        },
-    ];
+    };
 
-    // Dropdown items
-    const items = [
-        {
-            key: "1",
-            label: <Button block> Sửa </Button>,
-        },
-        {
-            key: "4",
-            label: (
-                <Button block danger>
-                    Xóa
-                </Button>
-            ),
-        },
-    ];
+    // Handle delete
+    const handleDelete = async (id) => {
+        try {
+            const response = await deleteSupplier(id);
+            if (response.meta.requestStatus === "fulfilled") {
+                messageApi.success("Xóa nhà cung cấp thành công!");
+                getSupplier();
+            } else {
+                console.log(response.payload);
+            }
+        } catch {
+            messageApi.error("Có lỗi xảy ra khi xóa nhà cung cấp.");
+        }
+    };
 
-    // Handle form submission for adding new supplier
     const onSubmit = async (data) => {
         const payload = {
-            id: Snowflake.generate(),
+            id: generateSnowflakeId(),
             name: data.name,
             country: data.country,
             contact_email: data.contact_email,
@@ -171,17 +150,9 @@ const SupplierManagement = () => {
         }
     };
 
-    // Handle edit action
-    const handleEdit = async (record) => {
-        try {
-            const response = await getSupplierById(record.id);
-            if (response.meta.requestStatus === "fulfilled") {
-                showModal();
-            }
-        } catch {
-            messageApi.error("Có lỗi xảy ra khi tải nhà cung cấp.");
-        }
-    };
+    // Modal handling
+    const [messageApi, contextHolder] = message.useMessage();
+
 
     // Handle form submission for editing supplier
     const handleSubmitEdit = async (data) => {
@@ -199,20 +170,7 @@ const SupplierManagement = () => {
             messageApi.error("Có lỗi xảy ra khi cập nhật nhà cung cấp.");
         }
     };
-    // Handle delete action
-    const handleDelete = async (id) => {
-        try {
-            const response = await deleteSupplier(id);
-            if (response.meta.requestStatus === "fulfilled") {
-                messageApi.success("Xóa nhà cung cấp thành công!");
-                getSupplier();
-            } else {
-                console.log(response.payload);
-            }
-        } catch {
-            messageApi.error("Có lỗi xảy ra khi xóa nhà cung cấp.");
-        }
-    };
+
     // handel dropdown
     const onClick = ({ key, record }) => {
         switch (key) {
@@ -232,16 +190,19 @@ const SupplierManagement = () => {
                 break;
         }
     };
-    const onSearch = debounce((value) => {
-        setSearchQuery({ ...searchQuery, search: value });
-    }, 500);
-    const handlePageChange = (page) => {
-        setSearchQuery({ ...searchQuery, page });
+
+    const onSearch = (value) => {
+        setSearchQuery((prev) => ({ ...prev, search: value }));
     };
+
+    const handlePageChange = (page, pagination) => {
+        setSearchQuery((prev) => ({ ...prev, page, per_page: pagination }));
+    };
+
     return (
         <>
             <h1 className="text-center">Quản Lý Nhà Cung Cấp</h1>
-            {contextHolder} {/* Message context holder */}
+            {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col span={24}>
                     <Card title="Danh mục Nhà cung cấp">
@@ -274,11 +235,13 @@ const SupplierManagement = () => {
                             </Col>
                         </Row>
                         <SupplierTable
-                            dataSource={dataSource}
-                            columns={columns}
-                            loading={loading}
+                            loading={Suppliers.loading}
+                            onClick={onClick}
+                            dataSource={SupplierData}
                             pagination={pagination}
                             handlePageChange={handlePageChange}
+                        // handleEdit={handleEdit}
+                        // handleDelete={handleDelete}
                         />
                     </Card>
                 </Col>
@@ -287,7 +250,7 @@ const SupplierManagement = () => {
                 isModalOpen={isModalOpen}
                 handleOk={handleOk}
                 handleCancel={handleCancel}
-                supplier={Supplier}
+                supplier={editSupplier}
                 handleUpdate={handleSubmitEdit}
                 errors={errorEdit}
             />

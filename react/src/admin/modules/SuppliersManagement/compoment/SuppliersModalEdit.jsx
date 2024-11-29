@@ -42,7 +42,7 @@ const ModalEditSupplier = ({
 
     const onSubmit = (data) => {
         const formattedData = {
-            id: supplier.data.id,
+            id: supplier.id,
             ...data,
             status: data.status,
         };
@@ -57,7 +57,7 @@ const ModalEditSupplier = ({
                     <span>
                         Chỉnh sửa nhà cung cấp:{" "}
                         <span style={{ color: "red" }}>
-                            {supplier.data?.name}
+                            {supplier?.name}
                         </span>
                     </span>
                 }

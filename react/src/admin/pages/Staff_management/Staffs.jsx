@@ -56,6 +56,7 @@ function Staffs() {
         }
     }, [users]);
     const pagination = users.meta || {};
+    
     const handleEdit = async (key) => {
         try {
             const res = await getusersById(key);
