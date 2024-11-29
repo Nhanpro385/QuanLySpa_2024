@@ -1,27 +1,32 @@
 <?php
-namespace App\Http\Requests\Admin\Contacts;
 
+namespace App\Http\Requests\Client\Contacts;
 use Illuminate\Foundation\Http\FormRequest;
-
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
-class UpdateContactRequest extends FormRequest
+class StoreContactRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
-        return true; // Thay đổi theo yêu cầu bảo mật
+        return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'phone' => 'sometimes|required|string|max:20',
-            'email' => 'sometimes|required|email|max:255',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
             'evaluete' => 'nullable|integer|min:0|max:5',
             'note' => 'nullable|string|max:255',
-            'status' => 'sometimes|boolean',
         ];
     }
 
@@ -34,7 +39,6 @@ class UpdateContactRequest extends FormRequest
             'email.email' => 'Email không hợp lệ.',
             'evaluete.integer' => 'Đánh giá phải là số nguyên.',
             'note.max' => 'Ghi chú không được vượt quá 255 ký tự.',
-            'status.boolean' => 'Trạng thái phải là giá trị boolean.',
         ];
     }
     public function failedValidation(Validator $validator)
@@ -47,4 +51,5 @@ class UpdateContactRequest extends FormRequest
             ], 422)
         );
     }
+    
 }

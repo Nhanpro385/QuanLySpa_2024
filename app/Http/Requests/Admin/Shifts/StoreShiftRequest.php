@@ -26,30 +26,46 @@ class StoreShiftRequest extends FormRequest
             'status' => 'boolean',
         ];
     }
-    
     public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $shiftDate = $this->input('shift_date');
-            $startTime = $this->input('start_time');
-            $endTime = $this->input('end_time');
-    
-            $overlapShift = \App\Models\Shift::where('shift_date', $shiftDate)
-                ->where(function ($query) use ($startTime, $endTime) {
-                    $query->whereBetween('start_time', [$startTime, $endTime])
-                          ->orWhereBetween('end_time', [$startTime, $endTime])
-                          ->orWhere(function ($q) use ($startTime, $endTime) {
-                              $q->where('start_time', '<=', $startTime)
-                                ->where('end_time', '>=', $endTime);
-                          });
-                })
-                ->exists();
-    
-            if ($overlapShift) {
-                $validator->errors()->add('shift_time', 'Thời gian của ca làm việc bị trùng lặp với một ca làm việc khác.');
-            }
-        });
-    }
+{
+    $validator->after(function ($validator) {
+        $shiftDate = $this->input('shift_date');
+        $startTime = $this->input('start_time');
+        $endTime = $this->input('end_time');
+        
+        // Lấy thời gian hiện tại
+        $now = Carbon::now();
+        
+        // Kết hợp ngày và giờ để so sánh
+        $startDateTime = Carbon::createFromFormat('Y-m-d H:i:s', "$shiftDate $startTime");
+        $endDateTime = Carbon::createFromFormat('Y-m-d H:i:s', "$shiftDate $endTime");
+        
+        // Kiểm tra nếu thời gian bắt đầu hoặc kết thúc trong quá khứ
+        if ($startDateTime->isPast()) {
+            $validator->errors()->add('start_time', 'Giờ bắt đầu không được trong quá khứ.');
+        }
+        if ($endDateTime->isPast()) {
+            $validator->errors()->add('end_time', 'Giờ kết thúc không được trong quá khứ.');
+        }
+
+        // Kiểm tra trùng lặp ca làm việc
+        $overlapShift = \App\Models\Shift::where('shift_date', $shiftDate)
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->whereBetween('start_time', [$startTime, $endTime])
+                      ->orWhereBetween('end_time', [$startTime, $endTime])
+                      ->orWhere(function ($q) use ($startTime, $endTime) {
+                          $q->where('start_time', '<=', $startTime)
+                            ->where('end_time', '>=', $endTime);
+                      });
+            })
+            ->exists();
+
+        if ($overlapShift) {
+            $validator->errors()->add('shift_time', 'Thời gian của ca làm việc bị trùng lặp với một ca làm việc khác.');
+        }
+    });
+}
+
     
   
 
