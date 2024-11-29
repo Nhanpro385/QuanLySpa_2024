@@ -59,6 +59,13 @@ Route::group([
     Route::put('/inbound-invoices/{id}', [InboundInvoiceController::class, 'update']);
     Route::delete('/inbound-invoices/{id}', [InboundInvoiceController::class, 'destroy']);
 
+    
+    Route::get('/contacts', [ContactsController::class, 'index']);
+    Route::post('/contacts', [ContactsController::class, 'store']);
+    Route::get('/contacts/{id}', [ContactsController::class, 'show']);
+    Route::put('/contacts/{id}', [ContactsController::class, 'update']);
+    Route::delete('/contacts/{id}', [ContactsController::class, 'destroy']);
+
     Route::get('/staff-shifts', [StaffShiftController::class, 'index']);
     Route::post('/staff-shifts', [StaffShiftController::class, 'store']);
     Route::get('/staff-shifts/{id}', [StaffShiftController::class, 'show']);
@@ -141,11 +148,6 @@ Route::group([
 
 
 
-    Route::get('/contacts', [ContactsController::class, 'index']);
-    Route::post('/contacts', [ContactsController::class, 'store']);
-    Route::get('/contacts/{id}', [ContactsController::class, 'show']);
-    Route::put('/contacts/{id}', [ContactsController::class, 'update']);
-    Route::delete('/contacts/{id}', [ContactsController::class, 'destroy']);
 
 
 
