@@ -76,4 +76,20 @@ class ServiceCategory extends Model
 
         return $services;
     }
+
+    public function servicesStatus()
+    {
+        return $this->hasMany(Service::class, 'service_category_id', 'id')->where('status', 1);
+    }
+
+    public function clientServices()
+    {
+        $services = $this->servicesStatus; // Lấy dịch vụ của category hiện tại
+
+        foreach ($this->childrentIds as $child) {
+            $services = $services->merge($child->allServices()); // Đệ quy lấy dịch vụ của danh mục con
+        }
+
+        return $services;
+    }
 }

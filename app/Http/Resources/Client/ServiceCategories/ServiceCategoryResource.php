@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Client\ServiceCategories;
 
+use App\Http\Resources\Client\Services\ServiceCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,7 +19,7 @@ class ServiceCategoryResource extends JsonResource
         $services = $childrentIds = [];
 
         if ($request->input('services') === 'true') {
-            $services = $this->whenLoaded('services') ? $this->allServices() : [];
+            $services = $this->whenLoaded('servicesStatus') ? $this->clientServices() : [];
         }
         if ($request->input('childrentIds') === 'true') {
             $childrentIds = $this->whenLoaded('childrentIds') ? $this->childrentIds : [];
@@ -29,13 +30,14 @@ class ServiceCategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status,
-            'services' => $services ? $services->map(function ($service) {
-                return [
-                    'id' => $service->id,
-                    'name' => $service->name,
-                    'status' => $service->status,
-                ];
-            }) : [],
+            // 'services' => $services ? $services->map(function ($service) {
+            //     return [
+            //         'id' => $service->id,
+            //         'name' => $service->name,
+            //         'status' => $service->status,
+            //     ];
+            // }) : [],
+            'service' => new ServiceCollection($services),
             'parent' => $this->parentId ?
                 [
                     'id' => (string) $this->parentId->id,

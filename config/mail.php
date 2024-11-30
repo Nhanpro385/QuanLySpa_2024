@@ -114,7 +114,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'voduyphuong13@gmail.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'sakuraspa2025@gmail.com'),
         'name' => env('MAIL_FROM_NAME', 'SPA SAKURA Chăm sóc khách hàng'),
     ],
 

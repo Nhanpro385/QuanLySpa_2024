@@ -628,9 +628,9 @@ class AppointmentController extends Controller
         $appointment = Appointment::find($id);
         if ($appointment->status == 3) {
             return response()->json([
-                'status' => 'true',
+                'status' => 'false',
                 'message' => 'Không thể xóa do lịch hẹn đã hoàn thành.'
-            ], status: 200);
+            ], 500);
         }
 
         if (!$appointment) {
@@ -648,54 +648,7 @@ class AppointmentController extends Controller
         AppointmentStaff::where('appointment_id', $id)->delete();
         AppointmentService::where('appointment_id', $id)->delete();
 
-        // $outbound_invoice_id = OutboundInvoice::where('note', 'LIKE', 'Sử dụng trong lịch hẹn: ' . $appointment->id)->first(['id'])->id ?? false;
-        // if ($outbound_invoice_id) {
-        //     //nhap lai khi huy dich vu
-        //     $inbountInvoice = InboundInvoice::create([
-        //         'id' => app(Snowflake::class)->next(),
-        //         'staff_id' => auth('api')->user()->id,
-        //         'note' => 'Nhập lại cho lịch hẹn đã bị hủy: ' . $appointment->id,
-        //         'total_amount' => 0
-        //     ]);
-        //     $outbound_invoice_details = OutboundInvoiceDetail::where('outbound_invoice_id', $outbound_invoice_id)->get(['product_id', 'quantity_export'])->toArray();
 
-        //     //them chi tiet hoa don nhap
-        //     $total_amount = 0;
-        //     foreach ($outbound_invoice_details as $product) {
-
-        //         $pr = Product::find($product['product_id']);
-        //         $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
-
-        //         $inbountInvoiceDetail = InboundInvoiceDetail::create([
-        //             'id' => app(Snowflake::class)->next(),
-        //             'product_id' => $product['product_id'],
-        //             'inbound_invoice_id' => $inbountInvoice->id,
-        //             'quantity_import' => $product['quantity_export'],
-        //             'quantity_olded' => $inventory->quantity,
-        //             'cost_import' => $pr->cost,
-        //             'cost_olded' => $pr->cost,
-        //             'unit_price' => $pr->price
-        //         ]);
-
-        //         $total_amount += $inbountInvoiceDetail->quantity_export * $inbountInvoiceDetail->unit_price;
-
-
-        //         //Cap nhat moi cho ton kho
-        //         $updateInventory = Inventory::create([
-        //             'id' => app(Snowflake::class)->next(),
-        //             'product_id' => $product['product_id'],
-        //             'quantity' => $inventory->quantity + $product['quantity_export'],
-        //             'created_by' => auth('api')->user()->id,
-        //             'updated_by' => auth('api')->user()->id,
-        //         ]);
-        //     }
-
-        //     //cap nhat hoa don
-        //     $inbountInvoice->update([
-        //         'total_amount' => $total_amount,
-        //     ]);
-
-        // }
         $appointment->delete();
         $appointment->update([
             'shift_id' => null,

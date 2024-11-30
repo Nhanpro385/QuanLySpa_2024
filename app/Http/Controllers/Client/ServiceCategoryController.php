@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Client\ServiceCategories\ServiceCategoryConllection;
 use App\Http\Resources\Client\ServiceCategories\ServiceCategoryResource;
 use App\Models\ServiceCategory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ServiceCategoryController extends Controller
@@ -30,8 +31,10 @@ class ServiceCategoryController extends Controller
 
             if ($request['search']) {
                 $value = $request['search'];
-                $query
-                    ->where('name', 'like', '%' . $value . '%')
+                $query->whereHas('services', function (Builder $query) use ($value) {
+                    $query->where('name', 'like', '%' . $value . '%');
+                })
+                    ->orwhere('name', 'like', '%' . $value . '%')
                     ->orWhere('id', 'like', '%' . $value . '%')
                 ;
             }
