@@ -246,6 +246,18 @@ Route::group([
     //Promotion
 
     Route::get('/promotion', [PromotionPromotionController::class, 'index']);
+
+
+    
+    Route::get('/shifts', [ClientShiftsController::class, 'index']);
+
+    Route::get('/shifts/{id}', [ClientShiftsController::class, 'show']);
+ 
+
+    
+    Route::get('/contacts', [ClientContactsController::class, 'index']);
+
+    Route::get('/contacts/{id}', [ClientContactsController::class, 'show']);
 });
 
 
