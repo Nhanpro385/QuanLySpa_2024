@@ -36,7 +36,10 @@ const useServiceCategoriesActions = () => {
     const searchServiceCategories = async (query) => {
         return await dispatch(ServiceCategoriesSearch(query));
     };
-    const getServiceCategoriesClient = async () => {
+    const getServiceCategoriesClient = async (config) => {
+        if (config) {
+            return await dispatch(ServiceCategoriesGetClient(config));
+        }
         return await dispatch(ServiceCategoriesGetClient());
     };
 

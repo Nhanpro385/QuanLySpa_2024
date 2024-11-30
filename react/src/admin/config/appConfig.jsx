@@ -14,7 +14,7 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         delete: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         search: `${API_BASE_URL}/serviceCategories`,
-        listClient: `${API_AUTH_URL3}/serviceCategories?services=true`,
+        listClient: `${API_AUTH_URL3}/serviceCategories`,
     },
     Customers: {
         list: `${API_BASE_URL}/customer`,
@@ -101,6 +101,8 @@ const endpoints = {
         addProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
         updateProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
         listClient: `${API_AUTH_URL3}/services`,
+        detailClient: (id) =>
+            `${API_AUTH_URL3}/services/${id}?products=true&serviceImages=true`,
     },
     shifts: {
         list: `${API_BASE_URL}/shifts`,

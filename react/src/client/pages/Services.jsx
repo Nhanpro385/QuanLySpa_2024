@@ -11,7 +11,6 @@ const Services = () => {
             <SliderServices />
             <ServicesList />
             <RegimenList />
-            <ServicesDetail />
         </div>
     );
 };

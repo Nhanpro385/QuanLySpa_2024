@@ -11,7 +11,8 @@ import NewPassword from "../pages/NewPassword/NewPassword";
 import Profile from "../pages/Profile/Profile";
 import BookingConsultant from "../pages/BookingConsultant/BookingConsultant";
 import ServiceHistory from "../pages/ServiceHistory/ServiceHistory";
-
+import servicesDetailbyid from "../modules/Services/components/servicesDetailbyid";
+import ServicesDetailById from "../modules/Services/components/servicesDetailbyid";
 const PublicRoutes = [
     {
         path: "/",
@@ -19,12 +20,12 @@ const PublicRoutes = [
         requiredRole: { requiredRole: "public", role: "Client" },
     },
     {
-        path: "/booking",
+        path: "/datlichhen",
         element: <Appbooking />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {
-        path: "/bookinginfo",
+        path: "/thongtindatlich",
         element: <BookingInfo />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
@@ -51,6 +52,11 @@ const PublicRoutes = [
     {
         path: "/dichvu",
         element: <Services />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/dichvu/:id",
+        element: <ServicesDetailById />,
         requiredRole: { requiredRole: "public", role: "Client" },
     },
     {

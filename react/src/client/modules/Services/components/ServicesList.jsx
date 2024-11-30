@@ -1,32 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, List, Card } from "antd";
+import { Row, Col, List, Card, Spin, Button } from "antd";
 import style from "../style/ServicesList.module.scss";
 import useServiceCategoriesActions from "../../../../admin/modules/services/hooks/useServiceCategories";
 import { useSelector } from "react-redux";
+import ServicesDetail from "./ServicesDetail";
 
 const Services_List = () => {
     const { getServiceCategoriesClient } = useServiceCategoriesActions();
     const [cateService, setCateService] = useState([]);
+    const [loading, setLoading] = useState(true);
     const serviceCategories = useSelector((state) => state.serviceCategories);
+    const [selectedCate, setSelectedCate] = useState(null);
+    useEffect(() => {
+        getServiceCategoriesClient(50);
+    }, []);
 
     useEffect(() => {
-        getServiceCategoriesClient();
-    }, [getServiceCategoriesClient]);
+        if (serviceCategories.ServiceCategories?.data) {
+            const data = serviceCategories.ServiceCategories.data.filter(
+                (cate) => cate.service.length > 0
+            );
 
-    useEffect(() => {
-        const categories = serviceCategories.ServiceCategories?.data ?? [];
-        const filteredCategories = categories
-            .filter((item) => item.services?.length > 0)
-            .map((item) => ({
-                key: item.id,
-                title: item.name,
-                description: item.description,
-            }));
-        setCateService(filteredCategories);
+            setCateService(
+                data.map((cate) => ({
+                    ...cate,
+                    key: cate.id,
+                }))
+            );
+        }
+        setLoading(false);
     }, [serviceCategories]);
-
+    const onHandleClick = (item) => {
+        setSelectedCate(item);
+    };
+    useEffect(() => {
+        if (cateService.length > 0) {
+            setSelectedCate(cateService[0]); // Select the first category
+        }
+    }, [cateService]);
     return (
-        <div className={style.container}>
+        <div className="container">
             <Row justify="center">
                 <Col
                     className={style.boxTitleServicesTop}
@@ -36,44 +49,52 @@ const Services_List = () => {
                     sm={22}
                     xs={24}
                 >
-                    <h1>Các Dịch Vụ Điều Trị Tại Sakura Spa</h1>
+                    <h1>Loại dịch vụ tại Sapa Sakura </h1>
                 </Col>
             </Row>
-            <div className={style.boxServicesList}>
-                <Row>
-                    <Col span={24}>
-                        <Row justify="center" gutter={[16, 16]}>
-                            {cateService.length > 0 ? (
-                                <List
-                                    grid={{
-                                        gutter: 16,
-                                        xs: 1,
-                                        sm: 2,
-                                        md: 4,
-                                        lg: 4,
-                                        xl: 6,
-                                        xxl: 3,
-                                    }}
-                                    dataSource={cateService}
-                                    renderItem={(item) => (
-                                        <List.Item>
-                                            <Card title={item.title}>
-                                                {item.description}
-                                            </Card>
-                                        </List.Item>
-                                    )}
-                                />
-                            ) : (
-                                <div className={style.noServices}>
-                                    <p>
-                                        Hiện không có dịch vụ nào để hiển thị.
-                                    </p>
-                                </div>
-                            )}
-                        </Row>
-                    </Col>
-                </Row>
-            </div>
+
+            <Row>
+                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <Row gutter={[16, 16]} justify="center" align="middle">
+                        {loading ? (
+                            <Spin tip="Đang tải dịch vụ..." />
+                        ) : cateService.length > 0 ? (
+                            <List
+                                grid={{
+                                    gutter: 16,
+                                }}
+                                pagination={{
+                                    position: "bottom",
+                                    align: "center",
+                                }}
+                                dataSource={cateService}
+                                renderItem={(item) => (
+                                    <List.Item>
+                                        <Card
+                                            onClick={() => onHandleClick(item)}
+                                            className={
+                                                style.cardServices +
+                                                " " +
+                                                (selectedCate?.id === item.id
+                                                    ? style.active
+                                                    : "")
+                                            }
+                                            title={item.title}
+                                        >
+                                            {item.name}
+                                        </Card>
+                                    </List.Item>
+                                )}
+                            />
+                        ) : (
+                            <div className={style.noServices}>
+                                <p>Hiện không có dịch vụ nào để hiển thị.</p>
+                            </div>
+                        )}
+                    </Row>
+                </Col>
+            </Row>
+            <ServicesDetail listservices={selectedCate} />
         </div>
     );
 };

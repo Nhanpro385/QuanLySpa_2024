@@ -141,9 +141,10 @@ export const ServiceCategoriesGetById = createAsyncThunk(
 );
 export const ServiceCategoriesGetClient = createAsyncThunk(
     "ServiceCategories/getClient",
-    async () => {
+    async (per_page) => {
+        const queryParams = per_page ? `?per_page=${per_page}&services=true` : "";
         const response = await axiosInstance.get(
-            endpoints.ServiceCategories.listClient
+            `${endpoints.ServiceCategories.listClient}${queryParams}`
         );
         return response.data;
     }
