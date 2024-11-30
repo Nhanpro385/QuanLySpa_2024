@@ -15,7 +15,7 @@ class ShiftResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' =>(string) $this->id,
+            'id' => (string) $this->id,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'shift_date' => $this->shift_date,
@@ -23,24 +23,29 @@ class ShiftResource extends JsonResource
             'note' => $this->note,
             'status' => $this->status,
             'created_by' => $this->createdBy ? [
-                'id' =>(string) $this->createdBy->id,
+                'id' => (string) $this->createdBy->id,
                 'name' => $this->createdBy->full_name,
                 'role' => $this->createdBy->role,
             ] : null,
             'updated_by' => $this->updatedBy ? [
-                'id' =>(string) $this->updatedBy->id,
+                'id' => (string) $this->updatedBy->id,
                 'name' => $this->updatedBy->full_name,
                 'role' => $this->updatedBy->role,
             ] : null,
             'staffs' => $this->staffShifts->map(function ($staff) {
                 return [
-                    'id' =>(string) $staff->id,
+                    'id' => (string) $staff->id,
                     'name' => $staff->full_name,
                     'role' => $staff->role,
-                ];  
+                ];
             }),
+            // Đếm số lượng appointments trong khoảng thời gian của shift
+            'appointment_count' => $this->appointments()
+                ->whereBetween('start_time', [$this->start_time, $this->end_time])
+                ->count(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }
+    
 }

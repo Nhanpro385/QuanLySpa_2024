@@ -70,4 +70,10 @@ class Shift extends Model
     {
         return $this->staffShifts()->get(['id', 'full_name','role']);
     }
+
+    public function appointments()
+{
+    return $this->hasMany(Appointment::class, 'shift_id', 'id');
+}
+
 }
