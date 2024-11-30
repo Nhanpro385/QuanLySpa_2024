@@ -34,7 +34,7 @@
 
 .boxServicesList {
     width: 100%;
-    min-height: 500px;
+    // min-height: 500px;
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
@@ -57,4 +57,21 @@
         font-family: Arial, sans-serif;
         font-weight: 500;
     }
+}
+.cardServices {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+    width: 100%;
+    border-color: rgb(255, 220, 220);
+    font-weight: 500;
+    
+}
+.cardServices:hover {
+    transform: translateY(-10px);
+}
+.cardServices.active {
+    transform: translateY(-10px);
+    color: rgb(255, 255, 255);
+    background-color: rgb(224, 82, 101);
+    border-color: rgb(224, 82, 101);
 }

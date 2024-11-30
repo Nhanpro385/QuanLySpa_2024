@@ -198,6 +198,15 @@ export const servicesUpdateProduct = createAsyncThunk(
         }
     }
 );
+export const servicesDetailClient = createAsyncThunk(
+    "services/detailClient",
+    async (id) => {
+        const response = await axiosInstance.get(
+            endpoints.services.detailClient(id)
+        );
+        return response.data;
+    }
+);
 const initialState = {
     services: {
         data: [],
@@ -322,6 +331,18 @@ const servicesSlice = createSlice({
             .addCase(servicesUpdateProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+            })
+            .addCase(servicesDetailClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(servicesDetailClient.fulfilled, (state, action) => {
+                state.service = action.payload;
+                state.loading = false;
+            })
+            .addCase(servicesDetailClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
     },
 });

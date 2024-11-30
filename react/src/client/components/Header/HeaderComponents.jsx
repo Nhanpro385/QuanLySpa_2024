@@ -123,7 +123,7 @@ const HeaderComponents = () => {
                                     fontSize: "1.6rem",
                                 }}
                                 className="btn btn-primary"
-                                onClick={() => navigate("/booking")}
+                                onClick={() => navigate("/datlichhen")}
                             >
                                 Đặt Lịch Ngay
                                 <span style={{ marginLeft: "10px" }}>

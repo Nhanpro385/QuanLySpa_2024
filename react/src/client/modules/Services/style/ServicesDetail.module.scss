@@ -7,11 +7,8 @@
 .boxServicesItemDetail {
     background-color: white;
     border-radius: 10px;
-    // min-height: 350px;
-    height: calc(100% - 24px);
     padding: 20px;
 
-    width: 100%;
     box-sizing: border-box;
     margin-bottom: 20px;
 
@@ -24,7 +21,6 @@
         font-weight: 500;
     }
 }
-
 
 .boxServicesItemDetail img {
     border-radius: 10px;
@@ -43,14 +39,9 @@
     }
 }
 
-
 .boxServicesDetail {
     width: 100%;
     min-height: 500px;
-}
-
-.boxServicesDetailItemTop img {
-    width: 100%;
 }
 
 .boxTopTitle {
@@ -92,6 +83,11 @@
     p {
         margin: 0 0 10px 0;
         font-size: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 1; // Giới hạn văn bản ở 1 dòng
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis; // Thêm dấu "..."
     }
 }
 
@@ -113,8 +109,6 @@
     }
 }
 
-
-
 /* Điều chỉnh khi màn hình nhỏ hơn (responsive cho mobile) */
 @media (max-width: 768px) {
     .boxServicesDetailTitle {
@@ -128,4 +122,21 @@
 .boxTitleServicesDetailTop {
     text-align: center;
     margin: 50px 0px 50px 0px;
+}
+.boxServicesDetailItemTop {
+    width: 100%;
+    height: 200px; /* Chiều cao cố định cho hình ảnh */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ẩn các phần hình ảnh vượt quá */
+    background-color: #f5f5f5; /* Màu nền nếu hình ảnh không tải được */
+    border-radius: 8px; /* Tùy chọn để bo góc */
+}
+
+.boxServicesDetailItemTop img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cắt hình ảnh để phù hợp với khung */
+    object-position: center; /* Căn giữa hình ảnh */
 }

@@ -8,6 +8,7 @@ import {
     servicesSearch,
     servicesAddProduct,
     servicesUpdateProduct,
+    servicesDetailClient,
 } from "@admin/redux/slices/serviceSlice";
 const useServicesActions = () => {
     const dispatch = useDispatch();
@@ -42,6 +43,9 @@ const useServicesActions = () => {
     const updateProduct = async (data) => {
         return await dispatch(servicesUpdateProduct(data));
     };
+    const getServicesDetailClient = async (config) => {
+        return await dispatch(servicesDetailClient(config));
+    };
 
     return {
         addservices,
@@ -52,6 +56,7 @@ const useServicesActions = () => {
         searchservices,
         addProduct,
         updateProduct,
+        getServicesDetailClient,
     };
 };
 
