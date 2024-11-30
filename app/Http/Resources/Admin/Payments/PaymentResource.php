@@ -21,7 +21,14 @@ class PaymentResource extends JsonResource
                 "id" => $this->promotion_id,
                 "name" => $this->promotion->name
             ] : null,
-            'appointment_id' => $this->appointment_id,
+            'appointment_id' => $this->appointment_id ? [
+                'id' => $this->appointment->id,
+                'customer' => [
+                    'id' => $this->appointment->customer->id,
+                    'full_name' => $this->appointment->customer->full_name,
+                    'phone' => $this->appointment->customer->phone
+                ]
+            ] : [],
             'service_total' => $this->service_total,
             'product_total' => $this->product_total,
             'subtotal' => $this->subtotal,

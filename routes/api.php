@@ -224,6 +224,10 @@ Route::group([
 
     Route::get('/statistical/consulations', [StatisticalController::class, 'consulations']);
 
+    Route::get('/statistical/staffConsulations', [StatisticalController::class, 'staffConsulations']);
+
+    Route::get('/statistical/staffAppoiments', [StatisticalController::class, 'staffAppoiments']);
+
 });
 Route::group([
     'middleware' => ['api'],
@@ -248,13 +252,13 @@ Route::group([
     Route::get('/promotion', [PromotionPromotionController::class, 'index']);
 
 
-    
+
     Route::get('/shifts', [ClientShiftsController::class, 'index']);
 
     Route::get('/shifts/{id}', [ClientShiftsController::class, 'show']);
- 
 
-    
+
+
     Route::get('/contacts', [ClientContactsController::class, 'index']);
 
     Route::get('/contacts/{id}', [ClientContactsController::class, 'show']);

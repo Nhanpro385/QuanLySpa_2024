@@ -8,6 +8,7 @@ use App\Models\Consulation;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StatisticalController extends Controller
 {
@@ -273,7 +274,7 @@ class StatisticalController extends Controller
 
         $arr = [
             'status' => true,
-            'messager' => 'Thống kê lịch hẹn: ' . $day,
+            'messager' => 'Thống kê lịch tư vấn: ' . $day,
             'data' => [
                 'today_consulation' => $today_consulation,
                 'complete_consulation' => $complete_consulation,
@@ -283,6 +284,95 @@ class StatisticalController extends Controller
         ];
         return response($arr, 200);
 
+    }
+
+    public function staffConsulations(Request $request)
+    {
+        $day = Carbon::today();
+        if ($request->input('day')) {
+            $day = Carbon::parse($request->input('day'));
+        }
+        $dailyConsultationCount = DB::table('consulations')
+            ->join('users', 'consulations.staff_id', '=', 'users.id')
+            ->whereIn('consulations.status', [1, 2])
+            ->whereDate('consulations.created_at', $day)
+            ->groupBy(['staff_id', 'users.full_name'])
+            ->select('staff_id', 'users.full_name', DB::raw('count(*) as total'))
+            ->get();
+
+        $weekOfYear = $day->weekOfYear;
+        $weeklyConsultationCount = DB::table('consulations')
+            ->join('users', 'consulations.staff_id', '=', 'users.id')
+            ->whereIn('consulations.status', [1, 2])
+            ->whereBetween('consulations.created_at', [Carbon::parse($day)->startOfWeek(), Carbon::parse($day)->endOfWeek()])
+            ->groupBy(['staff_id', 'users.full_name'])->select('staff_id', 'users.full_name', DB::raw('count(*) as total'))
+            ->get();
+
+        $monthOfYear = $day->month;
+        $monthlyConsultationCount = DB::table('consulations')
+            ->join('users', 'consulations.staff_id', '=', 'users.id')
+            ->whereIn('consulations.status', [1, 2])
+            ->whereBetween('consulations.created_at', [Carbon::parse($day)->startOfMonth(), Carbon::parse($day)->endOfMonth()])
+            ->groupBy(['staff_id', 'users.full_name'])
+            ->select('staff_id', 'users.full_name', DB::raw('count(*) as total'))
+            ->get();
+
+        $arr = [
+            'status' => true,
+            'messager' => 'Thống kê lịch tư vấn của từng nhân viên: ' . $day->format('Y-m-d') . ' - Tuần: ' . $weekOfYear . ' - Tháng: ' . $monthOfYear,
+            'data' => [
+                'today' => $dailyConsultationCount,
+                'week' => $weeklyConsultationCount,
+                'month' => $monthlyConsultationCount
+            ]
+        ];
+        return response($arr, 200);
+    }
+
+    public function staffAppoiments(Request $request)
+    {
+        $day = Carbon::today();
+        if ($request->input('day')) {
+            $day = Carbon::parse($request->input('day'));
+        }
+        $dailyAppointmentsCount = DB::table('appointment_staffs')
+            ->join('users', 'appointment_staffs.staff_id', '=', 'users.id')
+            ->join('appointments', 'appointment_staffs.appointment_id', '=', 'appointments.id')
+            ->whereIn('appointments.status', [1, 2, 3])
+            ->whereDate('appointment_staffs.created_at', $day)
+            ->groupBy(['staff_id', 'users.full_name'])
+            ->select('staff_id', 'users.full_name', DB::raw('count(*) as total'))
+            ->get();
+
+        $weekOfYear = $day->weekOfYear;
+        $weeklyAppointmentsCount = DB::table('appointment_staffs')
+            ->join('users', 'appointment_staffs.staff_id', '=', 'users.id')
+            ->join('appointments', 'appointment_staffs.appointment_id', '=', 'appointments.id')
+            ->whereIn('appointments.status', [1, 2, 3])
+            ->whereBetween('appointment_staffs.created_at', [Carbon::parse($day)->startOfWeek(), Carbon::parse($day)->endOfWeek()])
+            ->groupBy(['staff_id', 'users.full_name'])->select('staff_id', 'users.full_name', DB::raw('count(*) as total'))
+            ->get();
+
+        $monthOfYear = $day->month;
+        $monthlyAppointmentsCount = DB::table('appointment_staffs')
+            ->join('users', 'appointment_staffs.staff_id', '=', 'users.id')
+            ->join('appointments', 'appointment_staffs.appointment_id', '=', 'appointments.id')
+            ->whereIn('appointments.status', [1, 2, 3])
+            ->whereBetween('appointment_staffs.created_at', [Carbon::parse($day)->startOfMonth(), Carbon::parse($day)->endOfMonth()])
+            ->groupBy(['staff_id', 'users.full_name'])
+            ->select('staff_id', 'users.full_name', DB::raw('count(*) as total'))
+            ->get();
+
+        $arr = [
+            'status' => true,
+            'messager' => 'Thống kê lịch hẹn của từng nhân viên: ' . $day->format('Y-m-d') . ' - Tuần: ' . $weekOfYear . ' - Tháng: ' . $monthOfYear,
+            'data' => [
+                'today' => $dailyAppointmentsCount,
+                'week' => $weeklyAppointmentsCount,
+                'month' => $monthlyAppointmentsCount
+            ]
+        ];
+        return response($arr, 200);
     }
 
 
