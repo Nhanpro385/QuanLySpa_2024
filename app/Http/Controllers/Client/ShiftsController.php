@@ -26,7 +26,6 @@ class ShiftsController extends Controller
             $sorts = $queryResult['sorts'];
     
             $perPage = $request->query('per_page', 5);
-            $today = now()->toDateString();
     
             $query = Shift::query();
     
@@ -48,17 +47,14 @@ class ShiftsController extends Controller
                 }
             }
     
-            // Kiểm tra xem có tham số shift_date không
-            if ($request->has('shift_date')) {
-                $shiftDate = $request->query('shift_date');
-                $query->where('shift_date', '=', $shiftDate);
-            } else {
-                // Nếu không có shift_date, ưu tiên ngày hôm nay lên đầu
-                $query->orderByRaw("CASE WHEN shift_date = ? THEN 0 ELSE 1 END", [$today]);
-            }
+            // Lọc bỏ các ngày trong quá khứ
+            $query->where('shift_date', '>=', now()->toDateString());
     
-            // Sắp xếp mặc định theo shift_date (mới nhất trước)
-            $query->orderBy('shift_date', 'desc');
+            // Áp dụng sắp xếp theo query đã đề cập
+            $query->orderByRaw("
+                ABS(DATEDIFF(shift_date, CURDATE())) ASC, -- Khoảng cách gần nhất
+                start_time ASC -- Thời gian bắt đầu
+            ");
     
             // Áp dụng sắp xếp tùy chọn (nếu có)
             if (!empty($sorts)) {
@@ -79,7 +75,6 @@ class ShiftsController extends Controller
         }
     }
     
-
 
     // Store a new shift
     // Store a new shift
