@@ -158,5 +158,41 @@ Route::group([
 
 
 
+//Route ADMIN Nhân viên chăm sóc khách hàng
+Route::group([
+    'middleware' => ['api', 'auth:api'],
+    'prefix' => 'v0.0.1/admin',
+], function () {
+    Route::get('/consulations', [ConsulationController::class, 'index']);
+    Route::get('/consulations/{id}', [ConsulationController::class, 'show']);
+    Route::put('/consulations/{id}', [ConsulationController::class, 'update']);
+    Route::post('/consulations/{id}/browse', [ConsulationController::class, 'browse']);
+
+    //Notification
+    Route::get('/notifications', [NotificationController::class, 'index']);
 
 
+});
+
+//END Route ADMIN Nhân viên chăm sóc khách hàng
+
+// Route Client
+Route::group([
+    'middleware' => ['api'],
+    'prefix' => 'v0.0.1/client',
+], function () {
+    Route::get('/serviceCategories', [ClientServiceCategoryController::class, 'index']);
+    Route::get('/serviceCategories/{id}', [ClientServiceCategoryController::class, 'show']);
+
+    Route::get('/staffs', [ClientUserController::class, 'index']);
+    Route::get('/staffs/{id}', [ClientUserController::class, 'show']);
+
+    Route::get('/services', [ClientServiceController::class, 'index']);
+    Route::get('/services/{id}', [ClientServiceController::class, 'show']);
+
+    Route::post('/consulations', [ClientConsulationController::class, 'store'])->middleware(['auth:customer_api', 'checkStatusCustomer']);
+
+
+    Route::post('/appointments', [ClientAppointmentController::class, 'store'])->middleware(['auth:customer_api', 'checkStatusCustomer']);
+});
+//END Client
