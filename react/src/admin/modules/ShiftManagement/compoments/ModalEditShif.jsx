@@ -66,13 +66,13 @@ function ModalAddShiftEdit({
         }
     }, [error]);
 
-    const onSubmit = (values) => {
+    const handleFinish = (values) => {
         const payload = {
             id: data.id,
             shift_date: values.shift_date.format("YYYY-MM-DD"),
             start_time: values.start_time.format("HH:mm:ss"),
             end_time: values.end_time.format("HH:mm:ss"),
-            max_customers: 12,
+            max_customers: values.max_customers,
             note: "Cập nhật ca sáng",
             status: true,
         };
@@ -92,13 +92,13 @@ function ModalAddShiftEdit({
                 <Button
                     key="submit"
                     type="primary"
-                    onClick={handleSubmit(onSubmit)}
+                    onClick={handleSubmit(handleFinish)}
                 >
                     Lưu
                 </Button>,
             ]}
         >
-            <Form layout="vertical">
+            <Form layout="vertical" onFinish={handleSubmit(handleFinish)}>
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
@@ -141,9 +141,7 @@ function ModalAddShiftEdit({
                                 render={({ field }) => (
                                     <TimePicker
                                         {...field}
-                                       
                                         style={{ width: "100%" }}
-                                        
                                         onChange={(time) =>
                                             field.onChange(time)
                                         }
@@ -181,7 +179,7 @@ function ModalAddShiftEdit({
 
                     <Col span={12}>
                         <Form.Item
-                            label="Tối đa nhân viên"
+                            label="Tối đa khách hàng"
                             validateStatus={errors.max_customers ? "error" : ""}
                             help={errors.max_customers?.message}
                         >
@@ -189,32 +187,27 @@ function ModalAddShiftEdit({
                                 name="max_customers"
                                 control={control}
                                 rules={{
-                                    required:
-                                        "Vui lòng nhập số lượng nhân viên!",
+                                    required: "Vui lòng nhập số  khách hàng!",
                                 }}
                                 render={({ field }) => (
                                     <Input
                                         {...field}
                                         type="number"
-                                        placeholder="Nhập số lượng nhân viên"
+                                        placeholder="Nhập số  khách hàng"
                                     />
                                 )}
                             />
                         </Form.Item>
                     </Col>
 
-                    <Col span={12}>
-                        <Form.Item
-                            label="Trạng thái"
-                            validateStatus={errors.status ? "error" : ""}
-                            help={errors.status?.message}
-                        >
+                    <Col span={24}>
+                        <Form.Item label="Trạng thái">
                             <Controller
                                 name="status"
                                 control={control}
                                 render={({ field }) => (
                                     <Switch
-                                        checked={field.value}
+                                        {...field}
                                         onChange={(checked) =>
                                             field.onChange(checked)
                                         }

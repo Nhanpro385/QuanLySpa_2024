@@ -144,9 +144,10 @@ const ShiftManagement = () => {
         } catch (error) {}
     };
     const handleEditSubmit = async (values) => {
+        console.log(values);
         try {
             const res = await shiftupdate(values);
-
+                
             if (res.meta.requestStatus === "fulfilled") {
                 api.success({
                     message: "Cập nhật ca làm việc thành công",

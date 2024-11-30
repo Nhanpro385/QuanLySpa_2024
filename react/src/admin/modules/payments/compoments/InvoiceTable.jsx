@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Dropdown, Space, Table, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
-const InvoiceTable = ({ data, onActionClick }) => {
+const InvoiceTable = ({ data, onActionClick, loading }) => {
     const columns = [
         {
             title: "#",
@@ -76,7 +76,14 @@ const InvoiceTable = ({ data, onActionClick }) => {
         },
     ];
 
-    return <Table columns={columns} dataSource={data} rowKey="key" />;
+    return (
+        <Table
+            loading={loading}
+            columns={columns}
+            dataSource={data}
+            rowKey="key"
+        />
+    );
 };
 
 export default InvoiceTable;

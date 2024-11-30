@@ -265,25 +265,29 @@ const Dashboard = () => {
     }, [statistical]);
 
     useEffect(() => {
-        if (payment.Payments) {
+        if (payment.Payments && payment.Payments.data) {
             setTransactionData(
                 payment.Payments?.data.map((item) => ({
                     ...item,
                     key: item.id,
                 }))
             );
+        } else {
+            setTransactionData([]);
         }
     }, [payment]);
 
     useEffect(() => {
         console.log(consulations);
-        if (consulations.consulations) {
+        if (consulations.consulations && consulations.consulations.data) {
             setAppointmentData(
                 consulations.consulations?.data.map((item) => ({
                     ...item,
                     key: item.id,
                 }))
             );
+        } else {
+            setAppointmentData([]);
         }
     }, [consulations]);
 

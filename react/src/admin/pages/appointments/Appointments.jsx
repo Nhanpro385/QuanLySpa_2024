@@ -85,7 +85,7 @@ function Appointments() {
         ) {
             searchappointments(searchQuery);
         } else {
-            getappointments({ page: 1 });
+            getappointments();
         }
     }, [searchQuery]);
     const handleInputChange = debounce((value) => {
@@ -94,13 +94,9 @@ function Appointments() {
     const handlePageChange = (page, pagination, filters, sorter) => {
         setSearchQuery({ ...searchQuery, page, per_page: pagination });
     };
-    const handledelete = async (id) => {
-        console.log(id);
-        
+    const handledelete = async (record) => {
         try {
-            const res = deleteappointments(id)
-            console.log(res);
-            
+            const res = deleteappointments(record);
         } catch (err) {
             console.log(err);
         }

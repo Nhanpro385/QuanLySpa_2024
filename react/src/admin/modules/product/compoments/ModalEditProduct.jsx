@@ -19,7 +19,8 @@ import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 const ModalEditProduct = ({
-    visible,
+    //desktop.postman.com/?desktopVersion=11.21.0&userId=33123400&teamId=6563168&region=us
+    https: visible,
     onCancel,
     productData,
     isModalOpen,
@@ -117,11 +118,13 @@ const ModalEditProduct = ({
                 capacity: data.capacity,
                 bar_code: data.bar_code,
                 date: dayjs(data.date).format("YYYY-MM-DD"),
-
+                image_url: fileList[0].originFileObj,
                 description: data.description,
                 category_id: data.category_id.value,
                 priority: 1,
             };
+            console.log(payload);
+            
             handleSubmitEdit(payload.id, payload).then((result) => {
                 if (result) {
                     setFileList([]);

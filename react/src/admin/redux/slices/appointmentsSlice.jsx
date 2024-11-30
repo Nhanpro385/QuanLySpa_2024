@@ -6,7 +6,7 @@ import { logout } from "./authSlice";
 
 const checkRoleAndLogout = (dispatch) => {
     const userRole = localStorage.getItem("role");
-    
+
     if (!userRole) {
         dispatch(logout());
     }
@@ -61,8 +61,10 @@ export const appointmentsDelete = createAsyncThunk(
         }
 
         try {
-            await axiosInstance.delete(endpoints.appointments.delete(id));
-            return id;
+            const response = await axiosInstance.delete(
+                endpoints.appointments.delete(id)
+            );
+            return response.data.id;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,

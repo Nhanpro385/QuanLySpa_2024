@@ -42,7 +42,7 @@ const ConsultationTable = ({
             render: (text) => text?.phone || "Không tìm thấy",
         },
         {
-            title: "Kế hoạch tư vấn",
+            title: "nội dung tư vấn",
             dataIndex: "treatment_plan",
             key: "treatment_plan",
             width: 250,

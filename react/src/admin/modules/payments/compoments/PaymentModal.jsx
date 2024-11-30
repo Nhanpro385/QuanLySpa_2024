@@ -4,7 +4,7 @@ import useproductActions from "../../product/hooks/useProduct";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 
-const PaymentModal = ({ isOpen, onClose, onSubmit }) => {
+const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
     const [form] = Form.useForm();
     const { getproduct, searchproduct } = useproductActions();
     const products = useSelector((state) => state.products);
@@ -30,7 +30,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit }) => {
     useEffect(() => {
         getproduct(50);
     }, []);
-
+    
     useEffect(() => {
         if (products?.products?.data && !products.loading) {
             setDataProduct(
@@ -147,7 +147,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit }) => {
                         },
                     ]}
                 >
-                    <Input placeholder="Nhập số tiền" />
+                    <Input placeholder="Nhập mã khuyến mãi" />
                 </Form.Item>
                 <Form.Item label="Sản phẩm" name="products">
                     <Select

@@ -434,7 +434,7 @@ const Appointment_Add = () => {
                             <Controller
                                 name="employee"
                                 control={control}
-                                rules={{ required: "Vui lòng chọn nhân viên" }}
+                               
                                 render={({ field }) => (
                                     <Select
                                         {...field}

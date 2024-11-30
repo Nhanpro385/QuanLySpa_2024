@@ -6,9 +6,11 @@ import PaymentModal from "../../modules/payments/compoments/PaymentModal";
 import usepaymentActions from "../../modules/payments/hooks/usepaymentAction";
 import PaymentModalDetail from "../../modules/payments/compoments/PaymentModalDetail";
 import { useSelector } from "react-redux";
+import { set } from "react-hook-form";
 const PaymentManagement = () => {
     const [api, contextHolder] = notification.useNotification();
     const { isModalOpen, showModal, handleCancel } = useModal();
+    const [errorpayment, setErrorpayment] = useState({});
     const {
         isModalOpen: isPaymentModalOpen,
         showModal: showPaymentModal,
@@ -114,7 +116,9 @@ const PaymentManagement = () => {
                 api.error({
                     message: res.payload.message || "Có lỗi xảy ra",
                     duration: 3,
+                    description: res.payload.errors["promotion_name"] || "",
                 });
+                setErrorpayment((prev) => res.payload.errors || {});
             }
         } catch (e) {
             console.log(e);
@@ -165,6 +169,7 @@ const PaymentManagement = () => {
                             </Col>
                         </Row>
                         <InvoiceTable
+                        loading={payments.loading}
                             data={paymendata}
                             onActionClick={handleActionClick}
                         />

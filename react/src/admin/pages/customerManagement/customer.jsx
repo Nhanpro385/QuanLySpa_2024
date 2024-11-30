@@ -19,7 +19,7 @@ function Customer() {
     } = useCustomerActions();
     const customers = useSelector((state) => state.customers);
     console.log(customers);
-    
+
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
@@ -41,11 +41,13 @@ function Customer() {
 
     useEffect(() => {
         if (
-            searchQuery.search ||
+            searchQuery.search !== "" ||
             searchQuery.page !== 1 ||
             searchQuery.per_page !== 5
         ) {
             searchCustomer(searchQuery);
+        }else{
+            getCustomer();
         }
     }, [searchQuery]);
 
@@ -87,7 +89,7 @@ function Customer() {
 
     const handleEditSubmit = async (updatedCustomer) => {
         try {
-            console.log(updatedCustomer);
+            
 
             const payload = {
                 id: updatedCustomer.id,

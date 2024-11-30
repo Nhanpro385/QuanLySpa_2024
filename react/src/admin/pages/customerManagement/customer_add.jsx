@@ -43,6 +43,13 @@ const CustomersAdd = () => {
 
         try {
             const response = await dispatch(CustomerAdd(payload));
+            if (response.payload.status === 403) {
+                return api.error({
+                    message: "Banj không có quyền thực hiện thao tác này",
+                    placement: "topRight",
+                });
+            }
+
             if (CustomerAdd.fulfilled.match(response)) {
                 reset();
                 setSuccess("Thêm người dùng thành công");
