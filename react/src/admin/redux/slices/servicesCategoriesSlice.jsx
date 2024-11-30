@@ -139,6 +139,15 @@ export const ServiceCategoriesGetById = createAsyncThunk(
         return response.data;
     }
 );
+export const ServiceCategoriesGetClient = createAsyncThunk(
+    "ServiceCategories/getClient",
+    async () => {
+        const response = await axiosInstance.get(
+            endpoints.ServiceCategories.listClient
+        );
+        return response.data;
+    }
+);
 
 const initialState = {
     ServiceCategories: {
@@ -238,6 +247,18 @@ const ServiceCategoriesSlice = createSlice({
                 state.loading = false;
             })
             .addCase(ServiceCategoriesSearch.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(ServiceCategoriesGetClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(ServiceCategoriesGetClient.fulfilled, (state, action) => {
+                state.ServiceCategories = action.payload;
+                state.loading = false;
+            })
+            .addCase(ServiceCategoriesGetClient.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

@@ -5,6 +5,7 @@ export const API_BASE_URL = "http://127.0.0.1:8000/api/v0.0.1/admin";
 const API_AUTH_URL = "http://127.0.0.1:8000/api/auth"; // Thay đổi theo URL API của bạn
 const API_AUTHCUSTOMER_URL = "http://127.0.0.1:8000/api/authCustomer"; // Thay đổi theo URL API của bạn
 const API_AUTH_URL2 = "http://127.0.0.1:8000/api";
+const API_AUTH_URL3 = "http://127.0.0.1:8000/api/v0.0.1/client";
 const endpoints = {
     ServiceCategories: {
         list: `${API_BASE_URL}/serviceCategories`,
@@ -13,6 +14,7 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         delete: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         search: `${API_BASE_URL}/serviceCategories`,
+        listClient: `${API_AUTH_URL3}/serviceCategories?services=true`,
     },
     Customers: {
         list: `${API_BASE_URL}/customer`,
@@ -98,6 +100,7 @@ const endpoints = {
         search: `${API_BASE_URL}/services`,
         addProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
         updateProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
+        listClient: `${API_AUTH_URL3}/services`,
     },
     shifts: {
         list: `${API_BASE_URL}/shifts`,

@@ -6,6 +6,7 @@ import {
     ServiceCategoriesDelete,
     ServiceCategoriesGetById,
     ServiceCategoriesSearch,
+    ServiceCategoriesGetClient,
 } from "@admin/redux/slices/servicesCategoriesSlice";
 const useServiceCategoriesActions = () => {
     const dispatch = useDispatch();
@@ -35,6 +36,10 @@ const useServiceCategoriesActions = () => {
     const searchServiceCategories = async (query) => {
         return await dispatch(ServiceCategoriesSearch(query));
     };
+    const getServiceCategoriesClient = async () => {
+        return await dispatch(ServiceCategoriesGetClient());
+    };
+
     return {
         addServiceCategories,
         getServiceCategories,
@@ -42,6 +47,7 @@ const useServiceCategoriesActions = () => {
         deleteServiceCategories,
         getServiceCategoriesById,
         searchServiceCategories,
+        getServiceCategoriesClient,
     };
 };
 
