@@ -114,7 +114,7 @@ class AppointmentController extends Controller
 
             if (count($staffInShift) !== count($staffIds)) {
                 return response()->json([
-                    "status" => "error",
+                    "status" => false,
                     "message" => "Dữ liệu đầu vào không hợp lệ.",
                     'error' => 'Có một nhân viên không trong ca làm hiện tại.'
                 ], 400);
@@ -126,7 +126,7 @@ class AppointmentController extends Controller
 
             if (!$start_time) {
                 return response()->json([
-                    "status" => "error",
+                    "status" => false,
                     "message" => "Dữ liệu đầu vào không hợp lệ.",
                     'error' => 'Thời gian bất đầu của lịch hẹn không nằm trong thời gian ca làm hiện tại.'
                 ], 400);
@@ -206,18 +206,29 @@ class AppointmentController extends Controller
                 }
             }
 
+
             foreach ($products_out_of_stock as $product) {
                 $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
                 if (!$inventory || $inventory->quantity < $product['quantity'] || $inventory->quantity <= 0) {
                     DB::rollBack();
                     return response()->json([
-                        "status" => "error",
+                        "status" => false,
                         "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm: ' . $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                        'error' => 'Số lượng sản phẩm mã: ' . $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
                     ], 400);
                 }
             }
 
+            //Kiểm tra dịch vụ với nhân viên
+            foreach ($validateData['services'] as $service_quantity) {
+                if ($service_quantity['quantity'] > count($validateData['users'])) {
+                    return response()->json([
+                        "status" => false,
+                        "message" => "Số lượng nhân viên không thể đáp ứng.",
+                        'error' => 'Vui lòng thêm số lượng nhân viên cho lịch hẹn trên.'
+                    ], 400);
+                }
+            }
 
 
             if ($appointment->status == 3) {
@@ -239,7 +250,7 @@ class AppointmentController extends Controller
                         return response()->json([
                             "status" => "error",
                             "message" => "Hết hàng trong kho.",
-                            'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                            'error' => 'Số lượng sản phẩm mã: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
                         ], 400);
                     }
                     $pr = Product::find($product['product_id']);
@@ -501,6 +512,17 @@ class AppointmentController extends Controller
                         "status" => "error",
                         "message" => "Hết hàng trong kho.",
                         'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                    ], 400);
+                }
+            }
+
+            //Kiểm tra dịch vụ với nhân viên
+            foreach ($validateData['services'] as $service_quantity) {
+                if ($service_quantity['quantity'] > count($validateData['users'])) {
+                    return response()->json([
+                        "status" => false,
+                        "message" => "Số lượng nhân viên không thể đáp ứng.",
+                        'error' => 'Vui lòng thêm số lượng nhân viên cho lịch hẹn trên.'
                     ], 400);
                 }
             }

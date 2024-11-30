@@ -116,7 +116,7 @@ class AuthCustomerController extends Controller
             'access_token' => $token,
             'refresh_token' => $refeshToken,
             'token_type' => 'bearer',
-            'expires_in' => auth('customer_api')->factory()->getTTL() * 60,
+            'expires_in' => auth('customer_api')->factory()->getTTL() * 360,
         ]);
     }
 }

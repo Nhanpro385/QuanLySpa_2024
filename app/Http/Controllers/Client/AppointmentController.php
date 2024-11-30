@@ -36,9 +36,21 @@ class AppointmentController extends Controller
             $countAppointmentShift = Appointment::where('shift_id', $validateData['shift_id'])->count();
             if ($shift->max_customers <= $countAppointmentShift) {
                 return response()->json([
-                    "status" => "false",
+                    "status" => false,
                     "message" => "Số lượng khách hàng đặt lịch đã đến giới hạn.",
-                ], 203);
+                ], 403);
+            }
+
+            $appointment_customer = Appointment::where('customer_id', auth('customer_api')->user()->id)
+                ->where('shift_id', $validateData['shift_id'])
+                ->whereIn('status', [1, 2, 3])
+                ->exists();
+
+            if ($appointment_customer) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "Bạn đã đặt lịch cho thời gian trên.",
+                ], 403);
             }
 
             $currentDate = Carbon::now();
@@ -46,10 +58,12 @@ class AppointmentController extends Controller
 
             if ($today > $shift->shift_date) {
                 return response()->json([
-                    "status" => "false",
+                    "status" => false,
                     "message" => "Đã có lỗi xảy ra vui lòng liên hệ để nhận được hỗ trợ.",
-                ], 503);
+                ], 403);
             }
+
+
             // Thêm mới lịch hẹn và liên kết nhân viên
             DB::beginTransaction();
 
@@ -89,7 +103,7 @@ class AppointmentController extends Controller
                     return response()->json([
                         "status" => "error",
                         "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm: ' . $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                        'error' => 'Số lượng sản phẩm: ' . $product['product_id'] . ' của dịch vụ bạn chọn trong kho không đáp ứng đc yêu cầu của quý khách.'
                     ], 400);
                 }
             }

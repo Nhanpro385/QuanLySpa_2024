@@ -26,10 +26,10 @@ class AppointmentUpdateResquest extends FormRequest
         return [
             'note' => 'nullable',
             'status' => 'required|numeric|min:1',
-            'services' => 'nullable|array',
+            'services' => 'required|array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|numeric|min:1',
-            'users' => 'nullable|array',
+            'users' => 'required|array',
             'users.*.staff_id' => 'required|exists:users,id',
         ];
     }
@@ -43,10 +43,12 @@ class AppointmentUpdateResquest extends FormRequest
             'services.array' => 'Danh sách dịch vụ phải là một mảng.',
             'services.*.service_id.required' => 'Mã dịch vụ là bắt buộc.',
             'services.*.service_id.exists' => 'Mã dịch vụ không hợp lệ.',
+            'services.required' => 'Không được bỏ trống dịch vụ',
             'services.*.quantity.required' => 'Số lượng là bắt buộc.',
             'services.*.quantity.numeric' => 'Số lượng phải là số.',
             'services.*.quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1.',
             'users.array' => 'Danh sách người dùng phải là một mảng.',
+            'users.required' => 'Vui lòng chọn nhân viên',
             'users.*.staff_id.required' => 'Mã nhân viên là bắt buộc.',
             'users.*.staff_id.exists' => 'Mã nhân viên không hợp lệ.',
         ];

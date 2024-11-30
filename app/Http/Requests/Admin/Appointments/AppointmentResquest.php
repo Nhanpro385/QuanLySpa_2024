@@ -31,11 +31,12 @@ class AppointmentResquest extends FormRequest
             'note' => 'nullable',
             'appointment_date' => 'required|after_or_equal:today',
             'status' => 'required|numeric|min:1',
-            'services' => 'nullable|array',
+            'services' => 'required|array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|numeric|min:1',
-            'users' => 'nullable|array',
+            'users' => 'required|array',
             'users.*.staff_id' => 'required|exists:users,id',
+
         ];
     }
 
@@ -69,6 +70,8 @@ class AppointmentResquest extends FormRequest
             'users.array' => 'Danh sách người dùng phải là một mảng.',
             'users.*.staff_id.required' => 'Mã nhân viên là bắt buộc.',
             'users.*.staff_id.exists' => 'Mã nhân viên không hợp lệ.',
+            'services.required' => 'Không được bỏ trống dịch vụ',
+            'users.required' => 'Vui lòng chọn nhân viên',
         ];
     }
 

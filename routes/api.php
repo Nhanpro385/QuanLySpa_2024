@@ -63,7 +63,7 @@ Route::group([
     Route::put('/inbound-invoices/{id}', [InboundInvoiceController::class, 'update']);
     Route::delete('/inbound-invoices/{id}', [InboundInvoiceController::class, 'destroy']);
 
-    
+
     Route::get('/contacts', [ContactsController::class, 'index']);
     Route::post('/contacts', [ContactsController::class, 'store']);
     Route::get('/contacts/{id}', [ContactsController::class, 'show']);
@@ -286,9 +286,9 @@ Route::group([
     Route::get('/services', [ClientServiceController::class, 'index']);
     Route::get('/services/{id}', [ClientServiceController::class, 'show']);
 
-    Route::post('/consulations', [ClientConsulationController::class, 'store'])->middleware('auth:customer_api');
+    Route::post('/consulations', [ClientConsulationController::class, 'store'])->middleware(['auth:customer_api', 'checkStatusCustomer']);
 
 
-    Route::post('/appointments', [ClientAppointmentController::class, 'store'])->middleware('auth:customer_api');
+    Route::post('/appointments', [ClientAppointmentController::class, 'store'])->middleware(['auth:customer_api', 'checkStatusCustomer']);
 });
 //END Client
