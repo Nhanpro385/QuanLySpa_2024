@@ -32,14 +32,24 @@ class StaffShiftController extends Controller
     public function store(StaffShiftRequest $request)
     {
         $data = $request->validated();
-        $data['created_by'] = auth()->id(); // Lấy ID người dùng đang đăng nhập
-        $shift = StaffShift::create($data);
+        $createdStaffShifts = [];
 
-        return (new StaffShiftResource($shift))->additional([
+        foreach ($data['staff_ids'] as $staffId) {
+            $createdStaffShifts[] = StaffShift::create([
+                'shift_id' => $data['shift_id'],
+                'staff_id' => $staffId,
+                'created_by' => auth()->id(),
+            ]);
+        }
+    
+        // Sử dụng Resource Collection để trả về dữ liệu
+        return response()->json([
             'status' => true,
-            'message' => 'Tạo mới thành công.',
-        ]);
+            'message' => 'Thêm nhân viên vào ca làm việc thành công.',
+            'data' => $createdStaffShifts, // Trả về danh sách bản ghi vừa tạo
+        ], 201);
     }
+    
 
     public function show($id)
     {
@@ -55,26 +65,53 @@ class StaffShiftController extends Controller
         return (new StaffShiftResource($shift))->additional(['status' => true]);
     }
 
-    public function update(StaffShiftRequest $request, $id)
+    public function update(Request $request, $shiftId)
     {
-        $shift = StaffShift::find($id);
-
-        if (!$shift) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Không tìm thấy phân công ca làm để cập nhật.',
-            ], 404);
+        $validated = $request->validate([
+            'staff_ids_to_add' => 'array',
+            'staff_ids_to_add.*' => 'exists:users,id', // Danh sách ID nhân viên cần thêm hoặc cập nhật
+            'staff_ids_to_remove' => 'array',
+            'staff_ids_to_remove.*' => 'exists:users,id', // Danh sách ID nhân viên cần xóa
+        ], [
+            'staff_ids_to_add.*.exists' => 'Nhân viên trong danh sách thêm không tồn tại.',
+            'staff_ids_to_remove.*.exists' => 'Nhân viên trong danh sách xóa không tồn tại.',
+        ]);
+    
+        $staffIdsToAdd = $validated['staff_ids_to_add'] ?? [];
+        $staffIdsToRemove = $validated['staff_ids_to_remove'] ?? [];
+    
+        // **Thêm hoặc cập nhật nhân viên trong shift**
+        foreach ($staffIdsToAdd as $staffId) {
+            StaffShift::updateOrCreate(
+                [
+                    'shift_id' => $shiftId,
+                    'staff_id' => $staffId,
+                ],
+                [
+                    'created_by' => auth()->id(),
+                ]
+            );
         }
-
-        $data = $request->validated();
-        $data['updated_by'] = auth()->id();
-        $shift->update($data);
-
-        return (new StaffShiftResource($shift))->additional([
+    
+        // **Xóa nhân viên khỏi shift**
+        if (!empty($staffIdsToRemove)) {
+            StaffShift::where('shift_id', $shiftId)
+                ->whereIn('staff_id', $staffIdsToRemove)
+                ->delete();
+        }
+    
+        // **Trả về danh sách nhân viên mới trong shift**
+        $updatedStaffShifts = StaffShift::where('shift_id', $shiftId)
+            ->with('staff:id,full_name') // Thêm thông tin nhân viên (tùy vào quan hệ trong model)
+            ->get();
+    
+        return response()->json([
             'status' => true,
             'message' => 'Cập nhật thành công.',
-        ]);
+            'data' => $updatedStaffShifts,
+        ], 200);
     }
+    
 
     public function destroy($id)
     {

@@ -5,8 +5,7 @@ namespace App\Http\Requests\Admin\StaffShifts;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\DB; 
-use App\Models\StaffShift;
+use Illuminate\Validation\Rule;
 
 class StaffShiftRequest extends FormRequest
 {
@@ -18,19 +17,28 @@ class StaffShiftRequest extends FormRequest
     public function rules()
     {
         return [
-            'staff_id' => 'required|exists:users,id',
-            'shift_id' => 'required|exists:shifts,id|unique:staff_shifts,shift_id,NULL,id,staff_id,' . $this->staff_id,
+            'shift_id' => 'required|exists:shifts,id', // Kiểm tra shift_id
+            'staff_ids' => 'required|array', // staff_ids phải là mảng
+            'staff_ids.*' => [
+                'required',
+                'exists:users,id',
+                Rule::unique('staff_shifts', 'staff_id')->where(function ($query) {
+                    return $query->where('shift_id', $this->shift_id);
+                }), // Đảm bảo không trùng với shift_id đã tồn tại
+            ],
         ];
     }
 
     public function messages()
     {
         return [
-            'staff_id.required' => 'Vui lòng cung cấp ID của nhân viên.',
-            'staff_id.exists' => 'Nhân viên không tồn tại.',
             'shift_id.required' => 'Vui lòng cung cấp ID của ca làm.',
             'shift_id.exists' => 'Ca làm không tồn tại.',
-            'shift_id.unique' => 'Nhân viên này đã được gán cho ca làm này.',
+            'staff_ids.required' => 'Danh sách nhân viên không được để trống.',
+            'staff_ids.array' => 'Danh sách nhân viên phải là một mảng.',
+            'staff_ids.*.required' => 'Mỗi ID nhân viên không được để trống.',
+            'staff_ids.*.exists' => 'Nhân viên không tồn tại.',
+            'staff_ids.*.unique' => 'Nhân viên này đã được gán cho ca làm này.',
         ];
     }
 
