@@ -38,6 +38,7 @@ class ResetPasswordNotification extends Notification
             ->subject('Thông báo xác nhận cập nhật lại mật khẩu')
             ->greeting('Xin chào!')
             ->line('Xác nhận cập nhật lại mật khẩu tài khoản')
+            ->line('Bạn vui lòng nhấn chọn vào nút xác nhận bên dưới hoặc có thể dùng đường dẫn chúng tôi đã gửi đính kèm.')
             ->action('Xác nhận', $this->url)
             ->salutation('Spa Sakura')
             ->line('Cảm ơn bạn đã xác nhận tài khoản!');

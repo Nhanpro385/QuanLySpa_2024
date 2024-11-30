@@ -94,6 +94,9 @@
                     từ quý khách {{ $full_name }}.
                     Xác nhận chuyên gia tư vấn trong buổi trò chuyện.
                 </p>
+                <p>
+                    Nhấn vào nhút bên dưới để đến với trang danh sách yêu cầu tư vấn cho khách hàng.
+                </p>
                 <p style="text-align: center;">
                     <a href="{{ $url }}" class="button" style="text-align: center;">
                         Duyệt ngay

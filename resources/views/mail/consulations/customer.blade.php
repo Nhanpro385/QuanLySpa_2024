@@ -94,12 +94,25 @@
                     từ quý khách.
                     Quý khách sẽ nhận được thông tin chi tiết từ chuyên gia tư vấn của chúng tôi trong buổi trò chuyện.
                 </p>
+                <p>
+                    Kính mong quý khách sẽ tham gia tư vấn cùng nhân viên chúng tôi vào lúc:
+                    <strong>
+                        {{ $time }}
+                    </strong>
+                    đễ nhận được sự tư vấn.
+                </p>
                 <p style="text-align: center;">
                     <a href="{{ $url }}" class="button" style="text-align: center;">
                         Tham gia ngay
                     </a>
                 </p>
                 <p>SPA SAKURA xin chân thành cảm ơn và mong được đồng hành cùng quý khách.</p>
+                <p>
+                    Mọi thắc mắc xin quý khách liên hệ với chúng tôi qua email:
+                    <strong>
+                        sakuraspa2025@gmail.com
+                    </strong>
+                </p>
             </td>
         </tr>
     </table>

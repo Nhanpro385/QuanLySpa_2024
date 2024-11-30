@@ -14,13 +14,16 @@ class ConsulationCustomerMail extends Mailable
     use Queueable, SerializesModels;
     public $url;
     public $full_name;
+
+    public $time;
     /**
      * Create a new message instance.
      */
-    public function __construct(string $url, string $full_name)
+    public function __construct(string $url, string $full_name, $time)
     {
         $this->url = $url;
         $this->full_name = $full_name;
+        $this->time = $time;
     }
 
     /**

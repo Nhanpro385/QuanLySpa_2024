@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\Consulations\ConsulationCollection;
 use App\Http\Resources\Admin\Consulations\ConsulationResource;
 use App\Mail\ConsulationCustomerMail;
 use App\Models\Consulation;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -224,8 +225,9 @@ class ConsulationController extends Controller
             $email = ($consulation->customer->email);
             $full_name = ($consulation->customer->full_name ?? "SPA-ER");
             $url_consulation = env('FRONTEND_URL') . "/tuvankhachhang/videocall/" . $id;
+            $time = Carbon::now()->addMinutes(30);
 
-            $mailSend = Mail::to($email)->send(new ConsulationCustomerMail($url_consulation, $full_name));
+            $mailSend = Mail::to($email)->send(new ConsulationCustomerMail($url_consulation, $full_name, $time));
 
             if (!$mailSend) {
                 return response()->json([
