@@ -16,7 +16,7 @@ class StoreInboundInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'staff_id' => 'nullable|string|exists:users,id',
+           
             'supplier_id' => 'nullable|string|exists:suppliers,id',
             'note' => 'nullable|string|max:255',
             'total_amount' => 'required|numeric|min:0',
@@ -27,8 +27,7 @@ class StoreInboundInvoiceRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'staff_id.string' => 'ID nhân viên phải là chuỗi.',
-            'staff_id.exists' => 'ID nhân viên không tồn tại trong hệ thống.',
+         
             'supplier_id.string' => 'ID nhà cung cấp phải là chuỗi.',
             'supplier_id.exists' => 'ID nhà cung cấp không tồn tại trong hệ thống.',
             'note.string' => 'Ghi chú phải là chuỗi ký tự.',

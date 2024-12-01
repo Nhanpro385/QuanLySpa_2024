@@ -71,7 +71,7 @@ class InboundInvoiceController extends Controller
     try {
         // Tạo hóa đơn nhập hàng
         $invoice = InboundInvoice::create([
-            'staff_id' => $validated['staff_id'],
+            'staff_id' =>$userId = auth()->id(),
             'supplier_id' => $validated['supplier_id'],
             'note' => $validated['note'] ?? null,
             'total_amount' => $validated['total_amount'],
