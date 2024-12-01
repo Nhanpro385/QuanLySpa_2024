@@ -3,7 +3,7 @@ namespace App\Http\Resources\Admin\TreatmentHistory;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TreatmentHistoryResource extends JsonResource
+class DetailTreatmentHistoryResource extends JsonResource
 {
     public function toArray($request): array
     {
@@ -18,7 +18,6 @@ class TreatmentHistoryResource extends JsonResource
             'note' => $this->note,
             'status' => $this->status,
             'evaluete' => $this->evaluete,
-
 
             // Thông tin customer
             'customer' => [
@@ -41,14 +40,14 @@ class TreatmentHistoryResource extends JsonResource
 
             // Tổng tiền từ payment
             'payment_total' => $this->appointment->payments->sum('total_amount') ?? 0,
-              // Chi tiết payments và products
-              'payment_details' => $this->appointment->payments->map(function ($payment) {
+            // Chi tiết payments và products
+            'payment_details' => $this->appointment->payments->map(function ($payment) {
                 return [
-                    'payment_id' => (string)$payment->id,
+                    'payment_id' => $payment->id,
                     'total_amount' => $payment->total_amount,
                     'products' => $payment->products->map(function ($product) {
                         return [
-                            'product_id' => (string)$product->id,
+                            'product_id' => $product->id,
                             'product_name' => $product->name,
                             'quantity' => $product->pivot->quantity,
                             'unit_price' => $product->pivot->unit_price,
@@ -57,23 +56,6 @@ class TreatmentHistoryResource extends JsonResource
                     }),
                 ];
             }),
-            'staff_list' => $this->appointment->users->map(function ($user) {
-                return [
-                    'id' =>(string) $user->id,
-                    'name' => $user->full_name,
-                
-                    'role' => $user->role,
-                ];
-            }),
-            'service_list' => $this->appointment->services->map(function ($service) {
-                return [
-                    'id' => (string)$service->id,
-                    'name' => $service->name,
-                    'quantity' => $service->pivot->quantity,
-                    'price' => $service->pivot->price,
-                ];
-            }),
-
             'created_by' => $this->created_by ? [
                 'id' =>(string) $this->created_by,
                 'full_name' => $this->createdBy->full_name ?? null,
