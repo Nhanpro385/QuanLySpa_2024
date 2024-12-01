@@ -60,7 +60,8 @@ class ServiceResource extends JsonResource
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
-                    'quantity_used' => $product->pivot->quantity_used
+                    'quantity_used' => $product->pivot->quantity_used,
+                    'image_url' => $product->image_url
                 ];
             }) : [],
             'serviceImages' => $serviceImages ? $serviceImages->map(function ($serviceImage) {
