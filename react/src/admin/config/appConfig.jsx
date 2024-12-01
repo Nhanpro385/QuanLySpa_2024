@@ -102,7 +102,7 @@ const endpoints = {
         updateProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
         listClient: `${API_AUTH_URL3}/services`,
         detailClient: (id) =>
-            `${API_AUTH_URL3}/services/${id}?products=true&serviceImages=true`,
+            `${API_AUTH_URL3}/services/${id}?products=true&serviceImages=true&comments=true`,
     },
     shifts: {
         list: `${API_BASE_URL}/shifts`,

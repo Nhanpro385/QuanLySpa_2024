@@ -5,3 +5,12 @@
 .cardProduct:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
 }
+.commentItem {
+    padding: 10px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.3s;
+}
+.commentItem:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}

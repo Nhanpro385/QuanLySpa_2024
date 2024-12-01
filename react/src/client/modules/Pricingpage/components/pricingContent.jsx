@@ -5,7 +5,6 @@ import {
     Row,
     Table,
     Collapse,
-
     Badge,
     Tag,
     Typography,
@@ -106,215 +105,76 @@ const PricingContent = () => {
         },
     ];
     return (
-      
-            <div>
-                <Row>
-                    <Col span={24}>
-                        <img
-                            style={{ width: "100%" }}
-                            src={baner}
-                            alt="baner"
-                        />
-                    </Col>
-                    <Divider orientation="center">
-                        <h1
-                            style={{
-                                fontFamily: "Anton, sans-serif",
-                                fontSize: "4rem",
-                            }}
-                        >
-                            Bảng giá chi tiết
-                        </h1>
-                    </Divider>
-                    <Col span={24} className="container">
-                        <Collapse
-                            defaultActiveKey={["1"]}
-                            size="large"
-                            accordion
-                        >
-                            <Panel header="Bảng giá dịch vụ trị mụn" key="1">
-                                <Table
-                                    bordered={true}
-                                    pagination={false}
-                                    dataSource={data}
+        <div>
+            <Row>
+                <Col span={24}>
+                    <img style={{ width: "100%" }} src={baner} alt="baner" />
+                </Col>
+                <Divider orientation="center">
+                    <h1
+                        style={{
+                            fontFamily: "Anton, sans-serif",
+                            fontSize: "4rem",
+                        }}
+                    >
+                        Bảng giá chi tiết
+                    </h1>
+                </Divider>
+                <Col span={24} className="container">
+                    <Collapse defaultActiveKey={["1"]} size="large" accordion>
+                        <Panel header="Bảng giá dịch vụ trị mụn" key="1">
+                            <Table
+                                bordered={true}
+                                pagination={false}
+                                dataSource={data}
+                            >
+                                <Column
+                                    rowScope={2}
+                                    title={
+                                        <div>
+                                            <p
+                                                style={{
+                                                    fontSize: "2rem",
+
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                Danh sách các dịch vụ
+                                            </p>
+                                        </div>
+                                    }
+                                    dataIndex="serviceName"
+                                    key="serviceName"
+                                />
+                                <ColumnGroup
+                                    style={{ backgroundColor: "#FFDCDC" }}
+                                    title="điều trị vùng da mặt"
                                 >
                                     <Column
-                                        rowScope={2}
-                                        title={
-                                            <div>
-                                                <p
-                                                    style={{
-                                                        fontSize: "2rem",
-
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    Danh sách các dịch vụ
-                                                </p>
-                                            </div>
-                                        }
-                                        dataIndex="serviceName"
-                                        key="serviceName"
+                                        title="Giá niêm yết"
+                                        dataIndex="price"
+                                        key="price"
+                                        align="center"
                                     />
-                                    <ColumnGroup
-                                        style={{ backgroundColor: "#FFDCDC" }}
-                                        title="điều trị vùng da mặt"
-                                    >
-                                        <Column
-                                            title="Giá niêm yết"
-                                            dataIndex="price"
-                                            key="price"
-                                            align="center"
-                                        />
-                                        <Column
-                                            title="Giá HSSV"
-                                            dataIndex="priceHSSV"
-                                            key="priceHSSV"
-                                            align="center"
-                                        />
-                                        <Column
-                                            title="Thao tác"
-                                            key="action"
-                                            align="center"
-                                            dataIndex="action"
-                                        />
-                                    </ColumnGroup>
-                                </Table>
-                            </Panel>
-                            <Panel header="Bảng giá dịch vụ trị mụn" key="2">
-                                <Table
-                                    bordered={true}
-                                    pagination={false}
-                                    dataSource={data}
-                                >
                                     <Column
-                                        rowScope={2}
-                                        title={
-                                            <div>
-                                                <p
-                                                    style={{
-                                                        fontSize: "2rem",
-
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    Danh sách các dịch vụ
-                                                </p>
-                                            </div>
-                                        }
-                                        dataIndex="serviceName"
-                                        key="serviceName"
+                                        title="Giá HSSV"
+                                        dataIndex="priceHSSV"
+                                        key="priceHSSV"
+                                        align="center"
                                     />
-                                    <ColumnGroup
-                                        style={{ backgroundColor: "#FFDCDC" }}
-                                        title="điều trị vùng da mặt"
-                                    >
-                                        <Column
-                                            title="Giá niêm yết"
-                                            dataIndex="price"
-                                            key="price"
-                                            align="center"
-                                        />
-                                        <Column
-                                            title="Giá HSSV"
-                                            dataIndex="priceHSSV"
-                                            key="priceHSSV"
-                                            align="center"
-                                        />
-                                    </ColumnGroup>
-                                </Table>
-                            </Panel>
-                            <Panel header="Bảng giá dịch vụ trị mụn" key="3">
-                                <Table
-                                    bordered={true}
-                                    pagination={false}
-                                    dataSource={data}
-                                >
                                     <Column
-                                        rowScope={2}
-                                        title={
-                                            <div>
-                                                <p
-                                                    style={{
-                                                        fontSize: "2rem",
-
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    Danh sách các dịch vụ
-                                                </p>
-                                            </div>
-                                        }
-                                        dataIndex="serviceName"
-                                        key="serviceName"
+                                        title="Thao tác"
+                                        key="action"
+                                        align="center"
+                                        dataIndex="action"
                                     />
-                                    <ColumnGroup
-                                        style={{ backgroundColor: "#FFDCDC" }}
-                                        title="điều trị vùng da mặt"
-                                    >
-                                        <Column
-                                            title="Giá niêm yết"
-                                            dataIndex="price"
-                                            key="price"
-                                            align="center"
-                                        />
-                                        <Column
-                                            title="Giá HSSV"
-                                            dataIndex="priceHSSV"
-                                            key="priceHSSV"
-                                            align="center"
-                                        />
-                                    </ColumnGroup>
-                                </Table>
-                            </Panel>
-                            <Panel header="Bảng giá dịch vụ trị mụn" key="4">
-                                <Table
-                                    bordered={true}
-                                    pagination={false}
-                                    dataSource={data}
-                                >
-                                    <Column
-                                        rowScope={2}
-                                        title={
-                                            <div>
-                                                <p
-                                                    style={{
-                                                        fontSize: "2rem",
-
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    Danh sách các dịch vụ
-                                                </p>
-                                            </div>
-                                        }
-                                        dataIndex="serviceName"
-                                        key="serviceName"
-                                    />
-                                    <ColumnGroup
-                                        style={{ backgroundColor: "#FFDCDC" }}
-                                        title="điều trị vùng da mặt"
-                                    >
-                                        <Column
-                                            title="Giá niêm yết"
-                                            dataIndex="price"
-                                            key="price"
-                                            align="center"
-                                        />
-                                        <Column
-                                            title="Giá HSSV"
-                                            dataIndex="priceHSSV"
-                                            key="priceHSSV"
-                                            align="center"
-                                        />
-                                    </ColumnGroup>
-                                </Table>
-                            </Panel>
-                        </Collapse>
-                    </Col>
-                </Row>
-            </div>
-    
+                                </ColumnGroup>
+                            </Table>
+                        </Panel>
+                    </Collapse>
+                </Col>
+            </Row>
+        </div>
     );
 };
 

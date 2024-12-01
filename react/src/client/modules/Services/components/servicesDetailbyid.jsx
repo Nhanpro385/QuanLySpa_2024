@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import style from "../style/servicesDetailbyid.module.scss";
-import { useParams } from "react-router-dom"; // Để lấy id từ URL
+import { useParams, useNavigate } from "react-router-dom";
 import useServicesActions from "../../../../admin/modules/services/hooks/useServices";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {
     Divider,
     Card,
@@ -14,20 +13,31 @@ import {
     Tag,
     Spin,
     Button,
+    Select,
+    Avatar,
+    List,
+    Space,
+    Rate,
+    Input,
 } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import {
+    LikeOutlined,
+    MessageOutlined,
+    StarOutlined,
+    LoadingOutlined,
+} from "@ant-design/icons";
 
 const ServicesDetailById = () => {
     const navigate = useNavigate();
-    const { id } = useParams(); // Lấy id từ URL
+    const { id } = useParams();
     const [service, setService] = useState({});
+    const [expandedKeys, setExpandedKeys] = useState({});
     const { getServicesDetailClient } = useServicesActions();
     const services = useSelector((state) => state.services);
 
     useEffect(() => {
-        // Gọi API để lấy thông tin chi tiết dịch vụ
         getServicesDetailClient(id);
-    }, [id]); // Chỉ gọi lại khi id thay đổi
+    }, [id]);
 
     useEffect(() => {
         if (services.service?.data) {
@@ -37,7 +47,13 @@ const ServicesDetailById = () => {
         }
     }, [services]);
 
-    // Kiểm tra dữ liệu có đang được tải không
+    const toggleReplies = (key) => {
+        setExpandedKeys((prev) => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    };
+
     if (!service || Object.keys(service).length === 0) {
         return (
             <div style={{ textAlign: "center", paddingTop: "50px" }}>
@@ -50,10 +66,46 @@ const ServicesDetailById = () => {
         );
     }
 
+    const data = service.comments.map((item, index) => ({
+        key: index,
+        title: item.customer?.full_name || "Khách hàng không xác định",
+        avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}` || "",
+        description: "Phản hồi từ khách hàng.",
+        content: item.comment || "Không có",
+        time: item.created_at || "Không có",
+        rating: item.rate || 0,
+        replies: item?.replies?.map((reply, replyIndex) => ({
+            key: `${index}-${replyIndex}`,
+            title: reply?.customer?.full_name || "Người dùng không xác định",
+            avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${replyIndex}`,
+            description: "Phản hồi từ nhân viên.",
+            content: reply?.comment || "Không có",
+            time: reply?.created_at || "Không có",
+        })),
+    }));
+
+    const IconText = ({ icon, text }) => (
+        <Space>
+            {React.createElement(icon)}
+            {text}
+        </Space>
+    );
+    const loadMore = service?.comments.length > 3 && (
+        <div
+            style={{
+                textAlign: "center",
+                marginTop: 12,
+                height: 32,
+                lineHeight: "32px",
+            }}
+        >
+            <Button onClick={"onLoadMore"}>Xem thêm</Button>
+        </div>
+    );
+
     return (
         <div className="container" style={{ padding: "20px" }}>
             <Divider orientation="left">Chi tiết dịch vụ</Divider>
-
             <h1
                 className="title"
                 style={{
@@ -67,7 +119,6 @@ const ServicesDetailById = () => {
             <Card>
                 <Row gutter={[16, 16]}>
                     <Col xxl={9} xl={9} lg={9} md={24} sm={24} xs={24}>
-                        {/* Hiển thị hình ảnh dịch vụ */}
                         <Card
                             bordered={false}
                             style={{
@@ -137,15 +188,14 @@ const ServicesDetailById = () => {
                     </Col>
                 </Row>
             </Card>
-            {/* Sản phẩm liên quan */}
             {service?.products && service?.products.length > 0 && (
                 <div style={{ marginTop: "40px" }}>
                     <Divider orientation="left">
                         Sản phẩm được sử dụng trong dịch vụ
                     </Divider>
                     <Row gutter={[16, 16]}>
-                        {service?.products.map((product) => (
-                            <Col key={product.id} span={8}>
+                        {service?.products.map((product, index) => (
+                            <Col key={index} span={8}>
                                 <Card
                                     title={
                                         product?.name ||
@@ -165,6 +215,132 @@ const ServicesDetailById = () => {
                     </Row>
                 </div>
             )}
+            <Card className="mt-4" title="Danh sách bình luận và đánh giá">
+                <List
+                    locale={{ emptyText: "Chưa có bình luận nào" }}
+                    itemLayout="vertical"
+                    size="large"
+                    pagination={{
+                        pageSize: 3,
+                    }}
+                    dataSource={data}
+                    renderItem={(item) => (
+                        <List.Item
+                            className={style.commentItem}
+                            key={item.title}
+                            actions={[
+                                <Rate value={item.rating} disabled />,
+                                <IconText
+                                    icon={MessageOutlined}
+                                    text={item.replies.length}
+                                    key="list-vertical-message"
+                                />,
+                                <Button
+                                    type="link"
+                                    danger
+                                    onClick={() => toggleReplies(item.key)}
+                                >
+                                    {expandedKeys[item.key]
+                                        ? "Ẩn phản hồi"
+                                        : "Hiện phản hồi"}
+                                </Button>,
+                            ]}
+                        >
+                            <List.Item.Meta
+                                avatar={<Avatar src={item.avatar} />}
+                                title={item.title}
+                                description={item.description}
+                            />
+                            <p
+                                style={{
+                                    fontSize: "16px",
+                                }}
+                            >
+                                {item.content}
+                            </p>
+                            <p
+                                style={{
+                                    fontSize: "12px",
+                                    color: "#666",
+                                }}
+                            >
+                                {item.time}
+                            </p>
+
+                            {expandedKeys[item.key] && (
+                                <List
+                                    itemLayout="horizontal"
+                                    dataSource={item.replies}
+                                    renderItem={(reply) => (
+                                        <List.Item
+                                            key={reply.key}
+                                            className="bg-light"
+                                        >
+                                            <List.Item.Meta
+                                                avatar={
+                                                    <Avatar
+                                                        src={reply.avatar}
+                                                    />
+                                                }
+                                                title={reply.title}
+                                                description={reply.description}
+                                            />
+                                            {reply.content}
+                                            <p
+                                                style={{
+                                                    fontSize: "12px",
+                                                    color: "#666",
+                                                }}
+                                            >
+                                                {reply.time}
+                                            </p>
+                                        </List.Item>
+                                    )}
+                                />
+                            )}
+                        </List.Item>
+                    )}
+                    loadMore={loadMore}
+                    header={
+                        <Row gutter={[16, 16]} align={"middle"}>
+                            <Col
+                                xxl={24}
+                                xl={24}
+                                lg={24}
+                                md={24}
+                                sm={24}
+                                xs={24}
+                            >
+                                <h3>Bình luận và đánh giá</h3>
+                            </Col>
+                            <Col
+                                xxl={24}
+                                xl={24}
+                                lg={24}
+                                md={24}
+                                sm={24}
+                                xs={24}
+                            >
+                                <span>Đánh giá của bạn: </span>
+                                <Rate
+                                    style={{ marginBottom: "10px" }}
+                                    defaultValue={0}
+                                />
+                            </Col>
+                            <Input.TextArea
+                                placeholder="Nhập bình luận của bạn"
+                                autoSize={{ minRows: 2, maxRows: 6 }}
+                            />
+                            <Button
+                                type="primary"
+                                style={{ marginTop: "10px" }}
+                            >
+                                Gửi bình luận
+                            </Button>
+                        </Row>
+                    }
+                />
+            </Card>
         </div>
     );
 };
