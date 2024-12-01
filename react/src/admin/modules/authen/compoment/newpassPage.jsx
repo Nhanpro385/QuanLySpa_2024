@@ -23,7 +23,12 @@ const NewPassword = () => {
         }
     }, [location]);
 
-    const { control, handleSubmit,setError, formState: { errors } } = useForm();
+    const {
+        control,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm();
     const [loading, setLoading] = useState(false);
 
     const openNotification = (type, message) => {
@@ -55,24 +60,31 @@ const NewPassword = () => {
 
             if (res.meta.requestStatus === "rejected") {
                 if (res.payload?.status === 422) {
-                    openNotification("error", "Vui lòng kiểm tra lại thông tin và thử lại");
-                    console.log(res);
-                    
                     Object.keys(res.payload?.error).forEach((key) => {
-                       
-                        setError(key, {
-                            type: "manual",
-                            message: res.payload?.error[key][0],
-                        });
-                    }
-                    );
+                        if (
+                            [
+                                "email",
+                                "password",
+                                "password_confirmation",
+                            ].includes(key)
+                        ) {
+                            setError(key, {
+                                type: "manual",
+                                message: res.payload?.error[key][0],
+                            });
+                        } else {
+                            openNotification(
+                                "error",
+                                res.payload?.error[key][0]
+                            );
+                        }
+                    });
                 }
             } else if (res.meta.requestStatus === "fulfilled") {
                 openNotification("success", "Cập nhật mật khẩu thành công");
                 navigate("/admin/dangnhap");
             }
         } catch (err) {
-     
             openNotification("error", "Có lỗi xảy ra, vui lòng thử lại sau");
         } finally {
             setLoading(false);
@@ -136,7 +148,9 @@ const NewPassword = () => {
                                 )}
                             />
                             {errors.email && (
-                                <p style={{ color: "red" }}>{errors.email.message}</p>
+                                <p style={{ color: "red" }}>
+                                    {errors.email.message}
+                                </p>
                             )}
                         </Form.Item>
                         <Form.Item label="Mật khẩu mới">
@@ -155,7 +169,9 @@ const NewPassword = () => {
                                 )}
                             />
                             {errors.password && (
-                                <p style={{ color: "red" }}>{errors.password.message}</p>
+                                <p style={{ color: "red" }}>
+                                    {errors.password.message}
+                                </p>
                             )}
                         </Form.Item>
                         <Form.Item label="Nhập lại mật khẩu">
@@ -172,7 +188,9 @@ const NewPassword = () => {
                                 )}
                             />
                             {errors.password_confirmation && (
-                                <p style={{ color: "red" }}>{errors.password_confirmation.message}</p>
+                                <p style={{ color: "red" }}>
+                                    {errors.password_confirmation.message}
+                                </p>
                             )}
                         </Form.Item>
                         <a

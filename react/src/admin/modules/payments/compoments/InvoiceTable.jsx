@@ -16,8 +16,8 @@ const InvoiceTable = ({ data, onActionClick, loading }) => {
         },
         {
             title: "Họ tên",
-            dataIndex: "name",
-            key: "name",
+            dataIndex: ["appointment_id","customer","full_name"],
+            key: "full_name",
 
             render: (text) => text || "Chưa có",
         },

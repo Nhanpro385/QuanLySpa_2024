@@ -12,7 +12,7 @@ const PaymentModalDetail = ({ isOpen, onClose, selectedInvoice }) => {
         {
             key: "1",
             label: "Mã hóa đơn",
-            children: selectedInvoice?.appointment_id || "Không có",
+            children: selectedInvoice?.appointment_id.id || "Không có",
         },
         {
             key: "2",
@@ -84,6 +84,17 @@ const PaymentModalDetail = ({ isOpen, onClose, selectedInvoice }) => {
                 style: "currency",
                 currency: "VND",
             })}`,
+        },
+        // Add customer information
+        {
+            key: "11",
+            label: "Tên khách hàng",
+            children: selectedInvoice?.appointment_id?.customer?.full_name || "Không có",
+        },
+        {
+            key: "12",
+            label: "Số điện thoại khách hàng",
+            children: selectedInvoice?.appointment_id?.customer?.phone || "Không có",
         },
     ];
 

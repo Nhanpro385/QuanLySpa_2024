@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
-import { Form, Button, Select, Row, Col, Table, Input } from "antd";
+import {
+    Form,
+    Button,
+    Select,
+    Row,
+    Col,
+    Table,
+    Input,
+    notification,
+} from "antd";
 import { useForm, Controller } from "react-hook-form";
 
 const ProductServiceForm = ({
@@ -21,7 +30,7 @@ const ProductServiceForm = ({
         setValue,
     } = useForm();
     const [statusEdit, setStatusEdit] = React.useState(false);
-
+    const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         const hasEditTag = dataselected.some((item) => item.tag);
         setStatusEdit(hasEditTag);
@@ -37,16 +46,25 @@ const ProductServiceForm = ({
     useEffect(() => {
         if (error) {
             Object.keys(error).forEach((key) => {
-                setError(key, {
-                    type: "server",
-                    message: error[key][0],
-                });
+                if (["name", "description"].includes(key)) {
+                    setError(key, {
+                        type: "manual",
+                        message: error[key][0],
+                    });
+                } else {
+                    api.error({
+                        message: "Có lỗi xảy ra",
+                        description: error[key][0],
+                        duration: 3,
+                    });
+                }
             });
         }
     }, [error, setError]);
 
     return (
         <Form layout="vertical" onFinish={handleSubmit(handleFormSubmit)}>
+            {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Form.Item

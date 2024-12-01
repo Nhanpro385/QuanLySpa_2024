@@ -1,32 +1,40 @@
 // src/modules/product/components/CategoriesForm.jsx
 
 import React, { useEffect } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 
 const CategoriesForm = ({ onSubmit, error }) => {
+    const [api, contextHolder] = notification.useNotification();
     const {
         control,
         handleSubmit,
         formState: { errors },
         setError, // Add setError to handle server errors
     } = useForm();
-    
-  
+
     useEffect(() => {
-        
         if (error) {
             Object.keys(error).forEach((key) => {
-                setError(key, {
-                    type: "server",
-                    message: error[key][0], // Adjust this based on the API error structure
-                });
+                if (["name", "description"].includes(key)) {
+                    setError(key, {
+                        type: "manual",
+                        message: error[key][0],
+                    });
+                } else {
+                    api.error({
+                        message: "Có lỗi xảy ra",
+                        description: error[key][0],
+                        duration: 3,
+                    });
+                }
             });
         }
     }, [error, setError]);
 
     return (
         <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+            {contextHolder}
             <Form.Item
                 label="Tên danh mục"
                 validateStatus={errors.name ? "error" : ""}

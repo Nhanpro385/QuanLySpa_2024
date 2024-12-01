@@ -81,9 +81,7 @@ const PaymentManagement = () => {
             }
         }
     };
-    const detailpayment = (values) => {
-        console.log(values);
-    };
+    const detailpayment = (values) => {};
     const handlePaymentSubmit = async (values) => {
         try {
             console.log(values);
@@ -102,7 +100,6 @@ const PaymentManagement = () => {
                 id: selectedInvoice.id,
                 data: payload,
             });
-            console.log(res);
 
             if (res.payload.status === "success") {
                 api.success({
@@ -169,7 +166,7 @@ const PaymentManagement = () => {
                             </Col>
                         </Row>
                         <InvoiceTable
-                        loading={payments.loading}
+                            loading={payments.loading}
                             data={paymendata}
                             onActionClick={handleActionClick}
                         />
@@ -185,7 +182,6 @@ const PaymentManagement = () => {
             <PaymentModalDetail
                 isOpen={isPaymentModalOpen2}
                 onClose={closePaymentModal2}
-                onSubmit={detailpayment}
                 selectedInvoice={selectedInvoice} // Truyền selectedInvoice vào modal
             />
         </>

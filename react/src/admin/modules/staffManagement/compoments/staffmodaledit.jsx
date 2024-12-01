@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
-import { Button, Modal, Form, Input, DatePicker, Select, Space } from "antd";
+import {
+    Button,
+    Modal,
+    Form,
+    Input,
+    DatePicker,
+    Select,
+    Space,
+    notification,
+} from "antd";
 import { useForm, Controller } from "react-hook-form";
 import dayjs from "dayjs";
 import { formatDate } from "@admin/utils";
@@ -22,7 +31,7 @@ const ModalEditStaff = ({
         reset,
         formState: { errors },
     } = useForm();
-
+    const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         if (staff) {
             setValue("full_name", staff.full_name);
@@ -45,7 +54,27 @@ const ModalEditStaff = ({
     useEffect(() => {
         if (errorForm) {
             Object.keys(errorForm).forEach((key) => {
-                setError(key, { type: "manual", message: errorForm[key] });
+                if (
+                    [
+                        "full_name",
+                        "email",
+                        "phone",
+                        "address",
+                        "date_of_birth",
+                        "gender",
+                    ].includes(key)
+                ) {
+                    setError(key, {
+                        type: "manual",
+                        message: errorForm[key][0],
+                    });
+                } else {
+                    api.error({
+                        message: "Có lỗi xảy ra",
+                        description: errorForm[key][0],
+                        duration: 3,
+                    });
+                }
             });
         }
     }, [errorForm]);
@@ -67,6 +96,7 @@ const ModalEditStaff = ({
             onCancel={handleCancel}
             footer={null}
         >
+            {contextHolder}
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Form.Item label="Họ và tên">
                     <Controller

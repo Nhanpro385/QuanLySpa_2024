@@ -60,10 +60,29 @@ const StaffsAdd = () => {
                     duration: 3,
                 });
                 Object.keys(response.payload.errors).forEach((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: response.payload.errors[key][0],
-                    });
+                    if (
+                        [
+                            "full_name",
+                            "gender",
+                            "role",
+                            "phone",
+                            "email",
+                            "date_of_birth",
+                            "address",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: response.payload.errors[key][0],
+                        });
+                    } else {
+                        api.error({
+                            message:
+                                response.payload.message || "Có lỗi xảy ra",
+                            duration: 3,
+                            description: response.payload.errors[key][0] || "",
+                        });
+                    }
                 });
             }
         } catch (error) {

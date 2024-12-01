@@ -7,6 +7,7 @@ import ModalEditCustomer from "../../modules/Customer/compoment/CustomerModalEdi
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CustomerTable from "../../modules/Customer/compoment/CustomerTable";
 import useCustomerActions from "../../modules/Customer/hooks/useCustomerActions";
+import CustomerDetail from "../../modules/Customer/compoment/CustomerDetail";
 
 function Customer() {
     // Hooks and Actions
@@ -18,7 +19,6 @@ function Customer() {
         searchCustomer,
     } = useCustomerActions();
     const customers = useSelector((state) => state.customers);
-    console.log(customers);
 
     const [searchQuery, setSearchQuery] = useState({
         search: "",
@@ -30,6 +30,11 @@ function Customer() {
     const [formErrors, setFormErrors] = useState({});
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleCancel } = useModal();
+    const {
+        isModalOpen: isModalOpen2,
+        showModal: showModal2,
+        handleCancel: handleCancel2,
+    } = useModal();
 
     // Pagination meta
     const pagination = customers.customers.meta || {};
@@ -46,7 +51,7 @@ function Customer() {
             searchQuery.per_page !== 5
         ) {
             searchCustomer(searchQuery);
-        }else{
+        } else {
             getCustomer();
         }
     }, [searchQuery]);
@@ -89,8 +94,6 @@ function Customer() {
 
     const handleEditSubmit = async (updatedCustomer) => {
         try {
-            
-
             const payload = {
                 id: updatedCustomer.id,
                 full_name: updatedCustomer.full_name,
@@ -133,7 +136,7 @@ function Customer() {
                 handleEdit(record);
                 break;
             case "2":
-                navigate(`/admin/khachhang/chitiet/${record.id}`);
+                handleDetailCustomer(record.id);
                 break;
             case "3":
                 navigate(`/admin/khachhang/lichsutrilieu/${record.id}`);
@@ -145,7 +148,20 @@ function Customer() {
                 break;
         }
     };
-
+    const handleDetailCustomer = async (id) => {
+        try {
+            const resultAction = await getCustomerById(id);
+            if (!customers.loading) {
+                if (resultAction.meta.requestStatus === "fulfilled") {
+                    showModal2();
+                } else {
+                    message.error("Không thể tìm thấy khách hàng");
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <Card>
             <h1 className="text-center mb-4">Quản lý khách hàng</h1>
@@ -194,6 +210,11 @@ function Customer() {
                 customer={currentCustomer}
                 handleCancel={handleCancel}
                 formErrors={customers.error}
+            />
+            <CustomerDetail
+                isOpen={isModalOpen2}
+                onClose={handleCancel2}
+                selectedCustomer={customers.customer.data}
             />
         </Card>
     );

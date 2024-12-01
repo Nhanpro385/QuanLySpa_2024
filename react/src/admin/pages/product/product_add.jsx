@@ -72,19 +72,39 @@ const Product_add = () => {
 
             const res = await addproduct(formData);
             console.log(res);
-            
+
             if (res.payload.status === "success") {
                 message.success("Thêm sản phẩm thành công!");
                 reset();
                 setFile([]);
                 setContent("");
-
             } else {
                 Object.keys(res.payload.errors).map((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: res.payload.errors[key][0],
-                    });
+                    if (
+                        [
+                            "name",
+                            "category_id",
+                            "capacity",
+                            "bar_code",
+                            "date",
+                            "priority",
+                            "cost",
+                            "price",
+                            "image_url",
+                            "description",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: res.payload.errors[key][0],
+                        });
+                    } else {
+                        message.error({
+                            message: "Có lỗi xảy ra",
+                            description: res.payload.errors[key][0],
+                            duration: 3,
+                        });
+                    }
                 });
 
                 message.error("Thêm sản phẩm thất bại!");

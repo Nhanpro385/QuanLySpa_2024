@@ -66,12 +66,25 @@ const CustomerDetail = () => {
             } else {
                 console.log(resultAction.payload.errors);
                 Object.keys(resultAction.payload.errors).map((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: resultAction.payload.errors[key][0],
-                    });
+                    if (
+                        [
+                            "full_name",
+                            "email",
+                            "phone",
+                            "address",
+                            "gender",
+                            "name",
+                            "status",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: resultAction.payload.errors[key][0],
+                        });
+                    } else {
+                        message.error(resultAction.payload.errors[key][0]);
+                    }
                 });
-                message.error("Cập nhật khách hàng không thành công");
             }
         } catch (error) {
             console.log(error);
@@ -267,9 +280,7 @@ const CustomerDetail = () => {
                             {
                                 label: "Thống kê Dữ liệu",
                                 key: "1",
-                                children: <h1>
-                                    chua lam gi
-                                </h1>,
+                                children: <h1>chua lam gi</h1>,
                             },
                         ]}
                     />

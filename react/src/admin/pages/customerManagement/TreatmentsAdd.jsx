@@ -108,10 +108,30 @@ const StreatmentsAdd = () => {
                 });
 
                 Object.keys(response.payload.errors).forEach((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: response.payload.errors[key][0],
-                    });
+                    if (
+                        [
+                            "appointment_id",
+                            "feedback",
+                            "image_url",
+                            "status",
+                            "customer_id",
+                            "staff_id",
+                            "image_before",
+                            "image_after",
+                            "id",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: response.payload.errors[key][0],
+                        });
+                    } else {
+                        api.error({
+                            message: "Có lỗi xảy ra",
+                            description: response.payload.errors[key][0],
+                            duration: 3,
+                        });
+                    }
                 });
             }
         } catch (error) {

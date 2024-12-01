@@ -78,7 +78,7 @@ const SupplierManagement = () => {
                 //     contact_email: supplier.contact_email,
                 //     code: supplier.code,
                 // }))
-            )
+            );
         }
     }, [Suppliers?.Suppliers?.data]);
 
@@ -95,7 +95,7 @@ const SupplierManagement = () => {
         try {
             const response = await getSupplierById(record.id);
             if (response.meta.requestStatus === "fulfilled") {
-                setEditSupplier(response.payload.data)
+                setEditSupplier(response.payload.data);
                 showModal();
             }
         } catch {
@@ -138,10 +138,22 @@ const SupplierManagement = () => {
                 // Hiện thông báo lỗi từ server
                 const errors = response.payload.errors;
                 Object.keys(errors).forEach((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: errors[key][0],
-                    });
+                    if (
+                        ["name", "country", "contact_email", "code"].includes(
+                            key
+                        )
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: errors[key][0],
+                        });
+                    } else {
+                        messageApi.error({
+                            message: "Có lỗi xảy ra",
+                            description: errors[key][0],
+                            duration: 3,
+                        });
+                    }
                 });
                 messageApi.error("Thêm nhà cung cấp thất bại.");
             }
@@ -152,7 +164,6 @@ const SupplierManagement = () => {
 
     // Modal handling
     const [messageApi, contextHolder] = message.useMessage();
-
 
     // Handle form submission for editing supplier
     const handleSubmitEdit = async (data) => {
@@ -240,8 +251,8 @@ const SupplierManagement = () => {
                             dataSource={SupplierData}
                             pagination={pagination}
                             handlePageChange={handlePageChange}
-                        // handleEdit={handleEdit}
-                        // handleDelete={handleDelete}
+                            // handleEdit={handleEdit}
+                            // handleDelete={handleDelete}
                         />
                     </Card>
                 </Col>

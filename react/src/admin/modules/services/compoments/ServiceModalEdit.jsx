@@ -12,6 +12,7 @@ import {
     Spin,
     Upload,
     InputNumber,
+    notification,
 } from "antd";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useForm, Controller } from "react-hook-form";
@@ -46,7 +47,7 @@ function ServiceModalEdit({
         getServiceCategoriesById,
     } = useServiceCategoriesActions();
     const serviceCategories = useSelector((state) => state.serviceCategories);
-
+    const [api, contextHolder] = notification.useNotification();
     const [datacate, setdatacate] = useState([]);
 
     const [fileList, setFileList] = useState([]);
@@ -70,10 +71,26 @@ function ServiceModalEdit({
     useEffect(() => {
         if (error) {
             Object.keys(error).forEach((key) => {
-                setError(key, {
-                    type: "manual",
-                    message: error[key][0],
-                });
+                if (
+                    [
+                        "name",
+                        "price",
+                        "duration",
+                        "service_category_id",
+                        "priority",
+                    ].includes(key)
+                ) {
+                    setError(key, {
+                        type: "manual",
+                        message: error[key][0],
+                    });
+                } else {
+                    api.error({
+                        message: "Có lỗi xảy ra",
+                        description: error[key][0],
+                        duration: 3,
+                    });
+                }
             });
         }
     }, [error]);
@@ -120,6 +137,7 @@ function ServiceModalEdit({
             footer={null}
             width={1400}
         >
+            {contextHolder}
             <Row gutter={16}>
                 <Col span={15}>
                     <Card title="Thông tin chi tiết">

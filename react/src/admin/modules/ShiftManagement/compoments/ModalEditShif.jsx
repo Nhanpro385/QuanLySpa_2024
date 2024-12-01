@@ -9,6 +9,7 @@ import {
     Button,
     TimePicker,
     Switch,
+    notification,
 } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import "dayjs/locale/vi";
@@ -34,7 +35,7 @@ function ModalAddShiftEdit({
     } = useForm({
         defaultValues: data,
     });
-
+    const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         if (data) {
             // Ensure date and time fields are converted to dayjs objects
@@ -57,12 +58,25 @@ function ModalAddShiftEdit({
     }, [data, setValue]);
     useEffect(() => {
         if (error) {
-            Object.keys(error.errors).forEach((key) => {
+            if (
+                [
+                    "shift_date",
+                    "start_time",
+                    "end_time",
+                    "max_customers",
+                ].includes(key)
+            ) {
                 setError(key, {
                     type: "manual",
-                    message: error.errors[key][0],
+                    message: error[key][0],
                 });
-            });
+            } else {
+                api.error({
+                    message: "Có lỗi xảy ra",
+                    description: error[key][0],
+                    duration: 3,
+                });
+            }
         }
     }, [error]);
 
@@ -98,6 +112,7 @@ function ModalAddShiftEdit({
                 </Button>,
             ]}
         >
+            {contextHolder}
             <Form layout="vertical" onFinish={handleSubmit(handleFinish)}>
                 <Row gutter={16}>
                     <Col span={12}>

@@ -127,10 +127,17 @@ const ServiceCategories = () => {
     useEffect(() => {
         if (ServiceCategories.error) {
             Object.keys(ServiceCategories.error.errors).forEach((key) => {
-                setError(key, {
-                    type: "server",
-                    message: ServiceCategories.error.errors[key][0],
-                });
+                if (["name", "description"].includes(key)) {
+                    setError(key, {
+                        type: "manual",
+                        message: ServiceCategories.error.errors[key][0],
+                    });
+                } else {
+                    messageApi.error({
+                        message: "Có lỗi xảy ra",
+                        description: ServiceCategories.error.errors[key][0],
+                    });
+                }
             });
         }
     }, [ServiceCategories.error]);

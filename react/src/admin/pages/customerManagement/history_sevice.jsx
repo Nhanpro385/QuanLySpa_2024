@@ -15,7 +15,7 @@ import useModal from "../../modules/appointments/hooks/openmodal";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-
+import { useParams } from "react-router-dom";
 const serviceDetails = [
     {
         key: "1",
@@ -81,11 +81,11 @@ const serviceDetails = [
         status: "Hoàn thành",
         beforeImage: "https://via.placeholder.com/300x200",
         afterImage: "https://via.placeholder.com/300x200",
-
-    }
+    },
 ];
 
 function ServiceHistory() {
+    const { id: idcustomer } = useParams();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const [selectedService, setSelectedService] = useState(null);
 
@@ -96,8 +96,8 @@ function ServiceHistory() {
 
     return (
         <div style={{ padding: "24px" }}>
-          <h1 className="text-center">Lịch sử dịch vụ</h1>
-         
+            <h1 className="text-center">Lịch sử dịch vụ</h1>
+
             <Card className="mb-3">
                 <Row gutter={[16, 16]}>
                     <Col xl={4} md={6} sm={12} xs={24}>

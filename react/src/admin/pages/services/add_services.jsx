@@ -82,10 +82,28 @@ const ServicesAdd = () => {
 
             if (res.payload.status === 422) {
                 Object.keys(res.payload.errors).forEach((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: res.payload.errors[key][0],
-                    });
+                    if (
+                        [
+                            "name",
+                            "service_category_id",
+                            "duration",
+                            "price",
+                            "priority",
+                            "description",
+                            "image_url",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: res.payload.errors[key][0],
+                        });
+                    } else {
+                        api.error({
+                            message: "Có lỗi xảy ra",
+                            description: res.payload.errors[key][0],
+                            duration: 2,
+                        });
+                    }
                 });
             } else if (res.payload.status === "success") {
                 api.success({

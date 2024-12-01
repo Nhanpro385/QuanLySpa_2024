@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useappointmentsActions from "../../modules/appointments/hooks/useappointments";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
+import AppointmentsDetail from "../../modules/appointments/compoments/AppointmentsDetail";
 function Appointments() {
     const {
         addappointments,
@@ -29,7 +30,7 @@ function Appointments() {
         getappointmentsById,
         searchappointments,
     } = useappointmentsActions();
-    const { appointments, loading } = useSelector(
+    const { appointments, loading, appointment } = useSelector(
         (state) => state.appointments
     );
 
@@ -48,6 +49,12 @@ function Appointments() {
 
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const {
+        isModalOpen: isModalOpen2,
+        showModal: showModal2,
+        handleOk: handleOk2,
+        handleCancel: handleCancel2,
+    } = useModal();
 
     useEffect(() => {
         if (appointments && !loading) {
@@ -101,6 +108,17 @@ function Appointments() {
             console.log(err);
         }
     };
+    const handleDetailView = async (id) => {
+        try {
+            const res = await getappointmentsById(id);
+            if (!loading && appointment.data) {
+                showModal2();
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
         <>
             <h1 className="text-center">Quản lý lịch hẹn</h1>
@@ -147,11 +165,20 @@ function Appointments() {
                                 navigate("/admin/lichhen/chinhsua/" + id);
                             }}
                             onViewDetail={(id) => {
-                                navigate("/admin/appointments/detail/" + id);
+                                handleDetailView(id);
                             }}
                             ondelete={(id) => handledelete(id)}
                             pagination={pagination}
                             handlePageChange={handlePageChange}
+                        />
+                        <AppointmentsDetail
+                            isOpen={isModalOpen2}
+                            onClose={handleCancel2}
+                            selectedAppointment={
+                                appointment && appointment.data
+                                    ? appointment.data
+                                    : {}
+                            }
                         />
                     </Card>
                 </Col>

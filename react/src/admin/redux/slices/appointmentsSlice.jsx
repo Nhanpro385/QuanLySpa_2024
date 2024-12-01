@@ -43,7 +43,7 @@ export const appointmentsAdd = createAsyncThunk(
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
-                errors: error.response?.data?.error || [],
+                errors: error.response?.data?.errors || [],
             });
         }
     }
@@ -98,7 +98,7 @@ export const appointmentsUpdate = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
-                errors: error.response?.data?.error || [],
+                errors: error.response?.data?.errors || [],
             });
         }
     }

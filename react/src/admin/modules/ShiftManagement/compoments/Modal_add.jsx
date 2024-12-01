@@ -33,32 +33,34 @@ function ModalAddShift({
         reset,
     } = useForm();
     useEffect(() => {
-        if (error?.errors?.shift_time) {
-            setError("start_time", {
-                type: "manual",
-                message: error?.errors?.shift_time[0],
-            });
-            setError("end_time", {
-                type: "manual",
-                message: error?.errors?.shift_time[0],
+        if (error?.errors) {
+            Object.keys(error.errors).forEach((key) => {
+                if (
+                    [
+                        "shift_date",
+                        "start_time",
+                        "end_time",
+                        "max_customers",
+                        "status",
+                        "note",
+                    ].includes(key)
+                ) {
+                    // Đặt lỗi vào form nếu key khớp
+                    setError(key, {
+                        type: "manual",
+                        message: error.errors[key][0],
+                    });
+                } else {
+                    // Log hoặc xử lý lỗi không khớp key
+                    console.warn(
+                        `Unhandled error for key '${key}': ${error.errors[key][0]}`
+                    );
+                }
             });
         }
-        if (error?.errors?.shift_date) {
-            setError("shift_date", {
-                type: "manual",
-                message: error?.errors?.shift_date[0],
-            });
-        }
-        if (error?.errors?.max_customers) {
-            setError("max_customers", {
-                type: "manual",
-                message: error?.errors?.max_customers[0],
-            });
-        }
-    }, [error, setError]);
+    }, [error]);
 
     const onSubmit = (data) => {
-        console.log("Submitted data:", data); // Log data for testing
         const payload = {
             shift_date: dayjs(data.shift_date).format("YYYY-MM-DD"),
             start_time: dayjs(data.start_time).format("HH:mm:ss"),
@@ -241,7 +243,7 @@ function ModalAddShift({
 
                     <Col span={12}>
                         <Form.Item
-                            label="Tối đa nhân viên"
+                            label="Tối đa Khách Hàng"
                             validateStatus={errors.max_customers ? "error" : ""}
                             help={errors.max_customers?.message}
                         >
@@ -250,13 +252,13 @@ function ModalAddShift({
                                 control={control}
                                 rules={{
                                     required:
-                                        "Vui lòng nhập số lượng nhân viên!",
+                                        "Vui lòng nhập số lượng khách hàng!",
                                 }}
                                 render={({ field }) => (
                                     <Input
                                         {...field}
                                         type="number"
-                                        placeholder="Nhập số lượng nhân viên"
+                                        placeholder="Nhập số lượng khách hàng"
                                     />
                                 )}
                             />

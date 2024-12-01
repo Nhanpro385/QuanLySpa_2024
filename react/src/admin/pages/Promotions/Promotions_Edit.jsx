@@ -142,10 +142,30 @@ const Promotions_Edit = () => {
 
     useEffect(() => {
         Object.keys(errors).map((key) => {
-            setError(key, {
-                type: "manual",
-                message: errors[key].message,
-            });
+            if (
+                [
+                    "name",
+                    "description",
+                    "promotion_type",
+                    "discount_percent",
+                    "min_order_amount",
+                    "min_quantity",
+                    "startDateAndEndDate",
+                    "image_url",
+                    "start_date",
+                    "end_date",
+                ].includes(key)
+            ) {
+                setError(key, {
+                    type: "manual",
+                    message: errors[key].message,
+                });
+            } else {
+                api.error({
+                    message: errors[key].message,
+                    duration: 3,
+                });
+            }
         });
         console.log(errors);
     }, [errors]);

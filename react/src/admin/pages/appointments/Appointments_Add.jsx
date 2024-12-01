@@ -178,6 +178,31 @@ const Appointment_Add = () => {
                 setValue("employee", null);
                 setValue("note", null);
             } else {
+                if (res.payload?.errors) {
+                    Object.keys(res.payload.errors).forEach((key) => {
+                        if (
+                            [
+                                "customer_id",
+                                "appointment_date",
+                                "shift",
+                                "employee",
+                                "services",
+                            ].includes(key)
+                        ) {
+                            setError(key, {
+                                type: "manual",
+                                message: res.payload.errors[key][0],
+                            });
+                        } else {
+                            api.error({
+                                message: "Có lỗi xảy ra",
+                                description: res.payload.errors[key][0],
+                                duration: 3,
+                            });
+                        }
+                    });
+                    return;
+                }
                 const errorMessage =
                     res.payload?.message + res.payload.errors ||
                     "Lỗi không xác định";
@@ -314,6 +339,7 @@ const Appointment_Add = () => {
                                 }}
                                 render={({ field }) => (
                                     <Select
+                                        size="large"
                                         {...field}
                                         allowClear
                                         showSearch
@@ -340,6 +366,7 @@ const Appointment_Add = () => {
                                 }}
                                 render={({ field }) => (
                                     <DatePicker
+                                        size="large"
                                         showTime={{ format: "HH:mm" }}
                                         {...field}
                                         className="w-100"
@@ -366,6 +393,7 @@ const Appointment_Add = () => {
                                         {...field}
                                         mode="multiple"
                                         allowClear
+                                        size="large"
                                         style={{ width: "100%" }}
                                         placeholder="Chọn dịch vụ"
                                         options={serviceOptions}
@@ -397,6 +425,7 @@ const Appointment_Add = () => {
                                 }}
                                 render={({ field }) => (
                                     <Select
+                                        size="large"
                                         {...field}
                                         allowClear
                                         style={{ width: "100%" }}
@@ -434,9 +463,9 @@ const Appointment_Add = () => {
                             <Controller
                                 name="employee"
                                 control={control}
-                               
                                 render={({ field }) => (
                                     <Select
+                                        size="large"
                                         {...field}
                                         mode="multiple"
                                         allowClear

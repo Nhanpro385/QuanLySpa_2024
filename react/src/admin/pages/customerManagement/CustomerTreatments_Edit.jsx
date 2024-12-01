@@ -101,10 +101,31 @@ const StreatmentsEdit = () => {
 
                 // Gán lỗi vào các trường cụ thể
                 Object.keys(response.payload.errors).forEach((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: response.payload.errors[key][0],
-                    });
+                    if (
+                        [
+                            "feedback",
+                            "note",
+                            "status",
+                            "image_url",
+                            "image_before",
+                            "image_after",
+                            "status",
+                            "evaluete",
+                            "customer_id",
+                            "user_id",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: response.payload.errors[key][0],
+                        });
+                    } else {
+                        api.error({
+                            message: "Có lỗi xảy ra",
+                            description: response.payload.errors[key][0],
+                            duration: 3,
+                        });
+                    }
                 });
             } else {
                 api.success({

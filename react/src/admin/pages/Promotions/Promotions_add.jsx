@@ -70,10 +70,31 @@ const PromotionsAdd = () => {
                 setContent("");
             } else {
                 Object.keys(response.payload.errors).map((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: response.payload.errors[key][0],
-                    });
+                    if (
+                        [
+                            "name",
+                            "description",
+                            "start_date",
+                            "end_date",
+                            "promotion_type",
+                            "discount_percent",
+                            "min_order_amount",
+                            "min_quantity",
+                            "status",
+                            "image_url",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: response.payload.errors[key][0],
+                        });
+                    } else {
+                        api.error({
+                            message: "Có lỗi xảy ra",
+                            description: response.payload.errors[key][0],
+                            duration: 3,
+                        });
+                    }
                 });
             }
         } catch (error) {

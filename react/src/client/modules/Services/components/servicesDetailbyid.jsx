@@ -64,75 +64,79 @@ const ServicesDetailById = () => {
             >
                 {service?.name || "Tên dịch vụ không có sẵn"}
             </h1>
-
-            <Row gutter={[16, 16]}>
-                <Col xxl={9} xl={9} lg={9} md={24} sm={24} xs={24}>
-                    {/* Hiển thị hình ảnh dịch vụ */}
-                    <Card
-                        bordered={false}
-                        style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
-                    >
-                        <Image
-                            src={`http://127.0.0.1:8000/storage/uploads/services/special/${service?.image_url}`}
-                            alt={service?.name || "Không có hình ảnh"}
+            <Card>
+                <Row gutter={[16, 16]}>
+                    <Col xxl={9} xl={9} lg={9} md={24} sm={24} xs={24}>
+                        {/* Hiển thị hình ảnh dịch vụ */}
+                        <Card
+                            bordered={false}
                             style={{
-                                width: "100%",
-                                height: "auto",
-                                borderRadius: "8px",
+                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                             }}
-                        />
-                    </Card>
-                    <Button
-                        block
-                        type="primary"
-                        style={{ marginTop: "20px" }}
-                        onClick={() => {
-                            navigate(`/datlichhen?dichvu=${service?.id}`);
-                        }}
-                    >
-                        Đặt lịch
-                    </Button>
-                </Col>
-                <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
-                    <Card bordered={false}>
-                        <Descriptions
-                            title="Thông tin dịch vụ"
-                            layout="vertical"
                         >
-                            <Descriptions.Item label="Mô tả">
-                                {service?.description ||
-                                    "Thông tin không có sẵn"}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Giá">
-                                {service?.price
-                                    ? `${parseInt(
-                                          service?.price
-                                      ).toLocaleString()} VNĐ`
-                                    : "Liên hệ"}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Thời gian thực hiện">
-                                {service?.duration || "Chưa xác định"}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Danh mục">
-                                {service?.service_category_id?.name ||
-                                    "Chưa xác định"}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Trạng thái">
-                                <Tag
-                                    color={
-                                        service?.status === 1 ? "green" : "red"
-                                    }
-                                >
-                                    {service?.status === 1
-                                        ? "Hoạt động"
-                                        : "Không hoạt động"}
-                                </Tag>
-                            </Descriptions.Item>
-                        </Descriptions>
-                    </Card>
-                </Col>
-            </Row>
-
+                            <Image
+                                src={`http://127.0.0.1:8000/storage/uploads/services/special/${service?.image_url}`}
+                                alt={service?.name || "Không có hình ảnh"}
+                                style={{
+                                    width: "100%",
+                                    height: "auto",
+                                    borderRadius: "8px",
+                                }}
+                            />
+                        </Card>
+                        <Button
+                            block
+                            type="primary"
+                            style={{ marginTop: "20px" }}
+                            onClick={() => {
+                                navigate(`/datlichhen?dichvu=${service?.id}`);
+                            }}
+                        >
+                            Đặt lịch
+                        </Button>
+                    </Col>
+                    <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
+                        <Card bordered={false}>
+                            <Descriptions
+                                title="Thông tin dịch vụ"
+                                layout="vertical"
+                            >
+                                <Descriptions.Item label="Mô tả">
+                                    {service?.description ||
+                                        "Thông tin không có sẵn"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Giá">
+                                    {service?.price
+                                        ? `${parseInt(
+                                              service?.price
+                                          ).toLocaleString()} VNĐ`
+                                        : "Liên hệ"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Thời gian thực hiện">
+                                    {service?.duration || "Chưa xác định"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Danh mục">
+                                    {service?.service_category_id?.name ||
+                                        "Chưa xác định"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Trạng thái">
+                                    <Tag
+                                        color={
+                                            service?.status === 1
+                                                ? "green"
+                                                : "red"
+                                        }
+                                    >
+                                        {service?.status === 1
+                                            ? "Hoạt động"
+                                            : "Không hoạt động"}
+                                    </Tag>
+                                </Descriptions.Item>
+                            </Descriptions>
+                        </Card>
+                    </Col>
+                </Row>
+            </Card>
             {/* Sản phẩm liên quan */}
             {service?.products && service?.products.length > 0 && (
                 <div style={{ marginTop: "40px" }}>

@@ -80,11 +80,18 @@ const Positions = () => {
                 if (errorPayload?.errors) {
                     // Loop through validation errors and display messages
                     Object.keys(errorPayload.errors).forEach((key) => {
-                        setError(key, {
-                            type: "server",
-                            message: errorPayload.errors[key][0], // Error message from server
-                        });
-                        messageApi.error(errorPayload.errors[key][0]);
+                        if (["name", "wage"].includes(key)) {
+                            setError(key, {
+                                type: "manual",
+                                message: errorPayload.errors[key][0],
+                            });
+                        } else {
+                            messageApi.error({
+                                message: "Có lỗi xảy ra",
+                                description: errorPayload.errors[key][0],
+                                duration: 3,
+                            });
+                        }
                     });
                 } else {
                     // General error message
@@ -156,7 +163,7 @@ const Positions = () => {
 
         try {
             console.log(data);
-            
+
             const resultAction = await updatePositions(data);
 
             // Check if the request was successful and the payload is valid
@@ -169,7 +176,17 @@ const Positions = () => {
                 getPositions(); // Refresh the positions list after updating
             } else if (resultAction?.payload?.errors) {
                 Object.keys(resultAction.payload.errors).forEach((key) => {
-                    messageApi.error(resultAction.payload.errors[key][0]);
+                    if (["name", "wage"].includes(key)) {
+                        setError(key, {
+                            type: "manual",
+                            message: resultAction.payload.errors[key][0],
+                        });
+                    } else {
+                        messageApi.error({
+                            message: "Có lỗi xảy ra",
+                            description: resultAction.payload.errors[key][0],
+                        });
+                    }
                 });
             } else {
                 messageApi.error("Có lỗi xảy ra khi cập nhật.");

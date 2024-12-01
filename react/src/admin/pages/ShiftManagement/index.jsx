@@ -123,6 +123,15 @@ const ShiftManagement = () => {
                 });
                 handleCancel();
             } else if (res.meta.requestStatus === "rejected") {
+                if (res.payload.errors) {
+                    Object.keys(res.payload.errors).map((key) => {
+                        api.error({
+                            message: "Thêm ca làm việc thất bại",
+                            description: res.payload.errors[key][0],
+                        });
+                    });
+                    return;
+                }
                 api.error({
                     message: "Thêm ca làm việc thất bại",
                     description: res.payload.message,
@@ -147,7 +156,7 @@ const ShiftManagement = () => {
         console.log(values);
         try {
             const res = await shiftupdate(values);
-                
+
             if (res.meta.requestStatus === "fulfilled") {
                 api.success({
                     message: "Cập nhật ca làm việc thành công",
@@ -239,15 +248,15 @@ const ShiftManagement = () => {
     };
     const onaddstaff = async (value) => {
         try {
-            console.log(value);
-
             const res = await addShiftStaffAction(value);
-            if (res.meta.requestStatus === "fulfilled") {
+
+            if (res.meta.requestStatus == "fulfilled") {
                 api.success({
                     message: "Thêm nhân viên vào ca làm việc thành công",
                 });
                 handleCancel3();
             } else {
+              
                 api.error({
                     message: "Thêm nhân viên vào ca làm việc thất bại",
                     description: res.payload.errors.shift_id[0],
@@ -277,6 +286,7 @@ const ShiftManagement = () => {
 
     return (
         <div>
+            {contextHolder}
             <h1 className="text-center">Quản Lý Ca Làm Việc</h1>
             <Row
                 justify="space-between"
@@ -342,7 +352,6 @@ const ShiftManagement = () => {
                 error={error}
             />
             <ShiftCalendar />
-            {contextHolder}
         </div>
     );
 };

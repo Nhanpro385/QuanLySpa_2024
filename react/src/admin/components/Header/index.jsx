@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Layout, Menu, Drawer, Button, notification, Row, Col } from "antd";
 import { SettingOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
-import NotificationModule from "../../modules/Notification/NotificationModule";
+import NotificationModule from "../../modules/Notification/compoments/NotificationModule";
 import useAuthActions from "../../modules/authen/hooks/useAuth";
 import { Link } from "react-router-dom";
 

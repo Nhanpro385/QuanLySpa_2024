@@ -122,13 +122,7 @@ const PublicRoutes = [
         element: <Appointment_Edit />,
         requiredRole: { requiredRole: "private", role: "Admin" },
     },
-    {
-        path: "/lichhen/chitiet/:id",
-        element: <Appointments_Detail />,
-        requiredRole: { requiredRole: "private", role: "Admin" },
-    },
 
-    // Personnel Management
     {
         path: "/nhanvien",
         element: <Staffs />,

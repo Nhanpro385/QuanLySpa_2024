@@ -23,7 +23,8 @@ import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
 import useServicesActions from "../../modules/services/hooks/useServices";
 import useShiftAction from "../../modules/ShiftManagement/hooks/useShiftAction";
 import useappointmentsActions from "../../modules/appointments/hooks/useappointments";
-import { generateSnowflakeId, calculateEndTime } from "../../utils";
+import { calculateEndTime } from "../../utils";
+import { useNavigate } from "react-router-dom";
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 import { useParams } from "react-router-dom";
@@ -35,6 +36,9 @@ import {
 } from "@ant-design/icons";
 
 const Appointment_Edit = () => {
+    const { Option } = Select;
+    const { Search } = Input;
+    const navigate = useNavigate();
     const { id: idAppointment } = useParams();
     const [api, contextHolder] = notification.useNotification();
     const { getservices } = useServicesActions();
@@ -268,11 +272,23 @@ const Appointment_Edit = () => {
                 note: data.note,
             };
             const res = await updateappointments(payload);
-            console.log(res);
-            
+
             if (res.meta.requestStatus === "fulfilled") {
+                if (
+                    res.payload.message ==
+                    "Không thể chỉnh sửa do lịch hẹn đang thực hiện hoặc đã hoàn thành."
+                ) {
+                    api.error({
+                        message:
+                            res.payload.message ||
+                            "Cập nhật lịch hẹn không thành công",
+                        description: `Vui lòng kiểm tra lại trạng thái của lịch hẹn`,
+                    });
+                    return;
+                }
                 api.success({
-                    message: res.payload.message || "Thêm lịch hẹn thành công",
+                    message:
+                        res.payload.message || "Cập nhật lịch hẹn thành công",
                     description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
                 });
                 // reset all
@@ -283,19 +299,17 @@ const Appointment_Edit = () => {
                 setValue("shift", null);
                 setValue("employee", null);
                 setValue("note", null);
+                setValue("status", null);
+                // getappointmentsById(idAppointment);
             } else {
-                const errorMessage = (
-                    <div>
-                        <span>{res.payload?.message}</span>
-                        <br />
-                        <span>{res.payload.errors}</span>
-                    </div>
-                );
-                api.error({
-                    message: "Thêm lịch hẹn thất bại",
-                    duration: 5,
-                    description: errorMessage,
+                Object.keys(res.payload.errors).forEach((key) => {
+                    if(["services", "users", "shift_id", "status"].includes(key)){
+                        api.error({
+                            message: res.payload.errors[key],
+                        });
+                    }
                 });
+                
             }
         } catch (error) {
             console.error("Error in onSubmit:", error);
@@ -619,20 +633,11 @@ const Appointment_Edit = () => {
                                             allowClear
                                             style={{ width: "100%" }}
                                             placeholder="Chọn trạng thái"
-                                            disabled={
-                                                currentValue ===
-                                                "Đã hoàn thành."
-                                            } // Vô hiệu hóa nếu là "Đã hoàn thành"
                                         >
-                                            {/* Hiển thị tùy chọn "Đã hủy lịch hẹn" chỉ khi trạng thái hiện tại không phải "Hoàn thành" hoặc "Đang thực hiện" */}
-                                            {currentValue !==
-                                                "Đang thực hiện." &&
-                                                currentValue !==
-                                                    "Đã hoàn thành." && (
-                                                    <Select.Option value="Đã hủy lịch hẹn.">
-                                                        Đã hủy lịch hẹn.
-                                                    </Select.Option>
-                                                )}
+                                            <Select.Option value="Đã hủy lịch hẹn.">
+                                                Đã hủy lịch hẹn.
+                                            </Select.Option>
+
                                             <Select.Option value="Đã đặt lịch hẹn.">
                                                 Đã đặt lịch hẹn.
                                             </Select.Option>

@@ -59,14 +59,27 @@ const CustomersAdd = () => {
                 });
             } else if (CustomerAdd.rejected.match(response)) {
                 Object.keys(response.payload.errors).forEach((key) => {
-                    setError(key, {
-                        type: "manual",
-                        message: response.payload.errors[key][0],
-                    });
-                });
-                api.error({
-                    message: "Thêm khách hàng thất bại",
-                    placement: "topRight",
+                    if (
+                        [
+                            "full_name",
+                            "email",
+                            "phone",
+                            "address",
+                            "date_of_birth",
+                            "gender",
+                        ].includes(key)
+                    ) {
+                        setError(key, {
+                            type: "manual",
+                            message: response.payload.errors[key][0],
+                        });
+                    } else {
+                        api.error({
+                            message: "Có lỗi xảy ra",
+                            description: response.payload.errors[key][0],
+                            duration: 3,
+                        });
+                    }
                 });
             }
         } catch (error) {

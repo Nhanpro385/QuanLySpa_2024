@@ -5,11 +5,8 @@ import {
     Col,
     Row,
     Input,
-    DatePicker,
-    TimePicker,
-    Switch,
     Button,
-    Space,
+    notification,
     Select,
     Table,
 } from "antd";
@@ -31,6 +28,7 @@ function ModalAddstaff({
     const { getstaffshift } = useUsersActions();
     const [userData, setUserData] = useState([]);
     const user = useSelector((state) => state.user);
+    const [api, contextHolder] = notification.useNotification();
     const {
         control,
         handleSubmit,
@@ -39,7 +37,17 @@ function ModalAddstaff({
         reset,
     } = useForm();
     useEffect(() => {
-        console.log(error);
+        if (error?.errors) {
+            Object.keys(error.errors).forEach((key) => {
+                if (["staff_ids"].includes(key)) {
+                    setValue(key, error.errors[key][0]);
+                } else {
+                    api.error({
+                        message: error.errors[key][0],
+                    });
+                }
+            });
+        }
     }, [error]);
     useEffect(() => {
         if (shift) {
@@ -60,7 +68,7 @@ function ModalAddstaff({
 
     const onSubmit = (data) => {
         handleAddShift({
-            staff_id: data.user_id,
+            staff_ids: data.user_id,
             shift_id: shift.id,
         });
     };
@@ -85,6 +93,7 @@ function ModalAddstaff({
                 </Button>,
             ]}
         >
+            {contextHolder}
             <Form layout="vertical">
                 <Row gutter={16}>
                     <Col span={12}>

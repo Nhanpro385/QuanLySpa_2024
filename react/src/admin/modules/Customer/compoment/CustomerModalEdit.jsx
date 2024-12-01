@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
-import { Button, Modal, Form, Input, DatePicker, Select, Space } from "antd";
+import {
+    Button,
+    Modal,
+    Form,
+    Input,
+    DatePicker,
+    Select,
+    Space,
+    notification,
+} from "antd";
 import { useForm, Controller } from "react-hook-form";
 import dayjs from "dayjs";
 const { Option } = Select;
@@ -18,13 +27,31 @@ const ModalEditCustomer = ({
         setError,
         formState: { errors },
     } = useForm();
+    const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         if (formErrors) {
             Object.keys(formErrors).forEach((key) => {
-                setError(key, {
-                    type: "manual",
-                    message: formErrors[key],
-                });
+                if (
+                    [
+                        "full_name",
+                        "email",
+                        " phone",
+                        "address",
+                        "date_of_birth",
+                        "gender",
+                    ].includes(key)
+                ) {
+                    setError(key, {
+                        type: "manual",
+                        message: formErrors[key][0],
+                    });
+                } else {
+                    api.error({
+                        message: "Có lỗi xảy ra",
+                        description: formErrors[key][0],
+                        duration: 3,
+                    });
+                }
             });
         }
     }, [formErrors]);
@@ -59,6 +86,7 @@ const ModalEditCustomer = ({
             onCancel={handleCancel}
             footer={null}
         >
+            {contextHolder}
             <Form layout="vertical" onFinish={handleSubmit(handleOk)}>
                 <Form.Item label="Họ và tên">
                     <Controller

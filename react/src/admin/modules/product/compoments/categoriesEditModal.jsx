@@ -43,7 +43,6 @@ const ModalEditCategory = ({
             ...data,
             status: data.status ? 1 : 0,
         };
-     
 
         try {
             // Dispatch the update action
@@ -66,14 +65,22 @@ const ModalEditCategory = ({
                 duration: 3,
             });
             console.log("Failed:", error);
-            
+
             // Sử dụng setError để bắt lỗi cụ thể trên từng trường của form
             if (error.errors) {
                 Object.keys(error.errors).forEach((field) => {
-                    setError(field, {
-                        type: "manual",
-                        message: error.errors[field][0], // Hiển thị thông báo lỗi từ API
-                    });
+                    if (["name", "description", "status"].includes(field)) {
+                        return setError(field, {
+                            type: "manual",
+                            message: error.errors[field][0],
+                        });
+                    } else {
+                        api.error({
+                            message: "Có lỗi xảy ra",
+                            description: error.errors[field][0],
+                            duration: 3,
+                        });
+                    }
                 });
             }
         }
