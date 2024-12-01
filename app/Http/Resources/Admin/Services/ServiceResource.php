@@ -6,6 +6,7 @@ use App\Http\Resources\Admin\Comments\CommentResource;
 use App\Http\Resources\Admin\ProductServices\ProductServiceResource;
 use App\Http\Resources\Admin\ServiceImages\ServiceImageResource;
 use App\Http\Resources\Admin\Users\UserResource;
+use App\Http\Resources\Client\Services\CommentServiceResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -41,6 +42,7 @@ class ServiceResource extends JsonResource
             'image_url' => $this->image_url,
             'duration' => $this->convertMinutesToTime($this->duration),
             'status' => $this->status,
+            'priority' => $this->priority,
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
                 'fullname' => $this->createdBy->full_name,
@@ -68,7 +70,7 @@ class ServiceResource extends JsonResource
                     'created_by' => $serviceImage->created_by ? $serviceImage->createdBy->full_name : null,
                 ];
             }) : [],
-            'comments' => $comments ? CommentResource::collection($comments) : []
+            'comments' => $comments ? CommentServiceResource::collection($comments) : []
         ];
     }
 

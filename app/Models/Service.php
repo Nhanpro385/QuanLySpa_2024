@@ -87,4 +87,9 @@ class Service extends Model
     {
         return $this->hasManyThrough(Customer::class, Comment::class, 'service_id', 'id', 'id', 'customer_id');
     }
+
+    public function clientComments()
+    {
+        return $this->hasMany(Comment::class, 'service_id', 'id')->where('status', 1)->where('parent_comment_id', null)->orderBy('created_at', 'desc');
+    }
 }

@@ -28,7 +28,7 @@ class ServiceController extends Controller
             }
 
             $selectedColumns = ["*"];
-            $query = Service::select($selectedColumns)->where($queryItems)->where('status', 1);
+            $query = Service::select($selectedColumns)->where($queryItems)->where('status', 1)->orderBy('priority', 'asc');
 
             if ($request['search']) {
                 $value = $request['search'];

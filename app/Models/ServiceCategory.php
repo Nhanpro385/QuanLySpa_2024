@@ -79,7 +79,7 @@ class ServiceCategory extends Model
 
     public function servicesStatus()
     {
-        return $this->hasMany(Service::class, 'service_category_id', 'id')->where('status', 1);
+        return $this->hasMany(Service::class, 'service_category_id', 'id')->where('status', 1)->orderBy('priority', 'asc');
     }
 
     public function clientServices()
