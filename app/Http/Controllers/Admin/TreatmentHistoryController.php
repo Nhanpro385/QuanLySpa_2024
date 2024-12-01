@@ -8,6 +8,9 @@ use App\Http\Requests\Admin\TreatmentHistory\UpdateTreamentHistoryRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Admin\TreatmentHistory\TreatmentHistoryResource;
+use App\Http\Resources\Admin\TreatmentHistory\DetailTreatmentHistoryResource;
+
+
 use App\Http\Resources\Admin\TreatmentHistory\TreatmentHistoryCollection;
 use App\Filters\Admin\TreatmentHistoryFilter;
 use Illuminate\Http\Request;
@@ -153,7 +156,7 @@ class TreatmentHistoryController extends Controller
     public function show($id)
     {
         $treatmentHistory = TreatmentHistory::findOrFail($id);
-        return new TreatmentHistoryResource($treatmentHistory);
+        return new DetailTreatmentHistoryResource($treatmentHistory);
     }
 
     // Delete a treatment history
