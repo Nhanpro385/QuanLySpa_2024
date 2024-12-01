@@ -19,7 +19,6 @@ class UpdateInboundInvoiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'staff_id' => 'required|exists:users,id',
             'supplier_id' => 'required|exists:suppliers,id',
             'note' => 'nullable|string|max:255',
             'total_amount' => 'required|numeric|min:0',

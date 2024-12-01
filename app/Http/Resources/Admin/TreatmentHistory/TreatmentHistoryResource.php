@@ -22,7 +22,7 @@ class TreatmentHistoryResource extends JsonResource
             // Thông tin customer
             'customer' => [
                 'id' =>(string) $this->customer->id ?? null,
-                'name' => $this->customer->name ?? null,
+                'name' => $this->customer->full_name ?? null,
                 'email' => $this->customer->email ?? null,
             ],
 
@@ -30,7 +30,7 @@ class TreatmentHistoryResource extends JsonResource
             'staff' => [
                 'id' =>(string) $this->createdBy->id ?? null,
                 'full_name' => $this->createdBy->full_name ?? null,
-                'role' => $this->createdBy->role->name ?? null,
+                'role' => $this->createdBy->role ?? null,
             ],
 
             // Thông tin appointment
@@ -44,12 +44,12 @@ class TreatmentHistoryResource extends JsonResource
             'created_by' => $this->created_by ? [
                 'id' =>(string) $this->created_by,
                 'full_name' => $this->createdBy->full_name ?? null,
-                'role' => $this->createdBy->role->name ?? null,
+                'role' => $this->createdBy->role ?? null,
             ] : null,
             'updated_by' => $this->updated_by ? [
                 'id' =>(string) $this->updated_by,
                 'full_name' => $this->updatedBy->full_name ?? null,
-                'role' => $this->updatedBy->role->name ?? null,
+                'role' => $this->updatedBy->role ?? null,
             ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
