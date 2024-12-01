@@ -1,6 +1,6 @@
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; // Make sure to import correctly
 
 // Function to check if the token is expired or valid
 const isTokenValid = (token) => {
@@ -11,16 +11,27 @@ const isTokenValid = (token) => {
     try {
         // Decode the token
         const decodedToken = jwtDecode(token);
+        const idStaff = decodedToken.sub;
+        console.log("idStaff", idStaff);
+        
+        // Save idStaff to localStorage for further use
+        localStorage.setItem("idStaff", idStaff);
 
         // Get the current time in seconds
-        const currentTime = Date.now() / 1000; // convert to seconds
+        const currentTime = Date.now() / 1000; // Convert to seconds
 
         // Check if token has expired
         if (decodedToken.exp < currentTime) {
             return false; // Token is expired
         }
 
-        // If the token is not expired
+        // Validate the idStaff
+        if (!idStaff || idStaff.trim() === "") {
+            console.error("Invalid idStaff");
+            return false;
+        }
+
+        // If the token is not expired and idStaff is valid
         return true;
     } catch (error) {
         console.error("Invalid token:", error);
@@ -37,7 +48,6 @@ const AuthMiddleware = ({ children, requiredRole }) => {
         if (requiredRole.requiredRole === "private") {
             if (requiredRole.role === "Client") {
                 console.log(requiredRole.requiredRole);
-
                 return <Navigate to="/dangnhap" />;
             } else {
                 return <Navigate to="/admin/dangnhap" />;
@@ -48,7 +58,14 @@ const AuthMiddleware = ({ children, requiredRole }) => {
         }
     }
 
-    console.log(requiredRole);
+    // Additional validation for idStaff (Optional based on your requirements)
+    const idStaff = localStorage.getItem("idStaff");
+    if (!idStaff || idStaff.trim() === "") {
+        console.error("Invalid idStaff detected");
+        return <Navigate to="/dangnhap" />;
+    }
+
+    console.log("Access granted:", requiredRole);
 
     return children;
 };

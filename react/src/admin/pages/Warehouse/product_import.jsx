@@ -8,13 +8,60 @@ import {
     Row,
     Select,
     Table,
+    message,
 } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./../../modules/warehouse/styles/ProductImport.scss";
+import useproductActions from "../../modules/product/hooks/useProduct";
+import useSupplierActions from "../../modules/SuppliersManagement/hooks/useSupplierActions";
+import usewarehouseAction from "../../modules/warehouse/hooks/usewarehouseaction";
+import { useSelector } from "react-redux";
 
 const WarehouseImport = () => {
     const [products, setProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
+    const [supplierData, setSupplierData] = useState([]);
+    const [selectedSupplier, setSelectedSupplier] = useState(null);
+    const [note, setNote] = useState("");
+    const product = useSelector((state) => state.products);
+    const supplier = useSelector((state) => state.supplier);
+    const warehouse = useSelector((state) => state.warehouse);
+    const { getproduct } = useproductActions();
+    const { getSupplier } = useSupplierActions();
+    const { importWarehouse } = usewarehouseAction();
+    const [idStaff, setIdStaff] = useState(() => {
+        const idStaff = JSON.parse(localStorage.getItem("idStaff"));
+        return idStaff;
+    });
+    useEffect(() => {
+        console.log(idStaff);
+    }, [idStaff]);
+    useEffect(() => {
+        getproduct(100);
+        getSupplier(100);
+    }, []);
+
+    useEffect(() => {
+        if (product.products.data && product.products.data.length > 0) {
+            const data = product.products.data.map((item, index) => ({
+                key: index + 1,
+                id: item.id,
+                name: item.name,
+            }));
+            setSearchResults(data);
+        }
+    }, [product]);
+
+    useEffect(() => {
+        if (supplier.Suppliers.data && supplier.Suppliers.data.length > 0) {
+            const data = supplier.Suppliers.data.map((item, index) => ({
+                key: index + 1,
+                id: item.id,
+                name: item.name,
+            }));
+            setSupplierData(data);
+        }
+    }, [supplier]);
 
     const addProduct = () => {
         setProducts([
@@ -25,21 +72,10 @@ const WarehouseImport = () => {
                 name: "",
                 quantity: 1,
                 cost: 0,
+                price: 0,
                 total: 0,
             },
         ]);
-    };
-
-    const searchProduct = (value) => {
-        const datafakeapi = [
-            { id: 1, name: "Sản phẩm 1" },
-            { id: 2, name: "Sản phẩm 2" },
-            { id: 3, name: "Sản phẩm 3" },
-        ];
-        const data = datafakeapi.filter((item) =>
-            item.name.toLowerCase().includes(value.toLowerCase())
-        );
-        setSearchResults(data);
     };
 
     const updateProduct = (index, fieldValues) => {
@@ -80,18 +116,55 @@ const WarehouseImport = () => {
         }));
         setProducts(updatedProducts);
     };
-    const submitProduct = () => {
-        const payload = {
-            id_User: 13123123213,
-            description: "Nhập hàng",
-            total: products
-                .reduce((acc, curr) => acc + curr.total, 0)
-                .toLocaleString(),
-            products: products || [],
-        };
-        console.log(payload);
-        
+
+    const validateForm = () => {
+        if (!selectedSupplier) {
+            message.error("Vui lòng chọn nhà cung cấp.");
+            return false;
+        }
+        if (products.length === 0) {
+            message.error("Danh sách sản phẩm không được để trống.");
+            return false;
+        }
+        const invalidProducts = products.some(
+            (product) =>
+                !product.id || product.quantity <= 0 || product.cost <= 0
+        );
+        if (invalidProducts) {
+            message.error("Vui lòng điền đầy đủ thông tin sản phẩm.");
+            return false;
+        }
+        return true;
     };
+
+    const submitProduct = async () => {
+        try {
+            if (!validateForm()) return;
+            console.log(localStorage.getItem("idStaff"));
+            
+            const payload = {
+                supplier_id: selectedSupplier,
+                staff_id: idStaff,
+                total_amount: products.reduce(
+                    (acc, curr) => acc + curr.total,
+                    0
+                ),
+                note: note || "Nhập hàng",
+                details: products.map((product) => ({
+                    product_id: product.id,
+                    quantity_import: product.quantity,
+                    cost_import: product.cost,
+                    unit_price: product.price,
+                })),
+            };
+            const response = await importWarehouse(payload);
+            console.log(response);
+            
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const columns = [
         { title: "STT", dataIndex: "key", key: "key" },
         {
@@ -116,7 +189,6 @@ const WarehouseImport = () => {
                             quantity: 1,
                         })
                     }
-                    onSearch={searchProduct}
                 />
             ),
         },
@@ -141,10 +213,33 @@ const WarehouseImport = () => {
             key: "cost",
             render: (_, product, index) => (
                 <InputNumber
+                    className="w-100"
                     min={1}
                     size="large"
+                    formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                     value={product.cost}
                     onChange={(value) => updateProduct(index, { cost: value })}
+                />
+            ),
+        },
+        {
+            title: "Giá bán",
+            dataIndex: "price",
+            key: "price",
+            render: (_, product, index) => (
+                <InputNumber
+                    className="w-100"
+                    min={1}
+                    size="large"
+                    formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                    value={product.price}
+                    onChange={(value) => updateProduct(index, { price: value })}
                 />
             ),
         },
@@ -172,6 +267,27 @@ const WarehouseImport = () => {
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
                         <Col xl={16} md={16} sm={24} xs={24}>
+                            <Card title="Thông tin nhập hàng">
+                                <Row gutter={[16, 16]}>
+                                    <Col xl={8} md={8} sm={24} xs={24}>
+                                        <Form.Item label="Nhà cung cấp">
+                                            <Select
+                                                size="large"
+                                                placeholder="Nhập tên nhà cung cấp"
+                                                options={supplierData.map(
+                                                    (item) => ({
+                                                        value: item.id,
+                                                        label: item.name,
+                                                    })
+                                                )}
+                                                onChange={(value) =>
+                                                    setSelectedSupplier(value)
+                                                }
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Card>
                             <Card
                                 title="Danh sách nhập hàng"
                                 className="mt-3 bg-light"
@@ -190,26 +306,36 @@ const WarehouseImport = () => {
                         </Col>
                         <Col xl={8} md={8} sm={24} xs={24}>
                             <Card className="bg-light">
-                                <Form.Item label="Nhân viên nhập">
+                                {/* <Form.Item label="Nhân viên nhập">
                                     <Input
                                         size="large"
                                         value={"Trần Phi Hào"}
                                         disabled
                                     />
-                                </Form.Item>
+                                </Form.Item> */}
                                 <Form.Item label="Mô tả">
-                                    <Input.TextArea />
+                                    <Input.TextArea
+                                        value={note}
+                                        onChange={(e) =>
+                                            setNote(e.target.value)
+                                        }
+                                    />
                                 </Form.Item>
                                 <h3>
-                                    Tổng tiền :{" "}
+                                    Tổng tiền:{" "}
                                     {products
                                         .reduce(
                                             (acc, curr) => acc + curr.total,
                                             0
                                         )
-                                        .toLocaleString()}
+                                        .toLocaleString()}{" "}
+                                    VNĐ
                                 </h3>
-                                <Button type="primary" className="w-100 mt-3" onClick={submitProduct}>
+                                <Button
+                                    type="primary"
+                                    className="w-100 mt-3"
+                                    onClick={submitProduct}
+                                >
                                     Nhập hàng
                                 </Button>
                             </Card>

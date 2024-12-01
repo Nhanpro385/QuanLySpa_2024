@@ -15,9 +15,12 @@ const checkRoleAndLogout = (dispatch) => {
 // AsyncThunk for fetching Suppliers list
 export const SupplierGet = createAsyncThunk(
     "Supplier/get",
-    async (_, { rejectWithValue }) => {
+    async (per_page, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Suppliers.list);
+            const queryParams = per_page ? `?per_page=${per_page}` : "";
+            const response = await axiosInstance.get(
+                `${endpoints.Suppliers.list}${queryParams}`
+            );
 
             return response.data;
         } catch (error) {

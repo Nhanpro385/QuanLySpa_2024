@@ -7,6 +7,7 @@ export const loginAdmin = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axios.post(endpoints.Auth.login, data);
+
             if (response.data.access_token) {
                 localStorage.setItem("token", response.data.access_token);
             }

@@ -14,7 +14,10 @@ const useSupplierActions = () => {
         return await dispatch(SupplierAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getSupplier = async () => {
+    const getSupplier = async (config) => {
+        if (config) {
+            return await dispatch(SupplierGet(config));
+        }
         return await dispatch(SupplierGet());
     };
 

@@ -9,8 +9,7 @@ import {
     Select,
     Table,
 } from "antd";
-import React, { useState } from "react";
-// import "./../../modules/warehouse/styles/ProductExport.scss";
+import React, { useEffect, useState } from "react";
 
 const WarehouseExport = () => {
     const [products, setProducts] = useState([]);
@@ -20,7 +19,7 @@ const WarehouseExport = () => {
         setProducts([
             ...products,
             {
-                key: products.length + 1,
+                key: products.length + 1, // key duy nhất
                 id: "",
                 name: "",
                 quantity: 1,
@@ -176,7 +175,14 @@ const WarehouseExport = () => {
                                 <Table
                                     columns={columns}
                                     dataSource={products}
-                                    pagination={false}
+                                    pagination={{
+                                        position: ["bottomCenter"],
+                                        pageSize: 5, // Số lượng sản phẩm mỗi trang
+                                        showSizeChanger: true,
+                                        defaultCurrent: 1,
+                                    }}
+                                    scroll={{ y: 600 }}
+                                    rowKey="key" // Khóa duy nhất để đảm bảo phân trang
                                 />
                             </Card>
                         </Col>

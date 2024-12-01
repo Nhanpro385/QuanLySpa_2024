@@ -114,10 +114,12 @@ const endpoints = {
         addstaff: `${API_BASE_URL}/staff-shifts`,
     },
     warehouse: {
-        import: `${API_BASE_URL}/warehouse/import`,
-        export: `${API_BASE_URL}/warehouse/export`,
-        inventory: `${API_BASE_URL}/warehouse/inventory`,
-        getwarehouse: `${API_BASE_URL}/warehouse`,
+        import: `${API_BASE_URL}/inbound-invoices`,
+        getImport: `${API_BASE_URL}/inbound-invoices`,
+        export: `${API_BASE_URL}/outbound-invoices`,
+        getExport: `${API_BASE_URL}/outbound-invoices`,
+        inventory: `${API_BASE_URL}/inventory`,
+        getInventory: `${API_BASE_URL}/inventory`,
     },
     appointments: {
         list: `${API_BASE_URL}/appointments`,
