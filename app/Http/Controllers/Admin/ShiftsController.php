@@ -29,25 +29,7 @@ class ShiftsController extends Controller
     
             $query = Shift::query();
     
-            // Áp dụng các bộ lọc thông thường
-            if (!empty($filters)) {
-                foreach ($filters as $filter) {
-                    [$column, $operator, $value] = $filter;
-                    $query->where($column, $operator, $value);
-                }
-            }
-    
-            // Áp dụng các bộ lọc liên quan
-            if (!empty($relations)) {
-                foreach ($relations as $relationFilter) {
-                    [$relation, $column, $operator, $value] = $relationFilter;
-                    $query->whereHas($relation, function ($q) use ($column, $operator, $value) {
-                        $q->where($column, $operator, $value);
-                    });
-                }
-            }
-    
-            // Áp dụng sắp xếp theo query đã đề cập
+            // Bước 1: Áp dụng sắp xếp trước
             $query->orderByRaw("
                 CASE
                     WHEN shift_date >= CURDATE() THEN 0 -- Ưu tiên ngày tương lai và hôm nay
@@ -57,7 +39,25 @@ class ShiftsController extends Controller
                 start_time ASC -- Thời gian bắt đầu
             ");
     
-            // Áp dụng sắp xếp tùy chọn (nếu có)
+            // Bước 2: Áp dụng các bộ lọc thông thường
+            if (!empty($filters)) {
+                foreach ($filters as $filter) {
+                    [$column, $operator, $value] = $filter;
+                    $query->where($column, $operator, $value);
+                }
+            }
+    
+            // Bước 3: Áp dụng các bộ lọc liên quan
+            if (!empty($relations)) {
+                foreach ($relations as $relationFilter) {
+                    [$relation, $column, $operator, $value] = $relationFilter;
+                    $query->whereHas($relation, function ($q) use ($column, $operator, $value) {
+                        $q->where($column, $operator, $value);
+                    });
+                }
+            }
+    
+            // Bước 4: Áp dụng sắp xếp tùy chọn từ query params (nếu có)
             if (!empty($sorts)) {
                 [$sortBy, $sortOrder] = $sorts;
                 $query->orderBy($sortBy, $sortOrder);
