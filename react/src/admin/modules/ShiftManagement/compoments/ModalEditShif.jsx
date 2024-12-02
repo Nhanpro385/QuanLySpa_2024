@@ -88,7 +88,7 @@ function ModalAddShiftEdit({
             end_time: values.end_time.format("HH:mm:ss"),
             max_customers: values.max_customers,
             note: "Cập nhật ca sáng",
-            status: true,
+            status: values.status
         };
 
         handleEditSubmit(payload);

@@ -9,14 +9,16 @@ import {
     notification,
     Select,
     Table,
+    Card,
 } from "antd";
-import { Controller, useForm } from "react-hook-form";
+
 import useUsersActions from "../../staffManagement/hooks/useUserAction";
 import "dayjs/locale/vi";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 const { TextArea } = Input;
-
+import debounce from "lodash/debounce";
+import { get } from "lodash";
 function ModalAddstaff({
     isModalOpen,
     handleOk,
@@ -24,18 +26,23 @@ function ModalAddstaff({
     handleAddShift,
     shift,
     error,
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    errors,
+    Controller,
 }) {
-    const { getstaffshift } = useUsersActions();
+    const { getstaffshift, searchusers } = useUsersActions();
     const [userData, setUserData] = useState([]);
     const user = useSelector((state) => state.user);
     const [api, contextHolder] = notification.useNotification();
-    const {
-        control,
-        handleSubmit,
-        formState: { errors },
-        setValue,
-        reset,
-    } = useForm();
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+        limit: 100,
+    });
+
     useEffect(() => {
         if (error?.errors) {
             Object.keys(error.errors).forEach((key) => {
@@ -72,7 +79,19 @@ function ModalAddstaff({
             shift_id: shift.id,
         });
     };
-
+    const handleSearch = debounce((value) => {
+        setSearchQuery({
+            ...searchQuery,
+            search: value,
+        });
+    }, 300);
+    useEffect(() => {
+        if (searchQuery.search !== "") {
+            searchusers(searchQuery);
+        } else {
+            getstaffshift(100);
+        }
+    }, [searchQuery]);
     return (
         <Modal
             title="Thêm nhân viên vào ca làm việc"
@@ -96,7 +115,7 @@ function ModalAddstaff({
             {contextHolder}
             <Form layout="vertical">
                 <Row gutter={16}>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             label="Chọn nhân viên"
                             validateStatus={errors.user_id ? "error" : ""}
@@ -117,28 +136,40 @@ function ModalAddstaff({
                                             label: item.full_name,
                                             value: item.id,
                                         }))}
+                                        mode="multiple"
+                                        showSearch
+                                        filterOption={(input, option) =>
+                                            option.label
+                                                .toLowerCase()
+                                                .indexOf(input.toLowerCase()) >=
+                                            0
+                                        }
+                                        onSearch={handleSearch}
                                     />
                                 )}
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
-                        <Table
-                            dataSource={shift?.staffs}
-                            columns={[
-                                {
-                                    title: "STT",
-                                    dataIndex: "index",
-                                    key: "index",
-                                    render: (text, record, index) => index + 1,
-                                },
-                                {
-                                    title: "Tên nhân viên",
-                                    dataIndex: "name",
-                                    key: "name",
-                                },
-                            ]}
-                        />
+                    <Col span={24}>
+                        <Card title="Danh sách nhân viên đã trong ca">
+                            <Table
+                                dataSource={shift?.staffs}
+                                columns={[
+                                    {
+                                        title: "STT",
+                                        dataIndex: "index",
+                                        key: "index",
+                                        render: (text, record, index) =>
+                                            index + 1,
+                                    },
+                                    {
+                                        title: "Tên nhân viên",
+                                        dataIndex: "name",
+                                        key: "name",
+                                    },
+                                ]}
+                            />
+                        </Card>
                     </Col>
                 </Row>
             </Form>

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Divider } from "antd";
 import Slider from "react-slick";
-
+import useShiftAction from "../../../../admin/modules/ShiftManagement/hooks/useShiftAction";
+import dayjs from "dayjs";
+dayjs.locale("vi"); // Cài đặt ngôn ngữ là tiếng Việt
+import { useSelector } from "react-redux";
+import style from "../styles/bookingpicktime.module.scss";
 const settingstimedate = {
     arrows: false,
     speed: 500,
@@ -33,35 +37,134 @@ const settingstimedate = {
         },
     ],
 };
+const weekdays = [
+    "Chủ nhật",
+    "Thứ hai",
+    "Thứ ba",
+    "Thứ tư",
+    "Thứ năm",
+    "Thứ sáu",
+    "Thứ bảy",
+];
+function getTimeSlots(shift) {
+    const startTime = parseTime(shift.start_time);
+    const endTime = parseTime(shift.end_time);
+    const slots = [];
 
-const BookingPickTime = ({ activeDate, setActiveDate, styles }) => {
-    // Generate the next 7 days starting from today
-    const [dates, setDates] = useState([]);
+    let currentTime = new Date(startTime);
+
+    while (currentTime < endTime) {
+        const nextTime = new Date(currentTime);
+        nextTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes to the current time
+        slots.push({
+            start_time: currentTime.toTimeString().slice(0, 5), // Get hour and minute only
+            end_time: nextTime.toTimeString().slice(0, 5),
+        });
+        currentTime = nextTime;
+    }
+
+    return slots;
+}
+
+function parseTime(timeStr) {
+    const [hours, minutes, seconds] = timeStr
+        .split(":")
+        .map((num) => parseInt(num));
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setSeconds(seconds);
+    return date;
+}
+
+const BookingPickTime = ({
+    activeDate,
+    setActiveDate,
+    styles,
+    time,
+    setTime,
+}) => {
+    const { getShiftClientAction } = useShiftAction();
+    const [shiftsData, setShiftsData] = useState([]);
+    const [listShift, setListShift] = useState([]);
+    const [listTime, setListTime] = useState([]);
+
+    const ShiftSlice = useSelector((state) => state.shifts);
+  
+    
+    
+    // Get shift data from Redux when it changes
+    useEffect(() => {
+        getShiftClientAction(14);
+    }, []);
+
+    useEffect(() => {
+        if (ShiftSlice.shifts?.data) {
+            setShiftsData(ShiftSlice.shifts.data);
+        }
+    }, [ShiftSlice.shifts]);
+    const handleClickTime = (time) => {
+        setTime(time);
+    };
 
     useEffect(() => {
         const today = new Date();
         const next7Days = [];
 
+        // Generate next 7 days from today
         for (let i = 0; i < 7; i++) {
             const nextDay = new Date(today);
             nextDay.setDate(today.getDate() + i);
-            next7Days.push(nextDay);
+
+            const formattedDate = dayjs(nextDay).format("YYYY-MM-DD");
+            const dayName = dayjs(nextDay).format("dddd");
+
+            next7Days.push({
+                day: weekdays[dayjs(nextDay).day()],
+                date: formattedDate,
+                shifts: [],
+            });
         }
 
-        setDates(next7Days);
-    }, []);
+        // Assign shifts to corresponding days
+        next7Days.forEach((date, index) => {
+            const filteredData = shiftsData.filter(
+                (item) => item.shift_date === date.date
+            );
+
+            const formattedShifts = filteredData.map((item) => ({
+                ...item,
+                timeSlots: getTimeSlots(item),
+            }));
+
+            next7Days[index].shifts = formattedShifts;
+        });
+
+        setListShift(next7Days);
+
+     
+    }, [shiftsData]);
+
+    useEffect(() => {
+        if (listShift.length > 0) {
+            setListTime(listShift[activeDate].shifts);
+        }
+    }, [activeDate]);
 
     return (
-        <Row justify="center" align="middle" style={{ marginTop: "30px" }}>
-            <Col
-                span={20}
-                style={{
-                    backgroundColor: "#fff",
-                    padding: "20px",
-                    borderRadius: "10px",
-                    boxShadow: "0px 5px 10px 4px rgba(0, 0, 0, 0.1)",
-                }}
-            >
+        <Row
+            justify="center"
+            align="middle"
+            style={{
+                backgroundColor: "#fff",
+                padding: "20px",
+                borderRadius: "10px",
+                boxShadow: "0px 5px 10px 4px rgba(0, 0, 0, 0.1)",
+                marginTop: "20px",
+            }}
+            className="container"
+        >
+            <Col>
                 <Row align="middle" justify="start">
                     <Col xs={24} sm={24} md={8} lg={8}>
                         <Divider orientation="left">
@@ -134,100 +237,85 @@ const BookingPickTime = ({ activeDate, setActiveDate, styles }) => {
                     </Col>
                 </Row>
 
-                <div style={{ padding: "20px" }}>
-                    <Slider {...settingstimedate}>
-                        {dates.map((date, index) => (
-                            <div key={index} className="p-3 text-center">
-                                <div
-                                    style={{
-                                        boxShadow:
-                                            "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                                        borderRadius: "10px",
-                                        padding: "10px",
-                                    }}
-                                    className={activeDate === index ? styles.active : ""}
-                                    onClick={() => {
-                                        setActiveDate(index);
-                                    }}
-                                >
-                                    <div>
-                                        <span>
-                                            <strong>
-                                                {date.toLocaleDateString("vi-VN", {
-                                                    weekday: "short",
-                                                })}
-                                            </strong>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span>
-                                            {date.toLocaleDateString("vi-VN")}
-                                        </span>
-                                    </div>
+                {/* Slider to select dates */}
+                <Slider {...settingstimedate}>
+                    {listShift.map((dateItem, index) => (
+                        <div key={index} className="p-3 text-center">
+                            <div
+                                style={{
+                                    boxShadow:
+                                        "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                                    borderRadius: "10px",
+                                    padding: "10px",
+                                }}
+                                className={
+                                    activeDate === index ? styles.active : ""
+                                }
+                                onClick={() => {
+                                    setActiveDate(index);
+                                }}
+                            >
+                                <div>
+                                    <span>
+                                        <strong>{dateItem.day}</strong>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span>{dateItem.date}</span>
                                 </div>
                             </div>
-                        ))}
-                    </Slider>
+                        </div>
+                    ))}
+                </Slider>
 
-                    <Row gutter={[8, 8]}>
-                        {[...Array(9)].map((_, index) => {
-                            const startHour = 9; // Bắt đầu từ 9:00
-                            const interval = 30; // Khoảng cách thời gian là 30 phút
-                            const time = new Date();
+                {/* Display available time slots */}
+                <Row className="mt-3 mb-3" gutter={[12, 12]}>
+                    {listTime.map((shift, index) => (
+                        <Col
+                            xxl={24}
+                            xl={24}
+                            lg={24}
+                            md={24}
+                            sm={24}
+                            xs={24}
+                            key={index}
+                            className={style.shift}
+                        >
+                            <Divider orientation="left">
+                                <h1 className={style.shiftTitle}>
+                                    Ca làm việc: {index + 1}
+                                </h1>
+                            </Divider>
 
-                            time.setHours(startHour + Math.floor((index * interval) / 60));
-                            time.setMinutes((index * interval) % 60);
-
-                            const timeString = time.toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            });
-
-                            return (
-                                <Col xs={12} sm={8} md={8} lg={8} xl={8} key={index}>
-                                    <div
-                                        style={{
-                                            backgroundColor: "#E05265",
-                                            color: "#fff",
-                                            padding: "10px 30px",
-                                            borderRadius: "5px",
-                                            textAlign: "center",
-                                            fontSize: "20px",
-                                        }}
+                            <Row gutter={[16, 16]}>
+                                {/* Display time slots */}
+                                {shift.timeSlots.map((slot, idx) => (
+                                    <Col
+                                        key={idx}
+                                        className={`${style.slot} ${
+                                            time?.index === idx &&
+                                            time?.start_time ===
+                                                slot?.start_time
+                                                ? style.active
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            handleClickTime({
+                                                shift_id: shift.id,
+                                                start_time: slot.start_time,
+                                                index: idx,
+                                            })
+                                        }
                                     >
-                                        <div>{timeString}</div>
-                                    </div>
-                                </Col>
-                            );
-                        })}
-                    </Row>
-                </div>
-
-                <Row justify="center" align="middle" gutter={[16, 16]}>
-                    <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }} lg={{ span: 4 }}>
-                        <Button
-                            type="primary"
-                            style={{
-                                width: "100%",
-                            }}
-                            size="large"
-                        >
-                            Thanh Toán Dịch Vụ
-                        </Button>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 8 }} lg={{ span: 4 }}>
-                        <Button
-                            type="primary"
-                            style={{
-                                width: "100%",
-                            }}
-                            ghost
-                            size="large"
-                        >
-                            Thêm Dịch vụ
-                        </Button>
-                    </Col>
+                                        {slot.start_time} - {slot.end_time}
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Col>
+                    ))}
                 </Row>
+
+                {/* Payment and additional service buttons */}
             </Col>
         </Row>
     );

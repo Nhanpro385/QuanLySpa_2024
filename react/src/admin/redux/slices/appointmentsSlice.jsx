@@ -44,6 +44,7 @@ export const appointmentsAdd = createAsyncThunk(
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
                 errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || "",
             });
         }
     }
@@ -70,6 +71,8 @@ export const appointmentsDelete = createAsyncThunk(
                 status: error.response?.status || 500,
                 message:
                     error.response?.data?.message || "Có lỗi xảy ra khi xóa",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || "",
             });
         }
     }
@@ -99,6 +102,7 @@ export const appointmentsUpdate = createAsyncThunk(
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
                 errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || "",
             });
         }
     }
@@ -155,6 +159,25 @@ export const searchAppointmentByStatus = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi tìm kiếm lịch hẹn",
+            });
+        }
+    }
+);
+export const CreateAppointmentClient = createAsyncThunk(
+    "appointments/CreateClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.appointments.CreateClient,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || "",
             });
         }
     }
@@ -287,6 +310,18 @@ const appointmentsSlice = createSlice({
             .addCase(searchAppointmentByStatus.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(CreateAppointmentClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(CreateAppointmentClient.fulfilled, (state, action) => {
+                state.appointments = action.payload;
+                state.loading = false;
+            })
+            .addCase(CreateAppointmentClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });

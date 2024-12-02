@@ -1,16 +1,6 @@
 // src/pages/Appointments.js
 import React, { useEffect, useState } from "react";
-import {
-    Button,
-    Card,
-    Col,
-    Row,
-    Tag,
-    Spin,
-    Input,
-    Select,
-    DatePicker,
-} from "antd";
+import { Button, Card, Col, Row, Input, notification } from "antd";
 
 import ModalAppointmentEdit from "../../modules/appointments/compoments/appoitnmentsAddmodalEdit";
 import AppointmentsTable from "../../modules/appointments/compoments/AppointmentsTable";
@@ -22,6 +12,7 @@ import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import AppointmentsDetail from "../../modules/appointments/compoments/AppointmentsDetail";
 function Appointments() {
+    const [api, contextHolder] = notification.useNotification();
     const {
         addappointments,
         getappointments,
@@ -103,7 +94,22 @@ function Appointments() {
     };
     const handledelete = async (record) => {
         try {
-            const res = deleteappointments(record);
+            console.log(record);
+
+            const res = await deleteappointments(record.id);
+            if (res.payload.status === 500) {
+                api.error({
+                    message: "Có lỗi xảy ra",
+                    description: res.payload.message,
+                    duration: 3,
+                });
+                return;
+            }
+            api.success({
+                message: "Xóa thành công",
+                duration: 3,
+            });
+            getappointments();
         } catch (err) {
             console.log(err);
         }
@@ -123,6 +129,7 @@ function Appointments() {
         <>
             <h1 className="text-center">Quản lý lịch hẹn</h1>
             <Row gutter={[16, 16]}>
+                {contextHolder}
                 <Col span={24}>
                     <Card>
                         <Row className="m-2" justify={"space-between"}>
@@ -167,7 +174,7 @@ function Appointments() {
                             onViewDetail={(id) => {
                                 handleDetailView(id);
                             }}
-                            ondelete={(id) => handledelete(id)}
+                            handleDelete={handledelete}
                             pagination={pagination}
                             handlePageChange={handlePageChange}
                         />

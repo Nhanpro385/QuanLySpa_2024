@@ -13,17 +13,22 @@ import {
     Card,
     notification,
     Tag,
+    Divider,
+    Space,
 } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
 import "dayjs/locale/vi";
 import debounce from "lodash/debounce";
 
+import { PlusOutlined } from "@ant-design/icons";
+
 import useappointmentsActions from "../../modules/appointments/hooks/useappointments";
 import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
 import useServicesActions from "../../modules/services/hooks/useServices";
 import useShiftAction from "../../modules/ShiftManagement/hooks/useShiftAction";
 import useCustomerActions from "../../modules/Customer/hooks/useCustomerActions";
+
 import { generateSnowflakeId, formatDate, formatTime } from "../../utils";
 import {
     ClockCircleOutlined,
@@ -31,17 +36,19 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { get } from "lodash";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const Appointment_Add = () => {
+    const inputRef = useRef(null);
     const [api, contextHolder] = notification.useNotification();
     const { getservices, searchservices } = useServicesActions();
     const { getusers } = useUsersActions();
     const { getshifts, getshiftsById, searchshifts } = useShiftAction();
     const { addappointments } = useappointmentsActions();
-    const { getCustomer } = useCustomerActions();
+    const { getCustomer, searchCustomer, addCustomer } = useCustomerActions();
     const service = useSelector((state) => state.services);
     const users = useSelector((state) => state.user);
     const shifts = useSelector((state) => state.shifts);
@@ -55,19 +62,30 @@ const Appointment_Add = () => {
         per_page: 50,
         page: 1,
     });
-    const {
-        control,
-        handleSubmit,
-        setValue,
-        getValues,
-        formState: { errors },
-    } = useForm();
+    const [searchCustomerQuery, setSearchCustomerQuery] = useState({
+        search: "",
+        page: 1,
+        per_page: 50,
+    });
     const [searchShift, setSearchShift] = useState({
         search: "",
         per_page: 50,
         page: 1,
         status: 1,
     });
+    const [nameCustomer, setNameCustomer] = useState("");
+    const [PhoneCustomer, setPhoneCustomer] = useState("");
+    const [emailCustomer, setEmailCustomer] = useState("");
+
+    const {
+        control,
+        handleSubmit,
+        setValue,
+        getValues,
+        setError,
+        formState: { errors },
+    } = useForm();
+
     useEffect(() => {
         getservices(50);
         getusers(50);
@@ -79,7 +97,16 @@ const Appointment_Add = () => {
             setServiceOptions(
                 service.services.data.map((service) => ({
                     value: service.id,
-                    label: service.name,
+                    name: service.name,
+                    price: service.price,
+                    label: (
+                        <Space>
+                            <Tag color="blue">{service.name}</Tag>
+                            <Tag color="green">
+                                {parseInt(service.price).toLocaleString()}đ
+                            </Tag>
+                        </Space>
+                    ),
                 }))
             );
         }
@@ -145,6 +172,22 @@ const Appointment_Add = () => {
 
     const onSubmit = async (data) => {
         try {
+            if (selectedServices.length > data.employee.length) {
+                api.error({
+                    message: "Thêm lịch hẹn thất bại",
+                    description: "Số lượng dịch vụ nhiều hơn số nhân viên",
+                    duration: 5,
+                });
+                return;
+            } else if (selectedServices.length < data.employee.length) {
+                api.error({
+                    message: "Thêm lịch hẹn thất bại",
+                    description: "Số lượng nhân viên nhiều hơn số dịch vụ",
+                    duration: 5,
+                });
+                return;
+            }
+
             const payload = {
                 id: generateSnowflakeId(),
                 shift_id: data.shift,
@@ -161,7 +204,6 @@ const Appointment_Add = () => {
                 })),
                 status: 1,
             };
-
             const res = await addappointments(payload);
             console.log("res", res);
             if (res.meta.requestStatus === "fulfilled") {
@@ -178,7 +220,8 @@ const Appointment_Add = () => {
                 setValue("employee", null);
                 setValue("note", null);
             } else {
-                if (res.payload?.errors) {
+                if (res.payload?.errors && res.payload.errors.length > 0) {
+                    console.log("res.payload.errors", res.payload.errors);
                     Object.keys(res.payload.errors).forEach((key) => {
                         if (
                             [
@@ -202,15 +245,14 @@ const Appointment_Add = () => {
                         }
                     });
                     return;
+                } else {
+                    api.error({
+                        message: "Thêm lịch hẹn thất bại",
+                        duration: 5,
+                        description: res.payload.error || res.payload.message,
+                    });
+                    return;
                 }
-                const errorMessage =
-                    res.payload?.message + res.payload.errors ||
-                    "Lỗi không xác định";
-                api.error({
-                    message: "Thêm lịch hẹn thất bại",
-                    duration: 5,
-                    description: errorMessage,
-                });
             }
         } catch (error) {
             console.error("Error in onSubmit:", error);
@@ -226,8 +268,12 @@ const Appointment_Add = () => {
                 existing || {
                     key: service,
                     name: serviceOptions.find((opt) => opt.value === service)
-                        ?.label,
+                        ?.name,
                     quantity: 1,
+                    price: parseInt(
+                        serviceOptions.find((opt) => opt.value === service)
+                            ?.price
+                    ).toLocaleString(),
                 }
             );
         });
@@ -285,7 +331,17 @@ const Appointment_Add = () => {
     };
 
     const columns = [
+        {
+            title: "STT",
+            dataIndex: "key",
+            key: "key",
+            render: (text, record, index) => index + 1,
+        },
         { title: "Dịch vụ", dataIndex: "name", key: "name" },
+        {
+            title: "Giá",
+            dataIndex: "price",
+        },
         {
             title: "Số lượng",
             dataIndex: "quantity",
@@ -300,7 +356,26 @@ const Appointment_Add = () => {
                 />
             ),
         },
+        {
+            title: "Thao tác",
+            key: "action",
+            render: (text, record) => (
+                <Button
+                    danger
+                    onClick={() =>
+                        setSelectedServices((prevServices) =>
+                            prevServices.filter(
+                                (service) => service.key !== record.key
+                            )
+                        )
+                    }
+                >
+                    Xóa
+                </Button>
+            ),
+        },
     ];
+
     const HandleServiceChange = debounce((value) => {
         setSearchService({ ...searchService, search: value });
     }, 300);
@@ -308,6 +383,18 @@ const Appointment_Add = () => {
     const OnsearchShift = debounce((value) => {
         setSearchShift({ ...searchShift, search: value });
     }, 300);
+    const onSearchCustomer = debounce((value) => {
+        setSearchCustomerQuery({ ...searchCustomerQuery, search: value });
+    }, 300);
+
+    useEffect(() => {
+        if (searchCustomerQuery.search !== "") {
+            searchCustomer(searchCustomerQuery);
+        } else {
+            getCustomer(50);
+        }
+    }, [searchCustomerQuery]);
+
     const handleChangeDate = (value) => {
         if (value === null) {
             setValue("appointment_date", null);
@@ -323,13 +410,111 @@ const Appointment_Add = () => {
             });
         }
     };
+    // -------------------add item-------------------
+    const onNameChange = (event) => {
+        setNameCustomer(event.target.value);
+    };
+    const onPhoneChange = (event) => {
+        setPhoneCustomer(event.target.value);
+    };
+    const onEmailChange = (event) => {
+        setEmailCustomer(event.target.value);
+    };
+
+    const addItem = async (e) => {
+        try {
+            // Validate input fields
+            const validateFields = () => {
+                if (!nameCustomer || !PhoneCustomer || !emailCustomer) {
+                    api.error({
+                        message: "Vui lòng nhập đầy đủ thông tin.",
+                        duration: 5,
+                    });
+                    return false;
+                }
+
+                // Simple email validation
+                const emailPattern =
+                    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                if (!emailPattern.test(emailCustomer)) {
+                    api.error({
+                        message: "Vui lòng nhập email hợp lệ.",
+                        duration: 5,
+                    });
+                    return false;
+                }
+
+                // Simple phone number validation (Vietnamese phone number format)
+                const phonePattern = /^0[3|5|7|8|9][0-9]{8,9}$/;
+                if (!phonePattern.test(PhoneCustomer)) {
+                    api.error({
+                        message: "Vui lòng nhập số điện thoại hợp lệ.",
+                        duration: 5,
+                    });
+                    return false;
+                }
+
+                return true;
+            };
+
+            // Check if the fields are valid
+            if (!validateFields()) return; // If validation fails, exit early
+
+            // Payload to be sent
+            const payload = {
+                id: generateSnowflakeId(),
+                full_name: nameCustomer,
+                email: emailCustomer,
+                phone: PhoneCustomer, // Ensure variable matches the one you're using
+                gender: 2,
+                address: "Chưa cập nhật",
+                date_of_birth: "1999-01-01",
+                status: true,
+            };
+
+            // Call the API to add the customer
+            const res = await addCustomer(payload);
+            if (res.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Thêm khách hàng mới thành công.",
+                    duration: 5,
+                });
+                // Reset the form after success
+                setNameCustomer("");
+                setPhoneCustomer("");
+                setEmailCustomer("");
+                setValue("customer_id", res.payload.data.id);
+                setCustomerOptions([
+                    ...customerOptions,
+                    {
+                        value: res.payload.data.id,
+                        label: res.payload.data.full_name,
+                    },
+                ]);
+            } else {
+                Object.keys(res.payload.errors).forEach((key) => {
+                    api.error({
+                        message: "Có lỗi xảy ra khi thêm khách hàng mới.",
+                        duration: 5,
+                        description: res.payload.errors[key][0],
+                    });
+                });
+            }
+        } catch (error) {
+            api.error({
+                message: "Có lỗi xảy ra khi thêm khách hàng mới.",
+                duration: 5,
+            });
+            console.error("Error adding customer:", error);
+        }
+    };
 
     return (
         <Card title="Thêm lịch hẹn">
             {contextHolder}
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
-                    <Col span={6}>
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Họ và tên" required>
                             <Controller
                                 name="customer_id"
@@ -345,6 +530,100 @@ const Appointment_Add = () => {
                                         showSearch
                                         placeholder="Chọn khách hàng"
                                         options={customerOptions}
+                                        onSearch={onSearchCustomer}
+                                        filterOption={false}
+                                        dropdownRender={(menu) => (
+                                            <>
+                                                {menu}
+                                                <Divider
+                                                    style={{
+                                                        margin: "8px 0",
+                                                    }}
+                                                />
+                                                <Row
+                                                    gutter={[8, 8]}
+                                                    style={{
+                                                        padding: "8px",
+                                                    }}
+                                                >
+                                                    <Col
+                                                        xxl={8}
+                                                        xl={8}
+                                                        lg={8}
+                                                        md={8}
+                                                        sm={24}
+                                                        xs={24}
+                                                    >
+                                                        <Input
+                                                            allowClear
+                                                            placeholder="Nhập tên khách hàng"
+                                                            ref={inputRef}
+                                                            value={nameCustomer}
+                                                            onChange={
+                                                                onNameChange
+                                                            }
+                                                            onKeyDown={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        />
+                                                    </Col>
+                                                    <Col
+                                                        xxl={8}
+                                                        xl={8}
+                                                        lg={8}
+                                                        md={8}
+                                                        sm={24}
+                                                        xs={24}
+                                                    >
+                                                        <Input
+                                                            allowClear
+                                                            placeholder="Nhập Số điện thoại"
+                                                            ref={inputRef}
+                                                            value={
+                                                                PhoneCustomer
+                                                            }
+                                                            onChange={
+                                                                onPhoneChange
+                                                            }
+                                                            onKeyDown={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        />
+                                                    </Col>
+                                                    <Col
+                                                        xxl={8}
+                                                        xl={8}
+                                                        lg={8}
+                                                        md={8}
+                                                        sm={24}
+                                                        xs={24}
+                                                    >
+                                                        <Input
+                                                            allowClear
+                                                            type="email"
+                                                            placeholder="Nhập Email"
+                                                            ref={inputRef}
+                                                            value={
+                                                                emailCustomer
+                                                            }
+                                                            onChange={
+                                                                onEmailChange
+                                                            }
+                                                            onKeyDown={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                        />
+                                                    </Col>
+                                                    <Button
+                                                        type="text"
+                                                        icon={<PlusOutlined />}
+                                                        onClick={addItem}
+                                                    >
+                                                        Thêm nhanh khách hàng
+                                                    </Button>
+                                                </Row>
+                                            </>
+                                        )}
                                     />
                                 )}
                             />
@@ -356,7 +635,7 @@ const Appointment_Add = () => {
                         </Form.Item>
                     </Col>
 
-                    <Col span={6}>
+                    <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Form.Item label="ngày hẹn" required>
                             <Controller
                                 name="appointment_date"
@@ -373,7 +652,6 @@ const Appointment_Add = () => {
                                         onChange={(value) => {
                                             handleChangeDate(value);
                                         }}
-                                       
                                     />
                                 )}
                             />
@@ -384,7 +662,7 @@ const Appointment_Add = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Form.Item label="Dịch vụ">
                             <Controller
                                 name="service"
@@ -394,6 +672,9 @@ const Appointment_Add = () => {
                                         {...field}
                                         mode="multiple"
                                         allowClear
+                                        value={selectedServices.map(
+                                            (service) => service.key
+                                        )}
                                         size="large"
                                         style={{ width: "100%" }}
                                         placeholder="Chọn dịch vụ"
@@ -416,7 +697,7 @@ const Appointment_Add = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Ca làm việc" required>
                             <Controller
                                 name="shift"
@@ -437,6 +718,7 @@ const Appointment_Add = () => {
                                             field.onChange(value); // Cập nhật giá trị vào React Hook Form
                                             HandleShiftChange(value);
                                         }}
+                                        filterOption={false}
                                         onSearch={OnsearchShift}
                                         onClear={() => {
                                             field.onChange(null); // Xóa giá trị của field
@@ -459,7 +741,7 @@ const Appointment_Add = () => {
                         </Form.Item>
                     </Col>
 
-                    <Col span={12}>
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Chọn nhân viên" required>
                             <Controller
                                 name="employee"
@@ -489,7 +771,7 @@ const Appointment_Add = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Form.Item label="Ghi chú">
                             <Controller
                                 name="note"

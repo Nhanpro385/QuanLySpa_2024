@@ -27,6 +27,9 @@ export const AuthProvider = ({ children }) => {
                         JSON.stringify({
                             name: userData.payload.data.full_name,
                             id: userData.payload.data.id,
+                            phone: userData.payload.data.phone,
+                            email: userData.payload.data.email,
+                            
                         })
                     );
                 })

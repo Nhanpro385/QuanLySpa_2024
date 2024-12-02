@@ -14,8 +14,10 @@ const { Column, ColumnGroup } = Table;
 const { Panel } = Collapse;
 const { Text } = Typography;
 import baner from "../../../assets/images/banderprice.png";
-
+import useServiceCategoriesActions from "../../../../admin/modules/services/hooks/useServiceCategories";
+import { useSelector } from "react-redux";
 const PricingContent = () => {
+    const { getServiceCategoriesClient } = useServiceCategoriesActions();
     const data = [
         {
             key: "1",

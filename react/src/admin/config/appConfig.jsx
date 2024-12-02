@@ -112,6 +112,8 @@ const endpoints = {
         delete: (id) => `${API_BASE_URL}/shifts/${id}`,
         search: `${API_BASE_URL}/shifts`,
         addstaff: `${API_BASE_URL}/staff-shifts`,
+        listClient: `${API_AUTH_URL3}/shifts`,
+        DetailClient: (id) => `${API_AUTH_URL3}/shifts/${id}`,
     },
     warehouse: {
         import: `${API_BASE_URL}/inbound-invoices`,
@@ -128,6 +130,7 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/appointments/${id}`,
         delete: (id) => `${API_BASE_URL}/appointments/${id}`,
         search: `${API_BASE_URL}/appointments`,
+        CreateClient: `${API_AUTH_URL3}/appointments`,
     },
     streatments: {
         list: `${API_BASE_URL}/treatment-history`,

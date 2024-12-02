@@ -13,6 +13,7 @@ import {
     Card,
     Tag,
     notification,
+    Space,
 } from "antd";
 import { useForm, Controller, set } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -60,6 +61,7 @@ const Appointment_Edit = () => {
 
     useEffect(() => {
         getservices(50);
+        console.log(idAppointment);
 
         getappointmentsById(idAppointment);
     }, []);
@@ -89,12 +91,13 @@ const Appointment_Edit = () => {
                 );
                 setValue(
                     "expected_time",
-                    calculateEndTime(
-                        appointments.appointment.data.appointment_date,
-                        appointments.appointment.data.start_time,
-                        appointments.appointment.data.expected_time
-                    ) || ""
+                    dayjs(
+                        appointments.appointment.data.appointment_date +
+                            " " +
+                            appointments.appointment.data.expected_time
+                    ).format("DD/MM/YYYY HH:mm:ss")
                 );
+
                 setValue("note", appointments.appointment.data.note || "");
                 setValue("shift", appointments.appointment.data.shift.id || "");
                 setValue("status", appointments.appointment.data.status || "");
@@ -117,7 +120,23 @@ const Appointment_Edit = () => {
         setServiceOptions(
             service.services.data.map((service) => ({
                 value: service.id,
-                label: service.name,
+                name: service.name,
+                price: service.price,
+                duration: service.duration,
+                label: (
+                    <Space>
+                        <Tag color="blue">
+                            <ContactsOutlined /> {service.name}
+                        </Tag>
+                        <Tag color="green">
+                            <ClockCircleOutlined /> {service.duration} phút
+                        </Tag>
+                        <Tag color="red">
+                            <ClockCircleOutlined />{" "}
+                            {parseInt(service.price).toLocaleString()} VNĐ
+                        </Tag>
+                    </Space>
+                ),
             }))
         );
 
@@ -192,7 +211,8 @@ const Appointment_Edit = () => {
                                     shift.staffs.length > 0 ? "green" : "red"
                                 }
                             >
-                                <UserOutlined /> {shift.staffs.length} nhân viên
+                                <UserOutlined /> {shift?.staffs?.length} nhân
+                                viên
                             </Tag>
                         </>
                     ),
@@ -248,6 +268,21 @@ const Appointment_Edit = () => {
 
     const onSubmit = async (data) => {
         try {
+            if (selectedServices.length > data.employee.length) {
+                api.error({
+                    message: "Thêm lịch hẹn thất bại",
+                    description: "Số lượng dịch vụ nhiều hơn số nhân viên",
+                    duration: 5,
+                });
+                return;
+            } else if (selectedServices.length < data.employee.length) {
+                api.error({
+                    message: "Thêm lịch hẹn thất bại",
+                    description: "Số lượng nhân viên nhiều hơn số dịch vụ",
+                    duration: 5,
+                });
+                return;
+            }
             const payload = {
                 id: idAppointment,
                 services: selectedServices.map((service) => ({
@@ -272,6 +307,7 @@ const Appointment_Edit = () => {
                 note: data.note,
             };
             const res = await updateappointments(payload);
+            console.log(res);
 
             if (res.meta.requestStatus === "fulfilled") {
                 if (
@@ -289,7 +325,7 @@ const Appointment_Edit = () => {
                 api.success({
                     message:
                         res.payload.message || "Cập nhật lịch hẹn thành công",
-                    description: `Lịch hẹn cho ${data.customer_id} đã được thêm`,
+                    description: `Lịch hẹn cho ${appointments?.appointment?.data.customer?.full_name} đã được cập nhật thành công`,
                 });
                 // reset all
                 setSelectedServices([]);
@@ -300,16 +336,36 @@ const Appointment_Edit = () => {
                 setValue("employee", null);
                 setValue("note", null);
                 setValue("status", null);
-                // getappointmentsById(idAppointment);
+                setTimeout(() => {
+                    navigate("/admin/lichhen");
+                }, 1000);
             } else {
-                Object.keys(res.payload.errors).forEach((key) => {
-                    if(["services", "users", "shift_id", "status"].includes(key)){
-                        api.error({
-                            message: res.payload.errors[key],
-                        });
-                    }
-                });
-                
+                if (Object.keys(res.payload.errors).length > 0) {
+                    Object.keys(res.payload.errors).forEach((key) => {
+                        if (
+                            [
+                                "services",
+                                "users",
+                                "shift_id",
+                                "status",
+                            ].includes(key)
+                        ) {
+                            api.error({
+                                message: res.payload.errors[key],
+                            });
+                        }
+                    });
+                } else {
+                    api.error({
+                        message:
+                            res.payload.message ||
+                            "Cập nhật lịch hẹn không thành công",
+                        description:
+                            res.payload.error ||
+                            "Vui lòng kiểm tra lại thông tin",
+                    });
+                    return;
+                }
             }
         } catch (error) {
             console.error("Error in onSubmit:", error);
@@ -337,8 +393,9 @@ const Appointment_Edit = () => {
             return (
                 existing || {
                     key: service,
-                    name: serviceOptions.find((opt) => opt.value === service)
-                        ?.label,
+                    name:
+                        serviceOptions.find((opt) => opt.value === service)
+                            ?.name || "",
                     quantity: 1,
                 }
             );
@@ -362,6 +419,20 @@ const Appointment_Edit = () => {
             render: (text, record, index) => index + 1,
         },
         { title: "Dịch vụ", dataIndex: "name", key: "name" },
+        {
+            title: "Giá",
+            dataIndex: "price",
+            key: "price",
+            render: (text, record) => (
+                <Tag color="red">
+                    {parseInt(
+                        serviceOptions.find((opt) => opt.value === record.key)
+                            ?.price || 0
+                    ).toLocaleString()}{" "}
+                    VNĐ{" "}
+                </Tag>
+            ),
+        },
         {
             title: "Số lượng",
             dataIndex: "quantity",
@@ -634,10 +705,6 @@ const Appointment_Edit = () => {
                                             style={{ width: "100%" }}
                                             placeholder="Chọn trạng thái"
                                         >
-                                            <Select.Option value="Đã hủy lịch hẹn.">
-                                                Đã hủy lịch hẹn.
-                                            </Select.Option>
-
                                             <Select.Option value="Đã đặt lịch hẹn.">
                                                 Đã đặt lịch hẹn.
                                             </Select.Option>

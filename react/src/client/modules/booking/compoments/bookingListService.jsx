@@ -1,11 +1,10 @@
 import React, { useRef } from "react";
-import { Card, Button, Row, Col } from "antd";
+import { Card, Button, Row, Col, Image } from "antd";
 import Slider from "react-slick";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import anh4 from "../../../assets/images/image4.png";
 
 // Cấu hình cho Slider
-
 
 const BookingListService = ({
     activeService,
@@ -14,8 +13,6 @@ const BookingListService = ({
     setService,
     ServicesCategories,
 }) => {
-    console.log(ServicesCategories);
-    
     const sliderRef = useRef();
     const settingsservice = {
         dots: true,
@@ -113,12 +110,13 @@ const BookingListService = ({
                                                 overflow: "hidden",
                                             }}
                                         >
-                                            <img
+                                            <Image
                                                 alt="example"
                                                 src={
                                                     "http://127.0.0.1:8000/storage/uploads/services/special/" +
                                                     item.image_url
                                                 }
+                                                onError={(e) => e.target.src = "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"} // Thay thế hình ảnh khi lỗi
                                                 style={{
                                                     width: "100%",
                                                     height: "100%",
@@ -132,7 +130,9 @@ const BookingListService = ({
                                     <div className="m-2">
                                         Giá:{" "}
                                         <strong style={{ color: "#E05265" }}>
-                                            {parseInt(item.price).toLocaleString()}{" "}
+                                            {parseInt(
+                                                item.price
+                                            ).toLocaleString()}{" "}
                                             VNĐ{" "}
                                         </strong>
                                     </div>
@@ -161,7 +161,15 @@ const BookingListService = ({
                                                     )
                                                 );
                                             } else {
-                                                setService([...service, item]);
+                                                setService([
+                                                    ...service,
+                                                    {
+                                                        id: item.id,
+                                                        name: item.name,
+                                                        price: item.price,
+                                                        quantity: 1,
+                                                    },
+                                                ]);
                                             }
                                         }}
                                     >

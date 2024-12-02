@@ -33,6 +33,8 @@ const useCustomerActions = () => {
         return await dispatch(CustomerGetbyId(id));
     };
     const searchCustomer = async (data) => {
+        console.log(data);
+        
         return await dispatch(CustomerSearch(data));
     };
     return {

@@ -1,4 +1,3 @@
-// src/components/AppointmentsTable.js
 import React from "react";
 import { Table, Button, Dropdown, Space, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
@@ -9,7 +8,7 @@ const AppointmentsTable = ({
     onViewDetail,
     pagination,
     loading,
-    ondelete,
+    handleDelete,
     handlePageChange,
 }) => {
     console.log(dataSource);
@@ -18,7 +17,7 @@ const AppointmentsTable = ({
         {
             key: "1",
             label: (
-                <Button block onClick={onEdit}>
+                <Button block onClick={(e) => e.preventDefault()}>
                     Sửa
                 </Button>
             ),
@@ -26,15 +25,22 @@ const AppointmentsTable = ({
         {
             key: "2",
             label: (
-                <Button block onClick={onViewDetail} >
-                    Chi tiết 
+                <Button block onClick={(e) => e.preventDefault()}>
+                    Chi tiết
                 </Button>
             ),
         },
         {
-            key: "4",
+            key: "3",
             label: (
-                <Button block danger onClick={ondelete}>
+                <Button
+                    block
+                    danger
+                    onClick={(e) => {
+                        e.preventDefault(); // Prevent event propagation
+                        handleDelete(); // Pass the appropriate delete logic here
+                    }}
+                >
                     Xóa
                 </Button>
             ),
@@ -77,11 +83,23 @@ const AppointmentsTable = ({
             dataIndex: "status",
             key: "status",
             render: (text, record) => {
-                if (record.status == "Đã hoàn thành.") {
-                    return <Tag color="green">Đã hoàn thành</Tag>;
-                } else {
-                    return <Tag color="red">Chưa hoàn thành</Tag>;
-                }
+                return (
+                    <Tag
+                        color={
+                            record.status === "Đã đặt lịch hẹn."
+                                ? "blue" // Đặt lịch hẹn
+                                : record.status === "Đang thực hiện."
+                                ? "green" // Đang thực hiện
+                                : record.status === "Đã hoàn thành."
+                                ? "gold" // Đã hoàn thành
+                                : record.status === "Đã hủy lịch hẹn."
+                                ? "red" // Đã hủy
+                                : "default" // Trạng thái mặc định nếu không khớp với các giá trị trên
+                        }
+                    >
+                        {record.status}
+                    </Tag>
+                );
             },
         },
         {
@@ -94,9 +112,13 @@ const AppointmentsTable = ({
                             items,
                             onClick: (e) => {
                                 const key = e.key;
-                                if (key === "1") onEdit(record.key);
-                                if (key === "2") onViewDetail(record.key);
-                                if (key === "4") ondelete(record.key);
+                                console.log(key);
+
+                                if (key == "3") {
+                                    handleDelete(record); // Pass record to handleDelete
+                                }
+                                if (key == "1") onEdit(record.key);
+                                if (key == "2") onViewDetail(record.key);
                             },
                         }}
                         trigger={["click"]}
@@ -132,9 +154,6 @@ const AppointmentsTable = ({
                 pageSizeOptions: ["5", "10", "20", "50"],
                 responsive: true,
                 onChange: handlePageChange,
-            }}
-            scroll={{
-                y: 500, //
             }}
         />
     );

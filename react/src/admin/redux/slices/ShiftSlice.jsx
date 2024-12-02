@@ -121,7 +121,7 @@ export const shiftsSearch = createAsyncThunk(
                 return response.data;
             }
             const response = await axiosInstance.get(
-                `${endpoints.shifts.search}?shift_date=${data.search}&page=${data.page}&per_page=${data.per_page}`
+                `${endpoints.shifts.search}?shift_date[like]=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;
@@ -151,6 +151,26 @@ export const addShiftStaff = createAsyncThunk(
                 errors: error.response?.data?.errors || [],
             });
         }
+    }
+);
+export const getShiftClient = createAsyncThunk(
+    "shifts/getShiftClient",
+    async (per_page) => {
+        const queryParams = per_page ? `?per_page=${per_page}` : "";
+        const response = await axiosInstance.get(
+            `${endpoints.shifts.listClient}${queryParams}`
+        );
+        
+        return response.data;
+    }
+);
+export const getShiftbyidClient = createAsyncThunk(
+    "shifts/getShiftbyidClient",
+    async (data) => {
+        const response = await axiosInstance.get(
+            `${endpoints.shifts.DetailClient(data)}`
+        );
+        return response.data;
     }
 );
 const initialState = {
@@ -186,8 +206,6 @@ const shiftsSlice = createSlice({
                 state.error = null;
             })
             .addCase(shiftsAdd.fulfilled, (state, action) => {
-                
-                
                 state.shifts.data.push(action.payload.data);
                 state.loading = false;
             })
@@ -269,6 +287,30 @@ const shiftsSlice = createSlice({
             .addCase(addShiftStaff.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(getShiftClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getShiftClient.fulfilled, (state, action) => {
+                state.shifts = action.payload;
+                state.loading = false;
+            })
+            .addCase(getShiftClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(getShiftbyidClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getShiftbyidClient.fulfilled, (state, action) => {
+                state.shift = action.payload;
+                state.loading = false;
+            })
+            .addCase(getShiftbyidClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
     },
 });

@@ -12,7 +12,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
+import { Controller, useForm } from "react-hook-form";
 import ShiftTable from "../../modules/ShiftManagement/compoments/ShiftTable";
 import ShiftActions from "../../modules/ShiftManagement/compoments/ShiftActions";
 
@@ -46,7 +46,13 @@ const ShiftManagement = () => {
     useEffect(() => {
         getshifts();
     }, []);
-
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+        reset,
+    } = useForm();
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const {
@@ -255,12 +261,13 @@ const ShiftManagement = () => {
                     message: "Thêm nhân viên vào ca làm việc thành công",
                 });
                 handleCancel3();
+                reset();
             } else {
-              
                 api.error({
                     message: "Thêm nhân viên vào ca làm việc thất bại",
                     description: res.payload.errors.shift_id[0],
                 });
+                
             }
         } catch (error) {}
     };
@@ -350,6 +357,11 @@ const ShiftManagement = () => {
                 shift={shiftselected}
                 handleAddShift={onaddstaff}
                 error={error}
+                control={control}
+                handleSubmit={handleSubmit}
+                errors={errors}
+                setValue={setValue}
+                Controller={Controller}
             />
             <ShiftCalendar />
         </div>
