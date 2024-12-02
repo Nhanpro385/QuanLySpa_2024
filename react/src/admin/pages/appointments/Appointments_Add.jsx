@@ -373,6 +373,7 @@ const Appointment_Add = () => {
                                         onChange={(value) => {
                                             handleChangeDate(value);
                                         }}
+                                       
                                     />
                                 )}
                             />

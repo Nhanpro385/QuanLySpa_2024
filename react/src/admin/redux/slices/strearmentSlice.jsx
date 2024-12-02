@@ -120,7 +120,7 @@ export const StreatmentSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.streatments.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
+                `${endpoints.streatments.search}?shift_date=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;
@@ -140,6 +140,25 @@ export const StreatmentGetById = createAsyncThunk(
         try {
             const response = await axiosInstance.get(
                 endpoints.streatments.detail(id)
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi lấy thông tin lịch sử trị liệu",
+            });
+        }
+    }
+);
+export const StreatmentGetByCustomer = createAsyncThunk(
+    "streatment/getByCustomer",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.streatments.byCustomer(id)
             );
 
             return response.data;
@@ -223,6 +242,8 @@ const streatmentSlice = createSlice({
             })
             .addCase(StreatmentSearch.fulfilled, (state, action) => {
                 state.loading = false;
+                console.log("action.payload", action.payload);
+                
                 state.streatments = action.payload;
             })
             .addCase(StreatmentSearch.rejected, (state, action) => {
@@ -237,6 +258,17 @@ const streatmentSlice = createSlice({
                 state.streament = action.payload;
             })
             .addCase(StreatmentGetById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(StreatmentGetByCustomer.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(StreatmentGetByCustomer.fulfilled, (state, action) => {
+                state.loading = false;
+                state.streatments = action.payload;
+            })
+            .addCase(StreatmentGetByCustomer.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

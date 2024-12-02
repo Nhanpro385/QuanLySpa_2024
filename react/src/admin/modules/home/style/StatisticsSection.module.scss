@@ -1,0 +1,36 @@
+// style/StatisticsSection.module.scss
+.card {
+    height: 100%; // Đảm bảo thẻ chiếm đủ chiều cao
+}
+
+.ant-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; // Đảm bảo card tự điều chỉnh chiều cao
+}
+
+// Thêm vào cho các cột
+.row-equal-height {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .ant-col {
+        display: flex;
+        flex: 1 1 auto; // Để tất cả cột bằng nhau
+        height: auto;
+    }
+}
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ant-progress-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}

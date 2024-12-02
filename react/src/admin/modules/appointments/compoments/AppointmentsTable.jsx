@@ -76,6 +76,13 @@ const AppointmentsTable = ({
             title: "Trạng Thái",
             dataIndex: "status",
             key: "status",
+            render: (text, record) => {
+                if (record.status == "Đã hoàn thành.") {
+                    return <Tag color="green">Đã hoàn thành</Tag>;
+                } else {
+                    return <Tag color="red">Chưa hoàn thành</Tag>;
+                }
+            },
         },
         {
             title: "Chi Tiết",

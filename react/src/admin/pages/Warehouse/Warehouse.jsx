@@ -11,13 +11,66 @@ import {
     Table,
     Tag,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
+import usewarehouseAction from "../../modules/warehouse/hooks/usewarehouseaction";
+import dayjs from "dayjs";
 const Warehouse = () => {
     const navigate = useNavigate();
-    const [selectedFunction, setSelectedFunction] = useState("import"); // State lưu giá trị chức năng chọn
+    const [selectedFunction, setSelectedFunction] = useState("import");
+    const warehouse = useSelector((state) => state.warehouse);
+    const { warehouseGetExport, warehouseGetImport } = usewarehouseAction();
+    const [dataSource, setDataSource] = useState([]);
+    const [pagination, setPagination] = useState({});
+    const [searchquery, setSearchquery] = useState({
+        page: 1,
+        per_page: 5,
+        search: "",
+    });
+    useEffect(() => {
+        if (selectedFunction === "import") {
+            setDataSource([]);
+            warehouseGetImport();
+        } else {
+            setDataSource([]);
+            warehouseGetExport();
+        }
+    }, [selectedFunction]);
+    
 
+    useEffect(() => {
+        if (
+            selectedFunction == "import" &&
+            warehouse?.import?.data?.data?.length > 0
+        ) {
+            setDataSource(
+                warehouse.import.data.data.map((item, index) => ({
+                    key: index + 1,
+                    ...item,
+                }))
+            );
+            setPagination(warehouse.import.data.meta);
+        } else if (
+            selectedFunction == "export" &&
+            warehouse?.export?.data?.data?.length > 0
+        ) {
+            setDataSource(
+                warehouse.export.data.data.map((item, index) => ({
+                    key: index + 1,
+                    ...item,
+                }))
+            );
+            setPagination(warehouse.export.data.meta);
+        }
+    }, [warehouse]);
+
+    const handleFunctionChange = (value) => {
+        setSelectedFunction(value);
+    };
+    const handlePageChange = (page, pageSize) => {
+        setSearchquery({ ...searchquery, page, per_page: pageSize });
+    };
     const onClick = ({ key, record }) => {
         console.log(record);
 
@@ -38,19 +91,6 @@ const Warehouse = () => {
                 break;
         }
     };
-
-    const dataSource = [
-        {
-            key: "1",
-            name: "Mặt nạ y tế",
-            responsible: "Trần Phi Hào",
-            quantity: 3000,
-            total_price: "10.000.000",
-            import_date: "23/9/2024",
-            expiration_date: "23/9/2025",
-            status: <Tag color="green">Còn hàng</Tag>,
-        },
-    ];
 
     const items = [
         {
@@ -77,36 +117,34 @@ const Warehouse = () => {
             dataIndex: "key",
             key: "key",
         },
-        {
-            title: "Tên Sản Phẩm",
-            dataIndex: "name",
-            key: "name",
-        },
+
         {
             title: "Người chịu trách nhiệm",
-            dataIndex: "responsible",
-            key: "responsible",
+            dataIndex: ["created_by", "name"],
+            key: "created_by",
         },
         {
             title: "Số lượng",
-            dataIndex: "quantity",
+            dataIndex: ["details", "quantity"],
             key: "quantity",
+            render: (text, record) =>
+                record.details.reduce((a, b) => a + b.quantity_import, 0),
         },
         {
             title: "Tổng giá",
-            dataIndex: "total_price",
-            key: "total_price",
+            dataIndex: "total_amount",
+            key: "total_amount",
+            render: (text) => (
+                <span>{parseInt(text).toLocaleString()} VNĐ</span>
+            ),
         },
         {
             title: "Ngày nhập",
-            dataIndex: "import_date",
-            key: "import_date",
+            dataIndex: "created_at",
+            key: "created_at",
+            render: (text) => <span>{dayjs(text).format("DD/MM/YYYY")}</span>,
         },
-        {
-            title: "Ngày hết hạn",
-            dataIndex: "expiration_date",
-            key: "expiration_date",
-        },
+
         {
             title: "Trạng thái",
             dataIndex: "status",
@@ -150,7 +188,7 @@ const Warehouse = () => {
         } else {
             navigate("/admin/warehouse/export");
         }
-    }
+    };
     return (
         <Card title="Quản lý Kho hàng">
             <Row gutter={[16, 16]} className="mb-3" align="middle">
@@ -161,7 +199,7 @@ const Warehouse = () => {
                     <Radio.Group
                         block
                         options={options}
-                        onChange={(e) => setSelectedFunction(e.target.value)} // Cập nhật chức năng khi thay đổi
+                        onChange={(e) => handleFunctionChange(e.target.value)}
                         value={selectedFunction}
                         optionType="button"
                     />
@@ -183,7 +221,22 @@ const Warehouse = () => {
                     </Button>
                 </Col>
             </Row>
-            <Table dataSource={dataSource} columns={columns} />
+            <Table
+                dataSource={dataSource}
+                columns={columns}
+                loading={warehouse.import.loading || warehouse.export.loading}
+                pagination={{
+                    current: pagination.current_page,
+                    pageSize: pagination.per_page,
+                    total: pagination.total,
+                    showSizeChanger: true,
+                    showQuickJumper: true,
+                    showTotal: (total) => `Tổng ${total} mục`,
+                    pageSizeOptions: ["5", "10", "20", "50"],
+                    responsive: true,
+                    onChange: handlePageChange,
+                }}
+            />
         </Card>
     );
 };

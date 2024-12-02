@@ -136,6 +136,7 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/treatment-history/${id}`,
         delete: (id) => `${API_BASE_URL}/treatment-history/${id}`,
         search: `${API_BASE_URL}/treatment-history`,
+        byCustomer: (id) => `${API_BASE_URL}/customers/${id}/treatment-history`,
     },
     promotions: {
         list: `${API_BASE_URL}/promotion`,

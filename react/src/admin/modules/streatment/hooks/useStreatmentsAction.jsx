@@ -5,6 +5,7 @@ import {
     StreatmentUpdate,
     StreatmentSearch,
     StreatmentGetById,
+    StreatmentGetByCustomer,
 } from "@admin/redux/slices/strearmentSlice";
 import { useDispatch } from "react-redux";
 const useStreatmentsAction = () => {
@@ -34,7 +35,10 @@ const useStreatmentsAction = () => {
         const response = await dispatch(StreatmentGetById(id));
         return response;
     };
-
+    const getStreatmentByCustomer = async (id) => {
+        const response = await dispatch(StreatmentGetByCustomer(id));
+        return response;
+    };
     return {
         getStreatments,
         addStreatment,
@@ -42,6 +46,7 @@ const useStreatmentsAction = () => {
         updateStreatment,
         searchStreatment,
         getStreatmentById,
+        getStreatmentByCustomer,
     };
 };
 export default useStreatmentsAction;

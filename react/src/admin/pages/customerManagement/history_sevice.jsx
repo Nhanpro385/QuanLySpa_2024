@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Row,
@@ -10,93 +10,187 @@ import {
     Modal,
     Select,
     DatePicker,
+    List,
 } from "antd";
 import useModal from "../../modules/appointments/hooks/openmodal";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 import { useParams } from "react-router-dom";
-const serviceDetails = [
-    {
-        key: "1",
-        title: "Trị mụn",
-        customer: "Trịnh Trần Phương Tuấn",
-        staff: "Thiên An",
-        date: "2021-10-20",
-        price: "500.000đ",
-        note: "Khách hàng đã trả tiền",
-        feedback: "Khách hàng rất hài lòng với dịch vụ",
-        status: "Hoàn thành",
-        beforeImage: "https://via.placeholder.com/300x200",
-        afterImage: "https://via.placeholder.com/300x200",
-    },
-    {
-        key: "2",
-        title: "Nhuộm tóc",
-        customer: "Nguyễn Thị Hồng",
-        staff: "Hồng Phúc",
-        date: "2021-10-21",
-        price: "1.000.000đ",
-        note: "Khách hàng chưa trả tiền",
-        feedback: "Khách hàng không hài lòng với màu tóc",
-        status: "Đang thực hiện",
-        beforeImage: "https://via.placeholder.com/300x200",
-        afterImage: "https://via.placeholder.com/300x200",
-    },
-    {
-        key: "3",
-        title: "Cắt tóc",
-        customer: "Trần Thị Thu",
-        staff: "Hồng Phúc",
-        date: "2021-10-22",
-        price: "200.000đ",
-        note: "Khách hàng đã trả tiền",
-        feedback: "Khách hàng rất hài lòng với kiểu tóc",
-        status: "Hoàn thành",
-        beforeImage: "https://via.placeholder.com/300x200",
-        afterImage: "https://via.placeholder.com/300x200",
-    },
-    {
-        key: "4",
-        title: "Nhuộm tóc",
-        customer: "Nguyễn Thị Hồng",
-        staff: "Hồng Phúc",
-        date: "2021-10-21",
-        price: "1.000.000đ",
-        note: "Khách hàng chưa trả tiền",
-        feedback: "Khách hàng không hài lòng với màu tóc",
-        status: "Hủy",
-        beforeImage: "https://via.placeholder.com/300x200",
-        afterImage: "https://via.placeholder.com/300x200",
-    },
-    {
-        key: "5",
-        title: "Cắt tóc",
-        customer: "Trần Thị Thu",
-        staff: "Hồng Phúc",
-        date: "2021-10-22",
-        price: "200.000đ",
-        note: "Khách hàng đã trả tiền",
-        feedback: "Khách hàng rất hài lòng với kiểu tóc",
-        status: "Hoàn thành",
-        beforeImage: "https://via.placeholder.com/300x200",
-        afterImage: "https://via.placeholder.com/300x200",
-    },
-];
+// const serviceDetails = [
+//     {
+//         key: "1",
+//         title: "Trị mụn",
+//         customer: "Trịnh Trần Phương Tuấn",
+//         staff: "Thiên An",
+//         date: "2021-10-20",
+//         price: "500.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với dịch vụ",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "2",
+//         title: "Nhuộm tóc",
+//         customer: "Nguyễn Thị Hồng",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-21",
+//         price: "1.000.000đ",
+//         note: "Khách hàng chưa trả tiền",
+//         feedback: "Khách hàng không hài lòng với màu tóc",
+//         status: "Đang thực hiện",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "3",
+//         title: "Cắt tóc",
+//         customer: "Trần Thị Thu",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-22",
+//         price: "200.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với kiểu tóc",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "4",
+//         title: "Nhuộm tóc",
+//         customer: "Nguyễn Thị Hồng",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-21",
+//         price: "1.000.000đ",
+//         note: "Khách hàng chưa trả tiền",
+//         feedback: "Khách hàng không hài lòng với màu tóc",
+//         status: "Hủy",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "5",
+//         title: "Cắt tóc",
+//         customer: "Trần Thị Thu",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-22",
+//         price: "200.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với kiểu tóc",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
 
-function ServiceHistory() {
+//     {
+//         key: "6",
+//         title: "Cắt tóc",
+//         customer: "Trần Thị Thu",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-22",
+//         price: "200.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với kiểu tóc",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "7",
+//         title: "Cắt tóc",
+//         customer: "Trần Thị Thu",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-22",
+//         price: "200.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với kiểu tóc",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "8",
+//         title: "Cắt tóc",
+//         customer: "Trần Thị Thu",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-22",
+//         price: "200.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với kiểu tóc",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "9",
+//         title: "Cắt tóc",
+//         customer: "Trần Thị Thu",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-22",
+//         price: "200.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với kiểu tóc",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+//     {
+//         key: "10",
+//         title: "Cắt tóc",
+//         customer: "Trần Thị Thu",
+//         staff: "Hồng Phúc",
+//         date: "2021-10-22",
+//         price: "200.000đ",
+//         note: "Khách hàng đã trả tiền",
+//         feedback: "Khách hàng rất hài lòng với kiểu tóc",
+//         status: "Hoàn thành",
+//         beforeImage: "https://via.placeholder.com/300x200",
+//         afterImage: "https://via.placeholder.com/300x200",
+//     },
+// ];
+import { useSelector } from "react-redux";
+import useStreatmentsAction from "../../modules/streatment/hooks/useStreatmentsAction";
+import style from "../../modules/streatment/style/history_sevice.module.scss";
+const ServiceHistory = () => {
     const { id: idcustomer } = useParams();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const [selectedService, setSelectedService] = useState(null);
-
+    const { getStreatmentByCustomer } = useStreatmentsAction();
+    const [serviceDetails, setServiceDetails] = useState([]);
+    const streatments = useSelector((state) => state.streatments);
     const handleShowModal = (service) => {
         setSelectedService(service);
         showModal();
     };
+    useEffect(() => {
+        getStreatmentByCustomer(idcustomer);
+    }, [idcustomer]);
+    useEffect(() => {
+        if (streatments.streatments.data.length > 0) {
+            setServiceDetails(
+                streatments.streatments.data.map((service) => ({
+                    key: service.id,
+                    title: service.appointment.appointment_date,
+                    customer: service.customer.name,
+                    staff: service.staff.full_name,
+                    date: service.appointment.appointment_date,
+                    price: service.payment_total.toLocaleString() + " VNĐ",
+                    note: service.note,
+                    feedback: service.feedback,
+                    status:
+                        service.status === 1 ? "Hoàn thành" : "Chưa hoàn thành",
+                    beforeImage: service.image_before,
+                    afterImage: service.image_after,
+                }))
+            );
+        }
+    }, [streatments]);
 
     return (
         <div style={{ padding: "24px" }}>
-            <h1 className="text-center">Lịch sử dịch vụ</h1>
+            <h1 className="text-center">Lịch sử trị liệu của khách hàng</h1>
 
             <Card className="mb-3">
                 <Row gutter={[16, 16]}>
@@ -118,15 +212,27 @@ function ServiceHistory() {
                 </Row>
             </Card>
             {/* Service Cards Section */}
-            <Row gutter={[16, 16]}>
-                {serviceDetails.map((service) => (
-                    <Col span={8} key={service.key}>
+
+            <List
+                grid={{
+                    gutter: 16,
+                    column: 4,
+                }}
+                itemLayout="horizontal"
+                pagination={{
+                    position: "bottom",
+                    align: "center",
+                    pageSize: 8,
+                }}
+                dataSource={serviceDetails}
+                renderItem={(item) => (
+                    <List.Item className={style.antListItem}>
                         <Card
-                            title={service.title}
+                            title={item.title}
                             extra={
                                 <Button
                                     type="link"
-                                    onClick={() => handleShowModal(service)}
+                                    onClick={() => handleShowModal(item)}
                                 >
                                     Xem chi tiết
                                 </Button>
@@ -134,16 +240,17 @@ function ServiceHistory() {
                             bordered
                             hoverable
                         >
-                            <p>Khách hàng: {service.customer}</p>
-                            <p>Ngày thực hiện: {service.date}</p>
+                            <p>Khách hàng: {item.customer}</p>
+                            <p>Ngày thực hiện: {item.date}</p>
                             <p>
                                 Trạng thái:{" "}
-                                <Tag color="green">{service.status}</Tag>
+                                <Tag color="green">{item.status}</Tag>
                             </p>
                         </Card>
-                    </Col>
-                ))}
-            </Row>
+                    </List.Item>
+                )}
+            />
+
             {/* Modal for Service Details */}
             <Modal
                 title={selectedService?.title}
@@ -158,7 +265,10 @@ function ServiceHistory() {
                         <Col span={12}>
                             <h3 className="text-center">Ảnh trước</h3>
                             <Image
-                                src={selectedService.beforeImage}
+                                src={
+                                    "http://127.0.0.1:8000/storage/" +
+                                    selectedService.beforeImage
+                                }
                                 alt="Before"
                                 width="100%"
                                 height={200}
@@ -168,7 +278,10 @@ function ServiceHistory() {
                         <Col span={12}>
                             <h3 className="text-center">Ảnh sau</h3>
                             <Image
-                                src={selectedService.afterImage}
+                                src={
+                                    "http://127.0.0.1:8000/storage/" +
+                                    selectedService.afterImage
+                                }
                                 alt="After"
                                 width="100%"
                                 height={200}
@@ -214,6 +327,6 @@ function ServiceHistory() {
             </Modal>
         </div>
     );
-}
+};
 
 export default ServiceHistory;

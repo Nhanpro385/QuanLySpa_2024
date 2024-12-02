@@ -1,18 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import endpoints from "../../config/appConfig";
 import axiosInstance from "../../config/axiosInstance";
+import endpoints from "../../config/appConfig";
 import { logout } from "./authSlice";
 
+// Function to check role and logout if no role is found
 const checkRoleAndLogout = (dispatch) => {
     const userRole = localStorage.getItem("role");
-
     if (!userRole) {
         dispatch(logout());
     }
-
     return userRole;
 };
+
+// Async thunk for warehouse import
 export const warehouseImport = createAsyncThunk(
     "warehouse/import",
     async (data, { dispatch, rejectWithValue }) => {
@@ -31,14 +31,12 @@ export const warehouseImport = createAsyncThunk(
             );
             return response.data;
         } catch (error) {
-            return rejectWithValue({
-                status: error.response?.status || 500,
-                message: error.response?.data?.message || "Có lỗi xảy ra",
-                errors: error.response?.data?.errors || [],
-            });
+            return rejectWithValue(handleError(error));
         }
     }
 );
+
+// Async thunk for warehouse export
 export const warehouseExport = createAsyncThunk(
     "warehouse/export",
     async (data, { dispatch, rejectWithValue }) => {
@@ -57,31 +55,64 @@ export const warehouseExport = createAsyncThunk(
             );
             return response.data;
         } catch (error) {
-            return rejectWithValue({
-                status: error.response?.status || 500,
-                message: error.response?.data?.message || "Có lỗi xảy ra",
-                errors: error.response?.data?.errors || [],
-            });
+            return rejectWithValue(handleError(error));
         }
     }
 );
+
+// Async thunk for retrieving inventory
 export const getInventory = createAsyncThunk(
     "warehouse/inventory",
-    async () => {
-        const response = await axiosInstance.get(endpoints.warehouse.inventory);
-        return response.data;
-    }
-);
-export const getWarehouse = createAsyncThunk(
-    "warehouse/getwarehouse",
-    async () => {
-        const response = await axiosInstance.get(
-            endpoints.warehouse.getwarehouse
-        );
-        return response.data;
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.warehouse.inventory
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
     }
 );
 
+// Async thunk for retrieving warehouse import history
+export const getWarehouseImport = createAsyncThunk(
+    "warehouse/getwarehouseimport",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.warehouse.getImport
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+
+// Async thunk for retrieving warehouse export history
+export const getWarehouseExport = createAsyncThunk(
+    "warehouse/getwarehouseexport",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.warehouse.getExport
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+
+// Error handling utility
+const handleError = (error) => ({
+    status: error.response?.status || 500,
+    message: error.response?.data?.message || "Có lỗi xảy ra",
+    errors: error.response?.data?.errors || [],
+});
+
+// Initial state
 const initialState = {
     import: {
         loading: false,
@@ -94,19 +125,19 @@ const initialState = {
         data: null,
     },
     inventory: {
-        data: [],
-    },
-    warehouse: {
+        loading: false,
+        error: null,
         data: [],
     },
 };
 
+// Warehouse slice
 const warehouseSlice = createSlice({
     name: "warehouse",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder;
+        // Warehouse Import
         builder.addCase(warehouseImport.pending, (state) => {
             state.import.loading = true;
             state.import.error = null;
@@ -119,6 +150,8 @@ const warehouseSlice = createSlice({
             state.import.loading = false;
             state.import.error = action.payload;
         });
+
+        // Warehouse Export
         builder.addCase(warehouseExport.pending, (state) => {
             state.export.loading = true;
             state.export.error = null;
@@ -131,6 +164,8 @@ const warehouseSlice = createSlice({
             state.export.loading = false;
             state.export.error = action.payload;
         });
+
+        // Inventory
         builder.addCase(getInventory.pending, (state) => {
             state.inventory.loading = true;
             state.inventory.error = null;
@@ -143,17 +178,33 @@ const warehouseSlice = createSlice({
             state.inventory.loading = false;
             state.inventory.error = action.payload;
         });
-        builder.addCase(getWarehouse.pending, (state) => {
-            state.warehouse.loading = true;
-            state.warehouse.error = null;
+
+        // Warehouse Import History
+        builder.addCase(getWarehouseImport.pending, (state) => {
+            state.import.loading = true;
+            state.import.error = null;
         });
-        builder.addCase(getWarehouse.fulfilled, (state, action) => {
-            state.warehouse.loading = false;
-            state.warehouse.data = action.payload;
+        builder.addCase(getWarehouseImport.fulfilled, (state, action) => {
+            state.import.loading = false;
+            state.import.data = action.payload;
         });
-        builder.addCase(getWarehouse.rejected, (state, action) => {
+        builder.addCase(getWarehouseImport.rejected, (state, action) => {
             state.warehouse.loading = false;
             state.warehouse.error = action.payload;
+        });
+
+        // Warehouse Export History
+        builder.addCase(getWarehouseExport.pending, (state) => {
+            state.export.loading = true;
+            state.export.error = null;
+        });
+        builder.addCase(getWarehouseExport.fulfilled, (state, action) => {
+            state.export.loading = false;
+            state.export.data = action.payload;
+        });
+        builder.addCase(getWarehouseExport.rejected, (state, action) => {
+            state.export.loading = false;
+            state.export.error = action.payload;
         });
     },
 });

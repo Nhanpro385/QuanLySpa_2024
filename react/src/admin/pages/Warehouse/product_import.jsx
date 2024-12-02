@@ -16,8 +16,10 @@ import useproductActions from "../../modules/product/hooks/useProduct";
 import useSupplierActions from "../../modules/SuppliersManagement/hooks/useSupplierActions";
 import usewarehouseAction from "../../modules/warehouse/hooks/usewarehouseaction";
 import { useSelector } from "react-redux";
-
+import debounce from "lodash/debounce";
+import { useNavigate } from "react-router-dom";
 const WarehouseImport = () => {
+    const navigator = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [supplierData, setSupplierData] = useState([]);
@@ -25,17 +27,21 @@ const WarehouseImport = () => {
     const [note, setNote] = useState("");
     const product = useSelector((state) => state.products);
     const supplier = useSelector((state) => state.supplier);
-    const warehouse = useSelector((state) => state.warehouse);
-    const { getproduct } = useproductActions();
-    const { getSupplier } = useSupplierActions();
-    const { importWarehouse } = usewarehouseAction();
-    const [idStaff, setIdStaff] = useState(() => {
-        const idStaff = JSON.parse(localStorage.getItem("idStaff"));
-        return idStaff;
+    const [searchSupplierQuery, setsearchSupplierQuery] = useState({
+        page: 1,
+        per_page: 100,
+        search: "",
     });
-    useEffect(() => {
-        console.log(idStaff);
-    }, [idStaff]);
+    const [searchProductQuery, setsearchProductQuery] = useState({
+        page: 1,
+        per_page: 100,
+        search: "",
+    });
+    const warehouse = useSelector((state) => state.warehouse);
+    const { getproduct, searchproduct } = useproductActions();
+    const { getSupplier, searchSupplier } = useSupplierActions();
+    const { warehouseImportAction } = usewarehouseAction();
+
     useEffect(() => {
         getproduct(100);
         getSupplier(100);
@@ -54,6 +60,7 @@ const WarehouseImport = () => {
 
     useEffect(() => {
         if (supplier.Suppliers.data && supplier.Suppliers.data.length > 0) {
+            console.log(supplier);
             const data = supplier.Suppliers.data.map((item, index) => ({
                 key: index + 1,
                 id: item.id,
@@ -72,16 +79,19 @@ const WarehouseImport = () => {
                 name: "",
                 quantity: 1,
                 cost: 0,
+                cost_olded: 0,
+                quantity_olded: 0,
                 price: 0,
                 total: 0,
             },
         ]);
     };
-
+    
     const updateProduct = (index, fieldValues) => {
         const updatedProducts = [...products];
         const { id, name, quantity, cost } = fieldValues;
-
+        
+        
         const existingProductIndex = products.findIndex(
             (product) => product.id === id
         );
@@ -140,11 +150,10 @@ const WarehouseImport = () => {
     const submitProduct = async () => {
         try {
             if (!validateForm()) return;
-            console.log(localStorage.getItem("idStaff"));
-            
+
             const payload = {
                 supplier_id: selectedSupplier,
-                staff_id: idStaff,
+
                 total_amount: products.reduce(
                     (acc, curr) => acc + curr.total,
                     0
@@ -157,13 +166,38 @@ const WarehouseImport = () => {
                     unit_price: product.price,
                 })),
             };
-            const response = await importWarehouse(payload);
-            console.log(response);
-            
+            const response = await warehouseImportAction(payload);
+            if (response.meta.requestStatus === "fulfilled") {
+                message.success("Nhập hàng thành công");
+                setProducts([]);
+                setSelectedSupplier(null);
+                setNote("");
+            }
         } catch (error) {
             console.log(error);
         }
     };
+    const searchSupplierDebounce = debounce((value) => {
+        setsearchSupplierQuery({ ...searchSupplierQuery, search: value });
+    }, 300);
+    const searchProductDebounce = debounce((value) => {
+        setsearchProductQuery({ ...searchProductQuery, search: value });
+    }, 300);
+    useEffect(() => {
+        if (searchProductQuery.search !== "") {
+            searchproduct(searchProductQuery);
+        } else {
+            getproduct(100);
+        }
+    }, [searchProductQuery]);
+
+    useEffect(() => {
+        if (searchSupplierQuery.search !== "") {
+            searchSupplier(searchSupplierQuery);
+        } else {
+            getSupplier(100);
+        }
+    }, [searchSupplierQuery]);
 
     const columns = [
         { title: "STT", dataIndex: "key", key: "key" },
@@ -189,6 +223,7 @@ const WarehouseImport = () => {
                             quantity: 1,
                         })
                     }
+                    onSearch={searchProductDebounce}
                 />
             ),
         },
@@ -263,7 +298,17 @@ const WarehouseImport = () => {
     return (
         <div className="warehouse-import">
             <h1 className="text-center">Nhập hàng</h1>
-            <Card title="Nhập sản phẩm : #123456789">
+            <Card
+                title="Nhập sản phẩm : #123456789"
+                extra={
+                    <Button
+                        type="primary"
+                        onClick={() => navigator("/admin/warehouse")}
+                    >
+                        quay lại
+                    </Button>
+                }
+            >
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
                         <Col xl={16} md={16} sm={24} xs={24}>
@@ -280,8 +325,13 @@ const WarehouseImport = () => {
                                                         label: item.name,
                                                     })
                                                 )}
-                                                onChange={(value) =>
-                                                    setSelectedSupplier(value)
+                                                showSearch
+                                                onChange={(value) => {
+                                                    setSelectedSupplier(value);
+                                                }}
+                                                filterOption={false}
+                                                onSearch={
+                                                    searchSupplierDebounce
                                                 }
                                             />
                                         </Form.Item>
@@ -306,13 +356,6 @@ const WarehouseImport = () => {
                         </Col>
                         <Col xl={8} md={8} sm={24} xs={24}>
                             <Card className="bg-light">
-                                {/* <Form.Item label="Nhân viên nhập">
-                                    <Input
-                                        size="large"
-                                        value={"Trần Phi Hào"}
-                                        disabled
-                                    />
-                                </Form.Item> */}
                                 <Form.Item label="Mô tả">
                                     <Input.TextArea
                                         value={note}
