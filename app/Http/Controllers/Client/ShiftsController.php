@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\Shift;
 // use App\Http\Requests\Admin\Shifts\StoreShiftRequest;
+use Illuminate\Support\Facades\DB;
 // use App\Http\Requests\Admin\Shifts\UpdateShiftRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -29,8 +30,10 @@ class ShiftsController extends Controller
     
             $query = Shift::query();
     
-            // Bước 1: Áp dụng sắp xếp trước
-            $query->orderByRaw("
+            // Loại bỏ các shift có status = 0
+            $subQuery = DB::table('appointments') ->select('appointments.shift_id', DB::raw('COUNT(*) AS appointment_count')) ->join('shifts', 'appointments.shift_id', '=', 'shifts.id') ->whereNull('appointments.deleted_at') ->whereRaw('DATE(appointments.appointment_date) = shifts.shift_date') ->whereRaw('TIME(appointments.start_time) >= TIME(shifts.start_time)') ->whereRaw('TIME(appointments.start_time) <= TIME(shifts.end_time)') ->groupBy('appointments.shift_id'); 
+            $query = Shift::query() ->leftJoinSub($subQuery, 'appointment_counts', function($join) { $join->on('shifts.id', '=', 'appointment_counts.shift_id'); }) ->select('shifts.*', DB::raw('IFNULL(appointment_counts.appointment_count, 0) AS appointment_count')) ->where('shifts.status', '!=', 0) ->where(function($query) { $query->whereNull('appointment_counts.appointment_count') ->orWhereColumn('appointment_counts.appointment_count', '<', 'shifts.max_customers'); });  
+             $query->orderByRaw("
                 CASE
                     WHEN shift_date >= CURDATE() THEN 0 -- Ưu tiên ngày tương lai và hôm nay
                     ELSE 1 -- Ngày quá khứ
@@ -62,6 +65,7 @@ class ShiftsController extends Controller
                 [$sortBy, $sortOrder] = $sorts;
                 $query->orderBy($sortBy, $sortOrder);
             }
+    
             // Phân trang kết quả
             $shifts = $query->paginate($perPage);
     

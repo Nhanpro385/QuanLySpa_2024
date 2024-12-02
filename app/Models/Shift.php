@@ -76,4 +76,5 @@ class Shift extends Model
     return $this->hasMany(Appointment::class, 'shift_id', 'id');
 }
 
+
 }

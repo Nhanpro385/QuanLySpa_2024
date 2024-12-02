@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Shifts\StoreShiftRequest;
 use App\Http\Requests\Admin\Shifts\UpdateShiftRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Resources\Admin\Shift\ShiftResource;
 use App\Http\Resources\Admin\Shift\ShiftCollection;
@@ -28,7 +29,10 @@ class ShiftsController extends Controller
             $perPage = $request->query('per_page', 5);
     
             $query = Shift::query();
-    
+            $subQuery = DB::table('appointments') ->select('appointments.shift_id', DB::raw('COUNT(*) AS appointment_count')) ->join('shifts', 'appointments.shift_id', '=', 'shifts.id') ->whereNull('appointments.deleted_at') ->whereRaw('DATE(appointments.appointment_date) = shifts.shift_date') ->whereRaw('TIME(appointments.start_time) >= TIME(shifts.start_time)') ->whereRaw('TIME(appointments.start_time) <= TIME(shifts.end_time)') ->groupBy('appointments.shift_id');
+            $query = Shift::query() ->leftJoinSub($subQuery, 'appointment_counts', function($join) { $join->on('shifts.id', '=', 'appointment_counts.shift_id'); }) ->select('shifts.*', DB::raw('IFNULL(appointment_counts.appointment_count, 0) AS appointment_count'));
+          
+          
             // Bước 1: Áp dụng sắp xếp trước
             $query->orderByRaw("
                 CASE
