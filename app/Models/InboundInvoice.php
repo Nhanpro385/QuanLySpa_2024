@@ -38,7 +38,11 @@ class InboundInvoice extends Model
             }
         });
     }
-    
+    public function staff()
+{
+    return $this->belongsTo(User::class, 'staff_id', 'id');
+}
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

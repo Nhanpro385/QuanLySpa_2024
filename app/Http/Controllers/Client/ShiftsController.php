@@ -29,7 +29,17 @@ class ShiftsController extends Controller
     
             $query = Shift::query();
     
-            // Áp dụng các bộ lọc thông thường
+            // Bước 1: Áp dụng sắp xếp trước
+            $query->orderByRaw("
+                CASE
+                    WHEN shift_date >= CURDATE() THEN 0 -- Ưu tiên ngày tương lai và hôm nay
+                    ELSE 1 -- Ngày quá khứ
+                END ASC,
+                ABS(DATEDIFF(shift_date, CURDATE())) ASC, -- Khoảng cách gần nhất
+                start_time ASC -- Thời gian bắt đầu
+            ");
+    
+            // Bước 2: Áp dụng các bộ lọc thông thường
             if (!empty($filters)) {
                 foreach ($filters as $filter) {
                     [$column, $operator, $value] = $filter;
@@ -37,7 +47,7 @@ class ShiftsController extends Controller
                 }
             }
     
-            // Áp dụng các bộ lọc liên quan
+            // Bước 3: Áp dụng các bộ lọc liên quan
             if (!empty($relations)) {
                 foreach ($relations as $relationFilter) {
                     [$relation, $column, $operator, $value] = $relationFilter;
@@ -47,21 +57,11 @@ class ShiftsController extends Controller
                 }
             }
     
-            // Lọc bỏ các ngày trong quá khứ
-            $query->where('shift_date', '>=', now()->toDateString());
-    
-            // Áp dụng sắp xếp theo query đã đề cập
-            $query->orderByRaw("
-                ABS(DATEDIFF(shift_date, CURDATE())) ASC, -- Khoảng cách gần nhất
-                start_time ASC -- Thời gian bắt đầu
-            ");
-    
-            // Áp dụng sắp xếp tùy chọn (nếu có)
+            // Bước 4: Áp dụng sắp xếp tùy chọn từ query params (nếu có)
             if (!empty($sorts)) {
                 [$sortBy, $sortOrder] = $sorts;
                 $query->orderBy($sortBy, $sortOrder);
             }
-    
             // Phân trang kết quả
             $shifts = $query->paginate($perPage);
     
