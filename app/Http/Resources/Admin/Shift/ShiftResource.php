@@ -34,9 +34,10 @@ class ShiftResource extends JsonResource
                 ];
             }),
             // Đếm số lượng appointments trong khoảng thời gian của shift
-            'appointment_count' => $this->appointments()
-                ->whereBetween('start_time', [$this->start_time, $this->end_time])
-                ->count(),
+            'appointment_count' => $this->appointment_count,
+        
+        
+        
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
