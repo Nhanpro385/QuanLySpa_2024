@@ -136,6 +136,7 @@ class AppointmentController extends Controller
             foreach ($staffIds as $staffId) {
                 $conflictingAppointment = Appointment::where('shift_id', $validateData['shift_id'])
                     ->where('appointment_date', $validateData['appointment_date'])
+                    ->whereIn('status', [1, 2])
                     ->whereHas('users', function ($query) use ($staffId) {
                         $query->where('staff_id', $staffId);
                     })
@@ -440,6 +441,7 @@ class AppointmentController extends Controller
             foreach ($staffIds as $staffId) {
                 $conflictingAppointment = Appointment::where('shift_id', $appointment->shift_id)
                     ->where('appointment_date', $appointment['appointment_date'])
+                    ->whereIn('status', [1, 2])
                     ->where('id', '!=', $id) // Loại trừ lịch hẹn hiện tại
                     ->whereHas('users', function ($query) use ($staffId) {
                         $query->where('staff_id', $staffId);
