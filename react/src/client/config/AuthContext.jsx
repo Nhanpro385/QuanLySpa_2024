@@ -11,40 +11,48 @@ export const AuthProvider = ({ children }) => {
         storedUser ? JSON.parse(storedUser) : null
     ); // Lấy user từ localStorage nếu có
     const [isLoggedIn, setIsLoggedIn] = useState(
-        !!localStorage.getItem("token")
+        !!localStorage.getItem("tokenClient")
     );
+
     const { authGetmeClient } = useAuthActions();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        
-        if (token && !user) {
-            authGetmeClient()
-                .then((userData) => {
-                    setUser(userData.payload.data);
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify({
-                            name: userData.payload.data.full_name,
-                            id: userData.payload.data.id,
-                            phone: userData.payload.data.phone,
-                            email: userData.payload.data.email,
-                            
-                        })
-                    );
-                })
-                .catch((error) => {
-                    console.error("Error fetching user data:", error);
-                    // Nếu lỗi (ví dụ token không hợp lệ), thực hiện logout
-                    logout();
-                });
+        const token = localStorage.getItem("tokenClient");
+
+        // Kiểm tra nếu không có token
+        if (!token) {
+            console.log("Chưa đăng nhập");
+            return;
         }
-    }, [user, authGetmeClient]);
+
+        // Nếu có token, gọi API để lấy thông tin người dùng
+        authGetmeClient()
+            .then((userData) => {
+                console.log("userData", userData);
+
+                // Lưu thông tin người dùng vào state và localStorage
+                const userInfo = {
+                    name: userData?.payload?.data?.full_name,
+                    id: userData?.payload?.data?.id,
+                    phone: userData?.payload?.data?.phone,
+                    email: userData?.payload?.data?.email,
+                };
+
+                setUser(userInfo);
+                localStorage.setItem("user", JSON.stringify(userInfo));
+            })
+            .catch((error) => {
+                console.error("Error fetching user data:", error);
+
+                // Nếu lỗi (ví dụ token không hợp lệ), thực hiện logout
+                logout();
+            });
+    }, []);
 
     // Theo dõi sự thay đổi của token
     useEffect(() => {
         const interval = setInterval(() => {
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("tokenClient");
             if (!token) {
                 logout(); // Token bị xóa hoặc không hợp lệ, tự động logout
             }
@@ -56,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (token) => {
         try {
             setIsLoggedIn(true);
-            localStorage.setItem("token", token);
+            localStorage.setItem("tokenClient", token);
 
             // Lấy thông tin user sau khi đăng nhập thành công
             const user = await authGetmeClient();
@@ -76,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setUser(null);
         setIsLoggedIn(false);
-        localStorage.removeItem("token"); // Xóa token khi đăng xuất
+        localStorage.removeItem("tokenClient"); // Xóa token khi đăng xuất
         localStorage.removeItem("user"); // Xóa thông tin user khi đăng xuất
     };
 

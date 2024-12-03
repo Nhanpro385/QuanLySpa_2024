@@ -9,7 +9,7 @@ export const loginAdmin = createAsyncThunk(
             const response = await axios.post(endpoints.Auth.login, data);
 
             if (response.data.access_token) {
-                localStorage.setItem("token", response.data.access_token);
+                localStorage.setItem("tokenAdmin", response.data.access_token);
             }
             return response.data;
         } catch (error) {
@@ -92,7 +92,7 @@ export const loginClient = createAsyncThunk(
         try {
             const response = await axios.post(endpoints.AuthClient.login, data);
             if (response.data.access_token) {
-                localStorage.setItem("token", response.data.access_token);
+                localStorage.setItem("tokenClient", response.data.access_token);
             }
             return response.data;
         } catch (error) {
@@ -113,7 +113,7 @@ export const registerClient = createAsyncThunk(
                 data
             );
             if (response.data.access_token) {
-                localStorage.setItem("token", response.data.access_token);
+                localStorage.setItem("tokenClient", response.data.access_token);
             }
             return response.data;
         } catch (error) {
@@ -155,6 +155,8 @@ export const forgotpasswordClient = createAsyncThunk(
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
+                error: error.response?.data?.error || "Có lỗi xảy ra",
+                errors: error.response?.data?.errors || "Có lỗi xảy ra",
             });
         }
     }
@@ -211,7 +213,7 @@ const authSlice = createSlice({
         logout: (state) => {
             state.token = null;
             state.user = null;
-            localStorage.removeItem("token");
+            localStorage.removeItem("tokenAdmin");
         },
     },
     extraReducers: (builder) => {

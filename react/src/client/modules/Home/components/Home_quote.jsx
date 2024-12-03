@@ -13,37 +13,46 @@ const statistics = [
 const Home_quote = () => {
     return (
         <section className={styles.container}>
-            <Row justify={"center"} align={"middle"}>
-                <Col span={18}>
-                    <p className={styles.quoteText}>
-                        " Thấu hiểu những lo lắng này, Sakura Spa đã ra đời với
-                        dịch vụ điều trị mụn <br />
-                        chuẩn y khoa, cung cấp những giải pháp thiết thực giúp
-                        khách hàng vượt qua những khó khăn trong quá trình điều
-                        trị mụn "
-                    </p>
-                    <Row gutter={[16, 16]}>
-                        {statistics.map((item) => (
-                            <Col
-                                xl={6}
-                                lg={6}
-                                md={12}
-                                sm={12}
-                                xs={24}
-                                key={item.id}
-                            >
-                                <div className={styles.statisticItem}>
-                                    <h1>{item.number}</h1>
-                                    <p>{item.description}</p>
-                                </div>
-                            </Col>
-                        ))}
-                    </Row>
-                </Col>
-                <Col xl={6} lg={6} md={0} sm={0} xs={0} className={styles.imgContainer}>
-                    <img src={anh5} alt="tori" />
-                </Col>
-            </Row>
+            <div className="container p-5">
+                <Row justify={"center"} align={"middle"}>
+                    <Col span={18}>
+                        <p className={styles.quoteText}>
+                            " Thấu hiểu những lo lắng này, Sakura Spa đã ra đời
+                            với dịch vụ điều trị mụn <br />
+                            chuẩn y khoa, cung cấp những giải pháp thiết thực
+                            giúp khách hàng vượt qua những khó khăn trong quá
+                            trình điều trị mụn "
+                        </p>
+                        <Row gutter={[16, 16]}>
+                            {statistics.map((item) => (
+                                <Col
+                                    xl={6}
+                                    lg={6}
+                                    md={12}
+                                    sm={12}
+                                    xs={24}
+                                    key={item.id}
+                                >
+                                    <div className={styles.statisticItem}>
+                                        <h1>{item.number}</h1>
+                                        <p>{item.description}</p>
+                                    </div>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Col>
+                    <Col
+                        xl={6}
+                        lg={6}
+                        md={0}
+                        sm={0}
+                        xs={0}
+                        className={styles.imgContainer}
+                    >
+                        <img src={anh5} alt="tori" />
+                    </Col>
+                </Row>
+            </div>
         </section>
     );
 };

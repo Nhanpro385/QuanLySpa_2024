@@ -7,7 +7,7 @@ import icons from "../../../assets/images/iconlogo.png";
 
 const Home_about = () => {
     return (
-        <section className={styles.section}>
+        <section className="container p-5">
             <Divider orientation="left">
                 <h1>Giới thiệu về Sakura Spa</h1>
             </Divider>

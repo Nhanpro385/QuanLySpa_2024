@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "./appConfig";
 import { notification } from "antd";
-
+import { useLocation } from "react-router-dom";
 
 // Lấy CSRF token từ thẻ meta
 const csrfToken = document
@@ -20,12 +20,20 @@ const axiosInstance = axios.create({
 // Interceptor để thêm token vào mỗi yêu cầu
 axiosInstance.interceptors.request.use(
     (config) => {
-        const accessToken = localStorage.getItem("token");
-
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+        const currentPath = window.location.pathname;
+        if (currentPath.startsWith("/admin")) {
+            const accessToken = localStorage.getItem("tokenAdmin");
+            if (accessToken) {
+                config.headers.Authorization = `Bearer ${accessToken}`;
+            }
+            return config;
+        } else {
+            const accessToken = localStorage.getItem("tokenClient");
+            if (accessToken) {
+                config.headers.Authorization = `Bearer ${accessToken}`;
+            }
+            return config;
         }
-        return config;
     },
     (error) => Promise.reject(error)
 );
@@ -48,13 +56,14 @@ axiosInstance.interceptors.response.use(
                     message: "Phiên đăng nhập hết hạn",
                     description: "Vui lòng đăng nhập lại",
                 });
-                localStorage.removeItem("token");
+                localStorage.removeItem("tokenAdmin");
             } else {
                 notification.error({
                     message: "Phiên đăng nhập hết hạn",
                     description: "Vui lòng đăng nhập lại",
                 });
-                localStorage.removeItem("token");
+                localStorage.removeItem("tokenClient");
+                
             }
         }
         return Promise.reject(error);

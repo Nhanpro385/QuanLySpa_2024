@@ -18,6 +18,9 @@ export const HomeContent = () => {
             <Home_about />
             <Home_quote />
 
+            <Home_consultation_reception />
+
+            <Home_service />
             <section style={{ marginTop: "36px" }}>
                 <h1 className="text-center">
                     Sakura Spa Tiên Phong “Trị Mụn Chuẩn Y Khoa” <br />
@@ -28,11 +31,9 @@ export const HomeContent = () => {
                     bỏ rào cản khi điều trị mụn
                 </p>
             </section>
-            <Home_service />
             <Home_doctor />
-            <Home_facilities />
-            <Home_consultation_reception />
-            <Home_Blog />
+            {/* <Home_facilities /> */}
+            {/* <Home_Blog /> */}
         </div>
     );
 };

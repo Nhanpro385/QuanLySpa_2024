@@ -11,8 +11,8 @@ const { Header } = Layout;
 const HeaderComponents = () => {
     const [visible, setVisible] = useState(false);
     const navigate = useNavigate();
-    const { isLoggedIn, logout, user } = useAuth();
-
+    const { isLoggedIn, logout } = useAuth();
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
     const AppMenu = ({ isInline = false }) => {
         return (
             <Menu
@@ -143,7 +143,9 @@ const HeaderComponents = () => {
                         ? {
                               label: (
                                   <span>
-                                      Xin chào, {user?.full_name}
+                                      Xin chào, <strong
+                                        style={{ color: "#E05265" }}
+                                      >{user?.name}</strong>
                                       <UserOutlined
                                           style={{ marginLeft: "10px" }}
                                       />

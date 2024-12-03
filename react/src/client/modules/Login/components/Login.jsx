@@ -8,7 +8,7 @@ import { useAuth } from "../../../config/AuthContext";
 
 const Login = () => {
     const [api, contextHolder] = notification.useNotification();
-    const { authLoginClient, authGetmeAdmin } = useAuthActions();
+    const { authLoginClient } = useAuthActions();
     const navigate = useNavigate();
     const {
         control,
@@ -17,9 +17,7 @@ const Login = () => {
         formState: { errors },
     } = useForm();
     const { login } = useAuth();
-    useEffect(() => {
-        authGetmeAdmin();
-    }, []);
+
     const onSubmit = async (data) => {
         try {
             const response = await authLoginClient(data.email, data.password);

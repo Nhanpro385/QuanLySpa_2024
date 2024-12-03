@@ -85,52 +85,57 @@ const settings = {
 const Home_service = () => {
     return (
         <section className={styles.container}>
-            <Divider className={styles.divider} orientation="left">
-                <h1>Dịch vụ nổi bật</h1>
-            </Divider>
-            <div className="container">
-                <Slider {...settings}>
-                    {listService.map((item) => (
-                        <Card
-                            key={item.id}
-                            title={item.name}
-                            extra={<Button type="primary">Xem</Button>}
-                            className={styles.card}
+            <div className="container p-5">
+                <Divider className={styles.divider} orientation="left">
+                    <h1>Dịch vụ nổi bật</h1>
+                </Divider>
+                <div className="container">
+                    <Slider {...settings}>
+                        {listService.map((item) => (
+                            <Card
+                                key={item.id}
+                                title={item.name}
+                                extra={<Button type="primary">Xem</Button>}
+                                className={styles.card}
+                            >
+                                <img
+                                    className={styles.cardImage}
+                                    src={anh4}
+                                    alt="service"
+                                />
+                                <p className={styles.cardContent}>
+                                    {item.description[0]}
+                                </p>
+                                <Tooltip
+                                    trigger="click"
+                                    title={`Thời gian điều trị: ${item.time}`}
+                                >
+                                    <Button className={styles.tooltipButton}>
+                                        <FieldTimeOutlined />
+                                        <strong>Thời gian điều trị</strong>
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip
+                                    trigger="click"
+                                    title={`Chi phí dự kiến: ${item.price}`}
+                                >
+                                    <Button className={styles.tooltipButton}>
+                                        <MoneyCollectFilled />
+                                        <strong>Chi phí dự kiến</strong>
+                                    </Button>
+                                </Tooltip>
+                            </Card>
+                        ))}
+                    </Slider>
+                    <Row justify={"center"} align={"middle"}>
+                        <Button
+                            type="primary"
+                            className={styles.showMoreButton}
                         >
-                            <img
-                                className={styles.cardImage}
-                                src={anh4}
-                                alt="service"
-                            />
-                            <p className={styles.cardContent}>
-                                {item.description[0]}
-                            </p>
-                            <Tooltip
-                                trigger="click"
-                                title={`Thời gian điều trị: ${item.time}`}
-                            >
-                                <Button className={styles.tooltipButton}>
-                                    <FieldTimeOutlined />
-                                    <strong>Thời gian điều trị</strong>
-                                </Button>
-                            </Tooltip>
-                            <Tooltip
-                                trigger="click"
-                                title={`Chi phí dự kiến: ${item.price}`}
-                            >
-                                <Button className={styles.tooltipButton}>
-                                    <MoneyCollectFilled />
-                                    <strong>Chi phí dự kiến</strong>
-                                </Button>
-                            </Tooltip>
-                        </Card>
-                    ))}
-                </Slider>
-                <Row justify={"center"} align={"middle"}>
-                    <Button type="primary" className={styles.showMoreButton}>
-                        Xem thêm dịch vụ
-                    </Button>
-                </Row>
+                            Xem thêm dịch vụ
+                        </Button>
+                    </Row>
+                </div>
             </div>
         </section>
     );

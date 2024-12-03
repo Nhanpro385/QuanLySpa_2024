@@ -11,7 +11,7 @@ import {
 } from "antd";
 
 import { useForm, Controller } from "react-hook-form";
-import "../styles/Home_consultation_reception.scss"; // Import SCSS
+import style from "../Styles/Home_consultation_reception.module.scss"; // Import SCSS
 import { createMeeting, VIDEOSDK_TOKEN } from "../../VideoCall/services/API";
 const { Meta } = Card;
 const options = [
@@ -118,120 +118,124 @@ const Home_consultation_reception = () => {
     };
 
     return (
-        <section className="consultation-section">
-            <h1 className="section-title">
-                “các vấn đề về mụn mà bạn đang gặp phải”
-            </h1>
-            {contextHolder}
-            <Row gutter={[16, 16]}>
-                <Col xs={24} lg={12}>
-                    <Row gutter={[16, 16]}>
-                        {options.map((item, index) => (
-                            <Col xs={12} md={8} key={index}>
-                                <Card
-                                    hoverable
-                                    cover={
-                                        <Image
-                                            alt="example"
-                                            src={item.url}
-                                            height={200}
-                                        />
-                                    }
-                                >
-                                    <Meta title={item.label} />
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
-                </Col>
-                <Col xs={24} lg={12} className="form-container">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <h3 className="form-title">
-                            bạn đang gặp những vấn đề nào về mụn để tư vấn qua
-                            video call với chuyên gia?
-                        </h3>
-                        <p className="form-description">
-                            Đừng để những mụn làm bạn mất tự tin. Hãy liên hệ
-                            với Sakura Spa để khắc phục ngay.
-                        </p>
-
+        <section className={style.consultationsection}>
+            <div className="container pt-5 pb-5">
+                <h1 className={style.sectiontitle}>
+                    “các vấn đề về mụn mà bạn đang gặp phải”
+                </h1>
+                {contextHolder}
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={12}>
                         <Row gutter={[16, 16]}>
-                            <Col span={24}>
-                                <Controller
-                                    name="issues"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Checkbox.Group {...field}>
-                                            <Row gutter={[16, 16]}>
-                                                {options.map((item) => (
-                                                    <Col
-                                                        xxl={8}
-                                                        xl={12}
-                                                        key={item.value}
-                                                    >
-                                                        <Checkbox
-                                                            key={item.value}
-                                                            value={item.label}
-                                                        >
-                                                            {item.label}
-                                                        </Checkbox>
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                        </Checkbox.Group>
-                                    )}
-                                />
-                                {errors.issues && (
-                                    <p
-                                        className="error-text"
-                                        style={{
-                                            color: "red",
-                                        }}
+                            {options.map((item, index) => (
+                                <Col xs={12} md={8} key={index}>
+                                    <Card
+                                        hoverable
+                                        cover={
+                                            <Image
+                                                alt="example"
+                                                src={item.url}
+                                                height={200}
+                                            />
+                                        }
                                     >
-                                        Vui lòng chọn ít nhất 1 vấn đề
-                                    </p>
-                                )}
-                            </Col>
-                            <Col span={24}>
-                                <Controller
-                                    name="description"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Input.TextArea
-                                            {...field}
-                                            size="large"
-                                            placeholder="Mô tả vấn đề của bạn *"
-                                        />
-                                    )}
-                                />
-                                {errors.description && (
-                                    <p
-                                        className="error-text"
-                                        style={{
-                                            color: "red",
-                                        }}
-                                    >
-                                        Mô tả vấn đề của bạn là bắt buộc
-                                    </p>
-                                )}
-                            </Col>
+                                        <Meta title={item.label} />
+                                    </Card>
+                                </Col>
+                            ))}
                         </Row>
+                    </Col>
+                    <Col xs={24} lg={12} className={style.formcontainer}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <h3 className={style.formtitle}>
+                                bạn đang gặp những vấn đề nào về mụn để tư vấn
+                                qua video call với chuyên gia?
+                            </h3>
+                            <p className={style.formdescription}>
+                                Đừng để những mụn làm bạn mất tự tin. Hãy liên
+                                hệ với Sakura Spa để khắc phục ngay.
+                            </p>
 
-                        <Button
-                            block
-                            type="primary"
-                            htmlType="submit"
-                            className="submit-button mt-3"
-                            loading={isLoading} // Hiển thị loading
-                            {...(isLoggedIn ? {} : { disabled: true })}
-                        >
-                            {isLoggedIn
-                                ? "Gửi yêu cầu"
-                                : "Đăng nhập để gửi yêu cầu"}
-                        </Button>
-                    </form>
-                </Col>
-            </Row>
+                            <Row gutter={[16, 16]}>
+                                <Col span={24}>
+                                    <Controller
+                                        name="issues"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Checkbox.Group {...field}>
+                                                <Row gutter={[16, 16]}>
+                                                    {options.map((item) => (
+                                                        <Col
+                                                            xxl={8}
+                                                            xl={12}
+                                                            key={item.value}
+                                                        >
+                                                            <Checkbox
+                                                                key={item.value}
+                                                                value={
+                                                                    item.label
+                                                                }
+                                                            >
+                                                                {item.label}
+                                                            </Checkbox>
+                                                        </Col>
+                                                    ))}
+                                                </Row>
+                                            </Checkbox.Group>
+                                        )}
+                                    />
+                                    {errors.issues && (
+                                        <p
+                                            className="error-text"
+                                            style={{
+                                                color: "red",
+                                            }}
+                                        >
+                                            Vui lòng chọn ít nhất 1 vấn đề
+                                        </p>
+                                    )}
+                                </Col>
+                                <Col span={24}>
+                                    <Controller
+                                        name="description"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input.TextArea
+                                                {...field}
+                                                size="large"
+                                                placeholder="Mô tả vấn đề của bạn *"
+                                            />
+                                        )}
+                                    />
+                                    {errors.description && (
+                                        <p
+                                            className="error-text"
+                                            style={{
+                                                color: "red",
+                                            }}
+                                        >
+                                            Mô tả vấn đề của bạn là bắt buộc
+                                        </p>
+                                    )}
+                                </Col>
+                            </Row>
+
+                            <Button
+                                block
+                                type="primary"
+                                htmlType="submit"
+                                className="submit-button mt-3"
+                                loading={isLoading} // Hiển thị loading
+                                {...(isLoggedIn ? {} : { disabled: true })}
+                            >
+                                {isLoggedIn
+                                    ? "Gửi yêu cầu"
+                                    : "Đăng nhập để gửi yêu cầu"}
+                            </Button>
+                        </form>
+                    </Col>
+                </Row>
+            </div>
         </section>
     );
 };
