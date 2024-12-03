@@ -45,7 +45,6 @@ class ProductResource extends JsonResource
                 return [
                     'id' => $productImage->id,
                     'image_url' => $productImage->image_url,
-                    'created_by' => $productImage->createdBy->full_name,
                 ];
             }) : [],
             'inventories' => $inventories ? $inventories->map(function ($inventorie) {
