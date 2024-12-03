@@ -9,27 +9,42 @@ import {
     Form,
     Input,
     Row,
+    Statistic,
     Select,
+    Typography,
 } from "antd";
-import style from "@admin/modules/profile/style/profile.module.scss";
 import { useForm, Controller } from "react-hook-form";
-import useAuthActions from "../../modules/authen/hooks/useAuth";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import "dayjs/locale/vi";
+import { ArrowUpOutlined } from "@ant-design/icons";
+import style from "@admin/modules/profile/style/profile.module.scss";
+import useAuthActions from "../../modules/authen/hooks/useAuth";
+const { Option } = Select;
+const { Text } = Typography;
 
 const Profile = () => {
     const {
         control,
         handleSubmit,
         formState: { errors },
-        getValues,
         setValue,
         reset,
-        clearErrors,
-    } = useForm();
-    const { authGetmeAdmin } = useAuthActions();
+    } = useForm({
+        defaultValues: {
+            name: "",
+            email: "",
+            phone: "",
+            date_of_birth: "",
+            gender: 0,
+            address: "",
+            note: "",
+        },
+    });
+
     const [UserData, setUserData] = useState({});
     const auth = useSelector((state) => state.auth);
+    const { authGetmeAdmin, authEditProfile } = useAuthActions();
 
     useEffect(() => {
         authGetmeAdmin();
@@ -38,8 +53,6 @@ const Profile = () => {
     useEffect(() => {
         if (auth.user && auth.user.data) {
             setUserData(auth.user.data);
-            console.log(auth.user.data);
-            reset(auth.user.data);
         }
     }, [auth]);
 
@@ -48,26 +61,48 @@ const Profile = () => {
             setValue("name", UserData.full_name || "");
             setValue("email", UserData.email || "");
             setValue("phone", UserData.phone || "");
-
-            // Set the date_of_birth with proper formatting using dayjs
-            if (UserData.date_of_birth) {
-                setValue("date_of_birth", dayjs(UserData.date_of_birth)) || "";
-            }
-
+            setValue(
+                "date_of_birth",
+                UserData.date_of_birth
+                    ? dayjs(UserData.date_of_birth).format("YYYY-MM-DD")
+                    : ""
+            );
             setValue(
                 "gender",
-                UserData.gender === "Nữ" ? 1 : UserData.gender === "Nam" ? 2 : 0
+                UserData.gender === "Nữ" ? 1 : UserData.gender === "Nam" ? 2 : 0
             );
+            setValue("address", UserData.address || "");
+            setValue("note", UserData.note || "");
         }
     }, [UserData]);
-    useEffect(() => {
-        console.log(getValues("date_of_birth"));
-    }, [getValues("date_of_birth")]);
+
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                full_name: data.name,
+                email: data.email,
+                phone: data.phone,
+                date_of_birth: data.date_of_birth,
+                gender: data.gender,
+                address: data.address,
+                note: data.note,
+                role: UserData.role,
+            };
+            const res = await authEditProfile({
+                id: UserData.id,
+                data: payload,
+            });
+            console.log(res);
+            
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div>
             <Row gutter={[16, 16]}>
-                <Col xxl={10} xl={10} lg={10} md={10} sm={10} xs={10}>
+                <Col xxl={10} xl={10} lg={10} md={10} sm={24} xs={24}>
                     <Card className={style.card}>
                         <Avatar
                             size={300}
@@ -84,36 +119,87 @@ const Profile = () => {
                             <strong>Chức vụ:</strong> {UserData?.position?.name}
                         </p>
                         <p>
-                            <strong>Mức lương theo giờ :</strong>{" "}
+                            <strong>Mức lương theo giờ:</strong>{" "}
                             {parseInt(
-                                UserData?.position?.wage
+                                UserData?.position?.wage || 0
                             ).toLocaleString()}{" "}
                             VNĐ
                         </p>
                     </Card>
                 </Col>
-                <Col xxl={14} xl={14} lg={14} md={14} sm={14} xs={14}></Col>
-                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                <Col xxl={14} xl={14} lg={14} md={14} sm={24} xs={24}>
+                    <Card title="Thống kê công việc" bordered={false}>
+                        <Row gutter={[16, 16]}>
+                            <Col span={12}>
+                                <Statistic
+                                    title="Tư vấn khách hàng"
+                                    value={
+                                        (UserData.countConsulation_month || 0) +
+                                        " lượt"
+                                    }
+                                    valueStyle={{
+                                        color: "#3f8600",
+                                    }}
+                                />
+                                <Text type="secondary">
+                                    Trong tháng:{" "}
+                                    {UserData.countConsulation_month || 0}
+                                </Text>
+                                <br />
+                                <Text type="success">
+                                    Trong tuần:{" "}
+                                    {UserData.countConsulation_week || 0}
+                                </Text>
+                                <br />
+                                <Text type="danger">
+                                    Trong ngày:{" "}
+                                    {UserData.countConsulation_today || 0}
+                                </Text>
+                            </Col>
+                            <Col span={12}>
+                                <Statistic
+                                    title="Lịch hẹn Dịch vụ"
+                                    value={
+                                        (UserData.countAppoinment_month || 0) +
+                                        " lượt"
+                                    }
+                                    valueStyle={{
+                                        color: "#3f8600",
+                                    }}
+                                />
+                                <Text type="secondary">
+                                    Trong tháng:{" "}
+                                    {UserData.countAppoinment_month || 0}
+                                </Text>
+                                <br />
+                                <Text type="success">
+                                    Trong tuần:{" "}
+                                    {UserData.countAppoinment_week || 0}
+                                </Text>
+                                <br />
+                                <Text type="danger">
+                                    Trong ngày:{" "}
+                                    {UserData.countAppoinment_today || 0}
+                                </Text>
+                            </Col>
+                        </Row>
+                    </Card>
+                </Col>
+                <Col span={24}>
                     <Card>
                         <Form
                             layout="vertical"
-                            onFinish={handleSubmit((data) => console.log(data))}
+                            onFinish={handleSubmit(onSubmit)}
                         >
                             <Row gutter={[16, 16]}>
-                                <Col
-                                    xxl={12}
-                                    xl={12}
-                                    lg={12}
-                                    md={12}
-                                    sm={12}
-                                    xs={12}
-                                >
+                                <Col span={12}>
                                     <Form.Item label="Tên đầy đủ">
                                         <Controller
-                                            control={control}
                                             name="name"
+                                            control={control}
                                             rules={{
-                                                required: "Name is required",
+                                                required:
+                                                    "Vui lòng nhập tên đầy đủ",
                                             }}
                                             render={({ field }) => (
                                                 <Input {...field} />
@@ -121,41 +207,13 @@ const Profile = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col
-                                    xxl={12}
-                                    xl={12}
-                                    lg={12}
-                                    md={12}
-                                    sm={12}
-                                    xs={12}
-                                >
+                                <Col span={12}>
                                     <Form.Item label="Email">
                                         <Controller
-                                            control={control}
                                             name="email"
-                                            rules={{
-                                                required: "Email is required",
-                                            }}
-                                            render={({ field }) => (
-                                                <input {...field} />
-                                            )}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                                <Col
-                                    xxl={12}
-                                    xl={12}
-                                    lg={12}
-                                    md={12}
-                                    sm={12}
-                                    xs={12}
-                                >
-                                    <Form.Item label="Số điện thoại">
-                                        <Controller
                                             control={control}
-                                            name="phone"
                                             rules={{
-                                                required: "Phone is required",
+                                                required: "Vui lòng nhập email",
                                             }}
                                             render={({ field }) => (
                                                 <Input {...field} />
@@ -163,11 +221,26 @@ const Profile = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={6} xl={6} lg={6} md={6} sm={6} xs={6}>
+                                <Col span={12}>
+                                    <Form.Item label="Số điện thoại">
+                                        <Controller
+                                            name="phone"
+                                            control={control}
+                                            rules={{
+                                                required:
+                                                    "Vui lòng nhập số điện thoại",
+                                            }}
+                                            render={({ field }) => (
+                                                <Input {...field} />
+                                            )}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={6}>
                                     <Form.Item label="Giới tính">
                                         <Controller
-                                            control={control}
                                             name="gender"
+                                            control={control}
                                             rules={{
                                                 required:
                                                     "Vui lòng chọn giới tính",
@@ -188,36 +261,26 @@ const Profile = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={6} xl={6} lg={6} md={6} sm={6} xs={6}>
+                                <Col span={6}>
                                     <Form.Item label="Ngày sinh">
                                         <Controller
-                                            control={control}
                                             name="date_of_birth"
+                                            control={control}
                                             rules={{
                                                 required:
                                                     "Vui lòng chọn ngày sinh",
                                             }}
                                             render={({ field }) => (
-                                                <DatePicker
-                                                    // {...field}
-                                                    style={{ width: "100%" }}
-                                                />
+                                                <Input {...field} type="date" />
                                             )}
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col
-                                    xxl={12}
-                                    xl={12}
-                                    lg={12}
-                                    md={12}
-                                    sm={12}
-                                    xs={12}
-                                >
+                                <Col span={12}>
                                     <Form.Item label="Địa chỉ">
                                         <Controller
-                                            control={control}
                                             name="address"
+                                            control={control}
                                             rules={{
                                                 required:
                                                     "Vui lòng nhập địa chỉ",
@@ -228,22 +291,11 @@ const Profile = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col
-                                    xxl={12}
-                                    xl={12}
-                                    lg={12}
-                                    md={12}
-                                    sm={12}
-                                    xs={12}
-                                >
+                                <Col span={12}>
                                     <Form.Item label="Ghi chú">
                                         <Controller
-                                            control={control}
                                             name="note"
-                                            rules={{
-                                                required:
-                                                    "Vui lòng nhập ghi chú",
-                                            }}
+                                            control={control}
                                             render={({ field }) => (
                                                 <Input.TextArea {...field} />
                                             )}
@@ -251,9 +303,8 @@ const Profile = () => {
                                     </Form.Item>
                                 </Col>
                             </Row>
-
                             <Form.Item>
-                                <Button type="primary">
+                                <Button type="primary" htmlType="submit">
                                     Cập nhật thông tin
                                 </Button>
                             </Form.Item>

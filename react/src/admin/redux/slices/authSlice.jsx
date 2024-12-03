@@ -195,6 +195,42 @@ export const GetmeClient = createAsyncThunk(
         }
     }
 );
+export const ChangePassword = createAsyncThunk(
+    "auth/changePassword",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.patch(
+                endpoints.Auth.changepassword,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                error: error.response?.data?.errors || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
+export const EditProfile = createAsyncThunk(
+    "auth/editProfile",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                endpoints.Auth.EditProfile(data.id),
+                data.data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                error: error.response?.data?.errors || "Có lỗi xảy ra",
+            });
+        }
+    }
+);
 
 const initialState = {
     token: null,
@@ -358,6 +394,32 @@ const authSlice = createSlice({
                 state.loading = false;
             })
             .addCase(GetmeClient.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error = action.payload;
+            })
+            .addCase(ChangePassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(ChangePassword.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.loading = false;
+            })
+            .addCase(ChangePassword.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error = action.payload;
+            })
+            .addCase(EditProfile.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(EditProfile.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.loading = false;
+            })
+            .addCase(EditProfile.rejected, (state, action) => {
                 state.loading = false;
 
                 state.error = action.payload;

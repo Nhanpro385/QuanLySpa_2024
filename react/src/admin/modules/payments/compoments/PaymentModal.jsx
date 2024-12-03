@@ -13,7 +13,10 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
 
     const handleFinish = (values) => {
         onSubmit({
-            ...values,
+            paymentMethod: values.paymentMethod || 1,
+            promotion_name: values.promotion_name || "",
+            status: values.status,
+
             products: selectedProducts.map((item) => ({
                 id: item.id,
                 quantity: item.quantity,
@@ -30,7 +33,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
     useEffect(() => {
         getproduct(50);
     }, []);
-    
+
     useEffect(() => {
         if (products?.products?.data && !products.loading) {
             setDataProduct(
@@ -137,16 +140,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
                         <Select.Option value={0}>Chuyển khoản</Select.Option>
                     </Select>
                 </Form.Item>
-                <Form.Item
-                    label="Nhập mã khuyến mãi"
-                    name="promotion_name"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Vui lòng nhập số tiền!",
-                        },
-                    ]}
-                >
+                <Form.Item label="Nhập mã khuyến mãi" name="promotion_name">
                     <Input placeholder="Nhập mã khuyến mãi" />
                 </Form.Item>
                 <Form.Item label="Sản phẩm" name="products">

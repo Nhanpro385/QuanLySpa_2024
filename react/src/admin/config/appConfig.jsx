@@ -61,9 +61,11 @@ const endpoints = {
         login: `${API_AUTH_URL}/login`,
         logout: `${API_AUTH_URL}/logout`,
         refresh: `${API_AUTH_URL}/refresh`,
-        me: `${API_AUTH_URL}/me`,
+        me: `${API_AUTH_URL}/me?shifts=true&shifts_after=true&shifts_before=true&appointments=true&cosulations=true?treatmentHistories=true`,
         forgotpassword: `${API_AUTH_URL2}/forgot-password`,
         resetpassword: `${API_AUTH_URL2}/reset-password`,
+        changepassword: `${API_AUTH_URL}/me/resetPassword`,
+        EditProfile: (id) => `${API_AUTH_URL}/me/${id}`,
     },
     AuthClient: {
         register: `${API_AUTHCUSTOMER_URL}/register`,
