@@ -11,6 +11,8 @@ use App\Http\Controllers\Client\ShiftsController as ClientShiftsController;
 use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\TreatmentHistoryController;
 use App\Http\Controllers\Admin\InboundInvoiceController;
+use App\Http\Controllers\Admin\OutboundInvoiceController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
@@ -64,6 +66,13 @@ Route::group([
     Route::get('/inbound-invoices/{id}', [InboundInvoiceController::class, 'show']);
     Route::put('/inbound-invoices/{id}', [InboundInvoiceController::class, 'update']);
     Route::delete('/inbound-invoices/{id}', [InboundInvoiceController::class, 'destroy']);
+
+
+    Route::get('/outbound-invoices', [OutboundInvoiceController::class, 'index']);
+    Route::post('/outbound-invoices', [OutboundInvoiceController::class, 'store']);
+    Route::get('/outbound-invoices/{id}', [OutboundInvoiceController::class, 'show']);
+    Route::put('/outbound-invoices/{id}', [OutboundInvoiceController::class, 'update']);
+    Route::delete('/outbound-invoices/{id}', [OutboundInvoiceController::class, 'destroy']);
 
 
     Route::get('/contacts', [ContactsController::class, 'index']);
