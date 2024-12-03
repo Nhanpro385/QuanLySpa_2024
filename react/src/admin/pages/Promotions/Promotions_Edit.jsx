@@ -123,12 +123,22 @@ const Promotions_Edit = () => {
             console.log(res);
 
             if (res.payload.status == 422) {
-                Object.keys(res.payload.data.errors).map((key) => {
+                console.log(res.payload.errors);
+
+                if (Object.keys(res.payload.errors).length > 0) {
+                    Object.keys(res.payload.errors).map((key) => {
+                        api.error({
+                            message: res.payload.errors[key][0],
+                            duration: 3,
+                        });
+                    });
+                } else {
                     api.error({
-                        message: res.payload.data.errors[key][0],
+                        message: "Có lỗi xảy ra",
+                        description: res.payload.message,
                         duration: 3,
                     });
-                });
+                }
             } else {
                 api.success({
                     message: "Chỉnh sửa chương trình khuyến mãi thành công",

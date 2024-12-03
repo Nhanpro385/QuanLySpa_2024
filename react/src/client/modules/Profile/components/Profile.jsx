@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Row, Col, Button, Input, Avatar, Menu } from "antd";
+import {
+    Row,
+    Col,
+    Button,
+    Input,
+    Avatar,
+    Menu,
+    Select,
+    Switch,
+    DatePicker,
+} from "antd";
 import {
     UserOutlined,
     ShoppingCartOutlined,
@@ -12,7 +22,7 @@ import style from "../style/Profile.module.scss";
 import MenuProfile from "./MenuProfile";
 import useAuthActions from "../../../../admin/modules/authen/hooks/useAuth";
 import { useSelector } from "react-redux";
-
+import dayjs from "dayjs";
 // React Hook Form
 import { useForm, Controller } from "react-hook-form";
 
@@ -30,19 +40,43 @@ const Profile = () => {
     }, []);
 
     useEffect(() => {
-        console.log(authCustomer?.user?.data);
         if (authCustomer?.user?.data) {
+            console.log(authCustomer?.user?.data);
+
             setCustomer(authCustomer?.user?.data);
+        }
+    }, [authCustomer]);
+    useEffect(() => {
+        if (customer) {
             // Set form values with user data
             setValue("name", authCustomer?.user?.data?.full_name || "");
             setValue("phone", authCustomer?.user?.data?.phone || "");
             setValue("email", authCustomer?.user?.data?.email || "");
             setValue("address", authCustomer?.user?.data?.address || "");
+            setValue("gender", authCustomer?.user?.data?.gender || 0);
+            setValue("address", authCustomer?.user?.data?.address || "");
+            setValue("status", authCustomer?.user?.data?.status || true);
+            setValue(
+                "date_of_birth",
+                dayjs(authCustomer?.user?.data?.date_of_birth) || ""
+            );
         }
-    }, [authCustomer.user, setValue]);
+    }, [customer]);
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                full_name: data.name,
+                gender: data.gender,
+                email: data.email,
+                phone: data.phone,
+                date_of_birth: dayjs(data.date_of_birth).format("YYYY-MM-DD"),
+                address: data.address,
+                status: data.status,
+            };
+        } catch (e) {
+            console.log(e);
+        }
 
-    const onSubmit = (data) => {
-        console.log(data);
         // Xử lý lưu trữ dữ liệu khi form submit (ví dụ: gửi lên API)
     };
 
@@ -83,7 +117,7 @@ const Profile = () => {
                             onSubmit={handleSubmit(onSubmit)}
                             className={style.profileForm}
                         >
-                            <Row className={style.formInput}>
+                            <Row className={style.formInput} gutter={[16, 16]}>
                                 <Col span={24}>
                                     <label htmlFor="name">Họ Và Tên</label>
                                     <Controller
@@ -94,9 +128,6 @@ const Profile = () => {
                                         )}
                                     />
                                 </Col>
-                            </Row>
-
-                            <Row className={style.formInput}>
                                 <Col span={24}>
                                     <label htmlFor="phone">Số Điện Thoại</label>
                                     <Controller
@@ -110,9 +141,6 @@ const Profile = () => {
                                         )}
                                     />
                                 </Col>
-                            </Row>
-
-                            <Row className={style.formInput}>
                                 <Col span={24}>
                                     <label htmlFor="email">Email</label>
                                     <Controller
@@ -123,9 +151,54 @@ const Profile = () => {
                                         )}
                                     />
                                 </Col>
-                            </Row>
-
-                            <Row className={style.formInput}>
+                                <Col span={24}>
+                                    <label htmlFor="gender">Giới Tính</label>
+                                    <Controller
+                                        name="gender"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                placeholder="Chọn giới tính"
+                                                style={{ width: "100%" }}
+                                            >
+                                                <Select.Option
+                                                    value={0}
+                                                    key={0}
+                                                >
+                                                    Nam
+                                                </Select.Option>
+                                                <Select.Option
+                                                    value={1}
+                                                    key={1}
+                                                >
+                                                    Nữ
+                                                </Select.Option>
+                                                <Select.Option
+                                                    value={2}
+                                                    key={2}
+                                                >
+                                                    Khác
+                                                </Select.Option>
+                                            </Select>
+                                        )}
+                                    />
+                                </Col>{" "}
+                                <Col span={24}>
+                                    <label htmlFor="date_of_birth">
+                                        Ngày Sinh
+                                    </label>
+                                    <Controller
+                                        name="date_of_birth"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                {...field}
+                                                style={{ width: "100%" }}
+                                            />
+                                        )}
+                                    />
+                                </Col>
                                 <Col span={24}>
                                     <label htmlFor="address">Địa chỉ</label>
                                     <Controller
@@ -135,6 +208,21 @@ const Profile = () => {
                                             <Input.TextArea
                                                 {...field}
                                                 rows={3}
+                                            />
+                                        )}
+                                    />
+                                </Col>{" "}
+                                <Col span={24}>
+                                    <label htmlFor="status">Trạng Thái</label>
+                                    <Controller
+                                        name="status"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Switch
+                                                checkedChildren="Hoạt động"
+                                                unCheckedChildren="Khóa"
+                                                defaultChecked
+                                                {...field}
                                             />
                                         )}
                                     />
