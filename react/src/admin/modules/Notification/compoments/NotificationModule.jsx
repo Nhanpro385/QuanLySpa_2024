@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Badge, Popover, Avatar, Row, Col, Tag } from "antd";
+import { Badge, Popover, Avatar, Row, Col, Tag, Skeleton } from "antd";
 import { NotificationOutlined, UserOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useSelector } from "react-redux";
@@ -14,6 +14,10 @@ const NotificationModule = () => {
 
     // Update local notification data when Redux store changes
     useEffect(() => {
+        console.log(notifications?.notifications);
+
+        console.log(notifications?.notifications?.data?.data?.length);
+
         if (
             notifications?.notifications?.data?.data?.length > 0 &&
             !notifications.loading
@@ -24,6 +28,7 @@ const NotificationModule = () => {
                     key: item.id,
                 }))
             );
+            console.log(123);
         } else {
             setNotiData([]);
         }
@@ -80,7 +85,11 @@ const NotificationModule = () => {
                 ))}
             </div>
         ) : (
-            <div style={{ padding: 10 }}>Không có thông báo mới.</div>
+            <Row align="middle">
+                <Col span={24}>
+                    <Skeleton active />
+                </Col>
+            </Row>
         );
 
     return (

@@ -6,6 +6,7 @@ import {
     UserOutlined,
     SelectOutlined,
     StarOutlined,
+    VideoCameraAddOutlined,
 } from "@ant-design/icons";
 import NotificationModule from "../../modules/Notification/compoments/NotificationModule";
 import useAuthActions from "../../modules/authen/hooks/useAuth";
@@ -30,7 +31,7 @@ const HeaderAdmin = () => {
     const menuItems = [
         {
             key: "1",
-            icon: <StarOutlined />,
+            icon: <VideoCameraAddOutlined />,
             label: (
                 <Link
                     to="/admin/tuvankhachhang"
@@ -38,7 +39,7 @@ const HeaderAdmin = () => {
                         textDecoration: "none",
                     }}
                 >
-                    Quản lý Tư vấn trực tuyến
+                   Yêu cầu tư vấn
                 </Link>
             ),
         },
