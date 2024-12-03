@@ -15,7 +15,7 @@ class CommentRepServiceResource extends JsonResource
     public function toArray(Request $request): array
     {
         $images = $this->whenLoaded('images') ? $this->images : [];
-        $replies = $this->whenLoaded('replies') ? $this->replies : [];
+        $clientReplies = $this->whenLoaded('clientReplies') ? $this->clientReplies : [];
         return [
             'id' => $this->id,
             'customer' => $this->customer_id ? [
@@ -35,7 +35,7 @@ class CommentRepServiceResource extends JsonResource
                         $image->created_at->format('Y-m-d') : null,
                 ];
             }) : [],
-            'replies' => $replies ? CommentRepServiceResource::collection($replies) : [],
+            'clientReplies' => $clientReplies ? CommentRepServiceResource::collection($clientReplies) : [],
             'created_at' => $this->created_at ?
                 $this->created_at->format('Y-m-d') : null,
             'updated_at' => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
