@@ -236,7 +236,8 @@ class ConsulationController extends Controller
                 ], 403);
             }
             $consulation->update([
-                'status' => 1
+                'status' => 1,
+                'treatment_plan' => "Tiến hành tư vấn vào lúc: " . Carbon::now()->addMinutes(30) . ' hôm nay.',
             ]);
             $arr = [
                 'status' => 'success',

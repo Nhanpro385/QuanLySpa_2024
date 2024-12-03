@@ -91,8 +91,8 @@
                 <h1>Thông báo KHÁCH HÀNG YÊU CẦU TƯ VẤN TRỰC TUYẾN.</h1>
                 <p>
                     Yêu cầu <strong>SPA SAKURA</strong>. Tiếp nhận yêu cầu tư vấn trực tuyến
-                    từ quý khách {{ $full_name }}.
-                    Xác nhận chuyên gia tư vấn trong buổi trò chuyện.
+                    từ quý khách <strong>{{ $full_name }}</strong>. Xác nhận chuyên gia tư vấn trong buổi trò
+                    chuyện.
                 </p>
                 <p>
                     Nhấn vào nhút bên dưới để đến với trang danh sách yêu cầu tư vấn cho khách hàng.
