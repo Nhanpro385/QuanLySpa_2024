@@ -60,6 +60,7 @@ import StreatmentsEdit from "../pages/customerManagement/CustomerTreatments_Edit
 import ProductServiceAdd from "../pages/services/ProductServiceAdd";
 import Promotions_Edit from "../pages/Promotions/Promotions_Edit";
 import VideocallAdmin from "../pages/videocall";
+import Profile from "../pages/profile";
 
 const PublicRoutes = [
     // Dashboard
@@ -261,6 +262,11 @@ const PublicRoutes = [
     {
         path: "/tuvankhachhang/videocall/:idmeet",
         element: <VideocallAdmin />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/thongtincanhan",
+        element: <Profile />,
         requiredRole: { requiredRole: "private", role: "Admin" },
     },
 ];

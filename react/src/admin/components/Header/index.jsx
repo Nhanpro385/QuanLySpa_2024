@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Layout, Menu, Drawer, Button, notification, Row, Col } from "antd";
-import { SettingOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import {
+    SettingOutlined,
+    MenuOutlined,
+    UserOutlined,
+    SelectOutlined,
+    StarOutlined,
+} from "@ant-design/icons";
 import NotificationModule from "../../modules/Notification/compoments/NotificationModule";
 import useAuthActions from "../../modules/authen/hooks/useAuth";
 import { Link } from "react-router-dom";
@@ -10,6 +16,8 @@ const { Header } = Layout;
 const HeaderAdmin = () => {
     const { authLogout } = useAuthActions();
     const [openDrawer, setOpenDrawer] = useState(false);
+  
+
 
     const showDrawer = () => {
         setOpenDrawer(true);
@@ -22,7 +30,7 @@ const HeaderAdmin = () => {
     const menuItems = [
         {
             key: "1",
-            icon: <UserOutlined />,
+            icon: <StarOutlined />,
             label: (
                 <Link
                     to="/admin/tuvankhachhang"
@@ -41,7 +49,21 @@ const HeaderAdmin = () => {
         },
         {
             key: "3",
-            icon: <SettingOutlined />,
+            icon: <UserOutlined />,
+            label: (
+                <Link
+                    to="/admin/thongtincanhan"
+                    style={{
+                        textDecoration: "none",
+                    }}
+                >
+                    Thông tin cá nhân
+                </Link>
+            ),
+        },
+        {
+            key: "4",
+            icon: <SelectOutlined />,
             label: "Đăng xuất",
             onClick: async () => {
                 try {

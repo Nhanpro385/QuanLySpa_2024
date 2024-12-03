@@ -37,18 +37,16 @@ const NotificationModule = () => {
         }
     };
 
-    const notificationContent = notiData.length > 0 ? (
-        <div className={styles.notificationList}>
-            {notiData
-                .filter((notification) => notification.notifiable_type === "App\\Models\\Consulation")
-                .map((notification, index) => (
+    const notificationContent =
+        notiData.length > 0 ? (
+            <div className={styles.notificationList}>
+                {notiData.map((notification, index) => (
                     <Row
                         key={notification.key}
                         align="middle"
                         className={clsx(
                             styles.notification,
-                            styles.noti_comment,
-                          
+                            styles.noti_comment
                         )}
                         style={{
                             animationDelay: `${index * 0.1}s`,
@@ -57,6 +55,10 @@ const NotificationModule = () => {
                     >
                         <Col span={4}>
                             <Avatar
+                                src={
+                                    "https://api.dicebear.com/7.x/miniavs/svg?seed=" +
+                                    index
+                                }
                                 shape="square"
                                 icon={<UserOutlined />}
                                 size="large"
@@ -67,16 +69,19 @@ const NotificationModule = () => {
                                 <strong>{notification.user}</strong>{" "}
                                 {notification.data}
                             </p>
-                            <Tag color="green" style={{ fontSize: "12px", margin: 0 }}>
+                            <Tag
+                                color="green"
+                                style={{ fontSize: "9px", margin: 0 }}
+                            >
                                 {notification.created_at}
                             </Tag>
                         </Col>
                     </Row>
                 ))}
-        </div>
-    ) : (
-        <div style={{ padding: 10 }}>Không có thông báo mới.</div>
-    );
+            </div>
+        ) : (
+            <div style={{ padding: 10 }}>Không có thông báo mới.</div>
+        );
 
     return (
         <Popover
