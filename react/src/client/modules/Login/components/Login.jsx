@@ -51,7 +51,7 @@ const Login = () => {
                 // Handle other errors
                 api.error({
                     message: "Đã có lỗi xảy ra",
-                    description: "Vui lòng thử lại sau",
+                    description: response.payload.message || "Vui lòng thử lại",
                 });
             }
         } catch (error) {

@@ -124,7 +124,7 @@ input,
 }
 
 .sidebar {
-    max-height: 600px;
+    
     background-color: white;
     padding: 20px;
     border-radius: 10px;
@@ -132,4 +132,8 @@ input,
 
 .nameItemMenu{
     text-decoration: none;
+}
+.error{
+    color: red;
+    font-size: 12px;
 }

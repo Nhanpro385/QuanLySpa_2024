@@ -13,6 +13,8 @@ import {
     GetmeClient,
     ChangePassword,
     EditProfile,
+    EditProfileClient,
+    ChangePasswordClient,
 } from "@admin/redux/slices/authSlice";
 const useAuthActions = () => {
     const dispatch = useDispatch();
@@ -57,6 +59,13 @@ const useAuthActions = () => {
     const authEditProfile = async (data) => {
         return await dispatch(EditProfile(data));
     };
+    const authEditProfileClient = async (data) => {
+        return await dispatch(EditProfileClient(data));
+    };
+    const authChangePasswordClient = async (data) => {
+        return await dispatch(ChangePasswordClient(data));
+    };
+
     return {
         authLogin,
         authLogout,
@@ -71,6 +80,8 @@ const useAuthActions = () => {
         authGetmeClient,
         authChangePassword,
         authEditProfile,
+        authEditProfileClient,
+        authChangePasswordClient,
     };
 };
 

@@ -163,7 +163,7 @@ const Profile = () => {
             {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col xxl={10} xl={10} lg={10} md={10} sm={24} xs={24}>
-                    <Card className={style.card}>
+                    <Card className={style.card} bordered={true}>
                         <Avatar
                             size={300}
                             className={style.avatar}
@@ -208,7 +208,7 @@ const Profile = () => {
                     </Card>
                 </Col>
                 <Col xxl={14} xl={14} lg={14} md={14} sm={24} xs={24}>
-                    <Card title="Thống kê công việc" bordered={false}>
+                    <Card title="Thống kê công việc" bordered={true}>
                         <Row gutter={[16, 16]}>
                             <Col span={12}>
                                 <Statistic
@@ -272,7 +272,7 @@ const Profile = () => {
                             onFinish={handleSubmit(onSubmit)}
                         >
                             <Row gutter={[16, 16]}>
-                                <Col span={12}>
+                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                                     <Form.Item label="Tên đầy đủ">
                                         <Controller
                                             name="name"
@@ -292,7 +292,7 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col span={12}>
+                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                                     <Form.Item label="Email">
                                         <Controller
                                             name="email"
@@ -311,7 +311,7 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col span={12}>
+                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                                     <Form.Item label="Số điện thoại">
                                         <Controller
                                             name="phone"
@@ -331,7 +331,7 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col span={6}>
+                                <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
                                     <Form.Item label="Giới tính">
                                         <Controller
                                             name="gender"
@@ -361,7 +361,7 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col span={6}>
+                                <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
                                     <Form.Item label="Ngày sinh">
                                         <Controller
                                             name="date_of_birth"
@@ -381,7 +381,7 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col span={12}>
+                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                                     <Form.Item label="Địa chỉ">
                                         <Controller
                                             name="address"
@@ -401,7 +401,7 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col span={12}>
+                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                                     <Form.Item label="Ghi chú">
                                         <Controller
                                             name="note"

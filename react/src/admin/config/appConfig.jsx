@@ -76,6 +76,8 @@ const endpoints = {
         me: `${API_AUTHCUSTOMER_URL}/me`,
         forgotpassword: `${API_AUTHCUSTOMER_URL}/forgot-password`,
         resetpassword: `${API_AUTHCUSTOMER_URL}/reset-password`,
+        changepassword: (id) => `${API_AUTH_URL3}/customer/${id}`,
+        EditProfile: (id) => `${API_AUTH_URL3}/customer/${id}`,
     },
     Products: {
         list: `${API_BASE_URL}/products`,
