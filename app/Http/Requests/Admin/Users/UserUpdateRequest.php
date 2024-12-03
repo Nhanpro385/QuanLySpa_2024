@@ -26,7 +26,6 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'position_id' => 'nullable|numeric|exists:positions,id',
-            'role' => 'required|numeric',
             'full_name' => 'required|string|max:255|min:10',
             'gender' => 'nullable|numeric',
             'phone' => 'required|regex:/^(\+?\d{1,4}?)?(\d{10})$/|' . Rule::unique('users')->ignore($this->id),
@@ -35,7 +34,6 @@ class UserUpdateRequest extends FormRequest
             'date_of_birth' => 'required|date|before:today',
             'note' => 'nullable|string',
             'status' => 'nullable|boolean',
-
         ];
     }
 
