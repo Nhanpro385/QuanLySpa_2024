@@ -56,15 +56,19 @@ class ClientCommentController extends Controller
                 ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
                 ->join('services', 'services.id', '=', 'appointment_services.service_id')
                 ->join('customers', 'customers.id', '=', 'appointments.customer_id')
-                ->where('customer_id', '=', $validatedData['customer_id'])
-                ->where('service_id', '=', $validatedData['service_id'])
+                ->where('appointments.customer_id', '=', $validatedData['customer_id'])
+                ->where('appointment_services.service_id', '=', $validatedData['service_id'])
+                ->whereIn('appointments.status',[2,3])
                 ->exists();
-            if ($hasUsedService) {
+
+            if (!$hasUsedService) {
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'Khách hàng đã sử dụng dịch vụ này.',
-                ], 400);
+                    'status' => false,
+                    'message' => 'Bạn chưa sử dụng dịch vụ này!',
+                ], 403);
             }
+
+
             $parentComment = null;
             if (!empty($validatedData['parent_comment_id'])) {
                 $parentComment = Comment::find($validatedData['parent_comment_id']);
@@ -81,6 +85,8 @@ class ClientCommentController extends Controller
                 'parent_comment_id' => $parentComment?->id,
                 'service_id' => $validatedData['service_id'] ?? null,
                 'comment' => $validatedData['comment'],
+                'customer_id'=>$userId
+
 
             ]);
             if ($request->hasFile('image_url')) {

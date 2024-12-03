@@ -94,24 +94,23 @@ class PromotionController extends Controller
         $validatedData = $request->validated();
         $validatedData['updated_by'] = Auth::id();
 
-        // Kiểm tra và xử lý ảnh
+
         if ($request->hasFile('image_url')) {
             if ($promotion->image_url) {
-                // Xóa ảnh cũ nếu có
+
                 $oldImagePath = storage_path('app/public/uploads/promotions/' . $promotion->image_url);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }
             }
 
-            // Lưu ảnh mới
             $image = $request->file('image_url');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/uploads/promotions', $imageName);
             $validatedData['image_url'] = $imageName;
         }
 
-        // Cập nhật thông tin khuyến mãi
+   
         $promotion->update($validatedData);
 
         return response()->json([

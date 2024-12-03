@@ -68,5 +68,10 @@ class Comment extends Model
         return $this->hasMany(CommentImage::class, 'comment_id', 'id');
     }
 
+    public function clientReplies()
+    {
+        return $this->hasMany(Comment::class, 'parent_comment_id', 'id')->where('status',1);
+    }
+
 
 }

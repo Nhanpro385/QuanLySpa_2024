@@ -31,7 +31,7 @@ class CustomerClientUpdateRequest extends FormRequest
             'address' => 'nullable|string|max:255',
             'date_of_birth' => 'nullable|date',
             'status' => 'required|boolean',
-            'password' => 'nullable|string|min:8|max:255',
+           
         ];
     }
 

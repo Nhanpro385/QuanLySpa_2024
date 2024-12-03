@@ -33,6 +33,8 @@ use App\Http\Controllers\Client\UserController as ClientUserController;
 use App\Http\Controllers\Client\ClientCustomerAccountController;
 use App\Http\Controllers\Client\ConsulationController as ClientConsulationController;
 use App\Http\Controllers\Client\ClientCommentController;
+use App\Http\Controllers\Client\ClientPromotionController;
+
 use App\Http\Controllers\Client\Promotion\PromotionController as PromotionPromotionController;
 
 require __DIR__ . '/authCustomer.php';
@@ -249,7 +251,7 @@ Route::group([
 
     //Promotion
 
-    Route::get('/promotion', [PromotionPromotionController::class, 'index']);
+    Route::get('/promotion', [ClientPromotionController::class, 'index']);
 
 
 
