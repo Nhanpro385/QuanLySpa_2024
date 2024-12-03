@@ -11,24 +11,29 @@ import {
     Row,
     Statistic,
     Select,
+    notification,
     Typography,
 } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
-import { ArrowUpOutlined } from "@ant-design/icons";
+import { ArrowUpOutlined, KeyOutlined } from "@ant-design/icons";
 import style from "@admin/modules/profile/style/profile.module.scss";
 import useAuthActions from "../../modules/authen/hooks/useAuth";
+import ChangepassModal from "../../modules/profile/compoments/modalChangepass";
 const { Option } = Select;
 const { Text } = Typography;
-
+import useModal from "../../modules/appointments/hooks/openmodal";
 const Profile = () => {
+    const [api, contextHolder] = notification.useNotification();
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const {
         control,
         handleSubmit,
         formState: { errors },
         setValue,
+        setError,
         reset,
     } = useForm({
         defaultValues: {
@@ -44,7 +49,8 @@ const Profile = () => {
 
     const [UserData, setUserData] = useState({});
     const auth = useSelector((state) => state.auth);
-    const { authGetmeAdmin, authEditProfile } = useAuthActions();
+    const { authGetmeAdmin, authEditProfile, authChangePassword } =
+        useAuthActions();
 
     useEffect(() => {
         authGetmeAdmin();
@@ -86,14 +92,67 @@ const Profile = () => {
                 gender: data.gender,
                 address: data.address,
                 note: data.note,
-                role: UserData.role,
             };
             const res = await authEditProfile({
                 id: UserData.id,
                 data: payload,
             });
+
+            if (res.payload.status == "success") {
+                api.success({
+                    message: "Cập nhật thông tin thành công",
+                });
+            } else {
+                if (Object.keys(res.payload.errors).length > 0) {
+                    Object.keys(res.payload.errors).map((key) => {
+                        setError(key, {
+                            type: "manual",
+                            message: res.payload.errors[key][0],
+                        });
+                    });
+                } else {
+                    api.error({
+                        type: "error",
+                        message: res.payload.message || "Có lỗi xảy ra",
+                    });
+                }
+            }
             console.log(res);
-            
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    console.log(errors);
+
+    const handleChangePass = async (data) => {
+        try {
+            const res = await authChangePassword(data);
+            console.log(res);
+
+            if (res.payload.status !== "success") {
+                if (
+                    Object.keys(res.payload.error).length > 0 &&
+                    typeof res.payload.error === "object"
+                ) {
+                    console.log(123);
+
+                    Object.keys(res.payload.error).map((key) => {
+                        api.error({
+                            message: res.payload.error[key][0],
+                            description: res.payload.error[key][0],
+                        });
+                    });
+                }
+                api.error({
+                    message: res.payload.message,
+                });
+              
+            }else{
+                api.success({
+                    message: res.payload.message,
+                });
+                handleCancel();
+            }
         } catch (error) {
             console.log(error);
         }
@@ -101,6 +160,7 @@ const Profile = () => {
 
     return (
         <div>
+            {contextHolder}
             <Row gutter={[16, 16]}>
                 <Col xxl={10} xl={10} lg={10} md={10} sm={24} xs={24}>
                     <Card className={style.card}>
@@ -125,6 +185,26 @@ const Profile = () => {
                             ).toLocaleString()}{" "}
                             VNĐ
                         </p>
+                        <Row>
+                            <Col
+                                xxl={24}
+                                xl={24}
+                                lg={24}
+                                md={24}
+                                sm={24}
+                                xs={24}
+                            >
+                                <Button
+                                    block
+                                    type="primary"
+                                    icon={<KeyOutlined />}
+                                    size="Large"
+                                    onClick={showModal}
+                                >
+                                    Thay đổi mật khẩu
+                                </Button>
+                            </Col>
+                        </Row>
                     </Card>
                 </Col>
                 <Col xxl={14} xl={14} lg={14} md={14} sm={24} xs={24}>
@@ -205,6 +285,11 @@ const Profile = () => {
                                                 <Input {...field} />
                                             )}
                                         />
+                                        {errors.name && (
+                                            <Text type="danger">
+                                                {errors.name.message}
+                                            </Text>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -219,6 +304,11 @@ const Profile = () => {
                                                 <Input {...field} />
                                             )}
                                         />
+                                        {errors.email && (
+                                            <Text type="danger">
+                                                {errors.email.message}
+                                            </Text>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -234,6 +324,11 @@ const Profile = () => {
                                                 <Input {...field} />
                                             )}
                                         />
+                                        {errors.phone && (
+                                            <Text type="danger">
+                                                {errors.phone.message}
+                                            </Text>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -259,6 +354,11 @@ const Profile = () => {
                                                 </Select>
                                             )}
                                         />
+                                        {errors.gender && (
+                                            <Text type="danger">
+                                                {errors.gender.message}
+                                            </Text>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
@@ -274,6 +374,11 @@ const Profile = () => {
                                                 <Input {...field} type="date" />
                                             )}
                                         />
+                                        {errors.date_of_birth && (
+                                            <Text type="danger">
+                                                {errors.date_of_birth.message}
+                                            </Text>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -289,6 +394,11 @@ const Profile = () => {
                                                 <Input {...field} />
                                             )}
                                         />
+                                        {errors.address && (
+                                            <Text type="danger">
+                                                {errors.address.message}
+                                            </Text>
+                                        )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -300,6 +410,11 @@ const Profile = () => {
                                                 <Input.TextArea {...field} />
                                             )}
                                         />
+                                        {errors.note && (
+                                            <Text type="danger">
+                                                {errors.note.message}
+                                            </Text>
+                                        )}
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -312,6 +427,13 @@ const Profile = () => {
                     </Card>
                 </Col>
             </Row>
+            <ChangepassModal
+                isModalOpen={isModalOpen}
+                handleOk={handleOk}
+                handleCancel={handleCancel}
+                handleChangePass={handleChangePass}
+                errorsAuth={auth.error}
+            />
         </div>
     );
 };
