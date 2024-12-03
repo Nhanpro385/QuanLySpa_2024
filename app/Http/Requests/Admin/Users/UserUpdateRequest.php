@@ -34,6 +34,7 @@ class UserUpdateRequest extends FormRequest
             'date_of_birth' => 'required|date|before:today',
             'note' => 'nullable|string',
             'status' => 'nullable|boolean',
+            'role' => 'required|numeric'
         ];
     }
 
