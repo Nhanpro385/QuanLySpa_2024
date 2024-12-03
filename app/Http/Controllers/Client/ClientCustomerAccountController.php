@@ -42,30 +42,9 @@ class ClientCustomerAccountController extends Controller
         $validatedData = $request->validated();
 
 
-        if (isset($validatedData['password'])) {
-            $validatedData['password'] = Hash::make($validatedData['password']);
-        }
-        $this->mapGender($validatedData);
-
-
-        $updatedById = Auth::id();
-
-
-        $userExists = \App\Models\User::where('id', $updatedById)->exists();
-
-        if ($userExists) {
-
-            $validatedData['updated_by'] = $updatedById;
-        } else {
-
-            $validatedData['updated_by'] = null;
-        }
-
+       
 
         $customer->update($validatedData);
-
-        $customer->load(['createdBy', 'updatedBy']);
-
 
         return response()->json([
             'status' => 'success',
@@ -78,8 +57,7 @@ class ClientCustomerAccountController extends Controller
                 'phone' => $customer->phone ?? 'phone',
                 'date_of_birth' => $customer->date_of_birth,
                 'address' => $customer->address,
-                'created_by' => $this->formatUserRole($customer->createdBy),
-                'updated_by' => $customer->updatedBy ? $this->formatUserRole($customer->updatedBy) : null,
+
                 'created_at' => $customer->created_at->format('d-m-Y H:i'),
                 'updated_at' => $customer->updated_at->format('d-m-Y H:i'),
             ],

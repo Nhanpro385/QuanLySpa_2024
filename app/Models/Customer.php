@@ -71,7 +71,7 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(Consulation::class, 'customer_id', 'id');
     }
 
-   
+
 
 
 
@@ -134,5 +134,10 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
         $url = env('FRONTEND_URL') . '/matkhaumoi?token=' . $token;
         $this->notify(new ResetPasswordNotification($url));
     }
+    public function clientComments()
+    {
+        return $this->hasMany(Comment::class, 'customer_id')->where('status', 1);
+    }
+
 
 }
