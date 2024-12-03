@@ -42,7 +42,7 @@ const HeaderComponents = () => {
                             {
                                 label: (
                                     <Link
-                                        to="/about-us"
+                                        to="/gioithieu"
                                         style={{ textDecoration: "none" }}
                                     >
                                         Về Chúng Tôi

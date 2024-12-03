@@ -45,8 +45,8 @@ const Services_List = () => {
                     className={style.boxTitleServicesTop}
                     xl={18}
                     lg={16}
-                    md={18}
-                    sm={22}
+                    md={14}
+                    sm={24}
                     xs={24}
                 >
                     <h1>Loại dịch vụ tại Sapa Sakura </h1>

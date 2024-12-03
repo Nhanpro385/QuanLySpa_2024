@@ -1,0 +1,86 @@
+.container {
+    width: 100%;
+  
+    .banner {
+      background-color: #FFDCDC;
+      padding: 30px 200px 30px 200px;
+      min-height: 500px;
+  
+      @media (max-width: 768px) {
+        padding: 20px 0;
+      }
+    }
+  
+    .contentCol {
+      text-align: left;
+  
+      @media (max-width: 768px) {
+        text-align: left; // Canh giữa nội dung trên mobile
+      }
+  
+      .breadcrumb {
+        font-size: 20px;
+        color: black;
+        margin-bottom: 8px;
+  
+        @media (max-width: 768px) {
+          font-size: 0.9rem;
+        }
+      }
+  
+      .title {
+        font-size: 50px;
+        color: black;
+        margin: 20px 0 20px 0;
+  
+        @media (max-width: 768px) {
+          font-size: 1.8rem;
+        }
+      }
+  
+      .description {
+        font-size: 18px;
+        color: black;
+        margin-bottom: 15px;
+  
+        @media (max-width: 768px) {
+          font-size: 1rem;
+        }
+      }
+  
+      .ctaButton {
+        background-color: #E05265;
+        color: white;
+        border: none;
+        font-size: 18px;
+        padding: 10px 20px;
+        font-weight: 500;
+  
+        &:hover {
+          background-color: #c45463;
+        }
+      }
+
+    }
+  
+    .imageCol {
+      display: flex;
+      justify-content: center;
+  
+      .imageWrapper {
+        width: 80%;
+        max-width: 500px;
+  
+        @media (max-width: 768px) {
+          width: 100%;
+        }
+  
+        .bannerImage {
+          width: 100%;
+          height: auto;
+          border-radius: 999px;
+        }
+      }
+    }
+  }
+  
