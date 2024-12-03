@@ -13,6 +13,8 @@ import BookingConsultant from "../pages/BookingConsultant/BookingConsultant";
 import ServiceHistory from "../pages/ServiceHistory/ServiceHistory";
 import servicesDetailbyid from "../modules/Services/components/servicesDetailbyid";
 import ServicesDetailById from "../modules/Services/components/servicesDetailbyid";
+import AboutUs from "../pages/AboutUs/AboutUs";
+
 const PublicRoutes = [
     {
         path: "/",
@@ -83,6 +85,11 @@ const PublicRoutes = [
         path: "/lichsudichvu",
         element: <ServiceHistory />,
         requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
+        path: "/gioithieu",
+        element: <AboutUs />,
+        requiredRole: { requiredRole: "public", role: "Client" },
     },
 ];
 
