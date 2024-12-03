@@ -89,11 +89,7 @@ const NotificationModule = () => {
                                     </Tag>
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col span={24}>
-                                    <hr />
-                                </Col>
-                            </Row>
+                           
                         </>
                     ))}
                     {pagnation.total > count && (
@@ -130,6 +126,7 @@ const NotificationModule = () => {
             title="Thông báo"
             trigger="click"
             open={open}
+            className={styles.notificationPopover}
             onOpenChange={handleOpenChange}
         >
             <Badge count={notiData.filter((item) => !item.read).length}>

@@ -55,43 +55,41 @@ const Services_List = () => {
 
             <Row>
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <Row gutter={[16, 16]} justify="center" align="middle">
-                        {loading ? (
-                            <Spin tip="Đang tải dịch vụ..." />
-                        ) : cateService.length > 0 ? (
-                            <List
-                                grid={{
-                                    gutter: 16,
-                                }}
-                                pagination={{
-                                    position: "bottom",
-                                    align: "center",
-                                }}
-                                dataSource={cateService}
-                                renderItem={(item) => (
-                                    <List.Item>
-                                        <Card
-                                            onClick={() => onHandleClick(item)}
-                                            className={
-                                                style.cardServices +
-                                                " " +
-                                                (selectedCate?.id === item.id
-                                                    ? style.active
-                                                    : "")
-                                            }
-                                            title={item.title}
-                                        >
-                                            {item.name}
-                                        </Card>
-                                    </List.Item>
-                                )}
-                            />
-                        ) : (
-                            <div className={style.noServices}>
-                                <p>Hiện không có dịch vụ nào để hiển thị.</p>
-                            </div>
-                        )}
-                    </Row>
+                    {loading ? (
+                        <Spin tip="Đang tải dịch vụ..." />
+                    ) : cateService.length > 0 ? (
+                        <List
+                            grid={{
+                                gutter: 16,
+                            }}
+                            pagination={{
+                                position: "bottom",
+                                align: "center",
+                            }}
+                            dataSource={cateService}
+                            renderItem={(item) => (
+                                <List.Item>
+                                    <Card
+                                        onClick={() => onHandleClick(item)}
+                                        className={
+                                            style.cardServices +
+                                            " " +
+                                            (selectedCate?.id === item.id
+                                                ? style.active
+                                                : "")
+                                        }
+                                        title={item.title}
+                                    >
+                                        {item.name}
+                                    </Card>
+                                </List.Item>
+                            )}
+                        />
+                    ) : (
+                        <div className={style.noServices}>
+                            <p>Hiện không có dịch vụ nào để hiển thị.</p>
+                        </div>
+                    )}
                 </Col>
             </Row>
             <ServicesDetail listservices={selectedCate} />

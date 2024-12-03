@@ -9,6 +9,7 @@ import {
     Space,
     Select,
     message,
+    DatePicker,
 } from "antd";
 import { DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -65,7 +66,7 @@ const StreatMents = () => {
     }, [searchQuery]);
     const onClick = ({ key, record }) => {
         console.log("record", record);
-        
+
         switch (key) {
             case "1":
                 navigate(
@@ -130,14 +131,15 @@ const StreatMents = () => {
             </Row>
 
             <Row gutter={[16, 16]} className="mb-4">
-                <Col xl={12} md={12} sm={12} xs={24}>
-                    <Input.Search
-                        placeholder="Tìm kiếm......"
+                <Col xl={6} md={6} sm={6} xs={24}>
+                    <DatePicker
+                        className="w-100"
                         allowClear
-                        enterButton="Tìm kiếm"
                         size="middle"
-                        onSearch={onSearch}
-                        onChange={(e) => onSearch(e.target.value)}
+                        placeholder="Chọn ngày"
+                        onChange={(date, dateString) => {
+                            onSearch(dateString);
+                        }}
                     />
                 </Col>
             </Row>

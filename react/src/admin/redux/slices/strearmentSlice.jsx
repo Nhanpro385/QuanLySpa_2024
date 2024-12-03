@@ -120,7 +120,7 @@ export const StreatmentSearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.streatments.search}?shift_date=${data.search}&page=${data.page}&per_page=${data.per_page}`
+                `${endpoints.streatments.search}?created_at[eq]=${data.search}&page=${data.page}&per_page=${data.per_page}`
             );
 
             return response.data;

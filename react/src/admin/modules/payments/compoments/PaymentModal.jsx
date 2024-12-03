@@ -1,15 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Modal, Select, Table } from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    Modal,
+    Select,
+    Table,
+    Descriptions,
+    Badge,
+    Row,
+    Col,
+    Card,
+    Tag,
+    Space,
+} from "antd";
 import useproductActions from "../../product/hooks/useProduct";
+import usePromotionActions from "../../promotion/hooks/usepromotionAction";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
+import { get } from "lodash";
 
-const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
+const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
+    const [DataAppointment, setDataAppointment] = useState({});
+    useEffect(() => {
+        setDataAppointment(data);
+    }, [data]);
     const [form] = Form.useForm();
     const { getproduct, searchproduct } = useproductActions();
+    const { getPromotions } = usePromotionActions();
     const products = useSelector((state) => state.products);
+    const promotions = useSelector((state) => state.promotions);
     const [DataProduct, setDataProduct] = useState([]);
+    const [DataPromotion, setDataPromotion] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);
+    useEffect(() => {
+        const productTotal = selectedProducts.reduce((sum, item) => {
+            return sum + item.quantity * parseFloat(item.price || 0);
+        }, 0);
+        const serviceTotal = parseFloat(DataAppointment?.service_total || 0);
+
+        setTotalAmount(productTotal + serviceTotal);
+    }, [selectedProducts, DataAppointment]);
 
     const handleFinish = (values) => {
         onSubmit({
@@ -32,6 +64,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
 
     useEffect(() => {
         getproduct(50);
+        getPromotions(100);
     }, []);
 
     useEffect(() => {
@@ -44,7 +77,16 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
             );
         }
     }, [products]);
-
+    useEffect(() => {
+        if (promotions?.promotions?.data && !promotions.loading) {
+            setDataPromotion(
+                promotions?.promotions?.data.map((item) => ({
+                    ...item,
+                    key: item.id,
+                }))
+            );
+        }
+    }, [promotions]);
     const onSearchproduct = debounce((value) => {
         setSearchQuery({ ...searchquery, search: value });
     }, 300);
@@ -60,7 +102,13 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
     const handleProductSelect = (value) => {
         const newSelectedProducts = value.map((id) => {
             const existing = selectedProducts.find((item) => item.id === id);
-            return existing || { id, quantity: 1 };
+            return (
+                existing || {
+                    id,
+                    quantity: 1,
+                    price: DataProduct.find((item) => item.id === id).price,
+                }
+            );
         });
         setSelectedProducts(newSelectedProducts);
     };
@@ -80,6 +128,13 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
             key: "name",
         },
         {
+            title: "Giá",
+            dataIndex: "price",
+            key: "price",
+            render: (_, record) =>
+                parseInt(record.price).toLocaleString() + " VND",
+        },
+        {
             title: "Số lượng",
             dataIndex: "quantity",
             key: "quantity",
@@ -97,8 +152,88 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
                 />
             ),
         },
-    ];
+        {
+            title: "Thành tiền",
+            dataIndex: "total",
+            key: "total",
+            render: (_, record) =>
+                parseInt(
+                    get(
+                        selectedProducts.find((item) => item.id === record.id),
+                        "quantity",
+                        1
+                    ) * record.price
+                ).toLocaleString() + " VND",
+        },
+        {
+            title: "Thao tác",
+            key: "action",
+            render: (_, record) => (
+                <Button
+                    onClick={() => {
+                        const newSelectedProducts = selectedProducts.filter(
+                            (item) => item.id !== record.id
+                        );
+                        setSelectedProducts(newSelectedProducts);
 
+                        // Cập nhật lại giá trị trong Select
+                        form.setFieldsValue({
+                            products: newSelectedProducts.map(
+                                (item) => item.id
+                            ),
+                        });
+                    }}
+                    danger
+                >
+                    Xóa
+                </Button>
+            ),
+        },
+    ];
+    const items = [
+        {
+            key: "1",
+            label: "Tên khách hàng",
+            children: DataAppointment?.appointment_id?.customer?.full_name || "",
+        },
+        {
+            key: "2",
+            label: "Số điện thoại",
+            children: DataAppointment?.appointment_id?.customer?.phone || "",
+        },
+        {
+            key: "3",
+            label: "Ngày Đạt lịch",
+            children: DataAppointment?.created_at || "",
+        },
+        {
+            key: "4",
+            label: "trạng thái",
+            children: (
+                <Badge
+                    status={DataAppointment?.status === 1 ? "success" : "error"}
+                    text={
+                        DataAppointment?.status === 1
+                            ? "Đã thanh toán"
+                            : "Chưa thanh toán"
+                    }
+                />
+            ),
+        },
+        {
+            key: "5",
+            label: "Tiền dịch vụ",
+            children:
+                parseInt(DataAppointment?.service_total || 0).toLocaleString() +
+                " VND",
+        },
+        {
+            key: "6",
+            label: "Tổng tiền cần thanh toán",
+            children: totalAmount.toLocaleString() + " VND",
+        },
+    ];
+    
     return (
         <Modal
             title="Thanh Toán"
@@ -119,59 +254,122 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error }) => {
                 </Button>,
             ]}
         >
-            <Form
-                id="paymentForm"
-                form={form}
-                layout="vertical"
-                onFinish={handleFinish}
-            >
-                <Form.Item
-                    label="Phương thức thanh toán"
-                    name="paymentMethod"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Vui lòng chọn phương thức thanh toán!",
-                        },
-                    ]}
-                >
-                    <Select placeholder="Chọn phương thức">
-                        <Select.Option value={1}>Tiền mặt</Select.Option>
-                        <Select.Option value={0}>Chuyển khoản</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label="Nhập mã khuyến mãi" name="promotion_name">
-                    <Input placeholder="Nhập mã khuyến mãi" />
-                </Form.Item>
-                <Form.Item label="Sản phẩm" name="products">
-                    <Select
-                        placeholder="Chọn sản phẩm"
-                        mode="multiple"
-                        options={DataProduct.map((item) => ({
-                            label: item.name,
-                            value: item.id,
-                        }))}
-                        onChange={handleProductSelect}
-                    />
-                </Form.Item>
-                <Form.Item label="trạng thái" name="status">
-                    <Select placeholder="Chọn trạng thái">
-                        <Select.Option value={1}>Đã thanh toán</Select.Option>
-                        <Select.Option value={0}>Chưa thanh toán</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Table
-                    columns={columns}
-                    dataSource={selectedProducts.map((item) => ({
-                        ...item,
-                        ...DataProduct.find(
-                            (product) => product.id === item.id
-                        ),
-                    }))}
-                    pagination={false}
-                    rowKey="id"
-                />
-            </Form>
+            <Row gutter={[16, 16]}>
+                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <Descriptions title="Thông tin Dịch vụ" bordered items={items} />
+                </Col>
+                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <Card title="Thanh toán">
+                        <Form
+                            id="paymentForm"
+                            form={form}
+                            layout="vertical"
+                            onFinish={handleFinish}
+                        >
+                            <Form.Item
+                                label="Phương thức thanh toán"
+                                name="paymentMethod"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message:
+                                            "Vui lòng chọn phương thức thanh toán!",
+                                    },
+                                ]}
+                            >
+                                <Select placeholder="Chọn phương thức">
+                                    <Select.Option value={1}>
+                                        Tiền mặt
+                                    </Select.Option>
+                                    <Select.Option value={0}>
+                                        Chuyển khoản
+                                    </Select.Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Nhập mã khuyến mãi"
+                                name="promotion_name"
+                            >
+                                <Select
+                                    allowClear
+                                    placeholder="Chọn mã khuyến mãi"
+                                    options={DataPromotion.map((item) => ({
+                                        label: (
+                                            <Space>
+                                                <Tag color="orange">
+                                                    {item.name}
+                                                </Tag>
+
+                                                <Tag
+                                                    color={
+                                                        item.promotion_type ==
+                                                        "Percent"
+                                                            ? "green"
+                                                            : "red"
+                                                    }
+                                                >
+                                                    {item.promotion_type ==
+                                                    "Percent"
+                                                        ? "Giảm giá %"
+                                                        : "Giảm giá tiền mặt"}
+                                                </Tag>
+
+                                                <Tag color="blue">
+                                                    Giá trị đơn hàng tối thiểu:
+                                                    {" " +
+                                                        parseInt(
+                                                            item.min_order_amount
+                                                        ).toLocaleString()}
+                                                </Tag>
+                                            </Space>
+                                        ),
+                                        value: item.id,
+                                    }))}
+                                />
+                            </Form.Item>
+                            <Form.Item label="Sản phẩm" name="products">
+                                <Select
+                                    placeholder="Chọn sản phẩm"
+                                    mode="multiple"
+                                    allowClear
+                                    value={selectedProducts.map(
+                                        (item) => item.id
+                                    )}
+                                    options={DataProduct.map((item) => ({
+                                        label: item.name,
+                                        value: item.id,
+                                    }))}
+                                    onChange={handleProductSelect}
+                                />
+                            </Form.Item>
+                            <Form.Item label="trạng thái" name="status">
+                                <Select placeholder="Chọn trạng thái">
+                                    <Select.Option value={1}>
+                                        Đã thanh toán
+                                    </Select.Option>
+                                    <Select.Option value={0}>
+                                        Chưa thanh toán
+                                    </Select.Option>
+                                </Select>
+                            </Form.Item>
+                            <Table
+                                columns={columns}
+                                dataSource={selectedProducts.map((item) => ({
+                                    ...item,
+                                    ...DataProduct.find(
+                                        (product) => product.id === item.id
+                                    ),
+                                }))}
+                                pagination={{
+                                    pageSize: 5,
+                                    hideOnSinglePage: true,
+                                }}
+                                rowKey="id"
+                            />
+                        </Form>
+                    </Card>
+                </Col>
+            </Row>
         </Modal>
     );
 };

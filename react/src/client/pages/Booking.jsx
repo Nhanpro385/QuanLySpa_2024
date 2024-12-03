@@ -38,6 +38,7 @@ const Appbooking = () => {
     const [activeService, setActiveService] = useState(0);
     const [activeDate, setActiveDate] = useState(null);
     const [time, setTime] = useState(null);
+ 
     const [NoteData, setNoteData] = useState("");
     const [ServicesCategories, setServicesCategories] = useState([]);
     const ServiceCategoriesSlice = useSelector(
@@ -47,6 +48,8 @@ const Appbooking = () => {
     const OnchangeNote = (e) => {
         setNoteData(e.target.value);
     };
+    
+    
     const onSubmit = (data) => {
         if (!time) {
             api.error({
@@ -60,6 +63,8 @@ const Appbooking = () => {
             });
             return;
         }
+        console.log(time);
+        
         const payload = {
             shift_id: time.shift_id,
             services: service.map((ser) => ({
@@ -74,6 +79,7 @@ const Appbooking = () => {
             ), // Tính tổng giá
             time: time.start_time, // Thời gian
             note: NoteData, // Chú thích
+            date: time.date, // Ngày đặt lịch
         };
 
         localStorage.setItem("booking", JSON.stringify(payload));

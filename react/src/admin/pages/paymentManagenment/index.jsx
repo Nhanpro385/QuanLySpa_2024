@@ -40,27 +40,6 @@ const PaymentManagement = () => {
     }, [payments]);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-    const data = [
-        {
-            key: "1",
-            appointmentId: "HD001",
-            name: "Nguyễn Văn A",
-            total: "100.000 VNĐ",
-            paymentMethod: "Thẻ tín dụng",
-            date: "01/01/2021",
-            tags: ["Đã thanh toán"],
-        },
-        {
-            key: "2",
-            appointmentId: "HD002",
-            name: "Nguyễn Văn B",
-            total: "200.000 VNĐ",
-            paymentMethod: "Tiền mặt",
-            date: "02/01/2021",
-            tags: ["Đã thanh toán"],
-        },
-    ];
-
     const handleActionClick = async (e, record) => {
         if (e.key === "3") {
             showPaymentModal();
@@ -175,6 +154,7 @@ const PaymentManagement = () => {
             </Row>
 
             <PaymentModal
+                data={selectedInvoice}
                 isOpen={isPaymentModalOpen}
                 onClose={closePaymentModal}
                 onSubmit={handlePaymentSubmit}

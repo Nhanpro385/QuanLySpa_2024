@@ -209,48 +209,7 @@ const StreatmentsEdit = () => {
                                     )}
                                 </Form.Item>
                             </Col>
-                            {/* <Col
-                                xxl={12}
-                                xl={16}
-                                lg={12}
-                                md={12}
-                                sm={24}
-                                xs={24}
-                            >
-                                <Form.Item
-                                    label="Lược đánh giá của khách hàng"
-                                    validateStatus={errors.evaluete && "error"}
-                                    help={errors.evaluete?.message}
-                                >
-                                    {streatments.loading ? (
-                                        <Skeleton.Input
-                                            block={true}
-                                            active={true}
-                                            size={"large"}
-                                        />
-                                    ) : (
-                                        <Controller
-                                            name="evaluete"
-                                            control={control}
-                                            rules={{
-                                                required: {
-                                                    value: true,
-                                                    message:
-                                                        "Vui lòng nhập lược đánh giá",
-                                                },
-                                            }}
-                                            render={({ field }) => (
-                                                <Rate
-                                                    value={
-                                                        strreatmentData?.evaluete
-                                                    }
-                                                    {...field}
-                                                />
-                                            )}
-                                        />
-                                    )}
-                                </Form.Item>
-                            </Col> */}
+                           
                             <Col xxl={6} xl={8} lg={12} md={12} sm={24} xs={24}>
                                 <Form.Item
                                     label="Trạng thái"

@@ -32,6 +32,12 @@ const BookingInfo = () => {
         }
         return {};
     });
+    useEffect(() => {
+        if (!CustomerInfo) {
+            setCustomerInfo(localStorage.getItem("user"));
+        }
+    }, [CustomerInfo]);
+
     const handleBooking = async () => {
         try {
             const res = await CreateClient(data);
@@ -50,6 +56,7 @@ const BookingInfo = () => {
                         "Đặt lịch thành công Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi",
                 });
                 localStorage.removeItem("booking");
+                navigate("/datlich");
             }
         } catch (error) {
             console.log(error);
@@ -65,7 +72,7 @@ const BookingInfo = () => {
                 }))
             );
         } else {
-            navigate("/datlich");
+            navigate("/datlich/thanhcong");
         }
     }, [data]);
     const columns = [
@@ -128,10 +135,7 @@ const BookingInfo = () => {
                                 title: "Thông tin Đăt lịch",
                             },
                             {
-                                title: "Thanh toán",
-                            },
-                            {
-                                title: "Hoàn tất",
+                                title: "xác nhận Đặt lịch",
                             },
                         ]}
                     />
@@ -188,7 +192,9 @@ const BookingInfo = () => {
                             >
                                 <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                                     <ul style={{ listStyleType: "none" }}>
-                                        <li>Thời gian: 19/8/2024 - 09:00</li>
+                                        <li>
+                                            Thời gian: {data.date}- {data.time}
+                                        </li>
                                         <li>
                                             Tổng tiền:{" "}
                                             {data.totalprice.toLocaleString(
@@ -281,32 +287,7 @@ const BookingInfo = () => {
                                                 </span>
                                             </Col>
                                         </Row>
-                                        {/* <Row>
-                                            <Col
-                                                xl={12}
-                                                lg={12}
-                                                md={12}
-                                                sm={12}
-                                                xs={12}
-                                            >
-                                                <span
-                                                    style={{
-                                                        fontSize: "1.1rem",
-                                                    }}
-                                                >
-                                                    <strong>Giảm giá: </strong>
-                                                </span>
-                                            </Col>
-                                            <Col>
-                                                <span
-                                                    style={{
-                                                        fontSize: "1.1rem",
-                                                    }}
-                                                >
-                                                    <strong>0 VNĐ</strong>
-                                                </span>
-                                            </Col>
-                                        </Row> */}
+
                                         <Row>
                                             <Col
                                                 xl={12}

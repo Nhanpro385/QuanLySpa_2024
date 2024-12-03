@@ -93,7 +93,7 @@ const Register = () => {
                             </p>
                         )}
                     </Form.Item>
-                    <Form.Item label="email">
+                    <Form.Item label="Emai:">
                         <Controller
                             name="email"
                             control={control}
@@ -119,24 +119,26 @@ const Register = () => {
                             </p>
                         )}
                     </Form.Item>
-                    <Form.Item label="phone">
+                    <Form.Item label="Số điện thoại">
                         <Controller
                             name="phone"
                             control={control}
                             defaultValue=""
                             rules={{
-                                required: "Vui lòng nhập phone",
+                                required: "Vui lòng nhập số điện thoại",
                                 pattern: {
                                     value: /^[0-9]{10,11}$/,
 
-                                    message: "phone không hợp lệ",
+                                    message: "Số điện thoại không hợp lệ",
                                 },
                             }}
                             render={({ field }) => (
                                 <Input
+                                maxLength={11}
+                                min={10}
                                     type="number"
                                     {...field}
-                                    placeholder="phone"
+                                    placeholder="Số điện thoại"
                                     status={errors.phone ? "error" : ""}
                                 />
                             )}

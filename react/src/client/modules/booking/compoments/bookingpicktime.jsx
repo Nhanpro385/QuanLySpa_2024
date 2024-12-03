@@ -304,6 +304,7 @@ const BookingPickTime = ({
                                                 shift_id: shift.id,
                                                 start_time: slot.start_time,
                                                 index: idx,
+                                                date: listShift[activeDate].date,
                                             })
                                         }
                                     >

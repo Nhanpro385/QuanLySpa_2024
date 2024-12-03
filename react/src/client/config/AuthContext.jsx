@@ -72,8 +72,10 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem(
                 "user",
                 JSON.stringify({
-                    full_name: user.payload.data.full_name,
+                    name: user.payload.data.full_name,
                     id: user.payload.data.id,
+                    phone: user.payload.data.phone,
+                    email: user.payload.data.email,
                 })
             );
         } catch (e) {

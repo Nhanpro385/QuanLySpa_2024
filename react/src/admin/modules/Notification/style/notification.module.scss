@@ -27,7 +27,6 @@
 .noti_appointment {
     background-color: #4caf50;
     color: white;
- 
 }
 .noti_comment {
     color: #000;
@@ -37,8 +36,27 @@
     background-color: #f0f0f0; // lighter background for read notifications
     color: #000;
 }
-.notificationList{
+.notificationList {
     max-height: 300px;
-    
+
     overflow-y: auto;
+}
+.notificationPopover {
+    position: relative;
+    padding: 10px;
+}
+
+.notificationPopover::before {
+    content: "";
+    position: absolute;
+    top: -10px; /* Tăng vùng click phía trên */
+    bottom: -10px; /* Tăng vùng click phía dưới */
+    left: -10px; /* Tăng vùng click bên trái */
+    right: -10px; /* Tăng vùng click bên phải */
+    background: transparent; /* Vùng này không làm ảnh hưởng đến giao diện */
+    z-index: -1; /* Đảm bảo không che các phần tử khác */
+}
+.notificationPopover:hover {
+    cursor: pointer;
+    color: #e05265;
 }

@@ -14,6 +14,7 @@ import ServiceHistory from "../pages/ServiceHistory/ServiceHistory";
 import servicesDetailbyid from "../modules/Services/components/servicesDetailbyid";
 import ServicesDetailById from "../modules/Services/components/servicesDetailbyid";
 import AboutUs from "../pages/AboutUs/AboutUs";
+import ThanksBooking from "../pages/thanksBooking";
 
 const PublicRoutes = [
     {
@@ -91,6 +92,11 @@ const PublicRoutes = [
         element: <AboutUs />,
         requiredRole: { requiredRole: "public", role: "Client" },
     },
+    {
+        path: "/datlich/thanhcong",
+        element: <ThanksBooking />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    }
 ];
 
 export { PublicRoutes };

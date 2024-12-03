@@ -186,7 +186,7 @@ const StreatmentsAdd = () => {
                                             <Select
                                                 {...field}
                                                 showSearch
-                                                placeholder="Chọn lịch hẹn"
+                                                placeholder="Chọn lịch hẹn hoặc tìm kiếm"
                                                 onChange={(value) => {
                                                     field.onChange(value);
                                                     handleAppointmentChange(
