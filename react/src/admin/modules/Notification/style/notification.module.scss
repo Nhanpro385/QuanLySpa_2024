@@ -5,6 +5,7 @@
     transition: all 0.3s;
     animation: slideInLeft 0.5s ease-out forwards; /* Dùng forwards để giữ vị trí cuối */
     opacity: 0; /* Bắt đầu với opacity 0 */
+    width: 300px;
 }
 
 .notification:hover {
@@ -26,6 +27,7 @@
 .noti_appointment {
     background-color: #4caf50;
     color: white;
+ 
 }
 .noti_comment {
     color: #000;
@@ -34,4 +36,9 @@
 .read {
     background-color: #f0f0f0; // lighter background for read notifications
     color: #000;
+}
+.notificationList{
+    max-height: 300px;
+    
+    overflow-y: auto;
 }

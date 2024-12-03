@@ -1,21 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Col, Row, Select, Input, message } from "antd";
 const { Search } = Input;
-import { Dropdown, Space } from "antd";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+
+import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-import { useCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
-import {
-    createCalendar,
-    viewDay,
-    viewMonthAgenda,
-    viewMonthGrid,
-    viewWeek,
-} from "@schedule-x/calendar";
-import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
-import { createEventModalPlugin } from "@schedule-x/event-modal";
-import { createResizePlugin } from "@schedule-x/resize";
 import "@schedule-x/theme-default/dist/index.css";
 import StaffTable from "../../modules/staffManagement/compoments/StaffTable";
 import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
@@ -56,7 +45,7 @@ function Staffs() {
         }
     }, [users]);
     const pagination = users.meta || {};
-    
+
     const handleEdit = async (key) => {
         try {
             const res = await getusersById(key);
@@ -127,29 +116,8 @@ function Staffs() {
         setSearchQuery({ ...searchquery, page, per_page: pagination });
     };
 
-    const today = new Date();
-    const formattedDate = today.toISOString().slice(0, 10);
-    const calendar = useCalendarApp({
-        views: [viewMonthGrid, viewMonthAgenda, viewWeek, viewDay],
-        selectedDate: formattedDate,
-        defaultView: viewWeek.name,
-        events: [
-            {
-                id: "3",
-
-                title: "Trần Phi Hào",
-                description: "ca2",
-                start: "2024-09-19 00:00",
-                end: "2024-09-19 02:00",
-            },
-        ],
-
-        plugins: [
-            createDragAndDropPlugin(),
-            createEventModalPlugin(),
-            createResizePlugin(),
-        ],
-    });
+   
+   
 
     return (
         <div>
@@ -194,9 +162,6 @@ function Staffs() {
                 handleEditSubmit={handleEditSubmit}
                 errorForm={errorForm}
             />
-            {/* <Col>
-                <ScheduleXCalendar calendarApp={calendar} />
-            </Col> */}
         </div>
     );
 }

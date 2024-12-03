@@ -11,9 +11,9 @@ const items = [
     {
         key: "2",
         label: (
-            <Button block disabled>
-                {" "}
-                Chi tiết (Chưa hoàn thành)
+            <Button block >
+         
+                Chi tiết 
             </Button>
         ),
     },

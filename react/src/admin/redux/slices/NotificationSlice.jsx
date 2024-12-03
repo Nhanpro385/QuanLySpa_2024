@@ -5,10 +5,12 @@ import endpoints from "../../config/appConfig";
 // Async thunk to get notifications
 export const notificationsGet = createAsyncThunk(
     "notifications/get",
-    async (_, { rejectWithValue }) => {
+    async (per_page, { rejectWithValue }) => {
         try {
+            // Get notifications from the server
+            const queryParams = per_page ? `?per_page=${per_page}` : "";
             const response = await axiosInstance.get(
-                endpoints.Notification.list
+                `${endpoints.Notification.list}${queryParams}`
             );
 
             // Return response data

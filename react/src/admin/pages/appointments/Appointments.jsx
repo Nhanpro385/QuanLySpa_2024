@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Row, Input, notification } from "antd";
 
-import ModalAppointmentEdit from "../../modules/appointments/compoments/appoitnmentsAddmodalEdit";
+
 import AppointmentsTable from "../../modules/appointments/compoments/AppointmentsTable";
 import AppointmentsCalendar from "../../modules/appointments/compoments/AppointmentsCalendar";
 import useModal from "../../modules/appointments/hooks/openmodal";

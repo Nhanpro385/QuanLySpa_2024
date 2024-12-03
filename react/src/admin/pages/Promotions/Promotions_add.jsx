@@ -173,7 +173,7 @@ const PromotionsAdd = () => {
                                             <Option value="1">
                                                 Giảm giá theo phần trăm (%)
                                             </Option>
-                                            <Option value="2">
+                                            <Option value="0">
                                                 Giảm giá tiền mặt (VNĐ)
                                             </Option>
                                         </Select>

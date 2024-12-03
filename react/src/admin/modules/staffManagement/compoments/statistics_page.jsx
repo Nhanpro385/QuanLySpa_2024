@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Statistic, Card } from "antd";
+import { Row, Col, Statistic, Card, Typography } from "antd";
 import {
     ArrowDownOutlined,
     ArrowUpOutlined,
@@ -7,81 +7,61 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 
-const Statistics_staff = () => {
+const Statistics_staff = ({ data }) => {
     return (
-        <Row gutter={[16,16]}>
+        <Row gutter={[16, 16]}>
             {/* Số giờ làm việc */}
             <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
-                        title="Số giờ làm việc"
-                        value={130}
+                        title="Thống kê lịch hẹn"
+                        value={data?.countAppoinment_month || 0}
                         precision={0}
                         valueStyle={{
                             color: "#3f8600",
                         }}
-                        suffix="Tiếng"
-                        prefix={<ArrowUpOutlined />}
+                        suffix="Lịch hẹn"
                     />
+                    <Typography.Text type="secondary">
+                        <strong>
+                            Lịch hẹn trong tuần :{" "}
+                            {data?.countAppoinment_week || 0}
+                        </strong>
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text type="secondary">
+                        <strong>
+                            Lịch hẹn trong Ngày :{" "}
+                            {data?.countAppoinment_today || 0}
+                        </strong>
+                    </Typography.Text>
                 </Card>
             </Col>
             {/* Doanh thu cá nhân */}
             <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
-                        title="Doanh thu cá nhân"
-                        value={3000000}
+                        title="Thống kê lịch tư vấn"
+                        value={data?.countConsulation_month || 0}
                         precision={0}
                         valueStyle={{
                             color: "#cf1322",
                         }}
-                        suffix="đ"
-                        prefix={<ArrowDownOutlined />}
+                        suffix="Lịch tư vấn"
                     />
-                </Card>
-            </Col>
-            {/* Số lượng khách hàng mới */}
-            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
-                <Card bordered={false}>
-                    <Statistic
-                        title="Khách hàng mới"
-                        value={25}
-                        precision={0}
-                        valueStyle={{
-                            color: "#3f8600",
-                        }}
-                        prefix={<UserOutlined />}
-                    />
-                </Card>
-            </Col>
-            {/* Tỷ lệ hoàn thành chỉ tiêu */}
-            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
-                <Card bordered={false}>
-                    <Statistic
-                        title="Tỷ lệ hoàn thành chỉ tiêu"
-                        value={85}
-                        precision={0}
-                        valueStyle={{
-                            color: "#3f8600",
-                        }}
-                        suffix="%"
-                        prefix={<ArrowUpOutlined />}
-                    />
-                </Card>
-            </Col>
-            {/* Đánh giá trung bình */}
-            <Col xl={6} lg={6} md={6} sm={12} xs={24}>
-                <Card bordered={false}>
-                    <Statistic
-                        title="Đánh giá trung bình"
-                        value={4.5}
-                        precision={1}
-                        valueStyle={{
-                            color: "#faad14",
-                        }}
-                        suffix="/ 5"
-                        prefix={<LikeOutlined />}
-                    />
+                    <Typography.Text type="secondary">
+                        <strong>
+                            Lịch hẹn trong tuần :{" "}
+                            {data?.countAppoinment_week || 0}
+                        </strong>
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text type="secondary">
+                        <strong>
+                            Lịch hẹn trong Ngày :{" "}
+                            {data?.countAppoinment_today || 0}
+                        </strong>
+                    </Typography.Text>
                 </Card>
             </Col>
         </Row>

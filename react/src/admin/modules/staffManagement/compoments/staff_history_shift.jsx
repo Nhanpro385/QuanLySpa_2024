@@ -1,5 +1,15 @@
 import React from "react";
-import { Col, Row, Select, DatePicker, Space, Card, Tag, Button } from "antd";
+import {
+    Col,
+    Row,
+    Select,
+    DatePicker,
+    Space,
+    Card,
+    Tag,
+    Button,
+    List,
+} from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import {
@@ -9,12 +19,19 @@ import {
     PlayCircleOutlined,
     RightCircleOutlined,
 } from "@ant-design/icons";
+import Staff_history_shift_Detail from "./staff_history_shift_Detail";
 dayjs.extend(customParseFormat);
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY/MM/DD";
-const weekFormat = "MM/DD";
-const monthFormat = "YYYY/MM";
-const Staff_history_shift = () => {
+import useModal from "../../appointments/hooks/openmodal";
+import style from "../style/staff_history_shift.module.scss";
+const Staff_history_shift = ({ data }) => {
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const [DataSelected, setDataSelected] = React.useState({});
+    const handleShowDetail = (data) => {
+        setDataSelected(() => data);
+        showModal();
+    };
     return (
         <Row>
             <Col xl={24} lg={24} md={24} sm={24} xs={24}>
@@ -31,354 +48,103 @@ const Staff_history_shift = () => {
                 </Row>
             </Col>
             <Col xl={24} lg={24} md={24} sm={24} xs={24} className="mt-3">
-                <Row gutter={[16, 16]}>
-                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
-                        <Card
-                            className=""
-                            bordered={false}
-                            style={{
-                                backgroundColor: "#fafafa",
-                                borderRadius: "10px",
-                            }}
-                        >
-                            <div
+                <List
+                    grid={{ gutter: 16, column: 4 }}
+                    dataSource={data}
+                    pagination={{
+                        pageSize: 8,
+                    }}
+                    
+                    renderItem={(item) => (
+                        <List.Item>
+                            <Card
+                                className={style.card}
+                                bordered={false}
                                 style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
+                                    backgroundColor: "#fafafa",
+                                    borderRadius: "10px",
                                 }}
                             >
-                                <h3>Trị Mụn </h3>
-                                <Button shape="circle">
-                                    <RightCircleOutlined
-                                        style={{
-                                            fontSize: "24px",
-                                            cursor: "pointer",
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <h3>{item?.customer?.full_name}</h3>
+                                    <Button
+                                        shape="circle"
+                                        onClick={() => {
+                                            handleShowDetail(item);
                                         }}
-                                    />
-                                </Button>
-                            </div>
-                            <div style={{ marginTop: "10px" }}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <ClockCircleOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>15:37:15</span>
+                                    >
+                                        <RightCircleOutlined
+                                            style={{
+                                                fontSize: "24px",
+                                                cursor: "pointer",
+                                            }}
+                                        />
+                                    </Button>
                                 </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <DollarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>500,000đ</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <CalendarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>01/03/2023</span>
-                                </div>
-                            </div>
-                            <Tag color="green" style={{ marginTop: "10px" }}>
-                                Hoàn thành
-                            </Tag>
-                        </Card>
-                    </Col>
-                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
-                        <Card
-                            className=""
-                            bordered={false}
-                            style={{
-                                backgroundColor: "#fafafa",
-                                borderRadius: "10px",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <h3>Trị Mụn </h3>
-                                <Button shape="circle">
-                                    <RightCircleOutlined
+                                <div style={{ marginTop: "10px" }}>
+                                    <div
                                         style={{
-                                            fontSize: "24px",
-                                            cursor: "pointer",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            marginBottom: "8px",
                                         }}
-                                    />
-                                </Button>
-                            </div>
-                            <div style={{ marginTop: "10px" }}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <ClockCircleOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>15:37:15</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <DollarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>500,000đ</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <CalendarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>01/03/2023</span>
-                                </div>
-                            </div>
-                            <Tag color="green" style={{ marginTop: "10px" }}>
-                                Hoàn thành
-                            </Tag>
-                        </Card>
-                    </Col>
-                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
-                        <Card
-                            className=""
-                            bordered={false}
-                            style={{
-                                backgroundColor: "#fafafa",
-                                borderRadius: "10px",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <h3>Trị Mụn </h3>
-                                <Button shape="circle">
-                                    <RightCircleOutlined
+                                    >
+                                        <ClockCircleOutlined
+                                            style={{ marginRight: "8px" }}
+                                        />
+                                        <span>{item?.start_time}</span>
+                                    </div>
+                                    <div
                                         style={{
-                                            fontSize: "24px",
-                                            cursor: "pointer",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            marginBottom: "8px",
                                         }}
-                                    />
-                                </Button>
-                            </div>
-                            <div style={{ marginTop: "10px" }}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <ClockCircleOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>15:37:15</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <DollarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>500,000đ</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <CalendarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>01/03/2023</span>
-                                </div>
-                            </div>
-                            <Tag color="green" style={{ marginTop: "10px" }}>
-                                Hoàn thành
-                            </Tag>
-                        </Card>
-                    </Col>
-                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
-                        <Card
-                            className=""
-                            bordered={false}
-                            style={{
-                                backgroundColor: "#fafafa",
-                                borderRadius: "10px",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <h3>Trị Mụn </h3>
-                                <Button shape="circle">
-                                    <RightCircleOutlined
+                                    >
+                                        <DollarOutlined
+                                            style={{ marginRight: "8px" }}
+                                        />
+                                        <span>
+                                            {item?.total_price_services.toLocaleString()}{" "}
+                                            VND
+                                        </span>
+                                    </div>
+                                    <div
                                         style={{
-                                            fontSize: "24px",
-                                            cursor: "pointer",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            marginBottom: "8px",
                                         }}
-                                    />
-                                </Button>
-                            </div>
-                            <div style={{ marginTop: "10px" }}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <ClockCircleOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>15:37:15</span>
+                                    >
+                                        <CalendarOutlined
+                                            style={{ marginRight: "8px" }}
+                                        />
+                                        <span> {item?.appointment_date} -</span>
+                                    </div>
                                 </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
+                                <Tag
+                                    color="green"
+                                    style={{ marginTop: "10px" }}
                                 >
-                                    <DollarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>500,000đ</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <CalendarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>01/03/2023</span>
-                                </div>
-                            </div>
-                            <Tag color="green" style={{ marginTop: "10px" }}>
-                                Hoàn thành
-                            </Tag>
-                        </Card>
-                    </Col>
-                    <Col xl={8} lg={8} md={8} sm={12} xs={24}>
-                        <Card
-                            className=""
-                            bordered={false}
-                            style={{
-                                backgroundColor: "#fafafa",
-                                borderRadius: "10px",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <h3>Trị Mụn </h3>
-                                <Button shape="circle">
-                                    <RightCircleOutlined
-                                        style={{
-                                            fontSize: "24px",
-                                            cursor: "pointer",
-                                        }}
-                                    />
-                                </Button>
-                            </div>
-                            <div style={{ marginTop: "10px" }}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <ClockCircleOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>15:37:15</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <DollarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>500,000đ</span>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: "8px",
-                                    }}
-                                >
-                                    <CalendarOutlined
-                                        style={{ marginRight: "8px" }}
-                                    />
-                                    <span>01/03/2023</span>
-                                </div>
-                            </div>
-                            <Tag color="green" style={{ marginTop: "10px" }}>
-                                Hoàn thành
-                            </Tag>
-                        </Card>
-                    </Col>
-                </Row>
+                                    {item?.status}
+                                </Tag>
+                            </Card>
+                        </List.Item>
+                    )}
+                />
             </Col>
+            <Staff_history_shift_Detail
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                appoitmentData={DataSelected}
+            />
         </Row>
     );
 };

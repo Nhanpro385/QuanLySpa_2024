@@ -34,7 +34,8 @@ const endpoints = {
     },
     Users: {
         list: `${API_BASE_URL}/users`,
-        detail: (id) => `${API_BASE_URL}/users/${id}`,
+        detail: (id) =>
+            `${API_BASE_URL}/users/${id}?shifts=true&shifts_after=true&shifts_before=true&appointments=true&cosulations=true&treatmentHistories=true`,
         create: `${API_BASE_URL}/users`,
         update: (id) => `${API_BASE_URL}/users/${id}`,
         delete: (id) => `${API_BASE_URL}/users/${id}`,
