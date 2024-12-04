@@ -12,10 +12,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use App\Models\Consultation;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasFactory, HasSnowflakePrimary, Notifiable;
+    use SoftDeletes;
 
     protected $keyType = 'string';
     protected $table = 'customers';
@@ -51,6 +52,41 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
                 $customer->password = Hash::make($customer->password);
             }
         });
+
+
+ //appointment
+
+ static::deleting(function ($appointment) {
+    Appointment::where('customer_id', $appointment->id)->update(['customer_id' => null]);
+});
+
+static::softDeleted(function ($appointment) {
+
+    Appointment::where('customer_id', $appointment->id)->update(['customer_id' => null]);
+});
+
+ //Consulation
+
+ static::deleting(function ($consulation) {
+    Consulation::where('customer_id', $consulation->id)->update(['customer_id' => null]);
+});
+
+static::softDeleted(function ($consulation) {
+
+    Consulation::where('customer_id', $consulation->id)->update(['customer_id' => null]);
+});
+
+//Comment
+
+static::deleting(function ($comment) {
+    Comment::where('customer_id', $comment->id)->update(['customer_id' => null]);
+});
+
+static::softDeleted(function ($comment) {
+
+    Comment::where('customer_id', $comment->id)->update(['customer_id' => null]);
+});
+
     }
 
 
@@ -70,8 +106,6 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->hasMany(Consulation::class, 'customer_id', 'id');
     }
-
-
 
 
 
@@ -138,6 +172,8 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->hasMany(Comment::class, 'customer_id')->where('status', 1);
     }
+
+
 
 
 }

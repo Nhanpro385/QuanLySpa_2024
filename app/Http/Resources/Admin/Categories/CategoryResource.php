@@ -9,22 +9,22 @@ class CategoryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'parent_id' => $this->parentCategory ? [
-                'id' => $this->parentCategory->id,
+            'id' => (string) $this->id,
+            'parent_id' => (string) $this->parentCategory ? [
+                'id' => (string) $this->parentCategory->id,
                 'name' => $this->parentCategory->name,
-                
+
             ] : null,
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status,
             'created_by' => $this->createdByUser ? [
-                'id' => $this->createdByUser->id,
+                'id' => (string) $this->createdByUser->id,
                 'full_name' => $this->createdByUser->full_name,
                 'role' => $this->getRoleName($this->createdByUser->role),
             ] : null,
             'updated_by' => $this->updatedByUser ? [
-                'id' => $this->updatedByUser->id,
+                'id' => (string) $this->updatedByUser->id,
                 'full_name' => $this->updatedByUser->full_name,
                 'role' => $this->getRoleName($this->updatedByUser->role),
             ] : null,

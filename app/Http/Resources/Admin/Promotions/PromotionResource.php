@@ -9,7 +9,7 @@ class PromotionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' => (string) $this->id,
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status,
@@ -21,12 +21,12 @@ class PromotionResource extends JsonResource
             'min_quantity' => $this->min_quantity,
             'image_url' => $this->image_url,
             'created_by' => $this->createdByUser ? [
-                'id' => $this->createdByUser->id,
+                'id' => (string) $this->createdByUser->id,
                 'full_name' => $this->createdByUser->full_name,
                 'role' => $this->getRoleName($this->createdByUser->role),
             ] : null,
             'updated_by' => $this->updatedByUser ? [
-                'id' => $this->updatedByUser->id,
+                'id' => (string) $this->updatedByUser->id,
                 'full_name' => $this->updatedByUser->full_name,
                 'role' => $this->getRoleName($this->updatedByUser->role),
             ] : null,

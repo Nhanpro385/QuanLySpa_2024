@@ -110,7 +110,7 @@ class PromotionController extends Controller
             $validatedData['image_url'] = $imageName;
         }
 
-   
+
         $promotion->update($validatedData);
 
         return response()->json([
@@ -132,44 +132,46 @@ class PromotionController extends Controller
     }
 }
 
-    public function destroy($id)
-    {
-        try {
-            $promotion = Promotion::findOrFail($id);
+public function destroy($id)
+{
+    try {
+       
+        $promotion = Promotion::withTrashed()->findOrFail($id);
 
 
-            if ($promotion->image_url) {
-                $oldImagePath = storage_path('app/public/uploads/promotions/' . $promotion->image_url);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
+        if ($promotion->image_url) {
+            $oldImagePath = storage_path('app/public/uploads/promotions/' . $promotion->image_url);
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
             }
+        }
 
 
-            if ($promotion->forceDelete()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Khuyến mãi và ảnh đã được xóa ',
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Không thể xóa khuyến mãi!',
-                ], 500);
-            }
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        if ($promotion->forceDelete()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Khuyến mãi và ảnh đã được xóa thành công.',
+            ]);
+        } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Khuyến mãi không tồn tại!',
-            ], 404);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật.',
-                'error' => $th->getMessage(),
+                'message' => 'Không thể xóa khuyến mãi!',
             ], 500);
         }
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Khuyến mãi không tồn tại!',
+        ], 404);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Đã xảy ra lỗi trong quá trình xóa khuyến mãi.',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
+
 
 
 }

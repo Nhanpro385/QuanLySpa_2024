@@ -5,15 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kra8\Snowflake\HasSnowflakePrimary;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
     use HasFactory, HasSnowflakePrimary;
-
+    use SoftDeletes;
     protected $keyType = 'string';
     public $incrementing = false;
 
     protected $table = 'categories';
+    protected $casts = [
+        'id' => 'string',
+        'parent_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     protected $fillable = [
         'id',
         'parent_id',
@@ -41,7 +49,7 @@ class Category extends Model
 
     public function children()
     {
-        return $this->hasMany(Category::class, 'parent_id', 'id'); 
+        return $this->hasMany(Category::class, 'parent_id', 'id');
     }
 
 
@@ -72,5 +80,30 @@ class Category extends Model
     public function getCreatorAttribute()
     {
         return $this->createdByUser ? $this->createdByUser->name : null;
+    }
+
+
+    protected static function boot()
+    {
+        //products
+        parent::boot();
+        static::deleting(function ($category) {
+            Product::where('category_id', $category->id)->update(['category_id' => null]);
+        });
+
+        static::softDeleted(function ($category) {
+
+            Product::where('category_id', $category->id)->update(['category_id' => null]);
+        });
+
+        // categori
+        static::deleting(function ($parent_id) {
+            Category::where('parent_id', $parent_id->id)->update(['parent_id' => null]);
+        });
+
+        static::softDeleted(function ($parent_id) {
+
+            Category::where('parent_id', $parent_id->id)->update(['parent_id' => null]);
+        });
     }
 }

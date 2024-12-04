@@ -97,7 +97,7 @@ class CommentController extends Controller
                 'type' => 0
 
             ]);
-          
+
             if ($request->hasFile('image_url')) {
                 $images = $request->file('image_url');
                 if (is_array($images)) {
@@ -241,39 +241,26 @@ class CommentController extends Controller
     public function destroy($id)
     {
         try {
-            $comment = Comment::findOrFail($id);
-            $userId = Auth::id();
+       
+            $comment = Comment::withTrashed()->with('replies')->findOrFail($id);
 
-            if (!$userId) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Bạn cần đăng nhập để thêm bình luận.',
-                ], 401);
-            }
-            $commentImages = CommentImage::where('comment_id', $comment->id)->get();
-            if ($commentImages->isNotEmpty()) {
-                foreach ($commentImages as $commentImage) {
-                    $oldImagePath = Storage::disk('public')->path('uploads/comments/' . $commentImage->image_url);
 
-                    if (Storage::disk('public')->exists('uploads/comments/' . $commentImage->image_url)) {
-                        Storage::disk('public')->delete('uploads/comments/' . $commentImage->image_url);
-                    }
-                    $commentImage->delete();
-                }
+            $this->deleteCommentImages($comment);
+
+            foreach ($comment->replies as $reply) {
+
+                $this->deleteCommentImages($reply);
+
+                $reply->forceDelete();
             }
 
-            $comment->replies()->delete();
-            if ($comment->forceDelete()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Bình luận và ảnh liên quan đã được xóa thành công!',
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Không thể xóa bình luận!',
-                ], 500);
-            }
+
+            $comment->forceDelete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Bình luận và các bình luận con đã được xóa thành công!'
+            ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
@@ -287,6 +274,27 @@ class CommentController extends Controller
             ], 500);
         }
     }
+
+    private function deleteCommentImages($comment)
+    {
+
+        $commentImages = CommentImage::where('comment_id', $comment->id)->get();
+
+        if ($commentImages->isNotEmpty()) {
+            foreach ($commentImages as $commentImage) {
+
+                $oldImagePath = Storage::disk('public')->path('uploads/comments/' . $commentImage->image_url);
+
+                if (Storage::disk('public')->exists('uploads/comments/' . $commentImage->image_url)) {
+                    Storage::disk('public')->delete('uploads/comments/' . $commentImage->image_url);
+                }
+
+
+                $commentImage->delete();
+            }
+        }
+    }
+
 
 
 
