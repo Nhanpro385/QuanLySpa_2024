@@ -33,7 +33,7 @@ class ProductController extends Controller
             if ($perPage < 1 || $perPage > 100) {
                 $perPage = 5;
             }
-            $selectedColumns = ['id', 'name', 'price', 'date', 'status', 'cost', 'category_id'];
+            $selectedColumns = ['id', 'name', 'price', 'date', 'status', 'cost', 'category_id', 'image_url'];
             $query = Product::select($selectedColumns)->where($queryItems);
             if ($request['search']) {
                 $value = $request['search'];

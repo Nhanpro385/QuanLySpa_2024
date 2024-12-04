@@ -80,7 +80,7 @@ class PaymentController extends Controller
                     return response()->json([
                         "status" => "error",
                         "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                        'error' => 'Số lượng sản phẩm mã: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
                     ], 400);
                 }
                 array_push($products_out_of_stock, [
@@ -227,7 +227,7 @@ class PaymentController extends Controller
                     return response()->json([
                         "status" => "error",
                         "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                        'error' => 'Số lượng sản phẩm mã: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
                     ], 400);
                 }
             }
@@ -299,7 +299,7 @@ class PaymentController extends Controller
                     return response()->json([
                         "status" => "error",
                         "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                        'error' => 'Số lượng sản phẩm mã: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
                     ], 400);
                 }
 
