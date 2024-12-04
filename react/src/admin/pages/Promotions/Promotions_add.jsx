@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     Form,
     Input,
@@ -20,6 +20,9 @@ import { Controller, useForm } from "react-hook-form";
 import { generateSnowflakeId } from "../../utils";
 import usePromotionActions from "../../modules/promotion/hooks/usepromotionAction";
 const PromotionsAdd = () => {
+    useEffect(() => {
+        document.title = "Thêm chương trình khuyến mãi";
+    }, []);
     const [api, contextHolder] = notification.useNotification();
     const {
         control,

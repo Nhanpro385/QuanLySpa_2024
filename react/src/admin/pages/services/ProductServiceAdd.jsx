@@ -11,6 +11,9 @@ import { useParams } from "react-router-dom";
 
 // Constants and Hooks Initialization
 const ProductServiceAdd = () => {
+    useEffect(() => {
+        document.title = "Thêm danh mục sản phẩm Của Dịch Vụ";
+    }, []);
     const { id: idservice } = useParams();
     const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();

@@ -9,6 +9,9 @@ import { Snowflake } from "@theinternetfolks/snowflake";
 import usecategoriesActions from "../../modules/product/hooks/useCategoriesProduct";
 import debounce from "lodash/debounce";
 const ProductCategories = () => {
+    useEffect(() => {
+        document.title = "Quản lý danh mục sản phẩm";
+    }, []);
     const {
         addcategories,
         getcategories,

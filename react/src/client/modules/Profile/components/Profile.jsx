@@ -22,8 +22,6 @@ import dayjs from "dayjs";
 // React Hook Form
 import { useForm, Controller } from "react-hook-form";
 
-const { SubMenu } = Menu;
-
 const Profile = () => {
     const navigate = useNavigate();
     const {
@@ -53,8 +51,6 @@ const Profile = () => {
 
     useEffect(() => {
         if (authCustomer?.user?.data) {
-            console.log(authCustomer?.user?.data);
-
             setCustomer(authCustomer?.user?.data);
         }
     }, [authCustomer]);
@@ -201,269 +197,254 @@ const Profile = () => {
     };
 
     return (
-      
-            <Row className={style.container} gutter={[16, 16]}>
-                {contextHolder}
-                <Col xs={24} sm={6} lg={6} className={style.sidebar}>
-                    <MenuProfile />
-                </Col>
+        <Row className={style.container} gutter={[16, 16]}>
+            {contextHolder}
 
-                {/* Profile Content */}
-                <Col xs={24} sm={18} lg={18} className={style.profileContent}>
-                    <Row
-                        justify="center"
-                        align="middle"
-                        className={style.header}
+            {/* Profile Content */}
+            <Col
+                xxl={24}
+                xl={24}
+                lg={24}
+                md={24}
+                sm={24}
+                xs={24}
+                className={style.profileContent}
+            >
+                <Row justify="center" align="middle" className={style.header}>
+                    <Col
+                        xxl={24}
+                        xl={24}
+                        lg={24}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className={style.boxTitleProfile}
                     >
-                        <Col
-                            xxl={24}
-                            xl={24}
-                            lg={24}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            className={style.boxTitleProfile}
+                        <h2>Quản lý thông tin cá nhân</h2>
+                    </Col>
+                </Row>
+
+                {/* Form and Details */}
+                <Row gutter={[16, 16]}>
+                    <Col xxl={16} xl={16} lg={16} md={16} sm={24} xs={24}>
+                        <form
+                            onSubmit={handleSubmit(onSubmit)}
+                            className={style.profileForm}
                         >
-                            <h2>Quản lý thông tin cá nhân</h2>
-                        </Col>
-                    </Row>
-
-                    {/* Form and Details */}
-                    <Row gutter={[16, 16]}>
-                        <Col xxl={16} xl={16} lg={16} md={16} sm={24} xs={24}>
-                            <form
-                                onSubmit={handleSubmit(onSubmit)}
-                                className={style.profileForm}
-                            >
-                                <Row
-                                    className={style.formInput}
-                                    gutter={[16, 16]}
-                                >
-                                    <Col span={24}>
-                                        <label htmlFor="full_name">
-                                            Họ Và Tên
-                                        </label>
-                                        <Controller
-                                            name="full_name"
-                                            control={control}
-                                            rules={{
-                                                required:
-                                                    "Họ và tên không được để trống",
-                                            }}
-                                            render={({ field }) => (
-                                                <Input {...field} />
-                                            )}
-                                        />
-                                        {errors.full_name && (
-                                            <p classfull_name={style.error}>
-                                                {errors.full_name.message}
-                                            </p>
+                            <Row className={style.formInput} gutter={[16, 16]}>
+                                <Col span={24}>
+                                    <label htmlFor="full_name">Họ Và Tên</label>
+                                    <Controller
+                                        name="full_name"
+                                        control={control}
+                                        rules={{
+                                            required:
+                                                "Họ và tên không được để trống",
+                                        }}
+                                        render={({ field }) => (
+                                            <Input {...field} />
                                         )}
-                                    </Col>
-                                    <Col span={24}>
-                                        <label htmlFor="phone">
-                                            Số Điện Thoại
-                                        </label>
-                                        <Controller
-                                            name="phone"
-                                            rules={{
-                                                required:
-                                                    "Số điện thoại không được để trống",
-                                            }}
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Input
-                                                    addonBefore="+84"
-                                                    {...field}
-                                                />
-                                            )}
-                                        />
-                                        {errors.phone && (
-                                            <p className={style.error}>
-                                                {errors.phone.message}
-                                            </p>
+                                    />
+                                    {errors.full_name && (
+                                        <p classfull_name={style.error}>
+                                            {errors.full_name.message}
+                                        </p>
+                                    )}
+                                </Col>
+                                <Col span={24}>
+                                    <label htmlFor="phone">Số Điện Thoại</label>
+                                    <Controller
+                                        name="phone"
+                                        rules={{
+                                            required:
+                                                "Số điện thoại không được để trống",
+                                        }}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input
+                                                addonBefore="+84"
+                                                {...field}
+                                            />
                                         )}
-                                    </Col>
-                                    <Col span={24}>
-                                        <label htmlFor="email">Email</label>
-                                        <Controller
-                                            name="email"
-                                            control={control}
-                                            rules={{
-                                                required:
-                                                    "Email không được để trống",
-                                                pattern: {
-                                                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
-                                                    message:
-                                                        "Email không hợp lệ",
-                                                },
-                                            }}
-                                            render={({ field }) => (
-                                                <Input {...field} />
-                                            )}
-                                        />
-                                        {errors.email && (
-                                            <p className={style.error}>
-                                                {errors.email.message}
-                                            </p>
+                                    />
+                                    {errors.phone && (
+                                        <p className={style.error}>
+                                            {errors.phone.message}
+                                        </p>
+                                    )}
+                                </Col>
+                                <Col span={24}>
+                                    <label htmlFor="email">Email</label>
+                                    <Controller
+                                        name="email"
+                                        control={control}
+                                        rules={{
+                                            required:
+                                                "Email không được để trống",
+                                            pattern: {
+                                                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                                                message: "Email không hợp lệ",
+                                            },
+                                        }}
+                                        render={({ field }) => (
+                                            <Input {...field} />
                                         )}
-                                    </Col>
-                                    <Col span={24}>
-                                        <label htmlFor="gender">
-                                            Giới Tính
-                                        </label>
-                                        <Controller
-                                            name="gender"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    placeholder="Chọn giới tính"
-                                                    style={{ width: "100%" }}
+                                    />
+                                    {errors.email && (
+                                        <p className={style.error}>
+                                            {errors.email.message}
+                                        </p>
+                                    )}
+                                </Col>
+                                <Col span={24}>
+                                    <label htmlFor="gender">Giới Tính</label>
+                                    <Controller
+                                        name="gender"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                placeholder="Chọn giới tính"
+                                                style={{ width: "100%" }}
+                                            >
+                                                <Select.Option
+                                                    value={0}
+                                                    key={0}
                                                 >
-                                                    <Select.Option
-                                                        value={0}
-                                                        key={0}
-                                                    >
-                                                        Nam
-                                                    </Select.Option>
-                                                    <Select.Option
-                                                        value={1}
-                                                        key={1}
-                                                    >
-                                                        Nữ
-                                                    </Select.Option>
-                                                    <Select.Option
-                                                        value={2}
-                                                        key={2}
-                                                    >
-                                                        Khác
-                                                    </Select.Option>
-                                                </Select>
-                                            )}
-                                        />
-                                    </Col>{" "}
-                                    <Col span={24}>
-                                        <label htmlFor="date_of_birth">
-                                            Ngày Sinh
-                                        </label>
-                                        <Controller
-                                            name="date_of_birth"
-                                            control={control}
-                                            rules={{
-                                                required:
-                                                    "Ngày sinh không được để trống",
-                                            }}
-                                            render={({ field }) => (
-                                                <DatePicker
-                                                    {...field}
-                                                    style={{ width: "100%" }}
-                                                />
-                                            )}
-                                        />
-                                        {errors.date_of_birth && (
-                                            <p className={style.error}>
-                                                {errors.date_of_birth.message}
-                                            </p>
+                                                    Nam
+                                                </Select.Option>
+                                                <Select.Option
+                                                    value={1}
+                                                    key={1}
+                                                >
+                                                    Nữ
+                                                </Select.Option>
+                                                <Select.Option
+                                                    value={2}
+                                                    key={2}
+                                                >
+                                                    Khác
+                                                </Select.Option>
+                                            </Select>
                                         )}
-                                    </Col>
-                                    <Col span={24}>
-                                        <label htmlFor="address">Địa chỉ</label>
-                                        <Controller
-                                            name="address"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Input.TextArea
-                                                    {...field}
-                                                    rows={3}
-                                                />
-                                            )}
-                                        />
-                                    </Col>{" "}
-                                    <Col span={24}>
-                                        <label htmlFor="status">
-                                            Trạng Thái
-                                        </label>
-                                        <Controller
-                                            name="status"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Switch
-                                                    checkedChildren="Hoạt động"
-                                                    unCheckedChildren="Khóa"
-                                                    defaultChecked
-                                                    {...field}
-                                                />
-                                            )}
-                                        />
-                                    </Col>
-                                </Row>
+                                    />
+                                </Col>{" "}
+                                <Col span={24}>
+                                    <label htmlFor="date_of_birth">
+                                        Ngày Sinh
+                                    </label>
+                                    <Controller
+                                        name="date_of_birth"
+                                        control={control}
+                                        rules={{
+                                            required:
+                                                "Ngày sinh không được để trống",
+                                        }}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                {...field}
+                                                style={{ width: "100%" }}
+                                            />
+                                        )}
+                                    />
+                                    {errors.date_of_birth && (
+                                        <p className={style.error}>
+                                            {errors.date_of_birth.message}
+                                        </p>
+                                    )}
+                                </Col>
+                                <Col span={24}>
+                                    <label htmlFor="address">Địa chỉ</label>
+                                    <Controller
+                                        name="address"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input.TextArea
+                                                {...field}
+                                                rows={3}
+                                            />
+                                        )}
+                                    />
+                                </Col>{" "}
+                                <Col span={24}>
+                                    <label htmlFor="status">Trạng Thái</label>
+                                    <Controller
+                                        name="status"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Switch
+                                                checkedChildren="Hoạt động"
+                                                unCheckedChildren="Khóa"
+                                                defaultChecked
+                                                {...field}
+                                            />
+                                        )}
+                                    />
+                                </Col>
+                            </Row>
 
-                                <Row
-                                    justify="center"
-                                    className={style.actionButtons}
+                            <Row
+                                justify="center"
+                                className={style.actionButtons}
+                            >
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    className={style.updateButton}
                                 >
+                                    Cập Nhật
+                                </Button>
+                            </Row>
+                        </form>
+                    </Col>
+                    <Col xxl={8} xl={8} lg={8} md={8} sm={24} xs={24}>
+                        <Card title="Đổi Mật Khẩu" className={style.card}>
+                            <Row gutter={[16, 16]}>
+                                <Col span={24}>
+                                    <Input.Password
+                                        value={oldPassword}
+                                        onChange={(e) =>
+                                            setOldPassword(e.target.value)
+                                        }
+                                        placeholder="Mật khẩu cũ"
+                                        className={style.inputPassword}
+                                    />
+                                </Col>
+                                <Col span={24}>
+                                    <Input.Password
+                                        value={newPassword}
+                                        onChange={(e) =>
+                                            setNewPassword(e.target.value)
+                                        }
+                                        placeholder="Mật khẩu mới"
+                                        className={style.inputPassword}
+                                    />
+                                </Col>
+                                <Col span={24}>
+                                    <Input.Password
+                                        value={confirmPassword}
+                                        onChange={(e) =>
+                                            setConfirmPassword(e.target.value)
+                                        }
+                                        placeholder="Nhập lại mật khẩu mới"
+                                        className={style.inputPassword}
+                                    />
+                                </Col>
+                                <Col span={24}>
                                     <Button
                                         type="primary"
-                                        htmlType="submit"
+                                        onClick={handlePasswordChange}
                                         className={style.updateButton}
                                     >
-                                        Cập Nhật
+                                        Đổi Mật Khẩu
                                     </Button>
-                                </Row>
-                            </form>
-                        </Col>
-                        <Col xxl={8} xl={8} lg={8} md={8} sm={24} xs={24}>
-                            <Card title="Đổi Mật Khẩu" className={style.card}>
-                                <Row gutter={[16, 16]}>
-                                    <Col span={24}>
-                                        <Input.Password
-                                            value={oldPassword}
-                                            onChange={(e) =>
-                                                setOldPassword(e.target.value)
-                                            }
-                                            placeholder="Mật khẩu cũ"
-                                            className={style.inputPassword}
-                                        />
-                                    </Col>
-                                    <Col span={24}>
-                                        <Input.Password
-                                            value={newPassword}
-                                            onChange={(e) =>
-                                                setNewPassword(e.target.value)
-                                            }
-                                            placeholder="Mật khẩu mới"
-                                            className={style.inputPassword}
-                                        />
-                                    </Col>
-                                    <Col span={24}>
-                                        <Input.Password
-                                            value={confirmPassword}
-                                            onChange={(e) =>
-                                                setConfirmPassword(
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder="Nhập lại mật khẩu mới"
-                                            className={style.inputPassword}
-                                        />
-                                    </Col>
-                                    <Col span={24}>
-                                        <Button
-                                            type="primary"
-                                            onClick={handlePasswordChange}
-                                            className={style.updateButton}
-                                        >
-                                            Đổi Mật Khẩu
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
-      
+                                </Col>
+                            </Row>
+                        </Card>
+                    </Col>
+                </Row>
+            </Col>
+        </Row>
     );
 };
 

@@ -20,6 +20,9 @@ import debounce from "lodash/debounce";
 import { Controller, useForm } from "react-hook-form";
 import { generateSnowflakeId } from "../../utils";
 const ServicesAdd = () => {
+    useEffect(() => {
+        document.title = "Thêm dịch vụ";
+    }, []);
     const [api, contextHolder] = notification.useNotification();
     const { getServiceCategories, searchServiceCategories } =
         useServiceCategoriesActions();

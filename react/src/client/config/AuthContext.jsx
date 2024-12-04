@@ -28,8 +28,7 @@ export const AuthProvider = ({ children }) => {
         // Nếu có token, gọi API để lấy thông tin người dùng
         authGetmeClient()
             .then((userData) => {
-                console.log("userData", userData);
-
+               
                 // Lưu thông tin người dùng vào state và localStorage
                 const userInfo = {
                     name: userData?.payload?.data?.full_name,

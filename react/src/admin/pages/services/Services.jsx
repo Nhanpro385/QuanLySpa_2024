@@ -13,6 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { set } from "lodash";
 import ServiceModalDetail from "../../modules/services/compoments/ServiceModalDetail";
 function Services() {
+    useEffect(() => {
+        document.title = "Quản lý dịch vụ";
+    }, []);
     const {
         addservices,
         getservices,

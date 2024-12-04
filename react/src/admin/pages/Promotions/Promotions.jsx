@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Col, Card, Progress } from "antd";
+import { Button, Row, Col, Card, Progress, List } from "antd";
 import {
     EllipsisOutlined,
     ClockCircleOutlined,
@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import usePromotionActions from "../../modules/promotion/hooks/usepromotionAction";
 import { useSelector } from "react-redux";
 function Promotions() {
+    useEffect(() => {
+        document.title = "Quản lý chương trình khuyến mãi";
+    }, []);
     const navigate = useNavigate();
     const { getPromotions, deletePromotions } = usePromotionActions();
     const [PromotionsData, setPromotionsData] = useState([]);
@@ -76,8 +79,16 @@ function Promotions() {
             />
 
             {/* Promotion Cards */}
-            <Row gutter={[16, 16]}>
-                {PromotionsData.map((promotion) => {
+            <List
+                locale={{
+                    emptyText: "Không có chương trình khuyến mãi nào",
+                }}
+                grid={{ gutter: 16, column: 3 }} // You can adjust the number of columns here
+                dataSource={PromotionsData}
+                pagination={{
+                    pageSize: 6, // You can adjust the number of items per page here
+                }}
+                renderItem={(promotion) => {
                     // Tính toán tiến độ
                     const currentDate = new Date();
                     const startDate = new Date(promotion.start_date);
@@ -94,7 +105,7 @@ function Promotions() {
                     );
 
                     return (
-                        <Col xl={8} md={12} sm={24} xs={24} key={promotion.id}>
+                        <List.Item key={promotion.id}>
                             <Card
                                 bordered={false}
                                 actions={[<EllipsisOutlined key="ellipsis" />]}
@@ -106,10 +117,9 @@ function Promotions() {
                                 <div>
                                     <h4>{promotion.name}</h4>
                                     {promotion.promotion_type === "Cash"
-                                        ? `hóa đơn từ 
-                                                 ${parseInt(
-                                                     promotion.min_order_amount
-                                                 ).toLocaleString()} VNĐ trở lên sẽ được giảm giá`
+                                        ? `Hóa đơn từ ${parseInt(
+                                              promotion.min_order_amount
+                                          ).toLocaleString()} VNĐ trở lên sẽ được giảm giá`
                                         : `Giảm ${promotion.discount_percent}%`}
                                     <Progress
                                         percent={progressPercent} // Sử dụng progress tính từ ngày
@@ -152,10 +162,10 @@ function Promotions() {
                                     </div>
                                 </div>
                             </Card>
-                        </Col>
+                        </List.Item>
                     );
-                })}
-            </Row>
+                }}
+            />
         </div>
     );
 }

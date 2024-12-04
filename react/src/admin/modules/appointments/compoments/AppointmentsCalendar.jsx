@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
+import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import dayjs from "dayjs";
 import { Popover } from "antd";
-// Set Vietnamese locale
-moment.locale("vi");
-const localizer = momentLocalizer(moment);
 
 const now = new Date();
 
 export default function AppointmentsCalendar({ data }) {
     const [eventsData, setEventsData] = useState([]);
-
+    dayjs.locale("vi");
+    const localizer = dayjsLocalizer(dayjs);
     // useEffect to update eventsData when `data` changes
     useEffect(() => {
         if (data) {
@@ -61,7 +59,13 @@ export default function AppointmentsCalendar({ data }) {
                     month: "Tháng",
                     week: "Tuần",
                     day: "Ngày",
+                    date: "Ngày",
+                    time: "Thời gian",
+                    event: "Sự kiện",
                     agenda: "Lịch trình",
+                    work_week: "Tuần làm việc",
+                    yesterday: "Hôm qua",
+                    tomorrow: "Ngày mai",
                     noEventsInRange:
                         "Không có sự kiện trong khoảng thời gian này",
                     showMore: (total) => `+${total} sự kiện`,

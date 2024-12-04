@@ -70,7 +70,7 @@ const items = [
                     className="text-decoration-none text-black fs-4"
                     to="/admin/khachhang/lichsutrilieu"
                 >
-                    Lịch sử giao dịch
+                    Lịch sử trị liệu
                 </Link>,
                 "5"
             ),
@@ -79,7 +79,7 @@ const items = [
                     className="text-decoration-none text-black fs-4"
                     to="/admin/khachhang/lichsutrilieu/them"
                 >
-                    Thêm lịch sử giao dịch
+                    Thêm lịch sử trị liệu
                 </Link>,
                 "6"
             ),

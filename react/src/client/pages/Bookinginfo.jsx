@@ -56,7 +56,7 @@ const BookingInfo = () => {
                         "Đặt lịch thành công Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi",
                 });
                 localStorage.removeItem("booking");
-                navigate("/datlich");
+                navigate("/datlich/thanhcong");
             }
         } catch (error) {
             console.log(error);
@@ -71,8 +71,8 @@ const BookingInfo = () => {
                     ...item,
                 }))
             );
-        } else {
-            navigate("/datlich/thanhcong");
+        }else{
+            navigate("/datlichhen");
         }
     }, [data]);
     const columns = [

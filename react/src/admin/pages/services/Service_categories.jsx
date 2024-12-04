@@ -17,6 +17,9 @@ import useServiceCategoriesActions from "../../modules/services/hooks/useService
 import debounce from "lodash/debounce";
 
 const ServiceCategories = () => {
+    useEffect(() => {
+        document.title = "Danh mục Loại Dịch Vụ";
+    }, []);
     const {
         addServiceCategories,
         getServiceCategories,

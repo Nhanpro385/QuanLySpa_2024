@@ -37,6 +37,9 @@ import {
 } from "@ant-design/icons";
 
 const Appointment_Edit = () => {
+    useEffect(() => {
+        document.title = "Cập nhật lịch hẹn";
+    }, []);
     const { Option } = Select;
     const { Search } = Input;
     const navigate = useNavigate();

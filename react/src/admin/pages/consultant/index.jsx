@@ -132,11 +132,13 @@ const Consultant = () => {
     }, [searchquery]);
     const handleAccept = async (id, status) => {
         try {
-            if (status === 1) {
+            if (status == 1) {
                 navigate("/admin/tuvankhachhang/videocall/" + id);
-            } else if (status === 0) {
+            } else if (status == 0) {
                 const res = await acceptConsulations(id);
-                if (res.payload.status === "true") {
+                console.log(res);
+
+                if (res.payload.status == "success") {
                     api.success({
                         message:
                             res.payload.message ||
@@ -173,7 +175,16 @@ const Consultant = () => {
     };
 
     return (
-        <Card>
+        <Card extra={
+            <Button
+                type="primary"
+                onClick={() => {
+                    getconsulations();
+                }}
+            >
+                Tải lại
+            </Button>
+        }>
             {contextHolder}
             <Form
                 form={form}

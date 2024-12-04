@@ -13,6 +13,9 @@ import ModalEditStaff from "../../modules/staffManagement/compoments/staffmodale
 import useModal from "../../modules/appointments/hooks/openmodal";
 import debounce from "lodash/debounce";
 function Staffs() {
+    useEffect(() => {
+        document.title = "Quản lý nhân viên";
+    }, []);
     const { getusers, updateusers, deleteusers, getusersById, searchusers } =
         useUsersActions();
 

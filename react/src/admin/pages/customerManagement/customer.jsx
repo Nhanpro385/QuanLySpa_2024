@@ -19,7 +19,9 @@ function Customer() {
         searchCustomer,
     } = useCustomerActions();
     const customers = useSelector((state) => state.customers);
-
+    useEffect(() => {
+        document.title = "Quản lý khách hàng";
+    }, []);
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,

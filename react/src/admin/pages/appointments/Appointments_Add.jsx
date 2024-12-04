@@ -42,6 +42,9 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const Appointment_Add = () => {
+    useEffect(() => {
+        document.title = "Thêm lịch hẹn";
+    }, []);
     const inputRef = useRef(null);
     const [api, contextHolder] = notification.useNotification();
     const { getservices, searchservices } = useServicesActions();

@@ -26,6 +26,9 @@ import { generateSnowflakeId } from "../../utils";
 import { UploadOutlined } from "@ant-design/icons";
 import debounce from "lodash/debounce";
 const Product_add = () => {
+    useEffect(() => {
+        document.title = "Thêm sản phẩm";
+    }, []);
     const {
         control,
         handleSubmit,
@@ -213,16 +216,6 @@ const Product_add = () => {
                                             }}
                                             render={({ field }) => (
                                                 <Input
-                                                    addonAfter={
-                                                        <Select defaultValue="Cái">
-                                                            <Select.Option value="piece">
-                                                                Cái
-                                                            </Select.Option>
-                                                            <Select.Option value="ml">
-                                                                Thể tích
-                                                            </Select.Option>
-                                                        </Select>
-                                                    }
                                                     size="large"
                                                     {...field}
                                                     placeholder="Dung tích"
@@ -299,6 +292,7 @@ const Product_add = () => {
                                             }}
                                             render={({ field }) => (
                                                 <InputNumber
+                                                    min={0}
                                                     size="large"
                                                     className="w-100"
                                                     {...field}
@@ -319,7 +313,7 @@ const Product_add = () => {
                         <Card
                             className="bg-light"
                             style={{ marginTop: 16 }}
-                            title="Giá và số lượng"
+                            title="Giá sản phẩm"
                         >
                             <Row gutter={[16, 16]}>
                                 <Col xl={12} md={12} sm={24} xs={24}>
@@ -333,6 +327,7 @@ const Product_add = () => {
                                             }}
                                             render={({ field }) => (
                                                 <InputNumber
+                                                    min={0}
                                                     size="large"
                                                     className="w-100"
                                                     {...field}
@@ -358,6 +353,7 @@ const Product_add = () => {
                                             }}
                                             render={({ field }) => (
                                                 <InputNumber
+                                                    min={0}
                                                     size="large"
                                                     className="w-100"
                                                     {...field}

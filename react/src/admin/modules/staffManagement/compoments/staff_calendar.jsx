@@ -12,9 +12,12 @@ export default function Staff_calendar({ data }) {
     const localizer = dayjsLocalizer(dayjs);
 
     const [eventsData, setEventsData] = useState([]);
-    // useEffect to update eventsData when `data` changes
+    console.log(eventsData);
+    
     useEffect(() => {
         if (data) {
+           
+            
             const updatedEvents = data.map((item) => {
                 const startDateTime = new Date(
                     item.shift_date + "T" + item.start_time
@@ -26,13 +29,11 @@ export default function Staff_calendar({ data }) {
 
                 return {
                     id: item.id,
-                    title: "Ca làm việc",
+                    title: "Ca làm việc - " + item.shift_date,
 
                     start: startDateTime,
                     end: endDateTime,
-                    service_name: item?.services
-                        ?.map((service) => service.name)
-                        .join(", "),
+                    date: item.shift_date,
                 };
             });
 
@@ -49,7 +50,7 @@ export default function Staff_calendar({ data }) {
                 defaultView="month"
                 events={eventsData}
                 style={{ height: "100vh" }}
-                onSelectEvent={(event) => console.log(event.service_name)}
+                // onSelectEvent={(event) => console.log(event.date)}
                 messages={{
                     allDay: "Cả ngày",
                     previous: "Trước",
@@ -72,7 +73,9 @@ export default function Staff_calendar({ data }) {
                 components={{
                     event: ({ event }) => (
                         <Popover
-                            content={"Thời gian: " + event.start.toLocaleTimeString()}
+                            content={
+                                "Thời gian: " + event.start.toLocaleTimeString()
+                            }
                             trigger={"click"}
                         >
                             <div>

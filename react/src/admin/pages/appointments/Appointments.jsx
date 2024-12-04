@@ -12,6 +12,9 @@ import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import AppointmentsDetail from "../../modules/appointments/compoments/AppointmentsDetail";
 function Appointments() {
+    useEffect(() => {
+        document.title = "Lịch hẹn";
+    }, []);
     const [api, contextHolder] = notification.useNotification();
     const {
         addappointments,

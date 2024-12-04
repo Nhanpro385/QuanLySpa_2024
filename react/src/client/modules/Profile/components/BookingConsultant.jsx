@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Row, Col, Button, Select, Table, Tag } from "antd";
+import { Row, Col, Button, Select, Table, Tag, Card } from "antd";
 import style from "../style/BookingConsultant.module.scss";
 
 const { Option } = Select;
@@ -21,7 +21,7 @@ const BookingConsultant = () => {
         console.log(authCustomer);
         if (authCustomer?.user?.data) {
             setconsdata(
-                authCustomer?.user?.data?.consulations.map((e) => ({
+                authCustomer?.user?.data?.consulations?.map((e) => ({
                     ...e,
                     key: e.id,
                 }))
@@ -84,13 +84,13 @@ const BookingConsultant = () => {
                     ) : record.status === 0 ? (
                         <>
                             <span>Đang chờ duyệt</span>
-                            <Button
+                            {/* <Button
                                 type="default"
                                 disabled
                                 style={{ marginLeft: 8 }}
                             >
                                 Hủy
-                            </Button>
+                            </Button> */}
                         </>
                     ) : (
                         <span>Đã hoàn thành</span>
@@ -102,11 +102,15 @@ const BookingConsultant = () => {
 
     return (
         <Row className={style.container} gutter={[16, 16]}>
-            <Col xs={24} sm={6} lg={6} className={style.sidebar}>
-                <MenuProfile />
-            </Col>
-
-            <Col xs={24} sm={18} lg={18} className={style.profileContent}>
+            <Col
+                xxl={24}
+                xl={24}
+                lg={24}
+                md={24}
+                sm={24}
+                xs={24}
+                className={style.profileContent}
+            >
                 {/* Banner Header */}
                 <Row justify="center" align="middle" className={style.header}>
                     <Col xs={18} className={style.boxTitleProfile}>
@@ -115,7 +119,7 @@ const BookingConsultant = () => {
                 </Row>
 
                 {/* Dropdown Filters */}
-                <Col span={24} className={style.filters}>
+                {/* <Col span={24} className={style.filters}>
                     <Row justify="space-between" align="middle">
                         <Col className={style.status}>
                             <Select
@@ -143,18 +147,23 @@ const BookingConsultant = () => {
                             </Select>
                         </Col>
                     </Row>
-                </Col>
+                </Col> */}
 
                 {/* Table */}
                 <Col span={24} className={style.table}>
-                    <Table
-                        id="myTable"
-                        loading={authCustomer.loading}
-                        dataSource={consdata}
-                        columns={columns}
-                        rowKey={"key"}
-                        pagination={false}
-                    />
+                    <Card title="Danh sách lịch hẹn tư vấn">
+                        <Table
+                            locale={{
+                                emptyText: "Không có dữ liệu",
+                            }}
+                            id="myTable"
+                            loading={authCustomer.loading}
+                            dataSource={consdata}
+                            columns={columns}
+                            rowKey={"key"}
+                            pagination={false}
+                        />
+                    </Card>
                 </Col>
             </Col>
         </Row>

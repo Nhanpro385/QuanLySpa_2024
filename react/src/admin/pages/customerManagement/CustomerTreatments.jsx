@@ -28,7 +28,9 @@ const StreatMents = () => {
         getStreatmentById,
         deleteStreatment,
     } = useStreatmentsAction(); // Use the customer actions hook
-
+    useEffect(() => {
+        document.title = "Lịch sử trị liệu";
+    }, []);
     const streatments = useSelector((state) => state.streatments);
     const [searchQuery, setSearchQuery] = useState({
         search: "",

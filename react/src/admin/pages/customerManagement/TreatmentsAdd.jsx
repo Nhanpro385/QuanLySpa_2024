@@ -37,6 +37,9 @@ const StreatmentsAdd = () => {
         per_page: 50,
         status: 3,
     });
+    useEffect(() => {
+        document.title = "Thêm lịch sử trị liệu";
+    }, []);
     const { getappointmentsByStatus, searchappointmentsByStatus } =
         useappointmentsActions();
     const { addStreatment } = useStreatmentsAction();

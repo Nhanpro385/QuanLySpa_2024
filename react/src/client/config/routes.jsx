@@ -78,13 +78,13 @@ const PublicRoutes = [
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {
-        path: "/tuvandatlich",
-        element: <BookingConsultant />,
+        path: "/thongtincanhan/tuvandatlich",
+        element: <Profile />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {
-        path: "/lichsudichvu",
-        element: <ServiceHistory />,
+        path: "/thongtincanhan/lichsudichvu",
+        element: <Profile />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {

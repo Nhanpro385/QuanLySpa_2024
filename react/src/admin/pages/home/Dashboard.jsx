@@ -11,6 +11,9 @@ import usepaymentActions from "../../modules/payments/hooks/usepaymentAction";
 import useconsulationsAction from "../../modules/consulations/hooks/useconsulationsAction";
 import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
+    useEffect(() => {
+        document.title = "Sakura Spa - Quản lý";
+    }, []);
     const navigate = useNavigate();
     const [transactionData, setTransactionData] = useState([]);
     const [appointmentData, setAppointmentData] = useState([]); // Fixed here

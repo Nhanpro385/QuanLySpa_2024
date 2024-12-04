@@ -17,8 +17,7 @@ const isTokenValid = (token) => {
 
         // Check if token has expired
         const currentTime = Math.floor(Date.now() / 1000);
-        console.log("time token", exp);
-        console.log("hientai", currentTime);
+   
 
         if (exp < currentTime) {
             console.warn("Token is expired");
@@ -70,7 +69,7 @@ const AuthMiddleware = ({ children, requiredRole }) => {
         return <Navigate to="/dangnhap" />;
     }
 
-    console.log("Access granted:", requiredRole);
+   
     return children;
 };
 

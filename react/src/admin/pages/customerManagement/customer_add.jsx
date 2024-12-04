@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Card,
@@ -20,6 +20,9 @@ import { CustomerAdd } from "../../redux/slices/CustomerSlice";
 const { Option } = Select;
 
 const CustomersAdd = () => {
+    useEffect(() => {
+        document.title = "Thêm khách hàng";
+    }, []);
     const [api, contextHolder] = notification.useNotification();
     const dispatch = useDispatch();
     const { error } = useSelector((state) => state.customers);

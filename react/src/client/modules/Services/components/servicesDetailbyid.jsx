@@ -41,7 +41,7 @@ const ServicesDetailById = () => {
 
     useEffect(() => {
         if (services.service?.data) {
-            setService(services.service.data);
+            setService(services?.service?.data);
         } else {
             setService({});
         }
@@ -68,11 +68,11 @@ const ServicesDetailById = () => {
 
     const data = service.comments.map((item, index) => ({
         key: index,
-        title: item.customer?.full_name || "Khách hàng không xác định",
+        title: item?.customer?.full_name || "Khách hàng không xác định",
         avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}` || "",
         description: "Phản hồi từ khách hàng.",
-        content: item.comment || "Không có",
-        time: item.created_at || "Không có",
+        content: item?.comment || "Không có",
+        time: item?.created_at || "Không có",
         rating: item.rate || 0,
         replies: item?.replies?.map((reply, replyIndex) => ({
             key: `${index}-${replyIndex}`,
@@ -229,10 +229,10 @@ const ServicesDetailById = () => {
                             className={style.commentItem}
                             key={item.title}
                             actions={[
-                                <Rate value={item.rating} disabled />,
+                                <Rate value={item?.rating} disabled />,
                                 <IconText
                                     icon={MessageOutlined}
-                                    text={item.replies.length}
+                                    text={item?.replies?.length}
                                     key="list-vertical-message"
                                 />,
                                 <Button
@@ -247,16 +247,16 @@ const ServicesDetailById = () => {
                             ]}
                         >
                             <List.Item.Meta
-                                avatar={<Avatar src={item.avatar} />}
-                                title={item.title}
-                                description={item.description}
+                                avatar={<Avatar src={item?.avatar} />}
+                                title={item?.title}
+                                description={item?.description}
                             />
                             <p
                                 style={{
                                     fontSize: "16px",
                                 }}
                             >
-                                {item.content}
+                                {item?.content}
                             </p>
                             <p
                                 style={{
@@ -270,7 +270,10 @@ const ServicesDetailById = () => {
                             {expandedKeys[item.key] && (
                                 <List
                                     itemLayout="horizontal"
-                                    dataSource={item.replies}
+                                    dataSource={item?.replies}
+                                    locale={{
+                                        emptyText: "Không có phản hồi nào",
+                                    }}
                                     renderItem={(reply) => (
                                         <List.Item
                                             key={reply.key}
@@ -279,11 +282,11 @@ const ServicesDetailById = () => {
                                             <List.Item.Meta
                                                 avatar={
                                                     <Avatar
-                                                        src={reply.avatar}
+                                                        src={reply?.avatar}
                                                     />
                                                 }
-                                                title={reply.title}
-                                                description={reply.description}
+                                                title={reply?.title}
+                                                description={reply?.description}
                                             />
                                             {reply.content}
                                             <p
@@ -292,7 +295,7 @@ const ServicesDetailById = () => {
                                                     color: "#666",
                                                 }}
                                             >
-                                                {reply.time}
+                                                {reply?.time}
                                             </p>
                                         </List.Item>
                                     )}

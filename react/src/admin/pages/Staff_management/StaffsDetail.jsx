@@ -53,7 +53,12 @@ const StaffsDetail = () => {
                 <Card>
                     <Row gutter={[16, 16]}>
                         <Col xl={5} lg={5} md={5} sm={24} xs={24}>
-                            <Image src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
+                            <Image
+                                src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${
+                                    UserData?.id || 0
+                                }`}
+                                fallback="https://via.placeholder.com/150"
+                            />
                         </Col>
                         <Col xl={19} lg={19} md={19} sm={24} xs={24}>
                             <Title level={2}>
@@ -159,41 +164,13 @@ const StaffsDetail = () => {
                             <Statistics_staff />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Ca làm việc" key="2">
-                            <Staff_calendar 
-                                data={UserData?.shifts || []}
-                            />
+                            <Staff_calendar data={UserData?.shifts || []} />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Lịch sử làm việc" key="3">
-                            <Staff_history_shift  data={UserData?.appointments || []}/>
+                            <Staff_history_shift
+                                data={UserData?.appointments || []}
+                            />
                         </Tabs.TabPane>
-                        {/* <Tabs.TabPane tab="Thống kê chi tiết" key="4">
-                            <Row gutter={[16, 16]}>
-                                <Col span={8}>
-                                    <Statistic
-                                        title="Số cuộc hẹn hôm nay"
-                                        value={
-                                            UserData?.countAppoinment_today || 0
-                                        }
-                                    />
-                                </Col>
-                                <Col span={8}>
-                                    <Statistic
-                                        title="Số cuộc hẹn tuần này"
-                                        value={
-                                            UserData?.countAppoinment_week || 0
-                                        }
-                                    />
-                                </Col>
-                                <Col span={8}>
-                                    <Statistic
-                                        title="Số cuộc hẹn tháng này"
-                                        value={
-                                            UserData?.countAppoinment_month || 0
-                                        }
-                                    />
-                                </Col>
-                            </Row>
-                        </Tabs.TabPane> */}
                     </Tabs>
                 </Card>
             </Col>

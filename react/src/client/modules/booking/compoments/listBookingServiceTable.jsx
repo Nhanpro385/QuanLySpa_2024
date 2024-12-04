@@ -3,9 +3,9 @@ import { Table, Row, Col, Card, Input } from "antd";
 const ListBookingServiceTable = ({ service, setService }) => {
     const columns = [
         {
-            title: "stt",
-            dataIndex: "stt",
-            key: "stt",
+            title: "#",
+            dataIndex: "#",
+            key: "#",
             render: (text, record, index) => index + 1,
         },
         {

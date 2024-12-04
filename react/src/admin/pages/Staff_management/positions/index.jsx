@@ -11,6 +11,9 @@ import usePositionsActions from "../../../modules/staffManagement/hooks/usePosit
 import debounce from "lodash/debounce";
 
 const Positions = () => {
+    useEffect(() => {
+        document.title = "Quản lý chức vụ";
+    }, []);
     const {
         addPositions,
         getPositions,
