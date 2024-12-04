@@ -32,6 +32,7 @@ class ServiceUpdateRequest extends FormRequest
             'image_url.*' => 'required|image',
             'duration' => 'required|numeric',
             'priority' => 'required|numeric',
+            'status' => 'required|numeric',
         ];
     }
 
@@ -59,8 +60,10 @@ class ServiceUpdateRequest extends FormRequest
             'image_url.image' => 'Tệp phải là một hình ảnh.',
             'duration.required' => 'Thời gian là bắt buộc.',
             'duration.numeric' => 'Thời gian phải là một số.',
-            'priority.required' => 'Không được bỏ trống mức độ phổ biến của sản phẩm',
+            'priority.required' => 'Không được bỏ trống mức độ phổ biến của dịch vụ',
             'priority.numeric' => 'Vui lòng chọn giá trị phù hợp.',
+            'status.required' => 'Không được bỏ trống trạng thái của dịch vụ',
+            'status.numeric' => 'Vui lòng chọn giá trị phù hợp.',
         ];
     }
 

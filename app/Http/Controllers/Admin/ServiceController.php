@@ -192,7 +192,8 @@ class ServiceController extends Controller
                 'description' => $validateData['description'] ?? 'Mô tả cho dịch vụ',
                 'duration' => $validateData['duration'],
                 'priority' => $validateData['priority'],
-                'updated_by' => auth('api')->user()->id
+                'updated_by' => auth('api')->user()->id,
+                'status' => $validateData['status']
             ]);
 
             if ($request->hasFile('image_url')) {
