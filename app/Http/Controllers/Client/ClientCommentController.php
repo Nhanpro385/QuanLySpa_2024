@@ -50,6 +50,7 @@ class ClientCommentController extends Controller
                     'message' => 'Bạn cần đăng nhập để thêm bình luận.',
                 ], 401);
             }
+
             $validatedData = $request->validated();
 
             $hasUsedService = DB::table('appointments')
@@ -85,7 +86,8 @@ class ClientCommentController extends Controller
                 'parent_comment_id' => $parentComment?->id,
                 'service_id' => $validatedData['service_id'] ?? null,
                 'comment' => $validatedData['comment'],
-                'customer_id'=>$userId
+                'customer_id'=>$userId,
+                'type' => 1
 
 
             ]);
@@ -136,19 +138,27 @@ class ClientCommentController extends Controller
                     'message' => 'Bạn cần đăng nhập để sửa bình luận.',
                 ], 401);
             }
+            if ((int)$comment->customer_id !== (int)$userId) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Bạn không có quyền sửa bình luận này.',
+                ], 403);
+            }
             $validatedData = $request->validated();
             $hasUsedService = DB::table('appointments')
             ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
             ->join('services', 'services.id', '=', 'appointment_services.service_id')
             ->join('customers', 'customers.id', '=', 'appointments.customer_id')
-            ->where('customer_id', '=', $validatedData['customer_id'])
-            ->where('service_id', '=', $validatedData['service_id'])
+            ->where('appointments.customer_id', '=', $validatedData['customer_id'])
+            ->where('appointment_services.service_id', '=', $validatedData['service_id'])
+            ->whereIn('appointments.status',[2,3])
             ->exists();
-        if ($hasUsedService) {
+
+        if (!$hasUsedService) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Khách hàng đã sử dụng dịch vụ này.',
-            ], 400);
+                'status' => false,
+                'message' => 'Bạn chưa sử dụng dịch vụ này!',
+            ], 403);
         }
 
             if ($request->hasFile('image_url')) {
@@ -178,7 +188,7 @@ class ClientCommentController extends Controller
             }
 
             $comment->update($validatedData);
-            $comment->load(['service', 'customer', 'parent', 'replies']);
+            $comment->load(['service', 'customer', 'parent']);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Cập nhật bình luận thành công!',
@@ -218,14 +228,16 @@ class ClientCommentController extends Controller
             ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
             ->join('services', 'services.id', '=', 'appointment_services.service_id')
             ->join('customers', 'customers.id', '=', 'appointments.customer_id')
-            ->where('customer_id', '=', $validatedData['customer_id'])
-            ->where('service_id', '=', $validatedData['service_id'])
+            ->where('appointments.customer_id', '=', $validatedData['customer_id'])
+            ->where('appointment_services.service_id', '=', $validatedData['service_id'])
+            ->whereIn('appointments.status',[2,3])
             ->exists();
-        if ($hasUsedService) {
+
+        if (!$hasUsedService) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Khách hàng đã sử dụng dịch vụ này.',
-            ], 400);
+                'status' => false,
+                'message' => 'Bạn chưa sử dụng dịch vụ này!',
+            ], 403);
         }
             $reply = Comment::create($validatedData);
             return response()->json([
@@ -259,6 +271,12 @@ class ClientCommentController extends Controller
                     'status' => 'error',
                     'message' => 'Bạn cần đăng nhập để thêm bình luận.',
                 ], 401);
+            }
+            if ((int)$comment->customer_id !== (int)$userId) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Bạn không có quyền xóa bình luận này.',
+                ], 403);
             }
             $commentImages = CommentImage::where('comment_id', $comment->id)->get();
             if ($commentImages->isNotEmpty()) {

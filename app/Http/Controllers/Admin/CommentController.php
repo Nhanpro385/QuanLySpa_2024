@@ -94,7 +94,10 @@ class CommentController extends Controller
                 'service_id' => $validatedData['service_id'] ?? null,
                 'comment' => $validatedData['comment'],
                 'created_by' => $userId,
+                'type' => 0
+
             ]);
+          
             if ($request->hasFile('image_url')) {
                 $images = $request->file('image_url');
                 if (is_array($images)) {
@@ -164,7 +167,7 @@ class CommentController extends Controller
             }
 
             $comment->update($validatedData);
-            $comment->load(['service', 'customer', 'parent', 'replies']);
+            $comment->load(['service', 'customer', 'parent']);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Cập nhật bình luận thành công!',

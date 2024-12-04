@@ -20,7 +20,7 @@ class CommentRequest extends FormRequest
             'id' => 'required|digits_between:10,20|integer|unique:comments,id',
 
 
-            'parent_comment_id' => 'required|exists:comments,id|integer',
+            'parent_comment_id' => 'nullable|exists:comments,id|integer',
             'comment' => 'required|string|max:500',
 
             // 'status' => 'required|boolean',
