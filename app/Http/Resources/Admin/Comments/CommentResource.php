@@ -11,16 +11,16 @@ class CommentResource extends JsonResource
 
         $images = $this->images->map(function ($image) {
             return [
-                'id' => $image->id,
+                'id' => (string) $image->id,
                 'image_url' => $image->image_url,
                 'created_at' => $image->created_at ? $image->created_at->format('d-m-Y H:i') : null,
             ];
         });
 
         return [
-            'id' => $this->id,
-            'service_id' => $this->service_id,
-            'customer_id' => $this->customer_id,
+            'id' => (string) $this->id,
+            'service_id' => (string) $this->service_id,
+            'customer_id' => (string) $this->customer_id,
             'comment' => $this->comment,
             'rate' => $this->rate,
             'status' => $this->status,
@@ -28,13 +28,13 @@ class CommentResource extends JsonResource
             'image_url' => $images,
 
             'created_by' => $this->createdByUser ? [
-                'id' => $this->createdByUser->id,
+                'id' => (string) $this->createdByUser->id,
                 'full_name' => $this->createdByUser->full_name,
                 'role' => $this->getRoleName($this->createdByUser->role),
             ] : null,
 
             'updated_by' => $this->updatedByUser ? [
-                'id' => $this->updatedByUser->id,
+                'id' => (string) $this->updatedByUser->id,
                 'full_name' => $this->updatedByUser->full_name,
                 'role' => $this->getRoleName($this->updatedByUser->role),
             ] : null,

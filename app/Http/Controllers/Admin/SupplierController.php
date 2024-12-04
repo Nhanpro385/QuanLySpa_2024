@@ -18,7 +18,7 @@ class SupplierController extends Controller
 {
     try {
         $query = Supplier::with(['createdBy', 'updatedBy']);
-        
+
         $suppliers = $filter->apply($request, $query)->paginate($request->input('per_page', 5));
         return new SupplierCollection($suppliers);
     } catch (\Throwable $th) {
@@ -111,13 +111,21 @@ class SupplierController extends Controller
     public function destroy($id)
     {
         try {
-            $supplier = Supplier::findOrFail($id);
-            $supplier->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Nhà cung cấp đã được xóa thành công.',
-            ]);
+            $supplier = Supplier::withTrashed()->findOrFail($id);
+
+        
+            if ($supplier->forceDelete()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Nhà cung cấp đã được xóa vĩnh viễn thành công.',
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không thể xóa nhà cung cấp!',
+                ], 500);
+            }
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
@@ -131,4 +139,5 @@ class SupplierController extends Controller
             ], 500);
         }
     }
+
 }

@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Filters\Admin\CustomerFilter;
 use App\Http\Resources\Admin\Appointments\AppointmentResource;
 use App\Http\Resources\Admin\Consulations\ConsulationResource;
+use Illuminate\Support\Facades\Log;
 
 
 
@@ -46,7 +47,7 @@ class CustomerController extends Controller
     public function show($id)
     {
         try {
-          
+
             $customer = Customer::with(['appointments', 'consultations', 'createdBy', 'updatedBy'])->find($id);
 
             if (!$customer) {
@@ -183,22 +184,38 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         try {
-            $customer = Customer::findOrFail($id);
-            $customer->delete();
+          
+            $customer = Customer::withTrashed()->findOrFail($id);
+
+
+            if ($customer->forceDelete()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Khách hàng đã được xóa thành công.',
+                ]);
+            }
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Khách hàng đã được xóa thành công',
-            ]);
+                'status' => 'error',
+                'message' => 'Không thể xóa khách hàng.',
+            ], 500);
+
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Khách hàng không tồn tại!',
             ], 404);
         } catch (\Throwable $th) {
-            return $this->errorResponse('Đã xảy ra lỗi trong quá trình xử lý.', $th);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình xử lý.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
     }
+
+
+
 
     private function formatUserRole($user)
     {

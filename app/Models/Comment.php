@@ -9,11 +9,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Comment extends Model
 {
     use HasFactory, SoftDeletes;
+    use SoftDeletes;
+
 
     protected $keyType = 'string';
     public $incrementing = false;
 
     protected $table = 'comments';
+    protected $casts = [
+        'id' => 'string',
+        'service_id' => 'string',
+        'customer_id' => 'string',
+        'parent_comment_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
 
     protected $fillable = [
         'id',
@@ -72,6 +82,31 @@ class Comment extends Model
     {
         return $this->hasMany(Comment::class, 'parent_comment_id', 'id')->where('status',1);
     }
+    protected static function boot()
+    {
 
+        parent::boot();
+        //parent_comment
+
+        static::deleting(function ($parent_comment) {
+            Comment::where('parent_comment_id', $parent_comment->id)->update(['parent_comment_id' => null]);
+        });
+
+        static::softDeleted(function ($parent_comment) {
+
+            Comment::where('parent_comment_id', $parent_comment->id)->update(['parent_comment_id' => null]);
+        });
+
+         //CommentImage
+
+         static::deleting(function ($commentImage) {
+            CommentImage::where('comment_id', $commentImage->id)->update(['comment_id' => null]);
+        });
+
+        static::softDeleted(function ($commentImage) {
+
+            CommentImage::where('comment_id', $commentImage->id)->update(['comment_id' => null]);
+        });
+    }
 
 }

@@ -11,6 +11,7 @@ use App\Http\Resources\Admin\Categories\CategoryCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Filters\Admin\CategoryFilter;
+use Illuminate\Support\Facades\Log;
 
 
 
@@ -118,31 +119,32 @@ class CategoryController extends Controller
     }
 
     public function destroy($id)
-    {
-        try {
-            $category = Category::with('children')->findOrFail($id);
+{
+    try {
+        $category = Category::withTrashed()->with('children')->findOrFail($id);
 
-            foreach ($category->children as $child) {
-                $child->delete();
-            }
-
-            $category->delete();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Danh mục và danh mục con đã được xóa thành công.'
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Danh mục không tồn tại!',
-            ], 404);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình xóa danh mục.',
-                'error' => $th->getMessage(),
-            ], 500);
+        foreach ($category->children as $child) {
+            $child->forceDelete();
         }
+
+        $category->forceDelete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Danh mục và danh mục con đã được xóa thành công.'
+        ]);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Danh mục không tồn tại!',
+        ], 404);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Đã xảy ra lỗi trong quá trình xóa danh mục.',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
+
 }
