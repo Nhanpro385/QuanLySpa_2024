@@ -1,11 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Card, Button, Row, Col, Image } from "antd";
 import Slider from "react-slick";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import anh4 from "../../../assets/images/image4.png";
 
 // Cấu hình cho Slider
-
 const BookingListService = ({
     activeService,
     setActiveService,
@@ -14,21 +13,30 @@ const BookingListService = ({
     ServicesCategories,
 }) => {
     const sliderRef = useRef();
+    const serviceButtonsRefs = useRef([]); // Mảng lưu refs của các nút dịch vụ
+
+    // Đảm bảo có thể tham chiếu tới từng nút dịch vụ
+    useEffect(() => {
+        if (serviceButtonsRefs.current[activeService]) {
+            // Cuộn đến phần tử dịch vụ được chọn
+            serviceButtonsRefs.current[activeService].scrollIntoView({
+                behavior: "smooth",
+                block: "center", // Cuộn đến vị trí ở giữa phần tử
+            });
+        }
+    }, [activeService]); // Mỗi khi activeService thay đổi, sẽ cuộn đến dịch vụ đó
+
     const settingsservice = {
         dots: true,
         speed: 500,
-        slidesToShow:
-            ServicesCategories.length > 4 ? 4 : ServicesCategories.length, // Dynamically adjust based on categories length
+        slidesToShow: Math.min(4, ServicesCategories.length || 1), // Đảm bảo giá trị hợp lệ
         slidesToScroll: 4,
         infinite: false,
         responsive: [
             {
                 breakpoint: 1024,
                 settings: {
-                    slidesToShow:
-                        ServicesCategories.length > 4
-                            ? 4
-                            : ServicesCategories.length, // Adjust for screen sizes
+                    slidesToShow: Math.min(4, ServicesCategories.length || 1),
                     slidesToScroll: 4,
                     dots: true,
                 },
@@ -36,7 +44,7 @@ const BookingListService = ({
             {
                 breakpoint: 600,
                 settings: {
-                    slidesToShow: 2,
+                    slidesToShow: Math.min(2, ServicesCategories.length || 1),
                     slidesToScroll: 2,
                     dots: true,
                 },
@@ -44,13 +52,14 @@ const BookingListService = ({
             {
                 breakpoint: 480,
                 settings: {
-                    slidesToShow: 1,
+                    slidesToShow: Math.min(1, ServicesCategories.length || 1),
                     slidesToScroll: 1,
                     dots: true,
                 },
             },
         ],
     };
+
     const settings = {
         arrows: false,
         dots: false,
@@ -87,6 +96,7 @@ const BookingListService = ({
             },
         ],
     };
+
     const Apptab = () => {
         return (
             <div
@@ -116,7 +126,10 @@ const BookingListService = ({
                                                     "http://127.0.0.1:8000/storage/uploads/services/special/" +
                                                     item.image_url
                                                 }
-                                                onError={(e) => e.target.src = "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"} // Thay thế hình ảnh khi lỗi
+                                                onError={(e) =>
+                                                    (e.target.src =
+                                                        "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
+                                                } // Thay thế hình ảnh khi lỗi
                                                 style={{
                                                     width: "100%",
                                                     height: "100%",
@@ -130,9 +143,7 @@ const BookingListService = ({
                                     <div className="m-2">
                                         Giá:{" "}
                                         <strong style={{ color: "#E05265" }}>
-                                            {parseInt(
-                                                item.price
-                                            ).toLocaleString()}{" "}
+                                            {parseInt(item.price).toLocaleString()}{" "}
                                             VNĐ{" "}
                                         </strong>
                                     </div>
@@ -184,58 +195,6 @@ const BookingListService = ({
                         )
                     )}
                 </Slider>
-                <Row
-                    justify="center"
-                    align="middle"
-                    style={{ marginTop: "20px" }}
-                >
-                    <Col span={24}>
-                        <Row justify="center" align="middle" gutter={[16, 16]}>
-                            <Col
-                                xs={{ span: 4 }}
-                                sm={{ span: 3 }}
-                                md={{ span: 2 }}
-                                lg={{ span: 2 }}
-                                xl={{ span: 2 }}
-                            >
-                                <Button
-                                    block
-                                    type="primary"
-                                    style={{
-                                        fontSize: "20px",
-                                        color: "#fff",
-                                    }}
-                                    onClick={() =>
-                                        sliderRef.current.slickPrev()
-                                    }
-                                >
-                                    <ArrowLeftOutlined />
-                                </Button>
-                            </Col>
-                            <Col
-                                xs={{ span: 4 }}
-                                sm={{ span: 3 }}
-                                md={{ span: 2 }}
-                                lg={{ span: 2 }}
-                                xl={{ span: 2 }}
-                            >
-                                <Button
-                                    block
-                                    type="primary"
-                                    style={{
-                                        fontSize: "20px",
-                                        color: "#fff",
-                                    }}
-                                    onClick={() =>
-                                        sliderRef.current.slickNext()
-                                    }
-                                >
-                                    <ArrowRightOutlined />
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
             </div>
         );
     };
@@ -247,6 +206,7 @@ const BookingListService = ({
                     {ServicesCategories.map((item, index) => (
                         <div className="p-2" key={index}>
                             <Button
+                                ref={(el) => (serviceButtonsRefs.current[index] = el)} // Thêm ref cho mỗi nút
                                 shape="round"
                                 icon={item.icon}
                                 block

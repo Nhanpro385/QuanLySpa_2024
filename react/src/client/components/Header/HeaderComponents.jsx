@@ -35,44 +35,48 @@ const HeaderComponents = () => {
                         style: { padding: "0 10px" },
                     },
                     {
-                        label: "Giới Thiệu",
+                        label: (
+                            <Link to="/gioithieu" style={{ textDecoration: "none" }}>
+                              Giới Thiệu
+                            </Link>
+                        ),
                         key: "about",
                         style: { padding: "0 10px" },
-                        children: [
-                            {
-                                label: (
-                                    <Link
-                                        to="/gioithieu"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        Về Chúng Tôi
-                                    </Link>
-                                ),
-                                key: "about-us",
-                            },
-                            {
-                                label: (
-                                    <Link
-                                        to="/store"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        Hệ Thống Cửa Hàng
-                                    </Link>
-                                ),
-                                key: "store",
-                            },
-                            {
-                                label: (
-                                    <Link
-                                        to="/recruitment"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        Tuyển Dụng
-                                    </Link>
-                                ),
-                                key: "recruitment",
-                            },
-                        ],
+                        // children: [
+                        //     {
+                        //         label: (
+                        //             <Link
+                        //                 to="/gioithieu"
+                        //                 style={{ textDecoration: "none" }}
+                        //             >
+                        //                 Về Chúng Tôi
+                        //             </Link>
+                        //         ),
+                        //         key: "about-us",
+                        //     },
+                        //     {
+                        //         label: (
+                        //             <Link
+                        //                 to="/store"
+                        //                 style={{ textDecoration: "none" }}
+                        //             >
+                        //                 Hệ Thống Cửa Hàng
+                        //             </Link>
+                        //         ),
+                        //         key: "store",
+                        //     },
+                        //     {
+                        //         label: (
+                        //             <Link
+                        //                 to="/recruitment"
+                        //                 style={{ textDecoration: "none" }}
+                        //             >
+                        //                 Tuyển Dụng
+                        //             </Link>
+                        //         ),
+                        //         key: "recruitment",
+                        //     },
+                        // ],
                     },
                     {
                         label: (

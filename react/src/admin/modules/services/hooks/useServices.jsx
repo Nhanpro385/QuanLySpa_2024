@@ -9,6 +9,7 @@ import {
     servicesAddProduct,
     servicesUpdateProduct,
     servicesDetailClient,
+    GetservicesClient,
 } from "@admin/redux/slices/serviceSlice";
 const useServicesActions = () => {
     const dispatch = useDispatch();
@@ -46,6 +47,9 @@ const useServicesActions = () => {
     const getServicesDetailClient = async (config) => {
         return await dispatch(servicesDetailClient(config));
     };
+    const getServicesClient = async (config) => {
+        return await dispatch(GetservicesClient(config));
+    };
 
     return {
         addservices,
@@ -57,6 +61,7 @@ const useServicesActions = () => {
         addProduct,
         updateProduct,
         getServicesDetailClient,
+        getServicesClient,
     };
 };
 

@@ -1,53 +1,15 @@
-import React from "react";
-import { Card, Button, Row, Divider, Tooltip } from "antd";
-import { FieldTimeOutlined, MoneyCollectFilled } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { Card, Button, Row, Divider, Tooltip, Image } from "antd";
+import {
+    CarryOutFilled,
+    FieldTimeOutlined,
+    MoneyCollectFilled,
+} from "@ant-design/icons";
 import Slider from "react-slick";
 import anh4 from "../../../assets/images/image4.png";
 import styles from "../Styles/HomeService.module.scss";
-
-const listService = [
-    {
-        id: "1",
-        name: "Điều trị mụn (lẻ / trọn gói)",
-        description: [
-            "Điều trị cho mọi cấp độ mụn.",
-            "Kết hợp dùng thuốc (thuốc uống, thuốc bôi), chăm sóc da và điều trị thâm, sẹo rỗ do mụn.",
-        ],
-        time: "60 phút",
-        price: "1.000.000 - 2.000.000",
-    },
-    {
-        id: "2",
-        name: "Chăm sóc da chuyên sâu",
-        description: [
-            "Chăm sóc da mặt và toàn thân với liệu trình phù hợp.",
-            "Sử dụng sản phẩm chất lượng cao và kỹ thuật hiện đại.",
-        ],
-        time: "90 phút",
-        price: "1.500.000 - 3.000.000",
-    },
-    {
-        id: "3",
-        name: "Chăm sóc da chống lão hóa",
-        description: [
-            "Chăm sóc da giúp giảm dấu hiệu lão hóa.",
-            "Sử dụng sản phẩm và kỹ thuật tiên tiến.",
-        ],
-        time: "75 phút",
-        price: "1.200.000 - 2.500.000",
-    },
-    {
-        id: "4",
-        name: "Tẩy tế bào chết toàn thân",
-        description: [
-            "Tẩy tế bào chết giúp làn da mềm mịn.",
-            "Sử dụng sản phẩm chất lượng cao.",
-        ],
-        time: "45 phút",
-        price: "800.000 - 1.500.000",
-    },
-];
-
+import useServicesActions from "../../../../admin/modules/services/hooks/useServices";
+import { useNavigate } from "react-router-dom";
 const settings = {
     dots: true,
     infinite: true,
@@ -81,8 +43,21 @@ const settings = {
         },
     ],
 };
-
+import { useSelector } from "react-redux";
 const Home_service = () => {
+    const navigate = useNavigate();
+    const { getServicesClient } = useServicesActions();
+    const services = useSelector((state) => state.services);
+    const [servicesClient, setServicesClient] = useState([]);
+    useEffect(() => {
+        getServicesClient(10);
+    }, []);
+    useEffect(() => {
+        if (services.services.data.length > 0 && !services.loading) {
+            setServicesClient(services.services.data);
+        }
+    }, [services]);
+
     return (
         <section className={styles.container}>
             <div className="container p-5">
@@ -91,24 +66,27 @@ const Home_service = () => {
                 </Divider>
                 <div className="container">
                     <Slider {...settings}>
-                        {listService.map((item) => (
+                        {servicesClient.map((item, index) => (
                             <Card
-                                key={item.id}
+                                key={index}
                                 title={item.name}
-                                extra={<Button type="primary">Xem</Button>}
                                 className={styles.card}
                             >
-                                <img
+                                <Image
+                                    fallback={anh4}
+                                    src={
+                                        "http://127.0.0.1:8000/storage/uploads/services/" +
+                                        item.image_url
+                                    }
                                     className={styles.cardImage}
-                                    src={anh4}
                                     alt="service"
                                 />
                                 <p className={styles.cardContent}>
-                                    {item.description[0]}
+                                    {item.description}
                                 </p>
                                 <Tooltip
                                     trigger="click"
-                                    title={`Thời gian điều trị: ${item.time}`}
+                                    title={`Thời gian điều trị: ${item.duration}`}
                                 >
                                     <Button className={styles.tooltipButton}>
                                         <FieldTimeOutlined />
@@ -117,13 +95,23 @@ const Home_service = () => {
                                 </Tooltip>
                                 <Tooltip
                                     trigger="click"
-                                    title={`Chi phí dự kiến: ${item.price}`}
+                                    title={`Chi phí dự kiến: ${parseInt(
+                                        item.price
+                                    ).toLocaleString()} VND`}
                                 >
                                     <Button className={styles.tooltipButton}>
                                         <MoneyCollectFilled />
                                         <strong>Chi phí dự kiến</strong>
                                     </Button>
                                 </Tooltip>
+                                <Button className={styles.tooltipButton}
+                                    onClick={() => {
+                                        navigate(`/datlichhen?dichvu=${item.id}`);
+                                    }}
+                                >
+                                    <CarryOutFilled />
+                                    <strong>Đặt lịch</strong>
+                                </Button>
                             </Card>
                         ))}
                     </Slider>

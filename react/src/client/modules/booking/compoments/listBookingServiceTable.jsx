@@ -12,13 +12,12 @@ const ListBookingServiceTable = ({ service, setService }) => {
             title: "Dịch vụ",
             dataIndex: "name",
             key: "name",
-            
         },
         {
             title: "Số lượng",
             dataIndex: "quantity",
             key: "quantity",
-  
+
             render: (text, record, index) => (
                 <Input
                     className="w-100"
@@ -83,6 +82,7 @@ const ListBookingServiceTable = ({ service, setService }) => {
                         dataSource={service}
                         pagination={false}
                         columns={columns}
+                        rowKey="id"
                         locale={{
                             emptyText: "Vui lòng chọn dịch vụ để thêm số lượng",
                         }}

@@ -52,7 +52,7 @@ const NotificationModule = () => {
             <>
                 <div className={styles.notificationList}>
                     {notiData.map((notification, index) => (
-                        <>
+                        <div key={notification.key}>
                             <Row
                                 key={notification.key}
                                 align="middle"
@@ -90,7 +90,7 @@ const NotificationModule = () => {
                                 </Col>
                             </Row>
                            
-                        </>
+                        </div>
                     ))}
                     {pagnation.total > count && (
                         <div>

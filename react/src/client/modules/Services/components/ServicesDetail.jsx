@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, List, Empty, Image, Button } from "antd";
+import { Row, Col, List, Empty, Image, Button, Result } from "antd";
 import style from "../style/ServicesDetail.module.scss";
 import { useNavigate } from "react-router-dom";
+import { FrownOutlined } from "@ant-design/icons";
 
 const ServicesDetail = ({ listservices }) => {
     const [cateService, setCateService] = useState([]);
@@ -51,10 +52,13 @@ const ServicesDetail = ({ listservices }) => {
                     dataSource={cateService}
                     locale={{
                         emptyText: (
-                            <Empty
-                                description="Không có dịch vụ nào vui lòng chọn loại dịch vụ khác."
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                            />
+                            <Result
+                            icon={<FrownOutlined/>}
+                            title="Không Tìm thấy dịch vụ"
+                            extra={<p>
+                                Hãy thử tải lại trang hoặc liên hệ với chúng tôi để được hỗ trợ
+                            </p>}
+                          />
                         ),
                     }}
                     renderItem={(item) => (

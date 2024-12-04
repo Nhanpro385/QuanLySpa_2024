@@ -13,7 +13,6 @@ import {
     notification,
 } from "antd";
 
-import { useForm, Controller, set } from "react-hook-form";
 import baner2 from "../assets/images/baner2.png";
 import anh4 from "../assets/images/image4.png";
 import styles from "../modules/booking/styles/Booking.module.scss";
@@ -22,25 +21,27 @@ import BookingPickTime from "../modules/booking/compoments/bookingpicktime";
 import useServiceCategoriesActions from "../../admin/modules/services/hooks/useServiceCategories";
 import { useSelector } from "react-redux";
 import ListBookingServiceTable from "../modules/booking/compoments/listBookingServiceTable";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 const Appbooking = () => {
-    const {
-        register,
-        handleSubmit,
-        control,
-        setValue,
-        getValues,
-        formState: { errors },
-    } = useForm();
+    const [idService, setIdService] = useState(null);
+    const location = useLocation();
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const iddichvu = params.get("dichvu");
+        console.log(iddichvu);
+        setIdService(iddichvu);
+    }, [location.search]);
+
     const [api, contextHolder] = notification.useNotification();
     const { getServiceCategoriesClient } = useServiceCategoriesActions();
-    const [service, setService] = useState([]);
+    const [service, setService] = useState([]); // Dịch vụ
     const [activeService, setActiveService] = useState(0);
-    const [activeDate, setActiveDate] = useState(null);
-    const [time, setTime] = useState(null);
- 
-    const [NoteData, setNoteData] = useState("");
-    const [ServicesCategories, setServicesCategories] = useState([]);
+    const [activeDate, setActiveDate] = useState(null); // Ngày đặt lịch
+    const [time, setTime] = useState(null); // Thời gian
+
+    const [NoteData, setNoteData] = useState(""); // Ghi chú
+
+    const [ServicesCategories, setServicesCategories] = useState([]); // danh sách dịch vụ
     const ServiceCategoriesSlice = useSelector(
         (state) => state.serviceCategories
     );
@@ -48,8 +49,7 @@ const Appbooking = () => {
     const OnchangeNote = (e) => {
         setNoteData(e.target.value);
     };
-    
-    
+
     const onSubmit = (data) => {
         if (!time) {
             api.error({
@@ -64,7 +64,7 @@ const Appbooking = () => {
             return;
         }
         console.log(time);
-        
+
         const payload = {
             shift_id: time.shift_id,
             services: service.map((ser) => ({
@@ -102,6 +102,31 @@ const Appbooking = () => {
             );
         }
     }, [ServiceCategoriesSlice]);
+    useEffect(() => {
+        // Kiểm tra xem dịch vụ có tồn tại trong `service` hay không
+        if (service.filter((ser) => ser.id == idService).length == 0) {
+            ServicesCategories.forEach((cate, index) => {
+                cate.service.forEach((ser, index2) => {
+                    // Nếu tìm thấy dịch vụ khớp với `idService`
+                    if (ser.id === idService) {
+                       
+                        // Cập nhật activeService với key của `ServicesCategories`
+                        setActiveService(index);
+
+                        // Cập nhật state `service` với dịch vụ và thêm quantity
+                        setService([
+                            ...service,
+                            {
+                                ...ser,
+                                quantity: 1,
+                            },
+                        ]);
+                    }
+                });
+            });
+        }
+    }, [ServicesCategories, service, idService]); // Thêm idService vào dependencies để theo dõi sự thay đổi.
+
     return (
         <div
             style={{
@@ -111,7 +136,7 @@ const Appbooking = () => {
             {contextHolder}
             <img src={baner2} alt="baner2" width="100%" />
 
-            <Row justify="center" align="middle">
+            <Row justify="center" align="middle" className="mb-4">
                 <Col span={12}>
                     <Steps
                         size="small"

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, List, Card, Spin, Button } from "antd";
+import { Row, Col, List, Card, Spin, Button, Result } from "antd";
 import style from "../style/ServicesList.module.scss";
 import useServiceCategoriesActions from "../../../../admin/modules/services/hooks/useServiceCategories";
 import { useSelector } from "react-redux";
 import ServicesDetail from "./ServicesDetail";
+import { FrownOutlined, SmileOutlined } from "@ant-design/icons";
 
 const Services_List = () => {
     const { getServiceCategoriesClient } = useServiceCategoriesActions();
@@ -49,7 +50,7 @@ const Services_List = () => {
                     sm={24}
                     xs={24}
                 >
-                    <h1>Loại dịch vụ tại Sapa Sakura </h1>
+                    <h1>Loại dịch vụ tại Spa Sakura </h1>
                 </Col>
             </Row>
 
@@ -87,7 +88,14 @@ const Services_List = () => {
                         />
                     ) : (
                         <div className={style.noServices}>
-                            <p>Hiện không có dịch vụ nào để hiển thị.</p>
+                            <Result
+                            
+                                icon={<FrownOutlined />}
+                                title="Không có Danh mục dịch vụ nào"
+                                extra={<p>
+                                    Hãy thử tải lại trang hoặc liên hệ với chúng tôi để được hỗ trợ
+                                </p> }
+                            />
                         </div>
                     )}
                 </Col>

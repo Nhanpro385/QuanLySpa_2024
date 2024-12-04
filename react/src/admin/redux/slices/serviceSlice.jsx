@@ -20,7 +20,7 @@ export const servicesGet = createAsyncThunk(
             // Xây dựng query parameters chỉ với `per_page` nếu có
             const queryParams = per_page
                 ? `?per_page=${per_page}&products=true`
-                : "";
+                : "?products=true";
 
             // Gọi API
             const response = await axiosInstance.get(
@@ -207,6 +207,18 @@ export const servicesDetailClient = createAsyncThunk(
         return response.data;
     }
 );
+export const GetservicesClient = createAsyncThunk(
+    "services/getservicesClient",
+    async (per_page) => {
+        const queryParams = per_page ? `?per_page=${per_page}` : "";
+        const response = await axiosInstance.get(
+            `${endpoints.services.listClient}${queryParams}`
+        );
+
+        return response.data;
+    }
+);
+
 const initialState = {
     services: {
         data: [],
@@ -341,6 +353,18 @@ const servicesSlice = createSlice({
                 state.loading = false;
             })
             .addCase(servicesDetailClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(GetservicesClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(GetservicesClient.fulfilled, (state, action) => {
+                state.services = action.payload;
+                state.loading = false;
+            })
+            .addCase(GetservicesClient.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });
