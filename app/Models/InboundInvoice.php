@@ -28,6 +28,13 @@ class InboundInvoice extends Model
         'updated_by',
         
     ];
+    protected $casts = [
+        'id' => 'string',
+        'staff_id' => 'string',
+        'supplier_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
     protected static function boot()
     {
         parent::boot();
@@ -35,6 +42,15 @@ class InboundInvoice extends Model
         static::creating(function ($model) {
             if (is_null($model->status)) {
                 $model->status = true;
+            }
+        });
+        static::deleting(function ($model) {
+            // Khi xóa (soft delete) `InboundInvoice`, cập nhật các bản ghi liên quan
+            $model->details()->update(['inbound_invoice_id' => null]);
+
+            if ($model->forceDeleting) {
+                // Nếu thực hiện hard delete, thực hiện hành động bổ sung nếu cần
+                $model->details()->delete();
             }
         });
     }

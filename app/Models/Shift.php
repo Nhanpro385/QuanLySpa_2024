@@ -46,6 +46,13 @@ class Shift extends Model
                 $model->updated_at = now();
             }
         });
+
+        static::deleting(function ($shift) {
+            // Cập nhật các cột liên kết tới shift_id thành null
+            \App\Models\StaffShift::where('shift_id', $shift->id)->update(['shift_id' => null]);
+            \App\Models\Appointment::where('shift_id', $shift->id)->update(['shift_id' => null]);
+        });
+    
     }
 
     public function createdBy()

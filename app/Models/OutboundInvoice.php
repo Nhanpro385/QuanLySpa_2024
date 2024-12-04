@@ -83,4 +83,18 @@ use Kra8\Snowflake\HasSnowflakePrimary;
         {
             return $query->orderBy('created_at', 'desc');
         }
+        protected static function boot()
+        {
+            parent::boot();
+    
+            static::deleting(function ($model) {
+                // Khi soft delete, cập nhật các bản ghi chi tiết
+                $model->details()->update(['outbound_invoice_id' => null]);
+    
+                if ($model->forceDeleting) {
+                    // Nếu là hard delete, thực hiện thêm hành động nếu cần
+                    $model->details()->delete();
+                }
+            });
+        }
     }
