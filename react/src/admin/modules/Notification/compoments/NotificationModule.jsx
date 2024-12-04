@@ -5,8 +5,9 @@ import clsx from "clsx";
 import { useSelector } from "react-redux";
 import usenotificationsActions from "../hooks/usenotificationsAction";
 import styles from "../style/notification.module.scss";
-
+import { useNavigate } from "react-router-dom";
 const NotificationModule = () => {
+    const navigate = useNavigate();
     const { getnotification } = usenotificationsActions();
     const [open, setOpen] = useState(false);
     const [notiData, setNotiData] = useState([]);
@@ -26,7 +27,6 @@ const NotificationModule = () => {
                     key: item.id,
                 }))
             );
-    
         } else {
             setNotiData([]);
         }
@@ -47,19 +47,38 @@ const NotificationModule = () => {
             getnotification(count);
         }
     }, [count]);
+    const CheckNotification = (type) => {
+        if (type == `App\\Models\\Appointment`) {
+            navigate("/admin/lichhen");
+            setOpen(false);
+        } else if (type == `App\\Models\\Consulation`) {
+            navigate("/admin/tuvankhachhang");
+            setOpen(false);
+        }
+    };
+
     const notificationContent =
         notiData.length > 0 ? (
             <>
                 <div className={styles.notificationList}>
                     {notiData.map((notification, index) => (
-                        <div key={notification.key}>
+                        <div
+                            key={notification.key}
+                            onClick={() =>
+                                CheckNotification(notification.notifiable_type)
+                            }
+                        >
                             <Row
                                 key={notification.key}
                                 align="middle"
                                 className={clsx(
                                     styles.notification,
-                                    styles.noti_comment
+                                    notification.notifiable_type === "App\\Models\\Consulation"
+                                        ? styles.noti_Consulation
+                                        : styles.noti_appointment,
+                                    styles.notificationItem
                                 )}
+                                
                                 style={{
                                     animationDelay: `${index * 0.1}s`,
                                     marginBottom: 10,
@@ -77,19 +96,47 @@ const NotificationModule = () => {
                                     />
                                 </Col>
                                 <Col span={20}>
-                                    <p style={{ margin: 0 }}>
-                                        <strong>{notification.user}</strong>{" "}
-                                        {notification.data}
-                                    </p>
-                                    <Tag
-                                        color="green"
-                                        style={{ fontSize: "9px", margin: 0 }}
-                                    >
-                                        {notification.created_at}
-                                    </Tag>
+                                    <Row gutter={[16, 16]}>
+                                        <Col
+                                            xxl={24}
+                                            xl={24}
+                                            lg={24}
+                                            md={24}
+                                            sm={24}
+                                            xs={24}
+                                        >
+                                            <p
+                                                style={{ margin: 0 }}
+                                                className={styles.noti_title}
+                                            >
+                                                <strong>
+                                                    {notification.user}
+                                                </strong>{" "}
+                                                {notification.data}
+                                            </p>
+                                        </Col>
+                                        <Col
+                                            xxl={24}
+                                            xl={24}
+                                            lg={24}
+                                            md={24}
+                                            sm={24}
+                                            xs={24}
+                                            style={{ textAlign: "right" }}
+                                        >
+                                            <Tag
+                                                color="green"
+                                                style={{
+                                                    fontSize: "12px",
+                                                    margin: 0,
+                                                }}
+                                            >
+                                                {notification.created_at}
+                                            </Tag>
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Row>
-                           
                         </div>
                     ))}
                     {pagnation.total > count && (
@@ -131,7 +178,7 @@ const NotificationModule = () => {
         >
             <Badge count={notiData.filter((item) => !item.read).length}>
                 <NotificationOutlined style={{ fontSize: 18 }} /> Thông báo
-            </Badge>         
+            </Badge>
         </Popover>
     );
 };

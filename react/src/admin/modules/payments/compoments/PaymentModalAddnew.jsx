@@ -20,12 +20,7 @@ import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import { get } from "lodash";
 
-const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
-    const [DataAppointment, setDataAppointment] = useState({});
-    useEffect(() => {
-        console.log(data);
-        setDataAppointment(data);
-    }, [data]);
+const PaymentModalAddnew = ({ isOpen, onClose, onSubmit, error }) => {
     const [form] = Form.useForm();
     const { getproduct, searchproduct } = useproductActions();
     const { getPromotions } = usePromotionActions();
@@ -34,63 +29,15 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
     const [DataProduct, setDataProduct] = useState([]);
     const [DataPromotion, setDataPromotion] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
-    const [totalAmount, setTotalAmount] = useState(0);
-    useEffect(() => {
-        const productTotal = selectedProducts.reduce((sum, item) => {
-            return sum + item.quantity * parseFloat(item.price || 0);
-        }, 0);
-        const serviceTotal = parseFloat(DataAppointment?.service_total || 0);
-
-        setTotalAmount(productTotal + serviceTotal);
-    }, [selectedProducts, DataAppointment]);
-    useEffect(() => {
-        if (data) {
-            setDataAppointment(data);
-
-            // Tính tổng tiền từ sản phẩm
-            const productTotal =
-                data.products?.reduce((sum, item) => {
-                    const product = DataProduct.find(
-                        (prod) => prod.id === item.product_id
-                    );
-                    return sum + (product?.price || 0) * item.quantity;
-                }, 0) || 0;
-
-            // Tiền dịch vụ
-            const serviceTotal = parseFloat(data.service_total || 0);
-
-            // Tổng tiền cần thanh toán
-            setTotalAmount(productTotal + serviceTotal);
-
-            // Cập nhật các sản phẩm được chọn
-            setSelectedProducts(
-                data.products.map((item) => ({
-                    id: item.product_id,
-                    quantity: item.quantity,
-                    price: DataProduct.find(
-                        (product) => product.id === item.product_id
-                    )?.price,
-                })) || []
-            );
-
-            // Đặt giá trị cho form
-            form.setFieldsValue({
-                status: data.status || 0,
-                paymentMethod: data.paymentMethod || 1,
-                promotion_name: data.promotion_id?.id || "",
-                products: data.products.map((item) => item.product_id) || [],
-            });
-        }
-    }, [data, DataProduct, form]);
 
     const handleFinish = (values) => {
+    
         onSubmit({
-            paymentMethod: values.paymentMethod || 1,
-            promotion_name: values.promotion_name || "",
-            status: values.status,
-
+            payment_type: values.paymentMethod || 1,
+            promotion_name: values.promotion_name || null,
+            status: 1,
             products: selectedProducts.map((item) => ({
-                id: item.id,
+                product_id: item.id,
                 quantity: item.quantity,
             })),
         });
@@ -163,6 +110,17 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
 
     const columns = [
         {
+            title: "STT",
+            dataIndex: "key",
+            key: "key",
+            render: (_, __, index) => index + 1,
+        },
+        {
+            title: "Mã sản phẩm",
+            dataIndex: "id",
+            key: "id",
+        },
+        {
             title: "Tên sản phẩm",
             dataIndex: "name",
             key: "name",
@@ -230,52 +188,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
             ),
         },
     ];
-    const items = [
-        {
-            key: "1",
-            label: "Tên khách hàng",
-            children:
-                DataAppointment?.appointment_id?.customer?.full_name ||
-                "Không có",
-        },
-        {
-            key: "2",
-            label: "Số điện thoại",
-            children:
-                DataAppointment?.appointment_id?.customer?.phone || "Không có",
-        },
-        {
-            key: "3",
-            label: "Ngày Đạt lịch",
-            children: DataAppointment?.created_at || "",
-        },
-        {
-            key: "4",
-            label: "trạng thái",
-            children: (
-                <Badge
-                    status={DataAppointment?.status === 1 ? "success" : "error"}
-                    text={
-                        DataAppointment?.status === 1
-                            ? "Đã thanh toán"
-                            : "Chưa thanh toán"
-                    }
-                />
-            ),
-        },
-        {
-            key: "5",
-            label: "Tiền dịch vụ",
-            children:
-                parseInt(DataAppointment?.service_total || 0).toLocaleString() +
-                " VND",
-        },
-        {
-            key: "6",
-            label: "Tổng tiền cần thanh toán",
-            children: totalAmount.toLocaleString() + " VND",
-        },
-    ];
 
     return (
         <Modal
@@ -298,13 +210,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
             ]}
         >
             <Row gutter={[16, 16]}>
-                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <Descriptions
-                        title="Thông tin Dịch vụ"
-                        bordered
-                        items={items}
-                    />
-                </Col>
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Card title="Thanh toán">
                         <Form
@@ -333,7 +238,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
                                     </Select.Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item
+                            {/* <Form.Item
                                 label="Nhập mã khuyến mãi"
                                 name="promotion_name"
                             >
@@ -379,33 +284,28 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
                                             </Space>
                                         ),
                                         value: item.id,
+                                        name: item.name,
                                     }))}
                                 />
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item label="Sản phẩm" name="products">
                                 <Select
                                     placeholder="Chọn sản phẩm"
                                     mode="multiple"
                                     allowClear
+                                    value={selectedProducts.map(
+                                        (item) => item.id
+                                    )}
                                     options={DataProduct.map((item) => ({
                                         label: item.name,
                                         value: item.id,
                                     }))}
-                                    filterOption={false}
                                     onSearch={onSearchproduct}
+                                    filterOption={false}
                                     onChange={handleProductSelect}
                                 />
                             </Form.Item>
-                            <Form.Item label="trạng thái" name="status">
-                                <Select placeholder="Chọn trạng thái">
-                                    <Select.Option value={1}>
-                                        Đã thanh toán
-                                    </Select.Option>
-                                    <Select.Option value={0}>
-                                        Chưa thanh toán
-                                    </Select.Option>
-                                </Select>
-                            </Form.Item>
+
                             <Table
                                 columns={columns}
                                 dataSource={selectedProducts.map((item) => ({
@@ -428,4 +328,4 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
     );
 };
 
-export default PaymentModal;
+export default PaymentModalAddnew;

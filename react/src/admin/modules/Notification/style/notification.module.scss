@@ -25,11 +25,13 @@
     }
 }
 .noti_appointment {
-    background-color: #4caf50;
-    color: white;
-}
-.noti_comment {
     color: #000;
+
+    font-weight: 500;
+}
+.noti_Consulation {
+    color: #000;
+
     font-weight: 500;
 }
 .read {
@@ -38,7 +40,7 @@
 }
 .notificationList {
     max-height: 300px;
-
+    width: 500px;
     overflow-y: auto;
 }
 .notificationPopover {
@@ -59,4 +61,17 @@
 .notificationPopover:hover {
     cursor: pointer;
     color: #e05265;
+}
+.notificationItem {
+    padding: 10px;
+    width: 100%;
+}
+.noti_title {
+    margin: 0 0 10px 0;
+    font-size: 15px;
+    display: -webkit-box; /* Sử dụng -webkit-box để hỗ trợ line-clamp */
+    -webkit-line-clamp: 1; /* Giới hạn số dòng (ở đây là 1 dòng) */
+    -webkit-box-orient: vertical; /* Hướng của box */
+    overflow: hidden; /* Ẩn phần văn bản thừa */
+    text-overflow: ellipsis; /* Hiển thị dấu "..." khi bị cắt */
 }

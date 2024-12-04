@@ -62,6 +62,7 @@ export const PaymentsAdd = createAsyncThunk(
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
                 errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || "",
             });
         }
     }

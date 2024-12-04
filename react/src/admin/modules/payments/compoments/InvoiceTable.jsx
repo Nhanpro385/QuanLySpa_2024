@@ -2,7 +2,13 @@ import React from "react";
 import { Button, Dropdown, Space, Table, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
-const InvoiceTable = ({ data, onActionClick, loading }) => {
+const InvoiceTable = ({
+    data,
+    onActionClick,
+    loading,
+    pagination,
+    OnchangePage,
+}) => {
     const columns = [
         {
             title: "#",
@@ -16,7 +22,7 @@ const InvoiceTable = ({ data, onActionClick, loading }) => {
         },
         {
             title: "Họ tên",
-            dataIndex: ["appointment_id","customer","full_name"],
+            dataIndex: ["appointment_id", "customer", "full_name"],
             key: "full_name",
 
             render: (text) => text || "Chưa có",
@@ -58,7 +64,13 @@ const InvoiceTable = ({ data, onActionClick, loading }) => {
                             },
                             {
                                 key: "3",
-                                label: <Button block>Thanh Toán</Button>,
+                                label: (
+                                    <Button block disabled={record.status == 1}>
+                                        {record.status == 1
+                                            ? "Đã thanh toán"
+                                            : "Thanh toán"}
+                                    </Button>
+                                ),
                             },
                         ],
                         onClick: (e) => onActionClick(e, record),
@@ -81,6 +93,17 @@ const InvoiceTable = ({ data, onActionClick, loading }) => {
             loading={loading}
             columns={columns}
             dataSource={data}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total) => `Tổng ${total} mục`,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                responsive: true,
+                onChange: OnchangePage,
+            }}
             rowKey="key"
         />
     );

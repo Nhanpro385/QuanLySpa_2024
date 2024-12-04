@@ -58,11 +58,12 @@ function ServiceModalEdit({
             setValue("price", service.price || "");
             setValue("description", service.description || "");
             setValue("duration", timeStringToMinutes(service.duration) || "");
-            setValue("status", service.status || false);
+            setValue("status", service.status === 1 ? true : false);
             setValue(
                 "service_category_id",
                 service.service_category_id.id || ""
             );
+            setValue("priority", service.priority || "");
             // Get service categories from API
             getServiceCategories();
             getServiceCategoriesById(service.service_category_id.id);
@@ -120,10 +121,13 @@ function ServiceModalEdit({
     }, 500); // 300ms debounce
 
     const onSubmit = (data) => {
+        data.status = data.status ? 1 : 0;
         const payload = {
             id: service.id,
             ...data,
         };
+        console.log(payload);
+        
         handleSubmitEdit(payload);
         reset();
         setFileList([]);

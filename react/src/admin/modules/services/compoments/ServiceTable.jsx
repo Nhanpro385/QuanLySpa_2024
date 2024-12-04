@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Dropdown, Space, Modal } from "antd";
+import { Table, Button, Dropdown, Space, Modal, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import ServiceActions from "./ServiceActions";
 
@@ -37,7 +37,16 @@ const ServiceTable = ({
             ),
         },
         { title: "Thời gian dự kiến", dataIndex: "duration", key: "duration" },
-
+        {
+            title: "trạng thái",
+            dataIndex: "status",
+            key: "status",
+            render: (text, record) => (
+                <span>
+                    {record.status == 1 ? <Tag color="green">Hoạt động</Tag> : <Tag color="red">Không hoạt động</Tag>}
+                </span>
+            ),
+        },
         {
             title: "Hành động",
             key: "action",

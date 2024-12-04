@@ -7,6 +7,9 @@ import usepaymentActions from "../../modules/payments/hooks/usepaymentAction";
 import PaymentModalDetail from "../../modules/payments/compoments/PaymentModalDetail";
 import { useSelector } from "react-redux";
 import { set } from "react-hook-form";
+import PaymentModalAddnew from "../../modules/payments/compoments/PaymentModalAddnew";
+import { generateSnowflakeId } from "../../utils";
+import debounce from "lodash/debounce";
 const PaymentManagement = () => {
     const [api, contextHolder] = notification.useNotification();
     const { isModalOpen, showModal, handleCancel } = useModal();
@@ -21,13 +24,31 @@ const PaymentManagement = () => {
         showModal: showPaymentModal2,
         handleCancel: closePaymentModal2,
     } = useModal();
+    const {
+        isModalOpen: isPaymentModalOpen3,
+        showModal: showPaymentModal3,
+        handleCancel: closePaymentModal3,
+    } = useModal();
     const [paymendata, setPaymentData] = useState([]);
     const payments = useSelector((state) => state.payments);
-    const { getpayment, addpayment, updatepayment, getpaymentById } =
+    const { getpayment, addpayment, updatepayment, getpaymentById,searchpayment } =
         usepaymentActions();
     useEffect(() => {
         getpayment();
     }, []);
+    const [searchquery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+        per_page: 5,
+    });
+    const OnchangePage = (page, pagination) => {
+        setSearchQuery((prev) => ({
+            ...prev,
+            page: page,
+            per_page: pagination,
+        }));
+    };
+    const pagination = payments?.Payments?.meta || {};
     useEffect(() => {
         if (payments?.Payments?.data && !payments.loading) {
             setPaymentData(
@@ -43,10 +64,9 @@ const PaymentManagement = () => {
     const handleActionClick = async (e, record) => {
         if (e.key === "3") {
             showPaymentModal();
-            setSelectedInvoice(record);
+
+            setSelectedInvoice(() => record);
         } else if (e.key === "2") {
-            // showPaymentModal2();
-            // setSelectedInvoice(record);
             try {
                 const res = await getpaymentById(record.id);
                 if (res.payload.status === "success") {
@@ -60,11 +80,19 @@ const PaymentManagement = () => {
             }
         }
     };
-    const detailpayment = (values) => {};
+    useEffect(() => {
+        if (
+            searchquery.search !== "" ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 5
+        ) {
+            searchpayment(searchquery);
+        } else {
+            getpayment();
+        }
+    }, [searchquery]);
     const handlePaymentSubmit = async (values) => {
         try {
-            console.log(values);
-
             const payload = {
                 promotion_name: values.promotion_name,
                 payment_type: values.paymentMethod,
@@ -100,16 +128,60 @@ const PaymentManagement = () => {
             console.log(e);
         }
     };
+    const handleaddnewpayment = async (data) => {
+        try {
+            const payload = {
+                id: generateSnowflakeId(),
+                ...data,
+            };
+            const res = await addpayment(payload);
+            console.log(res);
 
+            if (res.payload.status === "success") {
+                api.success({
+                    message: "Thêm thanh toán thành công",
+                    duration: 3,
+                });
+
+                closePaymentModal3();
+                getpayment();
+            } else {
+                api.error({
+                    message: res.payload.message || "Có lỗi xảy ra",
+                    duration: 3,
+                    description: res.payload.error || "",
+                });
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+    const OnsearchPayment = debounce((value) => {
+        setSearchQuery((prev) => ({
+            ...prev,
+            search: value,
+        }));
+    }
+    , 500);
     return (
         <>
             <h1 className="text-center">Quản lý thanh toán</h1>
             <Row gutter={[16, 16]}>
                 {contextHolder}
                 <Col span={24}>
-                    <Card title="Lịch sử thanh toán">
+                    <Card
+                        title="Lịch sử thanh toán"
+                        extra={
+                            <Button
+                                type="primary"
+                                onClick={() => showPaymentModal3()}
+                            >
+                                Thêm thanh toán
+                            </Button>
+                        }
+                    >
                         <Row gutter={[16, 16]} className="mb-3">
-                            <Col span={6}>
+                            <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={6}>
                                 <Select
                                     placeholder="Sắp xếp"
                                     className="w-100"
@@ -123,7 +195,7 @@ const PaymentManagement = () => {
                                     </Select.Option>
                                 </Select>
                             </Col>
-                            <Col span={6}>
+                            <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={6}>
                                 <Select
                                     placeholder="Lọc theo"
                                     className="w-100"
@@ -140,14 +212,19 @@ const PaymentManagement = () => {
                                     </Select.Option>
                                 </Select>
                             </Col>
-                            <Col span={12}>
-                                <Input.Search placeholder="Tìm kiếm theo mã hóa đơn hoặc tên khách hàng" />
+                            <Col xxl={6} xl={8} lg={12} md={12} sm={12} xs={12}>
+                                <Input.Search
+                                    onChange={(e) => OnsearchPayment(e.target.value)}
+                                    onSearch={(value) => OnsearchPayment(value)}
+                                placeholder="Tìm kiếm theo mã hóa đơn hoặc tên khách hàng" />
                             </Col>
                         </Row>
                         <InvoiceTable
+                            OnchangePage={OnchangePage}
                             loading={payments.loading}
                             data={paymendata}
                             onActionClick={handleActionClick}
+                            pagination={pagination}
                         />
                     </Card>
                 </Col>
@@ -163,6 +240,11 @@ const PaymentManagement = () => {
                 isOpen={isPaymentModalOpen2}
                 onClose={closePaymentModal2}
                 selectedInvoice={selectedInvoice} // Truyền selectedInvoice vào modal
+            />
+            <PaymentModalAddnew
+                isOpen={isPaymentModalOpen3}
+                onClose={closePaymentModal3}
+                onSubmit={handleaddnewpayment}
             />
         </>
     );
