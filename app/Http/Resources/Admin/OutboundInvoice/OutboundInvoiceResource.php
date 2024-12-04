@@ -11,34 +11,34 @@ class OutboundInvoiceResource extends JsonResource
         return [
             'id' => (string) $this->id,
             'staff' => $this->staff ? [
-                'id' => (string) $this->staff->id,
-                'name' => $this->staff->full_name,
-                'role' => $this->staff->role,
+                'id' => $this->staff->id ? (string) $this->staff->id : null,
+                'name' => $this->staff->full_name ?? null,
+                'role' => $this->staff->role ?? null,
             ] : null,
             'total_amount' => $this->total_amount,
             'note' => $this->note,
             'status' => $this->status,
             'details' => $this->details ? $this->details->map(function ($detail) {
                 return [
-                    'id' => (string) $detail->id,
+                    'id' => $detail->id ? (string) $detail->id : null,
                     'product' => $detail->product ? [
-                        'id' => (string) $detail->product->id,
-                        'name' => $detail->product->name,
+                        'id' => $detail->product->id ? (string) $detail->product->id : null,
+                        'name' => $detail->product->name ?? null,
                     ] : null,
-                    'quantity_export' => $detail->quantity_export, // Thay đổi
-                    'quantity_olded' => $detail->quantity_olded,   // Thay đổi
-                    'unit_price' => $detail->unit_price,           // Thay đổi
+                    'quantity_export' => $detail->quantity_export ?? null,
+                    'quantity_olded' => $detail->quantity_olded ?? null,
+                    'unit_price' => $detail->unit_price ?? null,
                 ];
             }) : [],
             'created_by' => $this->createdBy ? [
-                'id' => (string) $this->createdBy->id,
-                'name' => $this->createdBy->full_name,
-                'role' => $this->createdBy->role,
+                'id' => $this->createdBy->id ? (string) $this->createdBy->id : null,
+                'name' => $this->createdBy->full_name ?? null,
+                'role' => $this->createdBy->role ?? null,
             ] : null,
             'updated_by' => $this->updatedBy ? [
-                'id' => (string) $this->updatedBy->id,
-                'name' => $this->updatedBy->full_name,
-                'role' => $this->updatedBy->role,
+                'id' => $this->updatedBy->id ? (string) $this->updatedBy->id : null,
+                'name' => $this->updatedBy->full_name ?? null,
+                'role' => $this->updatedBy->role ?? null,
             ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

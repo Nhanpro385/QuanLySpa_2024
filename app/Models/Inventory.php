@@ -24,6 +24,13 @@ class Inventory extends Model
         'created_by',
         'updated_by',
     ];
+    protected $casts = [
+        'id' => 'string',
+        'product_id' => 'string',
+        'created_by' => 'string',
+        'updated_by' => 'string',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
