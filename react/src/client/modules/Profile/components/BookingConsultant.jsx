@@ -161,7 +161,10 @@ const BookingConsultant = () => {
                             dataSource={consdata}
                             columns={columns}
                             rowKey={"key"}
-                            pagination={false}
+                            pagination={{
+                                pageSize: 5,
+                                showQuickJumper: true,
+                            }}
                         />
                     </Card>
                 </Col>

@@ -83,7 +83,7 @@ const ServicesDetail = ({ listservices }) => {
                                     <p>{item.title}</p>
                                 </div>
                                 <div className={style.boxServicesItemBottom}>
-                                    <p>{item.description}</p>
+                                    <p>{item.name}</p>
                                 </div>
                                 <div className={style.boxServicesItemPrice}>
                                     <p>

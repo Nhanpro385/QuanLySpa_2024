@@ -58,7 +58,7 @@ const ThanksBooking = () => {
                         </Button>,
                         <Button
                             key="buy"
-                            onClick={() => navigate("/lichsudichvu")}
+                            onClick={() => navigate("/thongtincanhan/lichsudichvu")}
                         >
                             Xem lịch hẹn
                         </Button>,

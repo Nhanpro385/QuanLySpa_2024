@@ -57,6 +57,11 @@ const BookingInfo = () => {
                 });
                 localStorage.removeItem("booking");
                 navigate("/datlich/thanhcong");
+            } else {
+                api.error({
+                    message: "Đặt lịch thất bại",
+                    description: res.payload.message || "Đặt lịch thất bại",
+                });
             }
         } catch (error) {
             console.log(error);
@@ -71,7 +76,7 @@ const BookingInfo = () => {
                     ...item,
                 }))
             );
-        }else{
+        } else {
             navigate("/datlichhen");
         }
     }, [data]);
@@ -423,7 +428,18 @@ const BookingInfo = () => {
                             </Col>
                         </Col>
                     </Row>
-                    <Row className="mt-4" justify="center">
+                    <Row className="mt-4" justify="center" gutter={[8, 8]}>
+                        <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
+                            <Button
+                                block
+                                shape="round"
+                                danger
+                                variant="outlined"
+                                onClick={() => navigate("/datlichhen")}
+                            >
+                                Quay lại
+                            </Button>
+                        </Col>{" "}
                         <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
                             <Button
                                 block
