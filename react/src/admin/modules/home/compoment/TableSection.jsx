@@ -27,7 +27,7 @@ const TableSection = ({
                             placeholder="Tìm kiếm giao dịch"
                             style={{ width: 200, marginRight: 8 }}
                         />
-                        <Button type="primary">Xuất Excel</Button>
+                       
                     </Row>
                 }
             >
@@ -56,7 +56,7 @@ const TableSection = ({
                             placeholder="Tìm kiếm lịch hẹn"
                             style={{ width: 200, marginRight: 8 }}
                         />
-                        <Button type="primary">Xuất Excel</Button>
+                       
                     </Row>
                 }
             >

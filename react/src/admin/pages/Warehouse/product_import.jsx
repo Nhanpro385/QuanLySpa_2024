@@ -79,8 +79,7 @@ const WarehouseImport = () => {
                 name: "",
                 quantity: 1,
                 cost: 0,
-                cost_olded: 0,
-                quantity_olded: 0,
+        
                 price: 0,
                 total: 0,
             },
@@ -153,7 +152,6 @@ const WarehouseImport = () => {
 
             const payload = {
                 supplier_id: selectedSupplier,
-
                 total_amount: products.reduce(
                     (acc, curr) => acc + curr.total,
                     0

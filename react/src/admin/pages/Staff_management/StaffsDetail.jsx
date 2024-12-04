@@ -161,7 +161,7 @@ const StaffsDetail = () => {
                 <Card>
                     <Tabs defaultActiveKey="1">
                         <Tabs.TabPane tab="Thống kê dữ liệu" key="1">
-                            <Statistics_staff />
+                            <Statistics_staff data={UserData} />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Ca làm việc" key="2">
                             <Staff_calendar data={UserData?.shifts || []} />

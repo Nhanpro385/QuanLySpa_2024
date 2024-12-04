@@ -54,7 +54,6 @@ const Staff_history_shift = ({ data }) => {
                     pagination={{
                         pageSize: 8,
                     }}
-                    
                     renderItem={(item) => (
                         <List.Item>
                             <Card
@@ -111,7 +110,8 @@ const Staff_history_shift = ({ data }) => {
                                             style={{ marginRight: "8px" }}
                                         />
                                         <span>
-                                            {item?.total_price_services.toLocaleString()}{" "}
+                                            {item?.total_price_services.toLocaleString() ||
+                                                0}
                                             VND
                                         </span>
                                     </div>

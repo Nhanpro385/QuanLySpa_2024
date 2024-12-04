@@ -8,6 +8,8 @@ import {
 } from "@ant-design/icons";
 
 const Statistics_staff = ({ data }) => {
+    console.log(data);
+    
     return (
         <Row gutter={[16, 16]}>
             {/* Số giờ làm việc */}

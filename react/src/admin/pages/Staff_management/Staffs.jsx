@@ -36,18 +36,18 @@ function Staffs() {
     useEffect(() => {
         if (!loading && users.data) {
             setUserData(
-                users.data.map((user) => ({
-                    key: user.id,
-                    fullname: user.full_name,
-                    age: user.age,
-                    phone: user.phone,
-                    address: user.address,
-                    role: user.role || "Nhân viên",
+                users?.data.map((user) => ({
+                    key: user?.id,
+                    fullname: user?.full_name,
+                    age: user?.age,
+                    phone: user?.phone,
+                    address: user?.address,
+                    role: user?.role || "Nhân viên",
                 }))
             );
         }
     }, [users]);
-    const pagination = users.meta || {};
+    const pagination = users?.meta || {};
 
     const handleEdit = async (key) => {
         try {
