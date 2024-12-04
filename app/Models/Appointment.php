@@ -75,6 +75,44 @@ class Appointment extends Model
         return $this->belongsToMany(Service::class, 'appointment_services', 'appointment_id', 'service_id')->withPivot('quantity', 'price');
     }
 
-
+    protected static function boot()
+    {
+        parent::boot();
+        //appointment_services
+        static::deleting(function ($appointment) {
+            AppointmentService::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        static::softDeleted(function ($appointment) {
+            AppointmentService::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        //appointment_staffs
+        static::deleting(function ($appointment) {
+            AppointmentStaff::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        static::softDeleted(function ($appointment) {
+            AppointmentStaff::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        //treatment_histories
+        static::deleting(function ($appointment) {
+            TreatmentHistory::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        static::softDeleted(function ($appointment) {
+            TreatmentHistory::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        //payments
+        static::deleting(function ($appointment) {
+            Payment::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        static::softDeleted(function ($appointment) {
+            Payment::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        //comments
+        static::deleting(function ($appointment) {
+            Comment::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+        static::softDeleted(function ($appointment) {
+            Comment::where('appointment_id', $appointment->id)->update(['appointment_id' => null]);
+        });
+    }
 
 }

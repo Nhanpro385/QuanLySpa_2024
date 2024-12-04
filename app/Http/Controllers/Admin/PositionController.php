@@ -157,6 +157,8 @@ class PositionController extends Controller
     {
         try {
             $position = Position::find($id);
+
+
             if (!$position) {
                 return response()->json([
                     'status' => 'error',

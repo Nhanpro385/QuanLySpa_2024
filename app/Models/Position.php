@@ -35,4 +35,16 @@ class Position extends Model
         return $this->hasMany(User::class, 'position_id', 'id');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+        //users
+        static::deleting(function ($position) {
+            User::where('position_id', $position->id)->update(['position_id' => null]);
+        });
+        static::softDeleted(function ($position) {
+
+            User::where('position_id', $position->id)->update(['position_id' => null]);
+        });
+    }
 }

@@ -92,4 +92,25 @@ class Service extends Model
     {
         return $this->hasMany(Comment::class, 'service_id', 'id')->where('status', 1)->where('parent_comment_id', null)->orderBy('created_at', 'desc');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+        //service_images
+        //service_products
+        //comments
+        static::deleting(function ($service) {
+            Comment::where('service_id', $service->id)->update(['service_id' => null]);
+        });
+        static::softDeleted(function ($service) {
+            Comment::where('service_id', $service->id)->update(['service_id' => null]);
+        });
+        //appointment_services
+        static::deleting(function ($service) {
+            AppointmentService::where('service_id', $service->id)->update(['service_id' => null]);
+        });
+        static::softDeleted(function ($service) {
+            AppointmentService::where('service_id', $service->id)->update(['service_id' => null]);
+        });
+    }
 }

@@ -89,5 +89,40 @@ class Product extends Model
         return $this->hasMany(Product::class, 'products_id', 'id');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+        //product_images
+        //inventories
+        //outbound_invoice_details
+        static::deleting(function ($product) {
+            OutboundInvoiceDetail::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+        static::softDeleted(function ($product) {
+            OutboundInvoiceDetail::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+        //inbound_invoice_details
+        static::deleting(function ($product) {
+            InboundInvoiceDetail::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+        static::softDeleted(function ($product) {
+            InboundInvoiceDetail::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+        //payment_products
+        static::deleting(function ($product) {
+            PaymentProducts::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+        static::softDeleted(function ($product) {
+            PaymentProducts::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+        //product_services
+        static::deleting(function ($product) {
+            ProductService::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+        static::softDeleted(function ($product) {
+            ProductService::where('product_id', $product->id)->update(['product_id' => null]);
+        });
+    }
+
 
 }

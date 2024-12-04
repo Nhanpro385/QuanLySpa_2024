@@ -169,4 +169,307 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(Consulation::class, 'staff_id', 'id');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+        //Users
+        static::deleting(function ($user) {
+            User::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            User::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            User::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            User::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //Appointmets
+        static::deleting(function ($user) {
+            Appointment::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Appointment::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Appointment::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Appointment::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //Comments
+        static::deleting(function ($user) {
+            Comment::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Comment::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Comment::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Comment::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //Comment_images
+        static::deleting(function ($user) {
+            CommentImage::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            CommentImage::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            CommentImage::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            CommentImage::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //Consulations
+        static::deleting(function ($user) {
+            Consulation::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Consulation::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Consulation::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Consulation::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Consulation::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Consulation::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        //Customers
+        static::deleting(function ($user) {
+            Customer::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Customer::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Customer::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Customer::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //inbound_invoices
+        static::deleting(function ($user) {
+            InboundInvoice::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            InboundInvoice::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            InboundInvoice::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            InboundInvoice::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::deleting(function ($user) {
+            InboundInvoice::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        static::softDeleted(function ($user) {
+            InboundInvoice::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        //inbound_invoice_details
+        static::deleting(function ($user) {
+            InboundInvoiceDetail::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            InboundInvoiceDetail::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            InboundInvoiceDetail::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            InboundInvoiceDetail::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //inventories
+        static::deleting(function ($user) {
+            Inventory::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Inventory::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Inventory::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Inventory::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //outbound_invoices
+        static::deleting(function ($user) {
+            OutboundInvoice::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            OutboundInvoice::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            OutboundInvoice::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            OutboundInvoice::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::deleting(function ($user) {
+            OutboundInvoice::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        static::softDeleted(function ($user) {
+            OutboundInvoice::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        //outbound_invoice_details
+        static::deleting(function ($user) {
+            OutboundInvoiceDetail::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            OutboundInvoiceDetail::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            OutboundInvoiceDetail::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            OutboundInvoiceDetail::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //payments
+        static::deleting(function ($user) {
+            Payment::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Payment::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        //products
+        static::deleting(function ($user) {
+            Product::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Product::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Product::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Product::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //product_images
+        static::deleting(function ($user) {
+            ProductImage::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            ProductImage::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            ProductImage::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            ProductImage::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //promotions
+        static::deleting(function ($user) {
+            Promotion::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Promotion::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Promotion::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Promotion::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //services
+        static::deleting(function ($user) {
+            Service::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Service::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Service::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Service::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //service_categories
+        static::deleting(function ($user) {
+            ServiceCategory::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            ServiceCategory::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            ServiceCategory::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            ServiceCategory::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //service_images
+        static::deleting(function ($user) {
+            ServiceImage::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            ServiceImage::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            ServiceImage::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            ServiceImage::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //shifts
+        static::deleting(function ($user) {
+            Shift::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Shift::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Shift::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Shift::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //staff_shifts
+        static::deleting(function ($user) {
+            StaffShift::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        static::softDeleted(function ($user) {
+            StaffShift::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        //suppliers
+        static::deleting(function ($user) {
+            Supplier::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Supplier::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Supplier::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Supplier::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        //treatment_histories
+        static::deleting(function ($user) {
+            TreatmentHistory::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            TreatmentHistory::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            TreatmentHistory::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            TreatmentHistory::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::deleting(function ($user) {
+            TreatmentHistory::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        static::softDeleted(function ($user) {
+            TreatmentHistory::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+    }
+
 }

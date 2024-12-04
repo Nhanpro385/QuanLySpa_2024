@@ -11,6 +11,7 @@ use App\Http\Resources\Admin\Appointments\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\AppointmentService;
 use App\Models\AppointmentStaff;
+use App\Models\Comment;
 use App\Models\Inventory;
 use App\Models\OutboundInvoice;
 use App\Models\OutboundInvoiceDetail;
@@ -650,6 +651,12 @@ class AppointmentController extends Controller
     public function destroy(string $id)
     {
         $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy lịch hẹn.'
+            ], 404);
+        }
         if ($appointment->status == 3) {
             return response()->json([
                 'status' => 'false',
@@ -657,12 +664,6 @@ class AppointmentController extends Controller
             ], 500);
         }
 
-        if (!$appointment) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Không tìm thấy lịch hẹn.'
-            ], 404);
-        }
         $payments = Payment::where('appointment_id', $id)->pluck('id')->toArray();
 
         foreach ($payments as $payment) {
@@ -671,8 +672,8 @@ class AppointmentController extends Controller
         Payment::where('appointment_id', $id)->delete();
         AppointmentStaff::where('appointment_id', $id)->delete();
         AppointmentService::where('appointment_id', $id)->delete();
-
-
+        TreatmentHistory::where('appointment_id', $id)->delete();
+        Comment::where('appointment_id', $id)->delete();
         $appointment->delete();
         $appointment->update([
             'shift_id' => null,

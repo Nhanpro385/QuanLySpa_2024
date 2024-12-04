@@ -92,4 +92,23 @@ class ServiceCategory extends Model
 
         return $servicesStatus;
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+        //Services
+        static::deleting(function ($service_category) {
+            Service::where('service_category_id', $service_category->id)->update(['service_category_id' => null]);
+        });
+        static::softDeleted(function ($service_category) {
+            Service::where('service_category_id', $service_category->id)->update(['service_category_id' => null]);
+        });
+        //service_categories
+        static::deleting(function ($service_category) {
+            ServiceCategory::where('parent_id', $service_category->id)->update(['parent_id' => null]);
+        });
+        static::softDeleted(function ($service_category) {
+            ServiceCategory::where('parent_id', $service_category->id)->update(['parent_id' => null]);
+        });
+    }
 }

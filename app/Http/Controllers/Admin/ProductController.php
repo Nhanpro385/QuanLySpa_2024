@@ -216,6 +216,12 @@ class ProductController extends Controller
             }
 
             $product = Product::find($id);
+            if (!$product) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy dữ liệu',
+                ], 404);
+            }
             $product->update([
                 'updated_by' => auth('api')->user()->id,
             ]);
@@ -237,12 +243,7 @@ class ProductController extends Controller
                 ]);
                 $image->delete();
             }
-            if (!$product) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Không tìm thấy dữ liệu',
-                ], 404);
-            }
+
             if ($product->image_url) {
                 Storage::delete('public/uploads/products/' . $product->image_url);
             }
