@@ -16,13 +16,10 @@ class ServiceCategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $services = $childrentIds = [];
+        $services = $childrents = [];
 
         if ($request->input('services') === 'true') {
-            $services = $this->whenLoaded('servicesStatus') ? $this->clientServices() : [];
-        }
-        if ($request->input('childrentIds') === 'true') {
-            $childrentIds = $this->whenLoaded('childrentIds') ? $this->childrentIds : [];
+            $services = $this->whenLoaded('clientServices') ? $this->clientServices() : [];
         }
 
         return [
@@ -30,21 +27,13 @@ class ServiceCategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status,
-            // 'services' => $services ? $services->map(function ($service) {
-            //     return [
-            //         'id' => $service->id,
-            //         'name' => $service->name,
-            //         'status' => $service->status,
-            //     ];
-            // }) : [],
             'service' => new ServiceCollection($services),
-            'parent' => $this->parentId ?
+            'parent' => $this->parent_id ?
                 [
                     'id' => (string) $this->parentId->id,
                     'name' => $this->parentId->name,
                 ]
                 : null,
-            'childs' => $childrentIds ? SimpleServiceCategory::collection($childrentIds) : [],
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
                 'fullname' => $this->createdBy->full_name,

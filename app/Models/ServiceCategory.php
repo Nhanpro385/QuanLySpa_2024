@@ -84,12 +84,12 @@ class ServiceCategory extends Model
 
     public function clientServices()
     {
-        $services = $this->servicesStatus; // Lấy dịch vụ của category hiện tại
+        $servicesStatus = $this->servicesStatus; // Lấy dịch vụ của category hiện tại
 
         foreach ($this->childrentIds as $child) {
-            $services = $services->merge($child->allServices()); // Đệ quy lấy dịch vụ của danh mục con
+            $servicesStatus = $servicesStatus->merge($child->clientServices()); // Đệ quy lấy dịch vụ của danh mục con
         }
 
-        return $services;
+        return $servicesStatus;
     }
 }
