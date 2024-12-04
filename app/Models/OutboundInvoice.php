@@ -18,7 +18,7 @@ use Kra8\Snowflake\HasSnowflakePrimary;
         protected $fillable = [
             'id',
             'staff_id',
-            'customer_id', // Nếu có
+      
             'note',
             'outbound_invoice_type',
             'total_amount',
@@ -47,10 +47,10 @@ use Kra8\Snowflake\HasSnowflakePrimary;
         /**
          * Quan hệ tới khách hàng (nếu có).
          */
-        public function customer()
-        {
-            return $this->belongsTo(Customer::class, 'customer_id'); // Nếu không có bảng Customer, hãy loại bỏ.
-        }
+        // public function customer()
+        // {
+        //     return $this->belongsTo(Customer::class, 'customer_id'); // Nếu không có bảng Customer, hãy loại bỏ.
+        // }
 
         /**
          * Quan hệ tới chi tiết hóa đơn.

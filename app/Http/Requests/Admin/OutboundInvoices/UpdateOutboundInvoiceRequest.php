@@ -19,7 +19,7 @@ class UpdateOutboundInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_id' => 'required|exists:customers,id',
+           
             'note' => 'nullable|string|max:255',
             'total_amount' => 'required|numeric|min:0',
             'details' => 'nullable|array',
@@ -33,8 +33,7 @@ class UpdateOutboundInvoiceRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'customer_id.required' => 'Trường khách hàng là bắt buộc.',
-            'customer_id.exists' => 'Khách hàng không tồn tại trong hệ thống.',
+          
             'note.string' => 'Ghi chú phải là một chuỗi ký tự.',
             'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
             'total_amount.required' => 'Tổng tiền là bắt buộc.',
