@@ -5,6 +5,12 @@ import {
     getInventory,
     getWarehouseExport,
     getWarehouseImport,
+    searchWarehouseExport,
+    searchWarehouseImport,
+    getImportDetail,
+    getExportDetail,
+    updateImport,
+    updateExport,
 } from "@admin/redux/slices/warehouseSlice";
 const usewarehouseAction = () => {
     const dispatch = useDispatch();
@@ -23,12 +29,37 @@ const usewarehouseAction = () => {
     const getInventoryAction = async () => {
         return await dispatch(getInventory());
     };
+    const searchWarehouseImportAction = async (data) => {
+        return await dispatch(searchWarehouseImport(data));
+    };
+    const searchWarehouseExportAction = async (data) => {
+        return await dispatch(searchWarehouseExport(data));
+    };
+    const getImportDetailAction = async (id) => {
+        return await dispatch(getImportDetail(id));
+    };
+    const getExportDetailAction = async (id) => {
+        return await dispatch(getExportDetail(id));
+    };
+    const updateImportAction = async (data) => {
+        return await dispatch(updateImport(data));
+    };
+    const updateExportAction = async (data) => {
+        return await dispatch(updateExport(data));
+    };
+
     return {
         warehouseGetImport,
         warehouseGetExport,
         warehouseImportAction,
         warehouseExportAction,
         getInventoryAction,
+        searchWarehouseImportAction,
+        searchWarehouseExportAction,
+        getImportDetailAction,
+        getExportDetailAction,
+        updateImportAction,
+        updateExportAction,
     };
 };
 

@@ -20,12 +20,17 @@ const Warehouse = () => {
     const navigate = useNavigate();
     const [selectedFunction, setSelectedFunction] = useState("import");
     const warehouse = useSelector((state) => state.warehouse);
-    const { warehouseGetExport, warehouseGetImport } = usewarehouseAction();
+    const {
+        warehouseGetExport,
+        warehouseGetImport,
+        searchWarehouseExportAction,
+        searchWarehouseImportAction,
+    } = usewarehouseAction();
     const [dataSource, setDataSource] = useState([]);
     const [pagination, setPagination] = useState({});
     const [searchquery, setSearchquery] = useState({
         page: 1,
-        per_page: 5,
+        per_page: 10,
         search: "",
     });
     useEffect(() => {
@@ -37,7 +42,6 @@ const Warehouse = () => {
             warehouseGetExport();
         }
     }, [selectedFunction]);
-    
 
     useEffect(() => {
         if (
@@ -64,6 +68,30 @@ const Warehouse = () => {
             setPagination(warehouse.export.data.meta);
         }
     }, [warehouse]);
+    useEffect(() => {
+        if (selectedFunction === "import") {
+            if (
+                searchquery.search !== "" ||
+                searchquery.page !== 1 ||
+                searchquery.per_page !== 10
+            ) {
+                console.log(searchquery);
+                searchWarehouseImportAction(searchquery);
+            } else {
+                warehouseGetImport();
+            }
+        } else {
+            if (
+                searchquery.search !== "" ||
+                searchquery.page !== 1 ||
+                searchquery.per_page !== 10
+            ) {
+                searchWarehouseExportAction(searchquery);
+            } else {
+                warehouseGetExport();
+            }
+        }
+    }, [searchquery]);
 
     const handleFunctionChange = (value) => {
         setSelectedFunction(value);
@@ -72,11 +100,9 @@ const Warehouse = () => {
         setSearchquery({ ...searchquery, page, per_page: pageSize });
     };
     const onClick = ({ key, record }) => {
-        console.log(record);
-
         switch (key) {
             case "1":
-                console.log("Edit");
+                handleEdit(record);
                 break;
             case "2":
                 navigate("/admin/warehouse/import/" + record.key);
@@ -95,7 +121,7 @@ const Warehouse = () => {
     const items = [
         {
             key: "1",
-            label: <Button block> Sửa </Button>,
+            label: <Button block>Sửa</Button>,
         },
         {
             key: "2",
@@ -122,13 +148,17 @@ const Warehouse = () => {
             title: "Người chịu trách nhiệm",
             dataIndex: ["created_by", "name"],
             key: "created_by",
+            render: (text) => <span>{text || "Không có"}</span>,
         },
         {
             title: "Số lượng",
             dataIndex: ["details", "quantity"],
             key: "quantity",
             render: (text, record) =>
-                record.details.reduce((a, b) => a + b.quantity_import, 0),
+                record.details.reduce(
+                    (a, b) => a + (b.quantity_export || b.quantity_import),
+                    0
+                ),
         },
         {
             title: "Tổng giá",
@@ -149,6 +179,12 @@ const Warehouse = () => {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
+            render: (text) =>
+                text === 1 || text == true ? (
+                    <Tag color="green">Đã xác nhận</Tag>
+                ) : (
+                    <Tag color="red">Chưa xác nhận</Tag>
+                ),
         },
 
         {
@@ -187,6 +223,13 @@ const Warehouse = () => {
             navigate("/admin/warehouse/import");
         } else {
             navigate("/admin/warehouse/export");
+        }
+    };
+    const handleEdit = (record) => {
+        if (selectedFunction === "import") {
+            navigate("/admin/warehouse/import/Edit/" + record.key);
+        } else {
+            navigate("/admin/warehouse/export/Edit/" + record.key);
         }
     };
     return (

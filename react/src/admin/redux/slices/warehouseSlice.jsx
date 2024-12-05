@@ -104,12 +104,93 @@ export const getWarehouseExport = createAsyncThunk(
         }
     }
 );
+export const searchWarehouseImport = createAsyncThunk(
+    "warehouse/searchwarehouseimport",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.warehouse.getImport}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+export const searchWarehouseExport = createAsyncThunk(
+    "warehouse/searchwarehouseexport",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.warehouse.getExport}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+export const getImportDetail = createAsyncThunk(
+    "warehouse/getimportdetail",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.warehouse.getImportDetail(id)
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+export const getExportDetail = createAsyncThunk(
+    "warehouse/getexportdetail",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.warehouse.getExportDetail(id)
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+export const updateImport = createAsyncThunk(
+    "warehouse/updateimport",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                endpoints.warehouse.updateImport(data.id),
+                data.data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+export const updateExport = createAsyncThunk(
+    "warehouse/updateexport",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(
+                endpoints.warehouse.updateExport(data.id),
+                data.data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
 
 // Error handling utility
 const handleError = (error) => ({
     status: error.response?.status || 500,
     message: error.response?.data?.message || "Có lỗi xảy ra",
     errors: error.response?.data?.errors || [],
+    error: error.response?.data || {},
 });
 
 // Initial state
@@ -118,11 +199,13 @@ const initialState = {
         loading: false,
         error: null,
         data: null,
+        detail: null,
     },
     export: {
         loading: false,
         error: null,
         data: null,
+        detail: null,
     },
     inventory: {
         loading: false,
@@ -205,7 +288,81 @@ const warehouseSlice = createSlice({
         builder.addCase(getWarehouseExport.rejected, (state, action) => {
             state.export.loading = false;
             state.export.error = action.payload;
+        })
+        builder.addCase(searchWarehouseImport.pending, (state) => {
+            state.import.loading = true;
+            state.import.error = null;
         });
+        builder.addCase(searchWarehouseImport.fulfilled, (state, action) => {
+            state.import.loading = false;
+            state.import.data = action.payload;
+        });
+        builder.addCase(searchWarehouseImport.rejected, (state, action) => {
+            state.import.loading = false;
+            state.import.error = action.payload;
+        });
+        builder.addCase(searchWarehouseExport.pending, (state) => {
+            state.export.loading = true;
+            state.export.error = null;
+        });
+        builder.addCase(searchWarehouseExport.fulfilled, (state, action) => {
+            state.export.loading = false;
+            state.export.data = action.payload;
+        });
+        builder.addCase(searchWarehouseExport.rejected, (state, action) => {
+            state.export.loading = false;
+            state.export.error = action.payload;
+        })
+        builder.addCase(getImportDetail.pending, (state) => {
+            state.import.loading = true;
+            state.import.error = null;
+        });
+        builder.addCase(getImportDetail.fulfilled, (state, action) => {
+            state.import.loading = false;
+            state.import.detail = action.payload;
+        });
+        builder.addCase(getImportDetail.rejected, (state, action) => {
+            state.import.loading = false;
+            state.import.error = action.payload;
+        });
+        builder.addCase(getExportDetail.pending, (state) => {
+            state.export.loading = true;
+            state.export.error = null;
+        });
+        builder.addCase(getExportDetail.fulfilled, (state, action) => {
+            state.export.loading = false;
+            state.export.detail = action.payload;
+        });
+        builder.addCase(getExportDetail.rejected, (state, action) => {
+            state.export.loading = false;
+            state.export.error = action.payload;
+        });
+        builder.addCase(updateImport.pending, (state) => {
+            state.import.loading = true;
+            state.import.error = null;
+        });
+        builder.addCase(updateImport.fulfilled, (state, action) => {
+            state.import.loading = false;
+            state.import.data = action.payload;
+        });
+        builder.addCase(updateImport.rejected, (state, action) => {
+            state.import.loading = false;
+            state.import.error = action.payload;
+        });
+        builder.addCase(updateExport.pending, (state) => {
+            state.export.loading = true;
+            state.export.error = null;
+        });
+        builder.addCase(updateExport.fulfilled, (state, action) => {
+            state.export.loading = false;
+            state.export.data = action.payload;
+        });
+        builder.addCase(updateExport.rejected, (state, action) => {
+            state.export.loading = false;
+            state.export.error = action.payload;
+        });
+        
+        
     },
 });
 

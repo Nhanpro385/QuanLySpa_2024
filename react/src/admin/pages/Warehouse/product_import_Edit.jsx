@@ -13,33 +13,49 @@ import {
 import React, { useState, useEffect } from "react";
 import "./../../modules/warehouse/styles/ProductImport.scss";
 import useproductActions from "../../modules/product/hooks/useProduct";
-
+import useSupplierActions from "../../modules/SuppliersManagement/hooks/useSupplierActions";
 import usewarehouseAction from "../../modules/warehouse/hooks/usewarehouseaction";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import { useNavigate } from "react-router-dom";
-const WarehouseExport = () => {
+import { useParams } from "react-router-dom";
+const Product_import_Edit = () => {
+    const { id } = useParams();
     const navigator = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
-
+    const [supplierData, setSupplierData] = useState([]);
+    const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [note, setNote] = useState("");
     const product = useSelector((state) => state.products);
-
+    const supplier = useSelector((state) => state.supplier);
+    const [searchSupplierQuery, setsearchSupplierQuery] = useState({
+        page: 1,
+        per_page: 100,
+        search: "",
+    });
     const [searchProductQuery, setsearchProductQuery] = useState({
         page: 1,
         per_page: 100,
         search: "",
     });
-
+    const warehouse = useSelector((state) => state.warehouse);
     const { getproduct, searchproduct } = useproductActions();
-
-    const { warehouseExportAction } = usewarehouseAction();
+    const { getSupplier, searchSupplier } = useSupplierActions();
+    const { updateImportAction, getImportDetailAction } = usewarehouseAction();
 
     useEffect(() => {
         getproduct(100);
+        getSupplier(100);
     }, []);
-
+    useEffect(() => {
+        if (id) {
+            getImportDetailAction(id);
+        }
+    }, [id]);
+    useEffect(() => {
+        console.log(warehouse);
+    }, [warehouse]);
     useEffect(() => {
         if (product.products.data && product.products.data.length > 0) {
             const data = product.products.data.map((item, index) => ({
@@ -51,6 +67,17 @@ const WarehouseExport = () => {
         }
     }, [product]);
 
+    useEffect(() => {
+        if (supplier.Suppliers.data && supplier.Suppliers.data.length > 0) {
+            const data = supplier.Suppliers.data.map((item, index) => ({
+                key: index + 1,
+                id: item.id,
+                name: item.name,
+            }));
+            setSupplierData(data);
+        }
+    }, [supplier]);
+
     const addProduct = () => {
         setProducts([
             ...products,
@@ -59,6 +86,8 @@ const WarehouseExport = () => {
                 id: "",
                 name: "",
                 quantity: 1,
+                cost: 0,
+
                 price: 0,
                 total: 0,
             },
@@ -67,9 +96,8 @@ const WarehouseExport = () => {
 
     const updateProduct = (index, fieldValues) => {
         const updatedProducts = [...products];
-        const { id, quantity, price } = fieldValues;
+        const { id, name, quantity, cost } = fieldValues;
 
-        // Check if the product already exists in the list
         const existingProductIndex = products.findIndex(
             (product) => product.id === id
         );
@@ -79,24 +107,19 @@ const WarehouseExport = () => {
             existingProductIndex !== -1 &&
             existingProductIndex !== index
         ) {
-            // Merge quantities if the product already exists but on a different row
             updatedProducts[existingProductIndex].quantity += quantity || 1;
             updatedProducts[existingProductIndex].total =
                 updatedProducts[existingProductIndex].quantity *
-                updatedProducts[existingProductIndex].price;
-
-            // Remove the duplicate row
+                (updatedProducts[existingProductIndex].cost || 0);
             updatedProducts.splice(index, 1);
         } else {
-            // Update the current product
             updatedProducts[index] = {
                 ...updatedProducts[index],
                 ...fieldValues,
             };
-            // Calculate total for the product
             updatedProducts[index].total =
                 (updatedProducts[index].quantity || 1) *
-                (updatedProducts[index].price || 0);
+                (updatedProducts[index].cost || 0);
         }
         setProducts(updatedProducts);
     };
@@ -111,59 +134,57 @@ const WarehouseExport = () => {
     };
 
     const validateForm = () => {
+        if (!selectedSupplier) {
+            message.error("Vui lòng chọn nhà cung cấp.");
+            return false;
+        }
         if (products.length === 0) {
             message.error("Danh sách sản phẩm không được để trống.");
             return false;
         }
         const invalidProducts = products.some(
             (product) =>
-                !product.id || product.quantity <= 0 || product.price <= 0
+                !product.id || product.quantity <= 0 || product.cost <= 0
         );
         if (invalidProducts) {
             message.error("Vui lòng điền đầy đủ thông tin sản phẩm.");
             return false;
         }
-
         return true;
     };
 
     const submitProduct = async () => {
         try {
             if (!validateForm()) return;
-            console.log(products);
 
             const payload = {
+                supplier_id: selectedSupplier,
                 total_amount: products.reduce(
                     (acc, curr) => acc + curr.total,
                     0
                 ),
-                note: note || "Xuất hàng",
+                note: note || "Nhập hàng",
                 details: products.map((product) => ({
                     product_id: product.id,
-                    quantity_export: product.quantity,
+                    quantity_import: product.quantity,
+                    cost_import: product.cost,
                     unit_price: product.price,
                 })),
             };
-
-            const response = await warehouseExportAction(payload);
-            console.log(response);
-
-            if (response.payload.error) {
-                message.error(response.payload.error.error);
-                return;
+            const response = await updateImportAction(payload);
+            if (response.meta.requestStatus === "fulfilled") {
+                message.success("Nhập hàng thành công");
+                setProducts([]);
+                setSelectedSupplier(null);
+                setNote("");
             }
-            if (response.payload.status !== "success") {
-                message.error(response.payload.message);
-                return;
-            }
-            message.success("Xuất hàng thành công.");
-            navigator("/admin/warehouse");
         } catch (error) {
-            console.error("Error submitting products:", error);
-            message.error("Đã xảy ra lỗi khi xuất hàng.");
+            console.log(error);
         }
     };
-
+    const searchSupplierDebounce = debounce((value) => {
+        setsearchSupplierQuery({ ...searchSupplierQuery, search: value });
+    }, 300);
     const searchProductDebounce = debounce((value) => {
         setsearchProductQuery({ ...searchProductQuery, search: value });
     }, 300);
@@ -175,9 +196,16 @@ const WarehouseExport = () => {
         }
     }, [searchProductQuery]);
 
+    useEffect(() => {
+        if (searchSupplierQuery.search !== "") {
+            searchSupplier(searchSupplierQuery);
+        } else {
+            getSupplier(100);
+        }
+    }, [searchSupplierQuery]);
+
     const columns = [
         { title: "STT", dataIndex: "key", key: "key" },
-        { title: "Mã Sản Phẩm", dataIndex: "id", key: "id" },
         {
             title: "Tên Sản Phẩm",
             dataIndex: "name",
@@ -220,6 +248,24 @@ const WarehouseExport = () => {
             ),
         },
         {
+            title: "Giá nhập",
+            dataIndex: "cost",
+            key: "cost",
+            render: (_, product, index) => (
+                <InputNumber
+                    className="w-100"
+                    min={1}
+                    size="large"
+                    formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                    value={product.cost}
+                    onChange={(value) => updateProduct(index, { cost: value })}
+                />
+            ),
+        },
+        {
             title: "Giá bán",
             dataIndex: "price",
             key: "price",
@@ -256,7 +302,7 @@ const WarehouseExport = () => {
 
     return (
         <div className="warehouse-import">
-            <h1 className="text-center">Xuất hàng</h1>
+            <h1 className="text-center">Chỉnh sửa nhập hàng</h1>
             <Card
                 title="Nhập sản phẩm : #123456789"
                 extra={
@@ -271,8 +317,34 @@ const WarehouseExport = () => {
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
                         <Col xl={16} md={16} sm={24} xs={24}>
+                            <Card title="Thông tin nhập hàng">
+                                <Row gutter={[16, 16]}>
+                                    <Col xl={8} md={8} sm={24} xs={24}>
+                                        <Form.Item label="Nhà cung cấp">
+                                            <Select
+                                                size="large"
+                                                placeholder="Nhập tên nhà cung cấp"
+                                                options={supplierData.map(
+                                                    (item) => ({
+                                                        value: item.id,
+                                                        label: item.name,
+                                                    })
+                                                )}
+                                                showSearch
+                                                onChange={(value) => {
+                                                    setSelectedSupplier(value);
+                                                }}
+                                                filterOption={false}
+                                                onSearch={
+                                                    searchSupplierDebounce
+                                                }
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                            </Card>
                             <Card
-                                title="Danh sách xuất hàng"
+                                title="Danh sách nhập hàng"
                                 className="mt-3 bg-light"
                                 extra={
                                     <Button type="primary" onClick={addProduct}>
@@ -323,4 +395,4 @@ const WarehouseExport = () => {
     );
 };
 
-export default WarehouseExport;
+export default Product_import_Edit;
