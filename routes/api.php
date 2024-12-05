@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ContactsController;
 use App\Http\Controllers\Client\ContactController as ClientContactsController;
 use App\Http\Controllers\Admin\ShiftsController;
+use App\Http\Controllers\Client\ClientTreatmentHistoryController; 
 use App\Http\Controllers\Client\ShiftsController as ClientShiftsController;
 use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\TreatmentHistoryController;
@@ -164,11 +165,6 @@ Route::group([
 
 
 
-    Route::get('/treatment-history', [TreatmentHistoryController::class, 'index']);
-    Route::post('/treatment-history', [TreatmentHistoryController::class, 'store']);
-    Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
-    Route::put('/treatment-history/{id}', [TreatmentHistoryController::class, 'update']);
-    Route::delete('/treatment-history/{id}', [TreatmentHistoryController::class, 'destroy']);
 
 });
 
@@ -253,6 +249,7 @@ Route::group([
     Route::post('/comment/{id}/reply', [ClientCommentController::class, 'reply'])->middleware('auth:customer_api');
 
     //Promotion
+    Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
 
     Route::get('/promotion', [PromotionPromotionController::class, 'index']);
 
@@ -262,6 +259,7 @@ Route::group([
 
     Route::get('/shifts/{id}', [ClientShiftsController::class, 'show']);
  
+    Route::get('/customers/{customer_id}/treatment-history', [ClientTreatmentHistoryController::class, 'getByCustomerId']);
 
     
     Route::get('/contacts', [ClientContactsController::class, 'index']);
