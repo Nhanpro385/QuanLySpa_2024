@@ -75,6 +75,23 @@ use Kra8\Snowflake\HasSnowflakePrimary;
         {
             return $this->belongsTo(User::class, 'updated_by');
         }
+        public function getInvoiceDetailsAttribute()
+{
+    return $this->details->map(function ($detail) {
+        return [
+            'id' => (string) $detail->id,
+            'product' => $detail->product ? [
+                'id' => (string) $detail->product->id,
+                'name' => $detail->product->name,
+                'bar_code' => $detail->product->bar_code,
+            ] : null,
+            'quantity_export' => $detail->quantity_export,
+            'quantity_olded' => $detail->quantity_olded,
+            'unit_price' => $detail->unit_price,
+        ];
+    });
+}
+
 
         /**
          * Scope để lấy dữ liệu mới nhất.
