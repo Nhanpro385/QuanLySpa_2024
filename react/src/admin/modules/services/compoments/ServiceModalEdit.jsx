@@ -54,23 +54,25 @@ function ServiceModalEdit({
 
     useEffect(() => {
         if (service) {
-            setValue("name", service.name || "");
-            setValue("price", service.price || "");
-            setValue("description", service.description || "");
-            setValue("duration", timeStringToMinutes(service.duration) || "");
-            setValue("status", service.status === 1 ? true : false);
+            setValue("name", service?.name || "");
+            setValue("price", service?.price || "");
+            setValue("description", service?.description || "");
+            setValue("duration", timeStringToMinutes(service?.duration) || "");
+            setValue("status", service?.status === 1 ? true : false);
             setValue(
                 "service_category_id",
-                service.service_category_id.id || ""
+                service?.service_category_id?.id || ""
             );
-            setValue("priority", service.priority || "");
+            setValue("priority", service?.priority || "");
             // Get service categories from API
             getServiceCategories();
-            getServiceCategoriesById(service.service_category_id.id);
+            getServiceCategoriesById(service?.service_category_id?.id);
         }
     }, [service]);
     useEffect(() => {
         if (error) {
+            console.log(error);
+
             Object.keys(error).forEach((key) => {
                 if (
                     [
@@ -81,6 +83,7 @@ function ServiceModalEdit({
                         "priority",
                     ].includes(key)
                 ) {
+                    
                     setError(key, {
                         type: "manual",
                         message: error[key][0],
@@ -97,7 +100,7 @@ function ServiceModalEdit({
     }, [error]);
 
     useEffect(() => {
-        if (serviceCategories.ServiceCategories && service) {
+        if (serviceCategories?.ServiceCategories && service) {
             const data = [
                 ...serviceCategories.ServiceCategories.data,
                 service.service_category_id,
@@ -114,7 +117,7 @@ function ServiceModalEdit({
 
             setdatacate(unique);
         }
-    }, [serviceCategories.ServiceCategories, service]);
+    }, [serviceCategories?.ServiceCategories, service]);
 
     const debouncedSearch = debounce((value) => {
         searchServiceCategories({ search: value, page: 1 });
@@ -126,11 +129,8 @@ function ServiceModalEdit({
             id: service.id,
             ...data,
         };
-        console.log(payload);
-        
+
         handleSubmitEdit(payload);
-        reset();
-        setFileList([]);
     };
 
     return (
@@ -164,16 +164,16 @@ function ServiceModalEdit({
                                                     {...field}
                                                     placeholder="Tên dịch vụ"
                                                     status={
-                                                        errors.service_name
+                                                        errors.name
                                                             ? "error"
                                                             : ""
                                                     }
                                                 />
                                             )}
                                         />
-                                        {errors.service_name && (
+                                        {errors.name && (
                                             <span style={{ color: "red" }}>
-                                                {errors.service_name.message}
+                                                {errors.name.message}
                                             </span>
                                         )}
                                     </Form.Item>

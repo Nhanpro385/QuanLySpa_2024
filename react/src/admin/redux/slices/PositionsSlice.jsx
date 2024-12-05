@@ -12,10 +12,18 @@ const checkRoleAndLogout = (dispatch) => {
 
     return userRole;
 };
-export const PositionsGet = createAsyncThunk("Positions/get", async () => {
-    const response = await axiosInstance.get(endpoints.Positions.list);
-    return response.data;
-});
+export const PositionsGet = createAsyncThunk(
+    "Positions/get",
+    async (per_page) => {
+        const param = per_page ? `?per_page=${per_page}` : "";
+
+        const response = await axiosInstance.get(
+            `${endpoints.Positions.list}${param}`
+        );
+
+        return response.data;
+    }
+);
 
 export const PositionsAdd = createAsyncThunk(
     "Positions/add",
@@ -84,7 +92,6 @@ export const PositionsUpdate = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
-                    
             });
         }
     }

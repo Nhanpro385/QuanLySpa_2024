@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Modal,
@@ -12,7 +12,9 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import dayjs from "dayjs";
 import { formatDate } from "@admin/utils";
-
+import usePositionsActions from "../hooks/usePositionsAction";
+import debounce from "lodash/debounce";
+import { useSelector } from "react-redux";
 const { Option } = Select;
 
 const ModalEditStaff = ({
@@ -28,10 +30,46 @@ const ModalEditStaff = ({
         handleSubmit,
         setValue,
         setError,
+        getValues,
         reset,
         formState: { errors },
     } = useForm();
     const [api, contextHolder] = notification.useNotification();
+    const { getPositions, searchPositions } = usePositionsActions();
+    const positions = useSelector((state) => state.positions);
+    const [positionsList, setPositionsList] = useState([]);
+    const [searchquery, setSearchquery] = useState({
+        search: "",
+        page: 1,
+        per_page: 100,
+    });
+    useEffect(() => {
+        getPositions(50);
+    }, []);
+
+    useEffect(() => {
+        if (
+            positions?.Positions?.data &&
+            positions?.Positions?.data?.length > 0
+        ) {
+            setPositionsList(
+                positions?.Positions?.data?.map((item) => ({
+                    key: item.id,
+                    ...item,
+                }))
+            );
+        }
+    }, [positions]);
+    const onsetSearch = debounce((value) => {
+        setSearchquery({ ...searchquery, search: value });
+    }, 500);
+    useEffect(() => {
+        if (searchquery.search !== "") {
+            searchPositions(searchquery);
+        } else {
+            getPositions(100);
+        }
+    }, [searchquery]);
     useEffect(() => {
         if (staff) {
             setValue("full_name", staff.full_name);
@@ -39,7 +77,7 @@ const ModalEditStaff = ({
             setValue("phone", staff.phone);
             setValue("address", staff.address);
             setValue("date_of_birth", dayjs(staff.date_of_birth));
-            setValue("gender", staff.gender === "nam" ? 0 : 1);
+            setValue("gender", staff.gender == "Nam" ? 2 : staff.gender == "Nữ" ? 1 : 0);
             setValue("note", staff.note);
             setValue(
                 "role",
@@ -49,8 +87,11 @@ const ModalEditStaff = ({
                     ? 1
                     : 0
             );
+            setValue("position_id", staff.position?.id);
         }
     }, [staff, setValue]);
+    console.log(getValues("gender"));
+    
     useEffect(() => {
         if (errorForm) {
             Object.keys(errorForm).forEach((key) => {
@@ -171,8 +212,9 @@ const ModalEditStaff = ({
                         rules={{ required: "Giới tính là bắt buộc" }}
                         render={({ field }) => (
                             <Select {...field}>
-                                <Option value={0}>Nam</Option>
+                                <Option value={0}>Khác</Option>
                                 <Option value={1}>Nữ</Option>
+                                <Option value={2}>Nam</Option>
                             </Select>
                         )}
                     />
@@ -197,6 +239,41 @@ const ModalEditStaff = ({
                     />
                     {errors.gender && (
                         <p style={{ color: "red" }}>{errors.gender.message}</p>
+                    )}
+                </Form.Item>
+                <Form.Item label="Chức vụ">
+                    <Controller
+                        name="position_id"
+                        control={control}
+                        rules={{
+                            required: "Vai trò là bắt buộc",
+                        }}
+                        render={({ field }) => (
+                            <Select
+                               
+                                {...field}
+                                onSearch={(value) => onsetSearch(value)}
+                                showSearch
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                }
+                                loading={positions.loading}
+                            >
+                                {positionsList.map((item) => (
+                                    <Option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        )}
+                    />
+                    {errors.position_id && (
+                        <p style={{ color: "red" }}>
+                            {errors.position_id.message}
+                        </p>
                     )}
                 </Form.Item>
                 <Form.Item label="Ngày sinh">

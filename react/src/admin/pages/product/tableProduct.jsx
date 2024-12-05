@@ -8,6 +8,7 @@ const TableProduct = ({
     handleDelete,
     pagination,
     handlePageChange,
+    handleDetail,
     loading
 }) => {
     
@@ -36,7 +37,7 @@ const TableProduct = ({
                 handleEdit(record.key);
                 break;
             case "2":
-                navigate("/admin/lichhen/chitiet/" + record.key);
+                handleDetail(record.key);
                 break;
             case "3":
                 break;
@@ -63,6 +64,7 @@ const TableProduct = ({
             title: "Ảnh",
             dataIndex: "image_url",
             key: "image_url",
+            
         },
         {
             title: "Giá",

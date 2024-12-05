@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
-import { Button, Descriptions, Modal, Table, Image } from "antd";
+import {
+    Button,
+    Descriptions,
+    Modal,
+    Table,
+    Image,
+    Tag,
+    Card,
+    Space,
+} from "antd";
 
 const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
     useEffect(() => {
@@ -40,6 +49,32 @@ const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
             label: "Thời gian",
             children: servicedata?.duration || "Không có",
         },
+        {
+            key: "6",
+            label: "Trạng thái",
+            children:
+                servicedata?.status === 1 ? (
+                    <Tag color="success">Hoạt động</Tag>
+                ) : (
+                    <Tag color="error">Không hoạt động</Tag>
+                ),
+        },
+        {
+            label: "Ảnh đại diện",
+            key: "7",
+            children: servicedata?.image_url ? (
+                <Image
+                    src={
+                        "http://127.0.0.1:8000/storage/uploads/services/" +
+                        servicedata?.image_url
+                    }
+                    width={200}
+                    fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
+                />
+            ) : (
+                "Không có"
+            ),
+        },
     ];
 
     const productColumns = [
@@ -67,34 +102,49 @@ const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
                 </Button>,
             ]}
         >
-            <Descriptions title="Thông tin dịch vụ" items={items} column={2} />
-            <Table
-                title={() => "Danh sách sản phẩm sử dụng"}
-                columns={productColumns}
-                dataSource={servicedata?.products || []}
-                rowKey="id"
-                pagination={false}
-            />
-            <div>
-                <h3 className="mb-5 mt-4">Hình ảnh dịch vụ</h3>
-                <div style={{ display: "flex", gap: "10px" }}>
-                    {servicedata?.serviceImages?.map((image) => (
-                        <Image
-                            key={image.id}
-                            src={
-                                "http://127.0.0.1:8000/storage/uploads/services/" +
-                                image.image_url
-                            }
-                            alt={`Image for ${servicedata?.name}`}
-                            width={200}
-                            style={{
-                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                                borderRadius: "8px",
-                            }}
-                        />
-                    ))}
-                </div>
-            </div>
+            <Space direction="vertical" style={{ width: "100%" }}>
+                <Card>
+                    <Descriptions
+                        title="Thông tin dịch vụ"
+                        items={items}
+                        bordered
+                        column={2}
+                    />
+                </Card>
+                <Card>
+                    <Table
+                        title={() => "Danh sách sản phẩm sử dụng"}
+                        columns={productColumns}
+                        dataSource={servicedata?.products || []}
+                        rowKey="id"
+                        pagination={false}
+                        bordered
+                    />
+                </Card>
+                <Card>
+                    <h3 className="mb-5 mt-4">Hình ảnh dịch vụ</h3>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                        {servicedata?.serviceImages?.map((image) => (
+                            <Image
+                                key={image.id}
+                                src={
+                                    "http://127.0.0.1:8000/storage/uploads/services/" +
+                                    image.image_url
+                                }
+                                alt={`Image for ${servicedata?.name}`}
+                                fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
+                                width={200}
+                                style={{
+                                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                                    borderRadius: "8px",
+                                    border: "1px solid #f0f0f0",
+                                    padding: "5px",
+                                }}
+                            />
+                        ))}
+                    </div>
+                </Card>
+            </Space>
         </Modal>
     );
 };

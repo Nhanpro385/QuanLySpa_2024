@@ -65,7 +65,7 @@ const StaffsDetail = () => {
                                 {UserData?.full_name || "N/A"}
                             </Title>
                             <Text type="secondary">
-                                {UserData?.position?.name || "N/A"}
+                                {UserData?.position?.name || "Không có chức vụ"}
                             </Text>
                             <Divider />
                             <Form layout="vertical">
@@ -87,7 +87,7 @@ const StaffsDetail = () => {
                                                 variant="borderless"
                                                 value={
                                                     UserData?.position?.name ||
-                                                    ""
+                                                    "Không có chức vụ"
                                                 }
                                                 disabled
                                             />

@@ -19,17 +19,25 @@ import { useForm, Controller } from "react-hook-form";
 import { Snowflake } from "@theinternetfolks/snowflake";
 import { formatDate } from "../../utils";
 import { usersAdd } from "../../redux/slices/UserSlice";
-
+import usePositionsActions from "../../modules/staffManagement/hooks/usePositionsAction";
 const { Option } = Select;
-
+import debounce from "lodash/debounce";
 const StaffsAdd = () => {
+    const { getPositions, searchPositions } = usePositionsActions();
     useEffect(() => {
         document.title = "Thêm nhân viên";
     }, []);
     const [api, contextHolder] = notification.useNotification();
     const dispatch = useDispatch();
     const { error, loading } = useSelector((state) => state.user);
+    const positions = useSelector((state) => state.positions);
     const [success, setSuccess] = useState(null);
+    const [positionsList, setPositionsList] = useState([]);
+    const [searchquery, setSearchquery] = useState({
+        search: "",
+        page: 1,
+        per_page: 100,
+    });
     const {
         control,
         handleSubmit,
@@ -43,6 +51,7 @@ const StaffsAdd = () => {
         const payload = {
             ...data,
             status: true,
+            note: data.note || "",
             date_of_birth: formattedDateOfBirth,
             id: Snowflake.generate(),
         };
@@ -92,7 +101,33 @@ const StaffsAdd = () => {
             console.log(error);
         }
     };
+    useEffect(() => {
+        getPositions(50);
+    }, []);
 
+    useEffect(() => {
+        if (
+            positions?.Positions?.data &&
+            positions?.Positions?.data?.length > 0
+        ) {
+            setPositionsList(
+                positions?.Positions?.data?.map((item) => ({
+                    key: item.id,
+                    ...item,
+                }))
+            );
+        }
+    }, [positions]);
+    const onsetSearch = debounce((value) => {
+        setSearchquery({ ...searchquery, search: value });
+    }, 500);
+    useEffect(() => {
+        if (searchquery.search !== "") {
+            searchPositions(searchquery);
+        } else {
+            getPositions(100);
+        }
+    }, [searchquery]);
     return (
         <>
             <h1 className="text-center">Thêm nhân viên</h1>
@@ -187,6 +222,50 @@ const StaffsAdd = () => {
                                     )}
                                 </Form.Item>
                             </Col>
+                            <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Form.Item label="Chức vụ">
+                                    <Controller
+                                        name="position_id"
+                                        control={control}
+                                        rules={{
+                                            required: "Vai trò là bắt buộc",
+                                        }}
+                                        render={({ field }) => (
+                                            <Select
+                                                size="large"
+                                                {...field}
+                                                onSearch={(value) =>
+                                                    onsetSearch(value)
+                                                }
+                                                showSearch
+                                                optionFilterProp="children"
+                                                filterOption={(input, option) =>
+                                                    option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                            input.toLowerCase()
+                                                        ) >= 0
+                                                }
+                                                loading={positions.loading}
+                                            >
+                                                {positionsList.map((item) => (
+                                                    <Option
+                                                        key={item.id}
+                                                        value={item.id}
+                                                    >
+                                                        {item.name}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        )}
+                                    />
+                                    {errors.position_id && (
+                                        <p style={{ color: "red" }}>
+                                            {errors.position_id.message}
+                                        </p>
+                                    )}
+                                </Form.Item>
+                            </Col>
 
                             {/* Số điện thoại */}
                             <Col xl={12} lg={12} md={12} sm={24} xs={24}>
@@ -276,6 +355,25 @@ const StaffsAdd = () => {
                                     {errors.date_of_birth && (
                                         <p style={{ color: "red" }}>
                                             {errors.date_of_birth.message}
+                                        </p>
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Form.Item label="Ghi chú">
+                                    <Controller
+                                        name="note"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Input.TextArea
+                                                size="large"
+                                                {...field}
+                                            />
+                                        )}
+                                    />
+                                    {errors.note && (
+                                        <p style={{ color: "red" }}>
+                                            {errors.note.message}
                                         </p>
                                     )}
                                 </Form.Item>

@@ -81,7 +81,7 @@ const endpoints = {
     },
     Products: {
         list: `${API_BASE_URL}/products`,
-        detail: (id) => `${API_BASE_URL}/products/${id}`,
+        detail: (id) => `${API_BASE_URL}/products/${id}?inventories=true&productImages=true`,
         create: `${API_BASE_URL}/products`,
         update: (id) => `${API_BASE_URL}/products/${id}`,
         delete: (id) => `${API_BASE_URL}/products/${id}`,

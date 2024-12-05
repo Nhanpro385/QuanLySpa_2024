@@ -5,8 +5,9 @@ import {
     PositionsUpdate,
     PositionsDelete,
     PositionsGetById,
-    PositionsSearch
+    PositionsSearch,
 } from "@admin/redux/slices/PositionsSlice";
+
 const usePositionsActions = () => {
     const dispatch = useDispatch();
 
@@ -14,8 +15,8 @@ const usePositionsActions = () => {
         return await dispatch(PositionsAdd(data)); // Trả về kết quả dispatch
     };
 
-    const getPositions = async () => {
-        return await dispatch(PositionsGet());
+    const getPositions = async (config) => {
+        return await dispatch(PositionsGet(config));
     };
 
     const updatePositions = async (data) => {

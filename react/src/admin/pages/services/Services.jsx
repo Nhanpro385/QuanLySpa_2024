@@ -31,7 +31,7 @@ function Services() {
     const [DetailService, setDetailService] = useState(null);
     const [errorEdit, setErrorEdit] = useState(null);
 
-    const pagination = services.services.meta || {};
+    const pagination = services?.services?.meta || {};
     const [Searchquery, setSearchquery] = useState({
         search: "",
         page: 1,
@@ -52,14 +52,14 @@ function Services() {
     } = useModal();
     const [editService, setEditService] = useState(null);
     useEffect(() => {
-        if (services.services.data && !services.loading) {
+        if (services?.services?.data && !services.loading) {
             setServiceData(
-                services.services.data.map((service) => ({
-                    key: service.id,
-                    name: service.name,
-                    price: service.price.toLocaleString("vi-VN"), // Chỉ sử dụng "vi-VN" để định dạng số
-                    duration: service.duration,
-                    status: service.status,
+                services?.services?.data.map((service) => ({
+                    key: service?.id,
+                    name: service?.name,
+                    price: service?.price.toLocaleString("vi-VN"), // Chỉ sử dụng "vi-VN" để định dạng số
+                    duration: service?.duration,
+                    status: service?.status,
                 }))
             );
         }
@@ -68,7 +68,7 @@ function Services() {
     const handleEdit = async (record) => {
         try {
             const res = await getservicesById(record.key);
-            console.log(res);
+        
 
             if (res.payload.status === "success") {
                 setEditService(res.payload.data);
@@ -133,8 +133,7 @@ function Services() {
     };
     const handleSubmitEdit = async (data) => {
         try {
-            console.log(data);
-
+            
             const formData = new FormData();
 
             for (let key in data) {

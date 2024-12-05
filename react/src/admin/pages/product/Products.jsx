@@ -18,10 +18,19 @@ import { useSelector } from "react-redux";
 import TableProduct from "./tableProduct";
 import useModal from "@admin/modules/appointments/hooks/openmodal";
 import ModalEditProduct from "../../modules/product/compoments/ModalEditProduct";
+import ModalProductDetail from "../../modules/product/compoments/ModalProductDetail";
 import debounce from "lodash/debounce";
 function Products() {
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const {
+        isModalOpen: isModalOpen2,
+        showModal: showModal2,
+        handleOk: handleOk2,
+        handleCancel: handleCancel2,
+    } = useModal();
     const [productData, setProductData] = useState([]);
+    const [productDataDetail, setProductDataDetail] = useState({});
+
     const product = useSelector((state) => state.products);
     const {
         getproduct,
@@ -139,6 +148,21 @@ function Products() {
             message.error("Cập nhật sản phẩm thất bại");
         }
     };
+    const handleDetail = async (record) => {
+        try {
+            const result = await getproductById(record);
+       
+
+            if (result.meta.requestStatus === "fulfilled") {
+                setProductDataDetail(result.payload.data);
+                showModal2();
+            } else {
+                message.error("Không tìm thấy sản phẩm");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div>
@@ -171,6 +195,7 @@ function Products() {
             <TableProduct
                 dataSource={productData}
                 handleEdit={handleEdit}
+                handleDetail={handleDetail}
                 handleDelete={handleDelete}
                 pagination={pagination}
                 handlePageChange={handlechangepage}
@@ -182,6 +207,9 @@ function Products() {
                 handleCancel={handleCancel}
                 productData={dataEdit}
                 handleSubmitEdit={handleSubmitEdit}
+            />
+            <ModalProductDetail isOpen={isModalOpen2} onClose={handleCancel2} 
+            ProductData={productDataDetail}
             />
         </div>
     );
