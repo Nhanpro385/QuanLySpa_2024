@@ -61,6 +61,8 @@ function Services() {
             );
         }
     }, [services]);
+    console.log(ServiceData);
+    
 
     const handleEdit = async (record) => {
         try {

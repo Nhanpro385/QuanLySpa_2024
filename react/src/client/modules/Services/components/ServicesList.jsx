@@ -30,6 +30,7 @@ const Services_List = () => {
         }
         setLoading(false);
     }, [serviceCategories]);
+    
     const onHandleClick = (item) => {
         setSelectedCate(item);
     };
