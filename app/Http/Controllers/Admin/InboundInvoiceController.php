@@ -157,11 +157,20 @@ class InboundInvoiceController extends Controller
     /**
      * Lấy thông tin chi tiết một hóa đơn nhập.
      */
-    public function show(InboundInvoice $inboundInvoice)
+    public function show($id)
     {
-        $inboundInvoice->load(['details', 'createdBy', 'updatedBy']);
-        return new InboundInvoiceResource($inboundInvoice);
+        $invoice = InboundInvoice::with([
+            'staff',
+            'supplier',
+            'details',
+            'details.product',
+            'createdBy',
+            'updatedBy',
+        ])->findOrFail($id);
+    
+        return new InboundInvoiceResource($invoice);
     }
+    
 
     /**
      * Cập nhật một hóa đơn nhập.
