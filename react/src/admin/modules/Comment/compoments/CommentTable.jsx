@@ -12,6 +12,7 @@ const CommentTable = ({
     pagination,
     handleReplyClick,
     handlePageChange,
+    loading,
 }) => {
     const columns = [
         {
@@ -45,9 +46,9 @@ const CommentTable = ({
             title: "Trạng thái",
             dataIndex: "admin_reply",
             key: "admin_reply",
-            render: (admin_reply) => (
-                <Text type={admin_reply ? "success" : "danger"}>
-                    {admin_reply ? "Đã trả lời" : "Chưa trả lời"}
+            render: (admin_reply, record) => (
+                <Text type={record?.replies?.length > 0 ? "success" : "danger"}>
+                    {record?.replies?.length > 0 ? "Đã trả lời" : "Chưa trả lời"}
                 </Text>
             ),
         },
@@ -120,6 +121,7 @@ const CommentTable = ({
 
     return (
         <Table
+            loading={loading}
             columns={columns}
             dataSource={dataSource}
             pagination={{

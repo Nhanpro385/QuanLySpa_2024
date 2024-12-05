@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, notification } from "antd";
+import { Button, Card, Typography, notification } from "antd";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CommentDetailModal from "../../modules/Comment/compoments/CommentDetailModal";
 import CommentTable from "../../modules/Comment/compoments/CommentTable";
@@ -7,6 +7,7 @@ import ReplyComment from "../../modules/Comment/compoments/ReplyComment";
 import { useSelector } from "react-redux";
 import usecommentsActions from "../../modules/Comment/hooks/usecomment";
 import debounce from "lodash/debounce";
+import { Loading3QuartersOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
 const CommentManagement = () => {
@@ -16,8 +17,8 @@ const CommentManagement = () => {
     const [selectedComment, setSelectedComment] = useState(null); // State to hold selected comment details
     const [isReplyModalOpen, setReplyModalOpen] = useState(false); // State for reply modal
     const [dataSource, setDataSource] = useState([]);
-    const { comments } = useSelector((state) => state.comments);
-    const pagination = comments?.meta || {};
+    const commentSlice = useSelector((state) => state.comments);
+    const pagination = commentSlice.comments?.meta || {};
     const [searchquery, setSearchQuery] = useState({
         search: "",
         page: 1,
@@ -75,22 +76,23 @@ const CommentManagement = () => {
     };
 
     const handlePageChange = (page, pagination) => {
-        console.log("Page change:", page, pagination);
-
         setSearchQuery({ ...searchquery, page: page, per_page: pagination });
     };
+    console.log("searchquery", searchquery);
+    
     useEffect(() => {
         setDataSource(
-            comments?.data.map((comment, index) => ({
+            commentSlice.comments?.data.map((comment, index) => ({
                 ...comment,
-                index: index + 1,
+                key: index + 1,
             }))
         );
-    }, [comments]);
+    }, [commentSlice]);
     useEffect(() => {
         if (
-            (searchquery.search !== "" || searchquery.page !== 1,
-            searchquery.per_page !== 5)
+            searchquery.search !== "" ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 5
         ) {
             searchcomments(searchquery);
         } else {
@@ -101,20 +103,31 @@ const CommentManagement = () => {
         <div>
             {contextHolder}
             <h1 className="text-center">Quản lý bình luận</h1>
-            <Card title="Quản lý bình luận" style={{ margin: "20px" }}>
-                {dataSource.length === 0 ? (
-                    <Text type="secondary">Không có bình luận nào.</Text>
-                ) : (
-                    <CommentTable
-                        dataSource={dataSource}
-                        handleViewDetail={handleViewDetail}
-                        handleDelete={handleDelete}
-                        handleEdit={handleEdit}
-                        pagination={pagination}
-                        handleReplyClick={handleReplyClick} // Pass reply handler
-                        handlePageChange={handlePageChange}
-                    />
-                )}
+            <Card
+                title="Quản lý bình luận"
+                style={{ margin: "20px" }}
+                extra={
+                    <Button
+                        icon={<Loading3QuartersOutlined />}
+                        type="primary"
+                        onClick={() => {
+                            getcomments();
+                        }}
+                    >
+                        Làm mới
+                    </Button>
+                }
+            >
+                <CommentTable
+                    loading={commentSlice.loading}
+                    dataSource={dataSource}
+                    handleViewDetail={handleViewDetail}
+                    handleDelete={handleDelete}
+                    handleEdit={handleEdit}
+                    pagination={pagination}
+                    handleReplyClick={handleReplyClick} // Pass reply handler
+                    handlePageChange={handlePageChange}
+                />
             </Card>
 
             {isReplyModalOpen &&

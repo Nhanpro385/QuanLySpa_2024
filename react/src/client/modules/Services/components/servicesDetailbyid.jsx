@@ -13,17 +13,13 @@ import {
     Tag,
     Spin,
     Button,
-    Select,
     Avatar,
     List,
     Space,
     Rate,
-    Input,
 } from "antd";
 import {
-    LikeOutlined,
     MessageOutlined,
-    StarOutlined,
     LoadingOutlined,
 } from "@ant-design/icons";
 
@@ -58,9 +54,7 @@ const ServicesDetailById = () => {
         return (
             <div style={{ textAlign: "center", paddingTop: "50px" }}>
                 <Spin
-                    indicator={
-                        <LoadingOutlined style={{ fontSize: 24 }} spin />
-                    }
+                    indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
                 />
             </div>
         );
@@ -69,18 +63,26 @@ const ServicesDetailById = () => {
     const data = service.comments.map((item, index) => ({
         key: index,
         title: item?.customer?.full_name || "Khách hàng không xác định",
-        avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}` || "",
+        avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`,
         description: "Phản hồi từ khách hàng.",
         content: item?.comment || "Không có",
         time: item?.created_at || "Không có",
         rating: item.rate || 0,
-        replies: item?.replies?.map((reply, replyIndex) => ({
+        replies: item?.clientReplies?.map((reply, replyIndex) => ({
             key: `${index}-${replyIndex}`,
             title: reply?.customer?.full_name || "Người dùng không xác định",
             avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${replyIndex}`,
             description: "Phản hồi từ nhân viên.",
             content: reply?.comment || "Không có",
             time: reply?.created_at || "Không có",
+            replies: reply?.clientReplies?.map((nestedReply, nestedIndex) => ({
+                key: `${index}-${replyIndex}-${nestedIndex}`,
+                title: nestedReply?.customer?.full_name || "Người dùng không xác định",
+                avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${nestedIndex}`,
+                description: "Phản hồi từ nhân viên.",
+                content: nestedReply?.comment || "Không có",
+                time: nestedReply?.created_at || "Không có",
+            })),
         })),
     }));
 
@@ -90,6 +92,7 @@ const ServicesDetailById = () => {
             {text}
         </Space>
     );
+
     const loadMore = service?.comments.length > 3 && (
         <div
             style={{
@@ -102,6 +105,25 @@ const ServicesDetailById = () => {
             <Button onClick={"onLoadMore"}>Xem thêm</Button>
         </div>
     );
+
+    const renderReplies = (replies) => {
+        return replies.map((reply) => (
+            <List.Item key={reply.key} className="bg-light">
+                <List.Item.Meta
+                    avatar={<Avatar src={reply?.avatar} />}
+                    title={reply?.title}
+                    description={reply?.description}
+                />
+                {reply.content}
+                <p style={{ fontSize: "12px", color: "#666" }}>{reply?.time}</p>
+                {reply.replies && reply.replies.length > 0 && (
+                    <div style={{ marginLeft: "20px" }}>
+                        {renderReplies(reply.replies)}
+                    </div>
+                )}
+            </List.Item>
+        ));
+    };
 
     return (
         <div className="container" style={{ padding: "20px" }}>
@@ -148,10 +170,7 @@ const ServicesDetailById = () => {
                     </Col>
                     <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
                         <Card bordered={false}>
-                            <Descriptions
-                                title="Thông tin dịch vụ"
-                                layout="vertical"
-                            >
+                            <Descriptions title="Thông tin dịch vụ" layout="vertical">
                                 <Descriptions.Item label="Mô tả">
                                     {service?.description ||
                                         "Thông tin không có sẵn"}
@@ -172,11 +191,7 @@ const ServicesDetailById = () => {
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Trạng thái">
                                     <Tag
-                                        color={
-                                            service?.status === 1
-                                                ? "green"
-                                                : "red"
-                                        }
+                                        color={service?.status === 1 ? "green" : "red"}
                                     >
                                         {service?.status === 1
                                             ? "Hoạt động"
@@ -188,33 +203,6 @@ const ServicesDetailById = () => {
                     </Col>
                 </Row>
             </Card>
-            {service?.products && service?.products.length > 0 && (
-                <div style={{ marginTop: "40px" }}>
-                    <Divider orientation="left">
-                        Sản phẩm được sử dụng trong dịch vụ
-                    </Divider>
-                    <Row gutter={[16, 16]}>
-                        {service?.products.map((product, index) => (
-                            <Col key={index} span={8}>
-                                <Card
-                                    title={
-                                        product?.name ||
-                                        "Sản phẩm không xác định"
-                                    }
-                                    bordered={true}
-                                    className={style.cardProduct}
-                                >
-                                    <p>
-                                        Số lượng sử dụng:{" "}
-                                        {product?.quantity_used ||
-                                            "Chưa xác định"}
-                                    </p>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
-                </div>
-            )}
             <Card className="mt-4" title="Danh sách bình luận và đánh giá">
                 <List
                     locale={{ emptyText: "Chưa có bình luận nào" }}
@@ -258,91 +246,16 @@ const ServicesDetailById = () => {
                             >
                                 {item?.content}
                             </p>
-                            <p
-                                style={{
-                                    fontSize: "12px",
-                                    color: "#666",
-                                }}
-                            >
-                                {item.time}
+                            <p style={{ fontSize: "12px", color: "#666" }}>
+                                {item?.time}
                             </p>
-
                             {expandedKeys[item.key] && (
-                                <List
-                                    itemLayout="horizontal"
-                                    dataSource={item?.replies}
-                                    locale={{
-                                        emptyText: "Không có phản hồi nào",
-                                    }}
-                                    renderItem={(reply) => (
-                                        <List.Item
-                                            key={reply.key}
-                                            className="bg-light"
-                                        >
-                                            <List.Item.Meta
-                                                avatar={
-                                                    <Avatar
-                                                        src={reply?.avatar}
-                                                    />
-                                                }
-                                                title={reply?.title}
-                                                description={reply?.description}
-                                            />
-                                            {reply.content}
-                                            <p
-                                                style={{
-                                                    fontSize: "12px",
-                                                    color: "#666",
-                                                }}
-                                            >
-                                                {reply?.time}
-                                            </p>
-                                        </List.Item>
-                                    )}
-                                />
+                                <div>{renderReplies(item.replies)}</div>
                             )}
                         </List.Item>
                     )}
-                    loadMore={loadMore}
-                    header={
-                        <Row gutter={[16, 16]} align={"middle"}>
-                            <Col
-                                xxl={24}
-                                xl={24}
-                                lg={24}
-                                md={24}
-                                sm={24}
-                                xs={24}
-                            >
-                                <h3>Bình luận và đánh giá</h3>
-                            </Col>
-                            <Col
-                                xxl={24}
-                                xl={24}
-                                lg={24}
-                                md={24}
-                                sm={24}
-                                xs={24}
-                            >
-                                <span>Đánh giá của bạn: </span>
-                                <Rate
-                                    style={{ marginBottom: "10px" }}
-                                    defaultValue={0}
-                                />
-                            </Col>
-                            <Input.TextArea
-                                placeholder="Nhập bình luận của bạn"
-                                autoSize={{ minRows: 2, maxRows: 6 }}
-                            />
-                            <Button
-                                type="primary"
-                                style={{ marginTop: "10px" }}
-                            >
-                                Gửi bình luận
-                            </Button>
-                        </Row>
-                    }
                 />
+                {loadMore}
             </Card>
         </div>
     );
