@@ -85,7 +85,7 @@ const PublicRoutes = [
     },
     {
         path: "/thongtincanhan/tuvandatlich",
-        element: <BookingConsultany />,
+        element: <BookingConsultant />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {
