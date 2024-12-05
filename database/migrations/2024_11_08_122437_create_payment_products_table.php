@@ -15,8 +15,8 @@ return new class extends Migration {
             $table->string('product_id', 20)->nullable();
             $table->string('payment_id', 20)->nullable();
             $table->integer('quantity');
-            $table->decimal('unit_price', 10, 2);
-            $table->decimal('total_price', 10, 2);
+            $table->decimal('unit_price', 20, 2);
+            $table->decimal('total_price', 20, 2);
             $table->timestamps();
         });
 

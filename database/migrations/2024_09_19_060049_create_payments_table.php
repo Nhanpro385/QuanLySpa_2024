@@ -14,11 +14,11 @@ return new class extends Migration {
             $table->string('id', 20)->primary();
             $table->string('promotion_id', 20)->nullable();
             $table->string('appointment_id', 20)->nullable();
-            $table->decimal('service_total', 10, 2);
-            $table->decimal('product_total', 10, 2);
-            $table->decimal('subtotal', 10, 2);
-            $table->decimal('reduce', 10, 2)->nullable();
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('service_total', 20, 2);
+            $table->decimal('product_total', 20, 2);
+            $table->decimal('subtotal', 20, 2);
+            $table->decimal('reduce', 20, 2)->nullable();
+            $table->decimal('total_amount', 20, 2);
             $table->boolean('payment_type')->default(1);
             $table->boolean('status')->default(false);
             $table->string('created_by', 20)->nullable();

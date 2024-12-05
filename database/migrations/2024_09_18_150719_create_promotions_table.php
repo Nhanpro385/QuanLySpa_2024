@@ -16,9 +16,9 @@ return new class extends Migration {
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->tinyInteger('promotion_type')->default(1);
-            $table->decimal('discount_percent', 10, 2);
+            $table->decimal('discount_percent', 20, 2);
             $table->text('description')->nullable();
-            $table->decimal('min_order_amount',20,2);
+            $table->decimal('min_order_amount', 20, 2);
             $table->integer('min_quantity')->default(1);
             $table->string('image_url')->nullable();
             $table->boolean('status')->default(true);

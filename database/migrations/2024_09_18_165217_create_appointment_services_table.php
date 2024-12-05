@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('appointment_id', 20)->nullable();
             $table->string('service_id', 20)->nullable();
             $table->integer('quantity')->default(1);
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 20, 2);
             $table->timestamps();
         });
 

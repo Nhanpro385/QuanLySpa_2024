@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('positions', function (Blueprint $table) {
             $table->string('id', 20)->primary();
             $table->string('name');
-            $table->decimal('wage', 10, 2);
+            $table->decimal('wage', 20, 2);
             $table->string('note')->nullable();
             $table->softDeletes();
             $table->timestamps();

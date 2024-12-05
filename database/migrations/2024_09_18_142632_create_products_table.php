@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->string('id', 20)->primary();
             $table->string('category_id', 20)->nullable();
             $table->string('name')->unique();
-            $table->decimal('price', 10, 2);
-            $table->decimal('cost', 10, 2);
+            $table->decimal('price', 20, 2);
+            $table->decimal('cost', 20, 2);
             $table->integer('capacity');
             $table->string('bar_code', 20);
             $table->date('date');

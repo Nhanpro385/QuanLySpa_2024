@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('staff_id', 20)->nullable();
             $table->string('supplier_id', 20)->nullable();
             $table->string('note')->nullable();
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 20, 2);
             $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->timestamps();
@@ -31,11 +31,11 @@ return new class extends Migration {
         Schema::table('inbound_invoices', function (Blueprint $table) {
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
-        
+
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
         });
-        
+
     }
 
     /**

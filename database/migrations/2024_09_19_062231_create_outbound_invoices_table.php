@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('staff_id', 20)->nullable();
             $table->string('note')->nullable();
             $table->enum('outbound_invoice_type', ['service', 'use']);
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 20, 2);
             $table->boolean('status')->default(true);
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
