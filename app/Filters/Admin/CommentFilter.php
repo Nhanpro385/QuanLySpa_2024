@@ -44,7 +44,7 @@ class CommentFilter extends ApiFilter
             $search = $request->input('search');
             $query->where(function ($query) use ($search) {
                 $query->where('id', 'LIKE', "%$search%")
-                      ->orWhere('content', 'LIKE', "%$search%")
+                      ->orWhere('comment', 'LIKE', "%$search%")
                       ->orWhere('status', 'LIKE', "%$search%");
             });
         }
