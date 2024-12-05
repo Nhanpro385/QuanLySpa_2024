@@ -15,10 +15,16 @@ import servicesDetailbyid from "../modules/Services/components/servicesDetailbyi
 import ServicesDetailById from "../modules/Services/components/servicesDetailbyid";
 import AboutUs from "../pages/AboutUs/AboutUs";
 import ThanksBooking from "../pages/thanksBooking";
+import StreatmentsHistory from "../modules/Profile/components/streatmentsHistory";
 
 const PublicRoutes = [
     {
         path: "/",
+        element: <Home />,
+        requiredRole: { requiredRole: "public", role: "Client" },
+    },
+    {
+        path: "/trangchu",
         element: <Home />,
         requiredRole: { requiredRole: "public", role: "Client" },
     },
@@ -79,17 +85,17 @@ const PublicRoutes = [
     },
     {
         path: "/thongtincanhan/tuvandatlich",
-        element: <Profile />,
+        element: <BookingConsultany />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {
         path: "/thongtincanhan/lichsudichvu",
-        element: <Profile />,
+        element: <ServiceHistory />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {
         path: "/thongtincanhan/lichsudieutri",
-        element: <Profile />,
+        element: <StreatmentsHistory />,
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {

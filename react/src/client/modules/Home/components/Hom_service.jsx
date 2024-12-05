@@ -11,7 +11,7 @@ import styles from "../Styles/HomeService.module.scss";
 import useServicesActions from "../../../../admin/modules/services/hooks/useServices";
 import { useNavigate } from "react-router-dom";
 const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 4,
@@ -119,6 +119,9 @@ const Home_service = () => {
                         <Button
                             type="primary"
                             className={styles.showMoreButton}
+                            onClick={() => {
+                                navigate("/dichvu");
+                            }}
                         >
                             Xem thêm dịch vụ
                         </Button>

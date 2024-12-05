@@ -71,7 +71,7 @@ const Home_facilities = () => {
                             align={"middle"}
                             gutter={[16, 16]}
                         >
-                            <Col xl={2} lg={2} md={2} sm={2} xs={2}>
+                            <Col xxl={4} xl={4} lg={4} md={4} sm={4} xs={12}>
                                 <Button
                                     block
                                     type="text"
@@ -83,7 +83,7 @@ const Home_facilities = () => {
                                     <ArrowLeftOutlined />
                                 </Button>
                             </Col>
-                            <Col xl={2} lg={2} md={2} sm={2} xs={2}>
+                            <Col xxl={4} xl={4} lg={4} md={4} sm={4} xs={12}>
                                 <Button
                                     block
                                     type="text"
@@ -97,11 +97,11 @@ const Home_facilities = () => {
                             </Col>
                         </Row>
                     </Col>
-                    <Col xl={4} lg={4} md={4} sm={4} xs={24}>
+                    {/* <Col xl={4} lg={4} md={4} sm={4} xs={24}>
                         <Button block type="text" className="view-more-button">
                             Xem thêm cơ sở vật chất
                         </Button>
-                    </Col>
+                    </Col> */}
                 </Row>
             </div>
         </section>

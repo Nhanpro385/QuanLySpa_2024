@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, List, Empty, Image, Button, Result } from "antd";
+import { Row, Col, List, Empty, Image, Button, Result, Divider } from "antd";
 import style from "../style/ServicesDetail.module.scss";
 import { useNavigate } from "react-router-dom";
 import { FrownOutlined } from "@ant-design/icons";
@@ -29,7 +29,9 @@ const ServicesDetail = ({ listservices }) => {
                     sm={22}
                     xs={24}
                 >
-                    <h1>Danh sách dịch vụ</h1>
+                    <Divider orientation="left">
+                        <h2>Dịch vụ tại Spa Sakura</h2> 
+                    </Divider>
                 </Col>
             </Row>
             <div className={style.boxServicesDetail}>
@@ -37,7 +39,7 @@ const ServicesDetail = ({ listservices }) => {
                     grid={{
                         gutter: 16,
                         column: 4,
-                        xs: 1,
+                        xs: 2,
                         sm: 2,
                         md: 3,
                         lg: 4,
@@ -45,7 +47,7 @@ const ServicesDetail = ({ listservices }) => {
                         xxl: 4,
                     }}
                     pagination={{
-                        pageSize: 6,
+                        pageSize: 8,
                         position: "bottom",
                         align: "center",
                     }}
@@ -70,6 +72,7 @@ const ServicesDetail = ({ listservices }) => {
                                             "http://127.0.0.1:8000/storage/uploads/services/special/" +
                                             item.image_url
                                         }
+                                      
                                         alt={item.name || "Dịch vụ"}
                                         preview={false}
                                         className={style.image}
@@ -97,12 +100,12 @@ const ServicesDetail = ({ listservices }) => {
                                 </div>
                                 <Row justify="center" gutter={[8, 8]}>
                                     <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={12}
-                                        sm={12}
-                                        xs={12}
+                                        xxl={24}
+                                        xl={24}
+                                        lg={24}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
                                     >
                                         <Button
                                             block
@@ -118,12 +121,12 @@ const ServicesDetail = ({ listservices }) => {
                                         </Button>
                                     </Col>
                                     <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={12}
-                                        sm={12}
-                                        xs={12}
+                                        xxl={24}
+                                        xl={24}
+                                        lg={24}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
                                     >
                                         <Button
                                             block

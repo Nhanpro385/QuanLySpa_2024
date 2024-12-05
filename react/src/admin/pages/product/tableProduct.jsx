@@ -84,13 +84,8 @@ const TableProduct = ({
                     }) || "Dữ liệu không có"}
                 </span>
             ),
+        },
 
-        },
-        {
-            title: "Số lượng",
-            dataIndex: "quantity",
-            key: "quantity",
-        },
         {
             title: "Dung tích",
             dataIndex: "capacity",

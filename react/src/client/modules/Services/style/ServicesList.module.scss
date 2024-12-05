@@ -59,25 +59,32 @@
     }
 }
 .cardServices {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease;
     width: 100%;
-    // border-color: rgb(255, 220, 220);
+    display: -webkit-box;
+    -webkit-line-clamp: 2; // Giới hạn văn bản ở 1 dòng
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; // Thêm dấu "..."
+
     font-weight: 500;
-    
 }
 .cardServices:hover {
-    transform: translateY(-10px);
 }
 .cardServices.active {
-    // transform: translateY(-10px);
     color: rgb(255, 255, 255);
     background-color: rgb(224, 82, 101);
     border-color: rgb(224, 82, 101);
 }
-.noServices{
+.noServices {
     text-align: center;
     font-size: 20px;
     font-weight: 500;
     margin-top: 20px;
+}
+.cardServicesTitle{
+    min-height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

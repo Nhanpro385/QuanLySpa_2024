@@ -1,9 +1,7 @@
 import React, { useRef, useEffect } from "react";
-import { Card, Button, Row, Col, Image } from "antd";
-import Slider from "react-slick";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import anh4 from "../../../assets/images/image4.png";
+import { Card, Button, Row, Col, Image, List } from "antd";
 
+import style from "../styles/bookingListService.module.scss";
 // Cấu hình cho Slider
 const BookingListService = ({
     activeService,
@@ -12,189 +10,130 @@ const BookingListService = ({
     setService,
     ServicesCategories,
 }) => {
-    const sliderRef = useRef();
     const serviceButtonsRefs = useRef([]); // Mảng lưu refs của các nút dịch vụ
 
     // Đảm bảo có thể tham chiếu tới từng nút dịch vụ
-    useEffect(() => {
-        if (serviceButtonsRefs.current[activeService]) {
-            // Cuộn đến phần tử dịch vụ được chọn
-            serviceButtonsRefs.current[activeService].scrollIntoView({
-                behavior: "smooth",
-                block: "center", // Cuộn đến vị trí ở giữa phần tử
-            });
-        }
-    }, [activeService]); // Mỗi khi activeService thay đổi, sẽ cuộn đến dịch vụ đó
-
-    const settingsservice = {
-        dots: true,
-        speed: 500,
-        slidesToShow: Math.min(4, ServicesCategories.length || 1), // Đảm bảo giá trị hợp lệ
-        slidesToScroll: 4,
-        infinite: false,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: Math.min(4, ServicesCategories.length || 1),
-                    slidesToScroll: 4,
-                    dots: true,
-                },
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: Math.min(2, ServicesCategories.length || 1),
-                    slidesToScroll: 2,
-                    dots: true,
-                },
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: Math.min(1, ServicesCategories.length || 1),
-                    slidesToScroll: 1,
-                    dots: true,
-                },
-            },
-        ],
-    };
-
-    const settings = {
-        arrows: false,
-        dots: false,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        infinite: false, // Ngừng vòng lặp cho các mục ít
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                    dots: false,
-                    infinite: false,
-                },
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                    initialSlide: 1,
-                    infinite: false,
-                },
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                    infinite: false,
-                },
-            },
-        ],
-    };
+    // useEffect(() => {
+    //     if (serviceButtonsRefs.current[activeService]) {
+    //         // Cuộn đến phần tử dịch vụ được chọn
+    //         serviceButtonsRefs.current[activeService].scrollIntoView({
+    //             behavior: "smooth",
+    //             block: "center", // Cuộn đến vị trí ở giữa phần tử
+    //         });
+    //     }
+    // }, [activeService]); // Mỗi khi activeService thay đổi, sẽ cuộn đến dịch vụ đó
 
     const Apptab = () => {
         return (
-            <div
-                className="slider-container"
-                style={{ width: "100%", textAlign: "center" }}
-            >
-                <Slider ref={sliderRef} {...settings}>
-                    {ServicesCategories[activeService]?.service.map(
-                        (item, index) => (
-                            <div key={index} className="p-3">
-                                <Card
-                                    style={{
-                                        boxShadow:
-                                            "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                                    }}
-                                    cover={
+            <div className="container">
+                <List
+                    grid={{
+                        gutter: 16,
+                        xs: 2,
+                        sm: 4,
+                        md: 4,
+                        lg: 4,
+                        xl: 4,
+                        xxl: 4,
+                    }}
+                    pagination={{
+                        pageSize: 4,
+                        responsive: true,
+                        showSizeChanger: false,
+                        hideOnSinglePage: true,
+                    }}
+                    dataSource={ServicesCategories[activeService]?.service}
+                    renderItem={(item) => (
+                        <List.Item>
+                            <Card
+                                style={{
+                                    boxShadow:
+                                        "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                                }}
+                                cover={
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            height: "250px",
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        <Image
+                                            alt="example"
+                                            src={
+                                                "http://127.0.0.1:8000/storage/uploads/services/special/" +
+                                                item.image_url
+                                            }
+                                            onError={(e) =>
+                                                (e.target.src =
+                                                    "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
+                                            } // Thay thế hình ảnh khi lỗi
+                                        />
+                                    </div>
+                                }
+                            >
+                                <Card.Meta
+                                    title={
                                         <div
-                                            style={{
-                                                width: "100%",
-                                                height: "150px",
-                                                overflow: "hidden",
-                                            }}
+                                            className={style.cardServicesTitle}
                                         >
-                                            <Image
-                                                alt="example"
-                                                src={
-                                                    "http://127.0.0.1:8000/storage/uploads/services/special/" +
-                                                    item.image_url
-                                                }
-                                                onError={(e) =>
-                                                    (e.target.src =
-                                                        "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
-                                                } // Thay thế hình ảnh khi lỗi
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    objectFit: "contain", // Fix the image distortion issue
-                                                }}
-                                            />
+                                            {item.name}
                                         </div>
                                     }
-                                >
-                                    <Card.Meta title={item.name} />
-                                    <div className="m-2">
-                                        Giá:{" "}
-                                        <strong style={{ color: "#E05265" }}>
-                                            {parseInt(item.price).toLocaleString()}{" "}
-                                            VNĐ{" "}
-                                        </strong>
-                                    </div>
-                                    <Button
-                                        type={
+                                />
+                                <div className="m-2">
+                                    Giá:{" "}
+                                    <strong style={{ color: "#E05265" }}>
+                                        {parseInt(item.price).toLocaleString()}{" "}
+                                        VNĐ{" "}
+                                    </strong>
+                                </div>
+                                <Button
+                                    type={
+                                        service
+                                            .map((item) => item.id)
+                                            .includes(item.id)
+                                            ? "primary"
+                                            : "default"
+                                    }
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                    onClick={() => {
+                                        if (
                                             service
                                                 .map((item) => item.id)
                                                 .includes(item.id)
-                                                ? "primary"
-                                                : "default"
+                                        ) {
+                                            setService(
+                                                service.filter(
+                                                    (service) =>
+                                                        service.id !== item.id
+                                                )
+                                            );
+                                        } else {
+                                            setService([
+                                                ...service,
+                                                {
+                                                    id: item.id,
+                                                    name: item.name,
+                                                    price: item.price,
+                                                    quantity: 1,
+                                                },
+                                            ]);
                                         }
-                                        style={{
-                                            width: "100%",
-                                        }}
-                                        onClick={() => {
-                                            if (
-                                                service
-                                                    .map((item) => item.id)
-                                                    .includes(item.id)
-                                            ) {
-                                                setService(
-                                                    service.filter(
-                                                        (service) =>
-                                                            service.id !==
-                                                            item.id
-                                                    )
-                                                );
-                                            } else {
-                                                setService([
-                                                    ...service,
-                                                    {
-                                                        id: item.id,
-                                                        name: item.name,
-                                                        price: item.price,
-                                                        quantity: 1,
-                                                    },
-                                                ]);
-                                            }
-                                        }}
-                                    >
-                                        {service
-                                            .map((item) => item.id)
-                                            .includes(item.id)
-                                            ? "Đã chọn"
-                                            : "Chọn"}
-                                    </Button>
-                                </Card>
-                            </div>
-                        )
+                                    }}
+                                >
+                                    {service
+                                        .map((item) => item.id)
+                                        .includes(item.id)
+                                        ? "Đã chọn"
+                                        : "Chọn"}
+                                </Button>
+                            </Card>
+                        </List.Item>
                     )}
-                </Slider>
+                />
             </div>
         );
     };
@@ -202,11 +141,29 @@ const BookingListService = ({
     return (
         <Row style={{ width: "100%" }}>
             <Col span={24} className="p-2 mb-5">
-                <Slider {...settingsservice}>
-                    {ServicesCategories.map((item, index) => (
-                        <div className="p-2" key={index}>
+                <List
+                    grid={{
+                        gutter: 16,
+                        xs: 2,
+                        sm: 4,
+                        md: 4,
+                        lg: 4,
+                        xl: 4,
+                        xxl: 4,
+                    }}
+                    pagination={{
+                        pageSize: 4,
+                        responsive: true,
+                        showSizeChanger: false,
+                        hideOnSinglePage: true,
+                    }}
+                    dataSource={ServicesCategories}
+                    renderItem={(item, index) => (
+                        <List.Item>
                             <Button
-                                ref={(el) => (serviceButtonsRefs.current[index] = el)} // Thêm ref cho mỗi nút
+                                ref={(el) =>
+                                    (serviceButtonsRefs.current[index] = el)
+                                }
                                 shape="round"
                                 icon={item.icon}
                                 block
@@ -217,11 +174,11 @@ const BookingListService = ({
                                         : "default"
                                 }
                             >
-                                <span>{item.name}</span>
+                                {item.name}
                             </Button>
-                        </div>
-                    ))}
-                </Slider>
+                        </List.Item>
+                    )}
+                />
             </Col>
             <Col span={24}>
                 <Apptab />

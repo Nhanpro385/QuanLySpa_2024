@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, Row, Col, Card, Input } from "antd";
-const ListBookingServiceTable = ({ service, setService }) => {
+const 
+    ListBookingServiceTable = ({ service, setService }) => {
     const columns = [
         {
             title: "#",
@@ -79,6 +80,7 @@ const ListBookingServiceTable = ({ service, setService }) => {
             <Row>
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Table
+                        scroll={{ x: 768 }}
                         dataSource={service}
                         pagination={false}
                         columns={columns}

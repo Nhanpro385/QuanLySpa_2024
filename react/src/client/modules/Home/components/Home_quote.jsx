@@ -30,7 +30,7 @@ const Home_quote = () => {
                                     lg={6}
                                     md={12}
                                     sm={12}
-                                    xs={24}
+                                    xs={12}
                                     key={item.id}
                                 >
                                     <div className={styles.statisticItem}>

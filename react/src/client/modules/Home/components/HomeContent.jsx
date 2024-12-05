@@ -18,7 +18,7 @@ export const HomeContent = () => {
             <Home_about />
             <Home_quote />
 
-            <Home_consultation_reception />
+            <Home_consultation_reception id="#consultation_reception" />
 
             <Home_service />
             <section style={{ marginTop: "36px" }}>
@@ -31,8 +31,8 @@ export const HomeContent = () => {
                     bỏ rào cản khi điều trị mụn
                 </p>
             </section>
-            <Home_doctor />
-            {/* <Home_facilities /> */}
+            {/* <Home_doctor /> */}
+            <Home_facilities />
             {/* <Home_Blog /> */}
         </div>
     );

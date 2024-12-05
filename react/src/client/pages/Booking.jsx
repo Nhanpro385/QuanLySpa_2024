@@ -187,6 +187,7 @@ const Appbooking = () => {
                     />
                 </Col>
             </Row>
+            
             <ListBookingServiceTable
                 service={service}
                 setService={setService}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     Card,
     Col,
@@ -76,6 +76,17 @@ const Home_consultation_reception = () => {
     const { addconsulations } = useconsulationsAction();
     const [isVideoCall, setIsVideoCall] = useState(false);
     const [isLoading, setIsLoading] = useState(false); // State để theo dõi trạng thái loading
+    const consultationRef = useRef(null);
+    useEffect(() => {
+        if (window.location.hash === "#tuvan") {
+            console.log("scroll");
+
+            consultationRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
+    }, []);
 
     const onSubmit = async (data) => {
         setIsLoading(true); // Bắt đầu loading
@@ -118,8 +129,8 @@ const Home_consultation_reception = () => {
     };
 
     return (
-        <section className={style.consultationsection}>
-            <div className="container pt-5 pb-5">
+        <section className="container">
+            <div className=" pt-5 pb-5">
                 <h1 className={style.sectiontitle}>
                     “các vấn đề về mụn mà bạn đang gặp phải”
                 </h1>
@@ -145,7 +156,12 @@ const Home_consultation_reception = () => {
                             ))}
                         </Row>
                     </Col>
-                    <Col xs={24} lg={12} className={style.formcontainer}>
+                    <Col
+                        xs={24}
+                        lg={12}
+                        className={style.formcontainer}
+                        ref={consultationRef}
+                    >
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <h3 className={style.formtitle}>
                                 bạn đang gặp những vấn đề nào về mụn để tư vấn
@@ -163,11 +179,18 @@ const Home_consultation_reception = () => {
                                         control={control}
                                         render={({ field }) => (
                                             <Checkbox.Group {...field}>
-                                                <Row gutter={[16, 16]}>
+                                                <Row
+                                                    gutter={[16, 16]}
+                                                    justify="start"
+                                                >
                                                     {options.map((item) => (
                                                         <Col
                                                             xxl={8}
                                                             xl={12}
+                                                            lg={12}
+                                                            md={12}
+                                                            sm={12}
+                                                            xs={12}
                                                             key={item.value}
                                                         >
                                                             <Checkbox

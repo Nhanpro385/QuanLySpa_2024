@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, List, Card, Spin, Button, Result } from "antd";
+import { Row, Col, List, Card, Spin, Button, Result, Divider } from "antd";
 import style from "../style/ServicesList.module.scss";
 import useServiceCategoriesActions from "../../../../admin/modules/services/hooks/useServiceCategories";
 import { useSelector } from "react-redux";
@@ -50,7 +50,9 @@ const Services_List = () => {
                     sm={24}
                     xs={24}
                 >
-                    <h1>Loại dịch vụ tại Spa Sakura </h1>
+                   <Divider orientation="left">
+                        <h2>Loại dịch vụ</h2>
+                    </Divider>
                 </Col>
             </Row>
 
@@ -62,6 +64,12 @@ const Services_List = () => {
                         <List
                             grid={{
                                 gutter: 16,
+                                xs: 2,
+                                sm: 2,
+                                md: 3,
+                                lg: 4,
+                                xl: 4,
+                                xxl: 5,
                             }}
                             pagination={{
                                 position: "bottom",
@@ -72,6 +80,7 @@ const Services_List = () => {
                                 <List.Item>
                                     <Card
                                         onClick={() => onHandleClick(item)}
+                                        style={{ height: "100%" }}
                                         className={
                                             style.cardServices +
                                             " " +
@@ -79,9 +88,13 @@ const Services_List = () => {
                                                 ? style.active
                                                 : "")
                                         }
-                                        title={item.title}
+                                        // title={item.title}
                                     >
-                                        {item.name}
+                                        <div
+                                            className={style.cardServicesTitle}
+                                        >
+                                            {item.name}
+                                        </div>
                                     </Card>
                                 </List.Item>
                             )}
@@ -89,12 +102,14 @@ const Services_List = () => {
                     ) : (
                         <div className={style.noServices}>
                             <Result
-                            
                                 icon={<FrownOutlined />}
                                 title="Không có Danh mục dịch vụ nào"
-                                extra={<p>
-                                    Hãy thử tải lại trang hoặc liên hệ với chúng tôi để được hỗ trợ
-                                </p> }
+                                extra={
+                                    <p>
+                                        Hãy thử tải lại trang hoặc liên hệ với
+                                        chúng tôi để được hỗ trợ
+                                    </p>
+                                }
                             />
                         </div>
                     )}

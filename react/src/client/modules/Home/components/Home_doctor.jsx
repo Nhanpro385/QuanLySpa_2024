@@ -43,10 +43,10 @@ const Home_doctor = () => {
     return (
         <section className={styles.container}>
             <Divider orientation="center">
-                <h1 className={styles.heading}>
+                <h2 className={styles.heading}>
                     Hơn <strong>32+</strong> bác sĩ có chuyên môn về da liễu và
                     tâm huyết với nghề
-                </h1>
+                </h2>
             </Divider>
             <div className="container">
                 <Slider className={styles.slider} {...settings}>

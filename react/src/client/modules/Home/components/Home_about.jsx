@@ -9,7 +9,7 @@ const Home_about = () => {
     return (
         <section className="container p-5">
             <Divider orientation="left">
-                <h1>Giới thiệu về Sakura Spa</h1>
+                <h2>Giới thiệu về Sakura Spa</h2>
             </Divider>
             <Row gutter={[16, 16]} align={"middle"}>
                 <Col xs={24} md={12}>

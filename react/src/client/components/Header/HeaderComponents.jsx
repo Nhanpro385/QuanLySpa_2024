@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Col, Row, Layout, Drawer, Menu } from "antd";
+import { Col, Row, Layout, Drawer, Menu, Dropdown, Button } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { UserOutlined, MenuOutlined } from "@ant-design/icons";
+import { UserOutlined, MenuOutlined } from "@ant-design/icons"; // Importing the icon
 import logo from "../../assets/images/iconlogo.png";
 import Icontori from "../../assets/images/tori.png";
 import { useAuth } from "../../config/AuthContext";
@@ -13,7 +13,189 @@ const HeaderComponents = () => {
     const navigate = useNavigate();
     const { isLoggedIn, logout } = useAuth();
     const user = JSON.parse(localStorage.getItem("user") || "{}");
+
     const AppMenu = ({ isInline = false }) => {
+        const menuItems = [
+            {
+                label: (
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/"
+                    >
+                        Trang Chủ
+                    </Link>
+                ),
+                key: "home",
+            },
+            {
+                label: (
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/gioithieu"
+                    >
+                        Giới Thiệu
+                    </Link>
+                ),
+                key: "about",
+            },
+            {
+                label: (
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/dichvu"
+                    >
+                        Dịch Vụ
+                    </Link>
+                ),
+                key: "service",
+            },
+            {
+                label: (
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/pricing"
+                    >
+                        Bảng Giá
+                    </Link>
+                ),
+                key: "price",
+            },
+            {
+                label: (
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/promotion"
+                    >
+                        Khuyến Mãi
+                    </Link>
+                ),
+                key: "promotion",
+            },
+            {
+                label: (
+                    <button
+                        style={{
+                            backgroundColor: "#E05265",
+                            color: "#fff",
+                            borderRadius: "5px",
+                            padding: "5px 15px",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "1.6rem",
+                        }}
+                        onClick={() => navigate("/datlichhen")}
+                    >
+                        Đặt Lịch Ngay
+                        <span style={{ marginLeft: "10px" }}>
+                            <img
+                                src={Icontori}
+                                alt="tori"
+                                style={{ width: "20px" }}
+                            />
+                        </span>
+                    </button>
+                ),
+                key: "contact",
+            },
+        ];
+
+        // User Menu for logged-in state
+        const userMenu = (
+            <Menu>
+                <Menu.Item key="profile">
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/thongtincanhan"
+                    >
+                        Thông Tin Cá Nhân
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="booking">
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/thongtincanhan/tuvandatlich"
+                    >
+                        Tư Vấn Đặt Lịch
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="serviceHistory">
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/thongtincanhan/lichsudichvu"
+                    >
+                        Lịch Sử Dịch Vụ
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="treatmentHistory">
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/thongtincanhan/lichsudieutri"
+                    >
+                        Lịch Sử Điều Trị
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="logout" onClick={logout}>
+                    Đăng Xuất
+                </Menu.Item>
+            </Menu>
+        );
+
+        // Add user menu or login menu depending on login status
+        if (isLoggedIn) {
+            menuItems.push({
+                label: (
+                    <Dropdown overlay={userMenu} trigger={["click"]}>
+                        <a
+                            className="ant-dropdown-link"
+                            style={{
+                                textDecoration: "none",
+                            }}
+                            onClick={(e) => e.preventDefault()}
+                        >
+                            <UserOutlined style={{ marginRight: "8px" }} /> {/* Add icon here */}
+                            Xin chào,{" "}
+                            <strong style={{ color: "#E05265" }}>
+                                {user?.name}
+                            </strong>
+                        </a>
+                    </Dropdown>
+                ),
+                key: "user",
+            });
+        } else {
+            menuItems.push({
+                label: (
+                    <Link
+                        style={{
+                            textDecoration: "none",
+                        }}
+                        to="/dangnhap"
+                    >
+                        Đăng Nhập
+                    </Link>
+                ),
+                key: "login",
+            });
+        }
+
         return (
             <Menu
                 mode={isInline ? "horizontal" : "inline"}
@@ -23,178 +205,8 @@ const HeaderComponents = () => {
                     lineHeight: "64px",
                     padding: isInline ? 0 : "0 16px",
                 }}
-                triggerSubMenuAction={"click"}
-                items={[
-                    {
-                        label: (
-                            <Link to="/" style={{ textDecoration: "none" }}>
-                                Trang Chủ
-                            </Link>
-                        ),
-                        key: "home",
-                        style: { padding: "0 10px" },
-                    },
-                    {
-                        label: (
-                            <Link to="/gioithieu" style={{ textDecoration: "none" }}>
-                              Giới Thiệu
-                            </Link>
-                        ),
-                        key: "about",
-                        style: { padding: "0 10px" },
-                        // children: [
-                        //     {
-                        //         label: (
-                        //             <Link
-                        //                 to="/gioithieu"
-                        //                 style={{ textDecoration: "none" }}
-                        //             >
-                        //                 Về Chúng Tôi
-                        //             </Link>
-                        //         ),
-                        //         key: "about-us",
-                        //     },
-                        //     {
-                        //         label: (
-                        //             <Link
-                        //                 to="/store"
-                        //                 style={{ textDecoration: "none" }}
-                        //             >
-                        //                 Hệ Thống Cửa Hàng
-                        //             </Link>
-                        //         ),
-                        //         key: "store",
-                        //     },
-                        //     {
-                        //         label: (
-                        //             <Link
-                        //                 to="/recruitment"
-                        //                 style={{ textDecoration: "none" }}
-                        //             >
-                        //                 Tuyển Dụng
-                        //             </Link>
-                        //         ),
-                        //         key: "recruitment",
-                        //     },
-                        // ],
-                    },
-                    {
-                        label: (
-                            <Link
-                                to="/dichvu"
-                                style={{ textDecoration: "none" }}
-                            >
-                                Dịch Vụ
-                            </Link>
-                        ),
-                        key: "service",
-                        style: { padding: "0 10px" },
-                    },
-                    {
-                        label: (
-                            <Link
-                                to="/pricing"
-                                style={{ textDecoration: "none" }}
-                            >
-                                Bảng Giá
-                            </Link>
-                        ),
-                        key: "price",
-                        style: { padding: "0 10px" },
-                    },
-                    {
-                        label: (
-                            <Link
-                                to="/promotion"
-                                style={{ textDecoration: "none" }}
-                            >
-                                Khuyến Mãi
-                            </Link>
-                        ),
-                        key: "promotion",
-                        style: { padding: "0 10px" },
-                    },
-                    {
-                        label: (
-                            <button
-                                style={{
-                                    backgroundColor: "#E05265",
-                                    color: "#fff",
-                                    borderRadius: "5px",
-                                    padding: "5px 15px",
-                                    border: "none",
-                                    cursor: "pointer",
-                                    fontSize: "1.6rem",
-                                }}
-                                className="btn btn-primary"
-                                onClick={() => navigate("/datlichhen")}
-                            >
-                                Đặt Lịch Ngay
-                                <span style={{ marginLeft: "10px" }}>
-                                    <img
-                                        src={Icontori}
-                                        alt="tori"
-                                        style={{ width: "20px" }}
-                                    />
-                                </span>
-                            </button>
-                        ),
-                        key: "contact",
-                        style: { padding: "0 10px" },
-                    },
-                    // Hiển thị thông tin cá nhân và đăng xuất nếu đã đăng nhập
-                    isLoggedIn
-                        ? {
-                              label: (
-                                  <span>
-                                      Xin chào, <strong
-                                        style={{ color: "#E05265" }}
-                                      >{user?.name}</strong>
-                                      <UserOutlined
-                                          style={{ marginLeft: "10px" }}
-                                      />
-                                  </span>
-                              ),
-                              key: "user",
-                              style: { padding: "0 10px" },
-                              children: [
-                                  {
-                                      label: (
-                                          <Link
-                                              to="/thongtincanhan"
-                                              style={{ textDecoration: "none" }}
-                                          >
-                                              Thông Tin Cá Nhân
-                                          </Link>
-                                      ),
-                                      key: "profile",
-                                  },
-                                  {
-                                      label: (
-                                          <Link
-                                              onClick={logout}
-                                              style={{ textDecoration: "none" }}
-                                          >
-                                              Đăng Xuất
-                                          </Link>
-                                      ),
-                                      key: "logout",
-                                  },
-                              ],
-                          }
-                        : {
-                              label: (
-                                  <Link
-                                      to="/dangnhap"
-                                      style={{ textDecoration: "none" }}
-                                  >
-                                      Đăng Nhập
-                                  </Link>
-                              ),
-                              key: "login",
-                              style: { padding: "0 10px" },
-                          },
-                ]}
+                triggerSubMenuAction="click"
+                items={menuItems}
             />
         );
     };
@@ -209,22 +221,23 @@ const HeaderComponents = () => {
             className="container"
         >
             <Row align="middle" gutter={[16, 16]}>
-                <Col xs={8} sm={6} md={4}>
+                <Col xs={20} sm={20} md={20} lg={20} xl={4} xxl={4}>
                     <Row align="middle" justify="middle">
-                        <Col xs={0} sm={0} md={0} lg={6}>
+                        <Col xs={3} sm={3} md={2} lg={2} xl={3} xxl={4}>
                             <img
                                 src={logo}
                                 alt="logo"
                                 style={{ width: "3.5rem" }}
                             />
                         </Col>
-                        <Col xs={0} sm={0} md={0} lg={18}>
+                        <Col xs={21} sm={21} md={22} lg={22} xl={21} xxl={20}>
                             <h1
                                 style={{
                                     fontSize: "2.5rem",
                                     color: "#E05265",
                                     fontWeight: 500,
                                     margin: "0",
+                                    textAlign: "center",
                                 }}
                             >
                                 Sakura Spa
@@ -232,14 +245,15 @@ const HeaderComponents = () => {
                         </Col>
                     </Row>
                 </Col>
-                <Col xs={0} sm={0} md={0} lg={18}>
+                <Col xs={0} sm={0} md={0} lg={0} xl={20} xxl={20}>
                     <AppMenu isInline={true} />
                 </Col>
                 <Col
-                    xs={16}
-                    sm={24}
-                    md={24}
-                    lg={0}
+                    xs={4}
+                    sm={4}
+                    md={4}
+                    lg={4}
+                    xl={0}
                     style={{ textAlign: "right" }}
                 >
                     <MenuOutlined

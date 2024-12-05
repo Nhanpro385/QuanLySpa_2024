@@ -164,7 +164,7 @@ const BookingPickTime = ({
             className="container"
         >
             <Col>
-                <Row align="middle" justify="start">
+                {/* <Row align="middle" justify="start">
                     <Col xs={24} sm={24} md={8} lg={8}>
                         <Divider orientation="left">
                             <strong>4. Chọn thời gian</strong>
@@ -234,7 +234,7 @@ const BookingPickTime = ({
                             </div>
                         </Row>
                     </Col>
-                </Row>
+                </Row> */}
 
                 {/* Slider to select dates */}
                 <Slider {...settingstimedate}>
@@ -293,7 +293,7 @@ const BookingPickTime = ({
                                 </h1>
                             </Divider>
 
-                            <Row gutter={[16, 16]}>
+                            <Row gutter={[16, 16]}  justify={"center"}>
                                 {shift.timeSlots.map((slot, idx) => (
                                     <Col
                                         key={idx}
