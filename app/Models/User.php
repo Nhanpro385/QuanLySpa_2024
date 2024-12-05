@@ -198,6 +198,26 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         static::softDeleted(function ($user) {
             Appointment::where('updated_by', $user->id)->update(['updated_by' => null]);
         });
+        //appointment_staffs
+        static::deleting(function ($user) {
+            AppointmentStaff::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        static::softDeleted(function ($user) {
+            AppointmentStaff::where('staff_id', $user->id)->update(['staff_id' => null]);
+        });
+        //Categories
+        static::deleting(function ($user) {
+            Category::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Category::where('created_by', $user->id)->update(['created_by' => null]);
+        });
+        static::deleting(function ($user) {
+            Category::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
+        static::softDeleted(function ($user) {
+            Category::where('updated_by', $user->id)->update(['updated_by' => null]);
+        });
         //Comments
         static::deleting(function ($user) {
             Comment::where('created_by', $user->id)->update(['created_by' => null]);
