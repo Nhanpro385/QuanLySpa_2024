@@ -33,9 +33,10 @@ class CommentResource extends JsonResource
             'status' => $this->status,
             'type' => $this->type,
             'image_url' => $images,
+            'replies' => $this->replies,
 
 
-          
+
 
 
             'created_at' => $this->created_at ? $this->created_at->format('d-m-Y H:i') : null,

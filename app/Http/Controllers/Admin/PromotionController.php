@@ -135,7 +135,7 @@ class PromotionController extends Controller
 public function destroy($id)
 {
     try {
-       
+
         $promotion = Promotion::withTrashed()->findOrFail($id);
 
 
