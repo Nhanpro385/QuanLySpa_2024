@@ -135,6 +135,12 @@ class CommentController extends Controller
         try {
 
             $comment = Comment::findOrFail($id);
+            if ($comment->type !== 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Bạn không được quyền sửa bình luận này!',
+                ], 403);
+            }
 
             $validatedData = $request->validated();
             $validatedData['updated_by'] = Auth::id();
@@ -197,7 +203,7 @@ class CommentController extends Controller
             $validatedData['parent_comment_id'] = $parentComment->id;
             $validatedData['created_by'] = Auth::id();
             $validatedData['updated_by'] = Auth::id();
-
+            $validatedData['type'] = 0;
             $reply = Comment::create($validatedData);
 
 
@@ -241,8 +247,14 @@ class CommentController extends Controller
     public function destroy($id)
     {
         try {
-       
+
             $comment = Comment::withTrashed()->with('replies')->findOrFail($id);
+            if ($comment->type !== 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Bạn không được quyền xóa luận này!',
+                ], 403);
+            }
 
 
             $this->deleteCommentImages($comment);

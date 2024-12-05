@@ -16,17 +16,17 @@ class CommentResource extends JsonResource
     {
         $images = $this->images->map(function ($image) {
             return [
-                'id' => $image->id,
+                'id' =>(string) $image->id,
                 'image_url' => $image->image_url,
                 'created_at' => $image->created_at ? $image->created_at->format('d-m-Y H:i') : null,
             ];
         });
 
         return [
-            'id' => $this->id,
-            'service_id' => $this->service_id,
+            'id' =>(string) $this->id,
+            'service_id' => (string)$this->service_id,
             'service' => $this->service,
-            'customer_id' => $this->customer_id,
+            'customer_id' =>(string) $this->customer_id,
             'customer' => $this->customer,
             'comment' => $this->comment,
             'rate' => $this->rate,
