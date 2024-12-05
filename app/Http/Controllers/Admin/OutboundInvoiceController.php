@@ -123,28 +123,20 @@ class OutboundInvoiceController extends Controller
     /**
      * Lấy thông tin chi tiết một hóa đơn xuất.
      */
-    public function show(OutboundInvoice $outboundInvoice)
+    public function show($id)
 {
-    // Load các mối quan hệ cần thiết
-    $outboundInvoice->load([
-        'details.product:id,name,bar_code,status',
-        'createdBy:id,full_name,role',
-        'updatedBy:id,full_name,role',
-        'staff:id,full_name,role',
-    ]);
-
-    // Kiểm tra và lọc các chi tiết hóa đơn có sản phẩm active
-    $filteredDetails = $outboundInvoice->details->filter(function ($detail) {
-        return $detail->product && $detail->product->status === 'active';
-    });
-
-    // Cập nhật details sau khi lọc
-    $outboundInvoice->setRelation('details', $filteredDetails);
+    // Lấy dữ liệu hóa đơn với các quan hệ cần thiết
+    $invoice = OutboundInvoice::with([
+        'staff',
+        'details',
+        'details.product',
+        'createdBy',
+        'updatedBy',
+    ])->findOrFail($id);
 
     // Trả về resource
-    return new OutboundInvoiceResource($outboundInvoice);
+    return new OutboundInvoiceResource($invoice);
 }
-
 
 
     /**
