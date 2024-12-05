@@ -224,6 +224,7 @@ class ClientCommentController extends Controller
             $parentComment = Comment::findOrFail($id);
             $validatedData = $request->validated();
             $validatedData['parent_comment_id'] = $parentComment->id;
+            $validatedData['type'] = 1;
             $hasUsedService = DB::table('appointments')
             ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
             ->join('services', 'services.id', '=', 'appointment_services.service_id')
