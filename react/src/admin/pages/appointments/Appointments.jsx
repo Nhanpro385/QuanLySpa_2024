@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Row, Input, notification } from "antd";
 
-
 import AppointmentsTable from "../../modules/appointments/compoments/AppointmentsTable";
 import AppointmentsCalendar from "../../modules/appointments/compoments/AppointmentsCalendar";
 import useModal from "../../modules/appointments/hooks/openmodal";
@@ -100,7 +99,7 @@ function Appointments() {
             console.log(record);
 
             const res = await deleteappointments(record.id);
-            if (res.payload.status === 500) {
+            if (res.payload?.status === 500) {
                 api.error({
                     message: "Có lỗi xảy ra",
                     description: res.payload.message,
@@ -109,7 +108,7 @@ function Appointments() {
                 return;
             }
             api.success({
-                message: "Xóa thành công",
+                message: res.payload.message || "Hủy lịch hẹn thành công",
                 duration: 3,
             });
             getappointments();
@@ -134,7 +133,17 @@ function Appointments() {
             <Row gutter={[16, 16]}>
                 {contextHolder}
                 <Col span={24}>
-                    <Card>
+                    <Card
+                     extra={
+                        <Button
+                            type="primary"
+                            onClick={() => getappointments()}
+                            loading={loading}
+                        >
+                            Làm mới
+                        </Button>
+                    }
+                    >
                         <Row className="m-2" justify={"space-between"}>
                             <h2>Danh Sách Đặt Lịch</h2>
                             <Button

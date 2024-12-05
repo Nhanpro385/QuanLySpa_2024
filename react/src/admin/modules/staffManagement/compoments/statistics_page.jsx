@@ -43,7 +43,7 @@ const Statistics_staff = ({ data }) => {
             <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={false}>
                     <Statistic
-                        title="Thống kê lịch tư vấn"
+                        title="Thống kê  tư vấn"
                         value={data?.countConsulation_month || 0}
                         precision={0}
                         valueStyle={{
@@ -53,15 +53,15 @@ const Statistics_staff = ({ data }) => {
                     />
                     <Typography.Text type="secondary">
                         <strong>
-                            Lịch hẹn trong tuần :{" "}
-                            {data?.countAppoinment_week || 0}
+                            Lịch tư vấn trong tuần :{" "}
+                            {data?.countConsulation_week || 0}
                         </strong>
                     </Typography.Text>
                     <br />
                     <Typography.Text type="secondary">
                         <strong>
-                            Lịch hẹn trong Ngày :{" "}
-                            {data?.countAppoinment_today || 0}
+                            Lịch tư vấn trong ngày :{" "}
+                            {data?.countConsulation_today || 0}
                         </strong>
                     </Typography.Text>
                 </Card>

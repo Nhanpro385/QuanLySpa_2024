@@ -10,8 +10,9 @@ import {
     Select,
     DatePicker,
     Tag,
+    Card,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Loading3QuartersOutlined, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useproductActions from "@admin/modules/product/hooks/useProduct";
 import { useSelector } from "react-redux";
@@ -30,7 +31,7 @@ function Products() {
     } = useModal();
     const [productData, setProductData] = useState([]);
     const [productDataDetail, setProductDataDetail] = useState({});
-
+    const [ErrorEdit, setErrorEdit] = useState({});
     const product = useSelector((state) => state.products);
     const {
         getproduct,
@@ -95,7 +96,7 @@ function Products() {
         try {
             const result = await getproductById(record);
 
-            if (result.meta.requestStatus === "fulfilled") {
+            if (result.payload.status == "success") {
                 setDataEdit(result.payload.data);
                 showModal();
             } else {
@@ -108,11 +109,13 @@ function Products() {
 
     const handleDelete = async (record) => {
         const result = await deleteproduct(record);
-        if (result.meta.requestStatus === "fulfilled") {
+        console.log(result);
+
+        if (result.payload.status == "success") {
             message.success("Xóa sản phẩm thành công");
             getproduct();
         } else {
-            message.error("Xóa sản phẩm thất bại");
+            message.error(result.payload.message || "Xóa sản phẩm thất bại");
         }
     };
 
@@ -134,14 +137,20 @@ function Products() {
                 id,
                 data: formData,
             });
-
-            if (result.meta.requestStatus === "fulfilled") {
+            console.log(result);
+            
+            if (result.payload.status === "success") {
                 message.success("Cập nhật sản phẩm thành công");
                 getproduct();
                 handleCancel();
                 return true;
             } else {
-                message.error("Cập nhật sản phẩm thất bại");
+                message.error(
+                    result.payload.message || "Cập nhật sản phẩm thất bại"
+                );
+                if (result.payload.errors) {
+                    setErrorEdit((prev) => result.payload.errors);
+                }
                 return false;
             }
         } catch (error) {
@@ -151,7 +160,6 @@ function Products() {
     const handleDetail = async (record) => {
         try {
             const result = await getproductById(record);
-       
 
             if (result.meta.requestStatus === "fulfilled") {
                 setProductDataDetail(result.payload.data);
@@ -165,7 +173,18 @@ function Products() {
     };
 
     return (
-        <div>
+        <Card
+        extra={
+            <Button
+            icon={<Loading3QuartersOutlined />}
+                type="primary"
+                onClick={() => getproduct()}
+                loading={product.loading}
+            >
+                Làm mới
+            </Button>
+        }
+        >
             <h1 className="text-center">Quản Lý Sản Phẩm</h1>
             <Row gutter={[16, 16]} className="mb-2">
                 <Col xl={18} md={12} xs={24}>
@@ -178,7 +197,7 @@ function Products() {
                     </Button>
                 </Col>
             </Row>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[16, 16]} className="mb-3">
                 <Col xxl={8} xl={12} lg={12} md={12} sm={24} xs={24}>
                     <Input.Search
                         placeholder="Tìm kiếm sản phẩm"
@@ -207,11 +226,14 @@ function Products() {
                 handleCancel={handleCancel}
                 productData={dataEdit}
                 handleSubmitEdit={handleSubmitEdit}
+                ErrorEdit={ErrorEdit}
             />
-            <ModalProductDetail isOpen={isModalOpen2} onClose={handleCancel2} 
-            ProductData={productDataDetail}
+            <ModalProductDetail
+                isOpen={isModalOpen2}
+                onClose={handleCancel2}
+                ProductData={productDataDetail}
             />
-        </div>
+        </Card>
     );
 }
 

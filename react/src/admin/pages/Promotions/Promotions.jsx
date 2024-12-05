@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Col, Card, Progress, List } from "antd";
-import {
-    EllipsisOutlined,
-    ClockCircleOutlined,
-    FireOutlined,
-} from "@ant-design/icons";
-import fire from "../../assets/images/icons8-fire.gif";
+import { Button } from "antd";
+import { FireOutlined } from "@ant-design/icons";
+
 import PromotionTable from "../../modules/promotion/compoments/PromotionTable";
 import { useNavigate } from "react-router-dom";
 import usePromotionActions from "../../modules/promotion/hooks/usepromotionAction";
 import { useSelector } from "react-redux";
+import debounce from "lodash/debounce";
 function Promotions() {
     useEffect(() => {
         document.title = "Quản lý chương trình khuyến mãi";
@@ -18,15 +15,20 @@ function Promotions() {
     const { getPromotions, deletePromotions } = usePromotionActions();
     const [PromotionsData, setPromotionsData] = useState([]);
     const promotions = useSelector((state) => state.promotions);
+    const pagination = promotions?.promotions?.meta || {};
+    const [searchquery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+        per_page: 5,
+    });
+
     useEffect(() => {
         getPromotions();
     }, []);
     useEffect(() => {
-        console.log(promotions.promotions.data);
-
-        if (promotions.promotions.data && !promotions.loading) {
+        if (promotions?.promotions?.data && !promotions.loading) {
             setPromotionsData(
-                promotions.promotions.data.map((item) => ({
+                promotions?.promotions?.data.map((item) => ({
                     ...item,
                     key: item.id,
                 }))
@@ -73,13 +75,14 @@ function Promotions() {
 
             {/* Promotion Table */}
             <PromotionTable
+                pagination={pagination}
                 dataSource={PromotionsData}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
             />
 
             {/* Promotion Cards */}
-            <List
+            {/* <List
                 locale={{
                     emptyText: "Không có chương trình khuyến mãi nào",
                 }}
@@ -165,7 +168,7 @@ function Promotions() {
                         </List.Item>
                     );
                 }}
-            />
+            /> */}
         </div>
     );
 }

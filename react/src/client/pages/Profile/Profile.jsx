@@ -4,6 +4,7 @@ import ProfilePage from "../../modules/Profile/components/Profile";
 import MenuProfile from "../../modules/Profile/components/MenuProfile";
 import ServiceHistory from "../../modules/Profile/components/ServiceHistory";
 import BookingConsultant from "../BookingConsultant/BookingConsultant";
+import StreatmentsHistory from "../../modules/Profile/components/streatmentsHistory";
 import { Col, Row } from "antd";
 
 const Profile = () => {
@@ -16,6 +17,8 @@ const Profile = () => {
                 return <BookingConsultant />;
             case "/thongtincanhan/lichsudichvu":
                 return <ServiceHistory />;
+            case "/thongtincanhan/lichsudieutri":
+                return <StreatmentsHistory />;
             default:
                 return <ProfilePage />;
         }

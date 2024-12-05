@@ -39,7 +39,8 @@ const PromotionsAdd = () => {
     const editor = useRef(null);
     const [content, setContent] = useState("");
     const { addPromotions } = usePromotionActions();
-    // Submit form
+  console.log(errors);
+  
     const onFinish = async (values) => {
         try {
             const payload = {
@@ -49,7 +50,7 @@ const PromotionsAdd = () => {
                 start_date: values.startDateAndEndDate[0].format("YYYY-MM-DD"),
                 end_date: values.startDateAndEndDate[1].format("YYYY-MM-DD"),
                 promotion_type: values.promotion_type,
-                discount_percent: values.discount,
+                discount_percent: values.discount_percent,
                 min_order_amount: values.min_order_amount,
                 min_quantity: values.min_quantity,
                 status: true,
@@ -61,6 +62,8 @@ const PromotionsAdd = () => {
             });
 
             const response = await addPromotions(formData);
+            
+            
             if (response.payload.status === "success") {
                 console.log(response);
                 api.success({
@@ -173,11 +176,11 @@ const PromotionsAdd = () => {
                                             {...field}
                                             placeholder="Chọn loại khuyến mãi"
                                         >
-                                            <Option value="1">
-                                                Giảm giá theo phần trăm (%)
-                                            </Option>
                                             <Option value="0">
                                                 Giảm giá tiền mặt (VNĐ)
+                                            </Option>
+                                            <Option value="1">
+                                                Giảm giá theo phần trăm (%)
                                             </Option>
                                         </Select>
                                     )}
@@ -186,15 +189,15 @@ const PromotionsAdd = () => {
                         </Col>
                         <Col xl={4} md={4} sm={24} xs={24}>
                             <Form.Item
-                                name="discount"
+                                name="discount_percent"
                                 label="Giảm giá %"
                                 help={
-                                    errors.discount && errors.discount.message
+                                    errors.discount_percent && errors.discount_percent.message
                                 }
-                                validateStatus={errors.discount && "error"}
+                                validateStatus={errors.discount_percent && "error"}
                             >
                                 <Controller
-                                    name="discount"
+                                    name="discount_percent"
                                     control={control}
                                     rules={{
                                         required: {

@@ -57,6 +57,9 @@ const AppointmentsTable = ({
             title: "Tên Dịch Vụ",
             dataIndex: "service_name",
             key: "service_name",
+            render: (text, record) => {
+                return <span>{record.service_name || "Không có"}</span>;
+            }
         },
         {
             title: "Tên Khách Hàng",
@@ -67,6 +70,9 @@ const AppointmentsTable = ({
             title: "Tên Nhân Viên",
             dataIndex: "employee_name",
             key: "employee_name",
+            render: (text, record) => {
+                return <span>{record.employee_name || "Không có"}</span>;
+            }
         },
         {
             title: "Thời Gian Bắt Đầu",

@@ -28,7 +28,7 @@ const Appbooking = () => {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const iddichvu = params.get("dichvu");
-        console.log(iddichvu);
+    
         setIdService(iddichvu);
     }, [location.search]);
 
@@ -125,7 +125,7 @@ const Appbooking = () => {
                 });
             });
         }
-    }, [ServicesCategories, service, idService]); // Thêm idService vào dependencies để theo dõi sự thay đổi.
+    }, [ServicesCategories, idService]); // Thêm idService vào dependencies để theo dõi sự thay đổi.
 
     return (
         <div

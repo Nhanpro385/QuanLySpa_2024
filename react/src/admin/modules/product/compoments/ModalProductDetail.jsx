@@ -19,8 +19,8 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
 
     const items = [
         {
-            key: "Tên dịch vụ",
-            label: "Tên dịch vụ",
+            key: "Tên sản phẩm",
+            label: "Tên sản phẩm",
             children: ProductData?.name || "Chưa có thông tin",
         },
         {
@@ -31,12 +31,16 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
         {
             key: "Giá",
             label: "Giá bán",
-            children: `${parseInt(ProductData?.price).toLocaleString() || 0} VND`,
+            children: `${
+                parseInt(ProductData?.price).toLocaleString() || 0
+            } VND`,
         },
         {
             key: "Chi phí",
             label: "Chi phí",
-            children: `${parseInt(ProductData?.cost).toLocaleString() || 0} VND`,
+            children: `${
+                parseInt(ProductData?.cost).toLocaleString() || 0
+            } VND`,
         },
         {
             key: "Ngày tạo",
@@ -56,11 +60,12 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
         {
             key: "Trạng thái",
             label: "Trạng thái",
-            children: ProductData?.status === 1 ? (
-                <Tag color="green">Hoạt động</Tag>
-            ) : (
-                <Tag color="red">Ngừng hoạt động</Tag>
-            ),
+            children:
+                ProductData?.status === 1 ? (
+                    <Tag color="green">Hoạt động</Tag>
+                ) : (
+                    <Tag color="red">Ngừng hoạt động</Tag>
+                ),
         },
         {
             key: "Tạo bởi",
@@ -78,18 +83,47 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
             span: 2,
             children: ProductData?.description || "Không có mô tả",
         },
+        {
+            key: "Ảnh đại diện",
+            label: "Ảnh đại diện",
+            span: 1,
+            children: (
+                <Image
+              
+                    src={
+                        "http://127.0.0.1:8000/storage/uploads/products/" +
+                        ProductData?.image_url
+                    }
+                    alt={`Image for ${ProductData?.name}`}
+                    fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
+                    width={200}
+                    style={{
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        borderRadius: "8px",
+                        border: "1px solid #f0f0f0",
+                        padding: "5px",
+                    }}
+                />
+            ),
+        },
     ];
 
     const productColumns = [
         {
-            title: "Tên sản phẩm",
-            dataIndex: "name",
-            key: "name",
+            title: "Mã sản phẩm",
+            dataIndex: "key",
+            key: "key",
+            render: (text, record, index) => <span>{index + 1}</span>,
         },
         {
-            title: "Số lượng sử dụng",
-            dataIndex: "quantity_used",
-            key: "quantity_used",
+            title: "Tên sản phẩm",
+            dataIndex: "id",
+            key: "id",
+        },
+        {
+            title: "Số lượng",
+            dataIndex: "quantity",
+            key: "quantity",
         },
     ];
 
@@ -97,7 +131,7 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
         <Modal
             title="Chi tiết dịch vụ"
             open={isOpen}
-            width={1000}
+            width={1200}
             onCancel={onClose}
             footer={[
                 <Button key="cancel" onClick={onClose}>
@@ -116,30 +150,37 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
                 </Card>
                 <Card>
                     <Table
-                        title={() => "Danh sách sản phẩm sử dụng"}
+                        title={() => "Danh sách sản phẩm trong kho"}
                         columns={productColumns}
                         dataSource={ProductData?.inventories || []}
                         rowKey="id"
-                        pagination={false}
+                        pagination={true}
                         bordered
                     />
                 </Card>
                 <Card>
-                    <h3 className="mb-5 mt-4">Hình ảnh dịch vụ</h3>
-                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <h3 className="mb-5 mt-4">Hình ảnh sản phẩm</h3>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "10px",
+                            flexWrap: "wrap",
+                        }}
+                    >
                         {ProductData?.productImages?.length > 0 ? (
                             ProductData?.productImages.map((image) => (
                                 <Image
                                     key={image.id}
                                     src={
                                         "http://127.0.0.1:8000/storage/uploads/products/" +
-                                        image.image_url
+                                        image?.image_url || ""
                                     }
                                     alt={`Image for ${ProductData?.name}`}
                                     fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
                                     width={200}
                                     style={{
-                                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                                        boxShadow:
+                                            "0 4px 8px rgba(0, 0, 0, 0.1)",
                                         borderRadius: "8px",
                                         border: "1px solid #f0f0f0",
                                         padding: "5px",
@@ -157,4 +198,3 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
 };
 
 export default ModalProductDetail;
-

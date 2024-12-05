@@ -27,8 +27,17 @@ const ModalEditProduct = ({
     handleOk,
     handleCancel,
     handleSubmitEdit,
+    ErrorEdit,
 }) => {
-    const { control, handleSubmit, setValue, reset, getValues } = useForm({
+    const {
+        control,
+        handleSubmit,
+        setValue,
+        reset,
+        setError,
+        getValues,
+        clearErrors,
+    } = useForm({
         shouldFocusError: false, // Không tự động focus trường lỗi
     });
     const { getcategories, searchcategories } = usecategoriesActions();
@@ -43,21 +52,32 @@ const ModalEditProduct = ({
     });
     useEffect(() => {
         if (
-            !categories.loading &&
-            categories.categories &&
-            categories.categories.length > 0
+            !categories?.loading &&
+            categories?.categories &&
+            categories?.categories?.data?.length > 0
         ) {
-            console.log("Categories Data:", categories.categories);
-
             setCategoryData(
-                categories.categories.map((item) => ({
+                categories?.categories?.data?.map((item) => ({
                     label: item.name,
                     value: item.id,
                 }))
             );
         }
     }, [categories]);
-
+    useEffect(() => {
+        if (ErrorEdit) {
+            if (Object.keys(ErrorEdit).length > 0) {
+                Object.keys(ErrorEdit).forEach((key) => {
+                    setError(key, {
+                        type: "manual",
+                        message: ErrorEdit[key],
+                    });
+                });
+            } else {
+                clearErrors();
+            }
+        }
+    }, [ErrorEdit]);
     const onSearch = debounce((value) => {
         setSearchQuery({ ...searchQuery, search: value });
     }, 500);
@@ -110,6 +130,8 @@ const ModalEditProduct = ({
                 }
             });
         } else {
+            console.log("Có ảnh");
+
             const payload = {
                 id: productData.id,
                 name: data.name,
@@ -123,8 +145,7 @@ const ModalEditProduct = ({
                 category_id: data.category_id.value,
                 priority: 1,
             };
-            console.log(payload);
-            
+
             handleSubmitEdit(payload.id, payload).then((result) => {
                 if (result) {
                     setFileList([]);
@@ -278,7 +299,7 @@ const ModalEditProduct = ({
                             rules={{ required: "Vui lòng nhập Giá vốn!" }}
                             render={({ field, fieldState }) => (
                                 <Form.Item
-                                    label="Giá vốn"
+                                    label="Chi phí"
                                     validateStatus={
                                         fieldState.error ? "error" : ""
                                     }
@@ -313,7 +334,7 @@ const ModalEditProduct = ({
                             rules={{ required: "Vui lòng nhập Giá sản phẩm!" }}
                             render={({ field, fieldState }) => (
                                 <Form.Item
-                                    label="Giá sản phẩm"
+                                    label="Giá Bán"
                                     validateStatus={
                                         fieldState.error ? "error" : ""
                                     }
@@ -345,8 +366,22 @@ const ModalEditProduct = ({
                         <Controller
                             name="date"
                             control={control}
-                            render={({ field }) => (
-                                <Form.Item label="Ngày sản xuất">
+                            render={({ field, fieldState }) => (
+                                <Form.Item
+                                    label="Ngày sản xuất"
+                                    validateStatus={
+                                        fieldState.error ? "error" : ""
+                                    }
+                                    help={
+                                        fieldState.error
+                                            ? fieldState.error.message
+                                            : ""
+                                    }
+                                    rules={{
+                                        required:
+                                            "Vui lòng chọn ngày sản xuất!",
+                                    }}
+                                >
                                     <DatePicker className="w-100" {...field} />
                                 </Form.Item>
                             )}

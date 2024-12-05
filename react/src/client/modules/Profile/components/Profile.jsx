@@ -222,6 +222,17 @@ const Profile = () => {
                     >
                         <h2>Quản lý thông tin cá nhân</h2>
                     </Col>
+                    <Col
+                        xxl={24}
+                        xl={24}
+                        lg={24}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className={style.boxTitleProfile}
+                    >
+                        <h4>Xin chào, {customer?.full_name || "Khách hàng"}</h4>
+                    </Col>
                 </Row>
 
                 {/* Form and Details */}

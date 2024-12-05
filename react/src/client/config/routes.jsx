@@ -88,6 +88,11 @@ const PublicRoutes = [
         requiredRole: { requiredRole: "private", role: "Client" },
     },
     {
+        path: "/thongtincanhan/lichsudieutri",
+        element: <Profile />,
+        requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
         path: "/gioithieu",
         element: <AboutUs />,
         requiredRole: { requiredRole: "public", role: "Client" },
@@ -96,7 +101,7 @@ const PublicRoutes = [
         path: "/datlich/thanhcong",
         element: <ThanksBooking />,
         requiredRole: { requiredRole: "private", role: "Client" },
-    }
+    },
 ];
 
 export { PublicRoutes };

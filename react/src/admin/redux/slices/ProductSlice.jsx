@@ -18,7 +18,9 @@ export const productGet = createAsyncThunk(
     async (per_page, { rejectWithValue }) => {
         try {
             // Xây dựng query parameters chỉ với `per_page` nếu có
-            const queryParams = per_page ? `?per_page=${per_page}&productImages=true` : "";
+            const queryParams = per_page
+                ? `?per_page=${per_page}&productImages=true`
+                : "";
 
             // Gọi API
             const response = await axiosInstance.get(
@@ -82,8 +84,10 @@ export const productDelete = createAsyncThunk(
         }
 
         try {
-            await axiosInstance.delete(endpoints.Products.delete(id));
-            return id;
+            const res = await axiosInstance.delete(
+                endpoints.Products.delete(id)
+            );
+            return res.data;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
@@ -218,9 +222,13 @@ const productSlice = createSlice({
                 state.error = null;
             })
             .addCase(productDelete.fulfilled, (state, action) => {
-                state.products.data = state.products.data.filter(
-                    (prod) => prod.id !== action.payload
-                );
+                if (action.payload.status == "success") {
+                    state.products.data = state.products.data.filter(
+                        (prod) => prod.id !== action.payload
+                    );
+                } else {
+                    state.error = action.payload.message;
+                }
                 state.loading = false;
             })
             .addCase(productDelete.rejected, (state, action) => {

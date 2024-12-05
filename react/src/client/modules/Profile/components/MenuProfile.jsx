@@ -10,47 +10,49 @@ import {
 import style from "../style/Profile.module.scss";
 
 const MenuProfile = () => (
-   
-        <Menu
-            mode="vertical"
-            defaultSelectedKeys={["1"]}
-            className={style.menu}
+    <Menu mode="vertical" defaultSelectedKeys={["1"]} className={style.menu}>
+        <Menu.Item key="1" icon={<UserOutlined />} className={style.menuItem}>
+            <Link className={style.nameItemMenu} to="/thongtincanhan">
+                Thông tin cá nhân
+            </Link>
+        </Menu.Item>
+        <Menu.Item
+            key="2"
+            icon={<AppstoreOutlined />}
+            className={style.menuItem}
         >
-            <Menu.Item
-                key="1"
-                icon={<UserOutlined />}
-                className={style.menuItem}
+            <Link
+                className={style.nameItemMenu}
+                to="/thongtincanhan/tuvandatlich"
             >
-                <Link className={style.nameItemMenu} to="/thongtincanhan">
-                    Thông tin cá nhân
-                </Link>
-            </Menu.Item>
-            <Menu.Item
-                key="2"
-                icon={<AppstoreOutlined />}
-                className={style.menuItem}
+                Tư vấn đặt lịch
+            </Link>
+        </Menu.Item>
+        <Menu.Item
+            key="3"
+            icon={<ClockCircleOutlined />}
+            className={style.menuItem}
+        >
+            <Link
+                className={style.nameItemMenu}
+                to="/thongtincanhan/lichsudichvu"
             >
-                <Link
-                    className={style.nameItemMenu}
-                    to="/thongtincanhan/tuvandatlich"
-                >
-                    Tư vấn đặt lịch
-                </Link>
-            </Menu.Item>
-            <Menu.Item
-                key="3"
-                icon={<ClockCircleOutlined />}
-                className={style.menuItem}
+                Lịch sử dịch vụ
+            </Link>
+        </Menu.Item>
+        <Menu.Item
+            key="4"
+            icon={<ClockCircleOutlined />}
+            className={style.menuItem}
+        >
+            <Link
+                className={style.nameItemMenu}
+                to="/thongtincanhan/lichsudieutri"
             >
-                <Link
-                    className={style.nameItemMenu}
-                    to="/thongtincanhan/lichsudichvu"
-                >
-                    Lịch sử dịch vụ
-                </Link>
-            </Menu.Item>
-        </Menu>
- 
+                Lịch sử điều trị
+            </Link>
+        </Menu.Item>
+    </Menu>
 );
 
 export default MenuProfile;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Input, Row, message } from "antd";
+import { Button, Card, Col, Input, Row, message } from "antd";
 import { useSelector } from "react-redux";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CategoriesForm from "../../modules/product/compoments/CategoriesForm";
@@ -8,6 +8,7 @@ import ModalEditCategory from "../../modules/product/compoments/categoriesEditMo
 import { Snowflake } from "@theinternetfolks/snowflake";
 import usecategoriesActions from "../../modules/product/hooks/useCategoriesProduct";
 import debounce from "lodash/debounce";
+import { Loading3QuartersOutlined } from "@ant-design/icons";
 const ProductCategories = () => {
     useEffect(() => {
         document.title = "Quản lý danh mục sản phẩm";
@@ -109,7 +110,7 @@ const ProductCategories = () => {
     };
 
     return (
-        <>
+        <div>
             <h1 className="text-center">Quản Lý Danh Mục Sản Phẩm</h1>
             <Row gutter={[16, 16]}>
                 {contextHolder}
@@ -122,7 +123,19 @@ const ProductCategories = () => {
                     </Card>
                 </Col>
                 <Col span={24}>
-                    <Card title="Danh sách danh mục sản phẩm">
+                    <Card title="Danh sách danh mục sản phẩm"
+                   
+                    extra={
+                        <Button
+                            icon={<Loading3QuartersOutlined />}
+                            type="primary"
+                            onClick={() => getcategories()}
+                            loading={categories.loading}
+                        >
+                            Làm mới
+                        </Button>
+                    }
+                    >
                         <Row className="m-2" justify={"space-between"}>
                             <Col
                                 xxl={12}
@@ -158,7 +171,7 @@ const ProductCategories = () => {
                     />
                 </Col>
             </Row>
-        </>
+        </div>
     );
 };
 

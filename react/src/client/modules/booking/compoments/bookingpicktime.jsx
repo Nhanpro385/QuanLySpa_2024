@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Divider } from "antd";
+import { Row, Col, Button, Divider, Result } from "antd";
 import Slider from "react-slick";
 import useShiftAction from "../../../../admin/modules/ShiftManagement/hooks/useShiftAction";
 import dayjs from "dayjs";
@@ -90,9 +90,7 @@ const BookingPickTime = ({
     const [listTime, setListTime] = useState([]);
 
     const ShiftSlice = useSelector((state) => state.shifts);
-  
-    
-    
+
     // Get shift data from Redux when it changes
     useEffect(() => {
         getShiftClientAction(14);
@@ -104,6 +102,8 @@ const BookingPickTime = ({
         }
     }, [ShiftSlice.shifts]);
     const handleClickTime = (time) => {
+        console.log("time id", time.shift_id);
+
         setTime(time);
     };
 
@@ -141,10 +141,9 @@ const BookingPickTime = ({
         });
 
         setListShift(next7Days);
-
-     
     }, [shiftsData]);
 
+    console.log(listTime);
     useEffect(() => {
         if (listShift.length > 0) {
             setListTime(listShift[activeDate].shifts);
@@ -268,7 +267,14 @@ const BookingPickTime = ({
                     ))}
                 </Slider>
 
-                {/* Display available time slots */}
+                {listTime.length === 0 && (
+                    <Result
+                        status="error"
+                        title="Không tìm thấy lịch làm việc"
+                        subTitle="Vui lòng chọn ngày khác hoặc liên hệ với chúng tôi để được hỗ trợ"
+                    />
+                )}
+
                 <Row className="mt-3 mb-3" gutter={[12, 12]}>
                     {listTime.map((shift, index) => (
                         <Col
@@ -288,12 +294,12 @@ const BookingPickTime = ({
                             </Divider>
 
                             <Row gutter={[16, 16]}>
-                                {/* Display time slots */}
                                 {shift.timeSlots.map((slot, idx) => (
                                     <Col
                                         key={idx}
                                         className={`${style.slot} ${
                                             time?.index === idx &&
+                                            time?.shift_id === shift.id &&
                                             time?.start_time ===
                                                 slot?.start_time
                                                 ? style.active
@@ -304,7 +310,8 @@ const BookingPickTime = ({
                                                 shift_id: shift.id,
                                                 start_time: slot.start_time,
                                                 index: idx,
-                                                date: listShift[activeDate].date,
+                                                date: listShift[activeDate]
+                                                    .date,
                                             })
                                         }
                                     >

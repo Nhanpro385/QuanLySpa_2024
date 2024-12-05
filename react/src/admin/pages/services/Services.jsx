@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Input, Modal, Row, Col, notification } from "antd";
+import { Table, Button, Input, Modal, Row, Col, notification, Card } from "antd";
 import ServicesAdd from "./add_services";
 import useModal from "../../modules/appointments/hooks/openmodal";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { DownOutlined, Loading3QuartersOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import ServiceModalEdit from "../../modules/services/compoments/ServiceModalEdit";
 import ServiceTable from "../../modules/services/compoments/ServiceTable";
@@ -170,7 +170,18 @@ function Services() {
         Navigate("/admin/dichvu/chinhsuasanpham/" + record.id);
     };
     return (
-        <div>
+        <Card
+        extra={
+            <Button
+            icon={<Loading3QuartersOutlined />}
+                type="primary"
+                onClick={() => getservices()}
+                loading={services.loading}
+            >
+                Làm mới
+            </Button>
+        }
+        >
             {contextHolder}
             <h1 className="text-center">Quản lý dịch vụ</h1>
             <Row gutter={[8, 8]} style={{ marginBottom: 16 }}>
@@ -234,7 +245,7 @@ function Services() {
             onClose={handleCancel3}
             servicedata={DetailService}
             />
-        </div>
+        </Card>
     );
 }
 

@@ -61,7 +61,7 @@ const Promotions_Edit = () => {
             setValue("description", promotions.promotion?.data.description);
             setValue(
                 "promotion_type",
-                promotions.promotion?.data.promotion_type === "Percent" ? 0 : 1
+                promotions.promotion?.data.promotion_type === "Percent" ? 1 : 0
             );
             setValue(
                 "discount_percent",
@@ -244,10 +244,10 @@ const Promotions_Edit = () => {
                                             placeholder="Chọn loại khuyến mãi"
                                         >
                                             <Option value={0}>
-                                                Giảm giá theo phần trăm (%)
+                                                Tiền mặt Giảm giá
                                             </Option>
                                             <Option value={1}>
-                                                Giảm giá tiền mặt (VNĐ)
+                                                Phần trăm Giảm giá
                                             </Option>
                                         </Select>
                                     )}

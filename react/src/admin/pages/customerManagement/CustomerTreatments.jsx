@@ -116,7 +116,17 @@ const StreatMents = () => {
     };
 
     return (
-        <Card>
+        <Card
+        extra={
+            <Button
+                type="primary"
+                onClick={() => getStreatments()}
+                loading={streatments.loading}
+            >
+                Làm mới
+            </Button>
+        }
+        >
             <h1 className="text-center mb-4">
                 Quản lý Lịch sử Trị liệu của khách hàng
             </h1>

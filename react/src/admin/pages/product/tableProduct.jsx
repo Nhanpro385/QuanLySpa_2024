@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Dropdown, Space, Popconfirm } from "antd";
+import { Table, Button, Dropdown, Space, Popconfirm, Image } from "antd";
 
 import { DownOutlined } from "@ant-design/icons";
 const TableProduct = ({
@@ -9,10 +9,8 @@ const TableProduct = ({
     pagination,
     handlePageChange,
     handleDetail,
-    loading
+    loading,
 }) => {
-    
-    
     const items = [
         {
             key: "1",
@@ -64,12 +62,29 @@ const TableProduct = ({
             title: "Ảnh",
             dataIndex: "image_url",
             key: "image_url",
-            
+            render: (text, record) => (
+                <Image
+                    width={50}
+                    src={`http://127.0.0.1:8000/storage/uploads/products/${record.image_url}`}
+                    alt={record.name}
+                    fallback="https://via.placeholder.com/50"
+                    preview={false}
+                />
+            ),
         },
         {
             title: "Giá",
             dataIndex: "price",
             key: "price",
+            render: (text, record) => (
+                <span>
+                    {parseInt(record?.price).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }) || "Dữ liệu không có"}
+                </span>
+            ),
+
         },
         {
             title: "Số lượng",

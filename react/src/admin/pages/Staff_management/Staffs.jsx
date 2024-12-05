@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Col, Row, Select, Input, message } from "antd";
+import { Table, Button, Col, Row, Select, Input, message, Card } from "antd";
 const { Search } = Input;
 
-import { PlusOutlined } from "@ant-design/icons";
+import { Loading3QuartersOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 import "@schedule-x/theme-default/dist/index.css";
@@ -123,7 +123,18 @@ function Staffs() {
    
 
     return (
-        <div>
+        <Card
+        extra={
+            <Button
+            icon={<Loading3QuartersOutlined />}
+                type="primary"
+                onClick={() => getusers()}
+                loading={loading}
+            >
+                Làm mới
+            </Button>
+        }
+        >
             <h1 className="text-center">Quản lý nhân viên</h1>
             <Row className="mb-3" gutter={[16, 16]}>
                 <Col xxl={21} xl={20} lg={18} md={18} sm={12} xs={24}>
@@ -165,7 +176,7 @@ function Staffs() {
                 handleEditSubmit={handleEditSubmit}
                 errorForm={errorForm}
             />
-        </div>
+        </Card>
     );
 }
 

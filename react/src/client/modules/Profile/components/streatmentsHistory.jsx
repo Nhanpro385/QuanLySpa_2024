@@ -7,7 +7,7 @@ import MenuProfile from "./MenuProfile";
 import ServiceHistoryModalDetail from "./ServiceHistoryModalDetail";
 import useModal from "../../../../admin/modules/appointments/hooks/openmodal";
 
-const ServiceHistory = () => {
+const StreatmentsHistory = () => {
     const auth = useSelector((state) => state.auth);
     const [ListAppointment, setListAppointment] = useState([]);
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
@@ -199,4 +199,4 @@ const ServiceHistory = () => {
     );
 };
 
-export default ServiceHistory;
+export default StreatmentsHistory;

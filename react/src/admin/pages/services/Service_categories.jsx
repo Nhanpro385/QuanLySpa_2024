@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Alert, message, Input, Select } from "antd";
+import { Card, Col, Row, Alert, message, Input, Select, Button } from "antd";
 import { useSelector } from "react-redux";
 import {
     ServiceCategoriesAdd,
@@ -15,6 +15,7 @@ import ModalEditServiceCategory from "../../modules/services/compoments/ServiceC
 import { useForm } from "react-hook-form";
 import useServiceCategoriesActions from "../../modules/services/hooks/useServiceCategories";
 import debounce from "lodash/debounce";
+import { Loading3QuartersOutlined } from "@ant-design/icons";
 
 const ServiceCategories = () => {
     useEffect(() => {
@@ -161,7 +162,7 @@ const ServiceCategories = () => {
     const pagination = ServiceCategories.ServiceCategories.meta || {};
 
     return (
-        <>
+        <div>
             <h1 className="text-center">Danh mục Loại Dịch Vụ</h1>
             {contextHolder}
             <Row gutter={[16, 16]}>
@@ -176,7 +177,19 @@ const ServiceCategories = () => {
                     </Card>
                 </Col>
                 <Col span={24}>
-                    <Card title="Danh sách danh mục sản phẩm">
+                    <Card
+                        title="Danh sách danh mục sản phẩm"
+                        extra={
+                            <Button
+                                icon={<Loading3QuartersOutlined />}
+                                type="primary"
+                                onClick={() => getServiceCategories()}
+                                loading={ServiceCategories.loading}
+                            >
+                                Làm mới
+                            </Button>
+                        }
+                    >
                         <Row className="mb-2" gutter={[16, 16]}>
                             <Col
                                 xxl={12}
@@ -214,7 +227,7 @@ const ServiceCategories = () => {
                     />
                 </Col>
             </Row>
-        </>
+        </div>
     );
 };
 

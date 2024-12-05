@@ -165,7 +165,17 @@ function Customer() {
         }
     };
     return (
-        <Card>
+        <Card
+        extra={
+            <Button
+                type="primary"
+                onClick={() => getCustomer()}
+                loading={customers.loading}
+            >
+                Làm mới
+            </Button>
+        }
+        >
             <h1 className="text-center mb-4">Quản lý khách hàng</h1>
 
             {/* Header */}

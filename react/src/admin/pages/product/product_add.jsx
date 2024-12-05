@@ -243,6 +243,7 @@ const Product_add = () => {
                                             }}
                                             render={({ field }) => (
                                                 <Input
+                                                    maxLength={20}
                                                     size="large"
                                                     {...field}
                                                     placeholder="Mã Code"
@@ -331,6 +332,13 @@ const Product_add = () => {
                                                     size="large"
                                                     className="w-100"
                                                     {...field}
+                                                    formatter={(value) =>
+                                                        `${value}`.replace(
+                                                            /\B(?=(\d{3})+(?!\d))/g,
+                                                            ","
+                                                        )
+                                                    }
+                                                    
                                                     placeholder="Giá Nhập"
                                                 />
                                             )}
@@ -357,6 +365,13 @@ const Product_add = () => {
                                                     size="large"
                                                     className="w-100"
                                                     {...field}
+                                                    formatter={(value) =>
+                                                        `${value}`.replace(
+                                                            /\B(?=(\d{3})+(?!\d))/g,
+                                                            ","
+                                                        )
+                                                    }
+                                                    
                                                     placeholder="Giá Bán"
                                                 />
                                             )}

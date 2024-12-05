@@ -118,7 +118,7 @@ const AppointmentsDetail = ({ isOpen, onClose, selectedAppointment }) => {
                 </Button>,
             ]}
         >
-            <Descriptions title="Thông tin lịch hẹn" items={items} column={2} />
+            <Descriptions bordered title="Thông tin lịch hẹn" items={items} column={2} />
             <Table
                 title={() => "Danh sách dịch vụ"}
                 columns={productColumns}

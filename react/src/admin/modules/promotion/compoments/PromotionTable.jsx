@@ -1,7 +1,13 @@
 import React from "react";
 import { Table, Button, Tag } from "antd";
 
-const PromotionTable = ({ dataSource, handleEdit, handleDelete }) => {
+const PromotionTable = ({
+    dataSource,
+    handleEdit,
+    handleDelete,
+    pagination,
+    handlePageChange
+}) => {
     const columns = [
         {
             title: "STT",
@@ -19,18 +25,16 @@ const PromotionTable = ({ dataSource, handleEdit, handleDelete }) => {
             key: "promotion_type",
             render: (text, record) => {
                 const discount = parseInt(record.discount_percent || 0, 10); // Đảm bảo giá trị luôn là số
-                if (text === "Cash") {
+                if (text == "Cash") {
                     return (
                         <>
-                            <Tag color="green">Giảm giá trực tiếp</Tag>
-                            {discount.toLocaleString()} VNĐ
+                            <Tag color="green">Giảm Tiền mặt </Tag>
                         </>
                     );
                 }
                 return (
                     <>
                         <Tag color="blue">Giảm phần trăm</Tag>
-                        {discount}%
                     </>
                 );
             },
@@ -74,7 +78,23 @@ const PromotionTable = ({ dataSource, handleEdit, handleDelete }) => {
         },
     ];
 
-    return <Table dataSource={dataSource} columns={columns} />;
+    return (
+        <Table
+            dataSource={dataSource}
+            columns={columns}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total) => `Tổng ${total} mục`,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                responsive: true,
+                onChange: handlePageChange,
+            }}
+        />
+    );
 };
 
 export default PromotionTable;

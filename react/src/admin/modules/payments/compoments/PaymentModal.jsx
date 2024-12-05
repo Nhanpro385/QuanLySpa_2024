@@ -88,7 +88,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
             paymentMethod: values.paymentMethod || 1,
             promotion_name: values.promotion_name || "",
             status: values.status,
-
+            promotion_id : values.promotion_name,
             products: selectedProducts.map((item) => ({
                 id: item.id,
                 quantity: item.quantity,
@@ -365,7 +365,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
                                                 >
                                                     {item.promotion_type ==
                                                     "Percent"
-                                                        ? "Giảm giá %"
+                                                        ? `Giảm giá ${parseInt(item.discount_percent || 0)}%` 
                                                         : "Giảm giá tiền mặt"}
                                                 </Tag>
 

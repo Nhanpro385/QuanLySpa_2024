@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Input, Row, message } from "antd";
+import { Button, Card, Col, Input, Row, message } from "antd";
 import { useForm } from "react-hook-form";
 import { Snowflake } from "@theinternetfolks/snowflake";
 import useModal from "../../../modules/appointments/hooks/openmodal";
@@ -9,6 +9,7 @@ import PositionsForm from "../../../modules/staffManagement/compoments/Positions
 import PositionsTable from "../../../modules/staffManagement/compoments/PositionsTable";
 import usePositionsActions from "../../../modules/staffManagement/hooks/usePositionsAction";
 import debounce from "lodash/debounce";
+import { Loading3QuartersOutlined } from "@ant-design/icons";
 
 const Positions = () => {
     useEffect(() => {
@@ -241,8 +242,20 @@ const Positions = () => {
                     </Card>
                 </Col>
                 <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <Card title="Danh sách Chức vụ">
-                        <Row>
+                    <Card
+                        title="Danh sách Chức vụ"
+                        extra={
+                            <Button
+                                icon={<Loading3QuartersOutlined />}
+                                type="primary"
+                                onClick={() => getPositions()}
+                                loading={Positions.loading}
+                            >
+                                Làm mới
+                            </Button>
+                        }
+                    >
+                        <Row className="mb-3" gutter={[16, 16]}>
                             <Col xs={24} sm={24} xxl={4} xl={4} lg={4} md={12}>
                                 <Input.Search
                                     placeholder="Tìm kiếm chức vụ"

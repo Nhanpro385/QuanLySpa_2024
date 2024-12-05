@@ -44,6 +44,8 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
+        console.log(error);
+        
         if (
             error.response &&
             error.response.data.message === "Vui lòng đăng nhập tài khoản."
