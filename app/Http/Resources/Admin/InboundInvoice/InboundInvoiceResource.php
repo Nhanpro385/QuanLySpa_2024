@@ -20,20 +20,22 @@ class InboundInvoiceResource extends JsonResource
             'supplier' => $this->supplier ? [
                 'id' => $this->supplier->id ? (string) $this->supplier->id : null,
                 'name' => $this->supplier->name ?? null,
-                'contact' => $this->supplier->contact ?? null,
+                'contact' => $this->supplier->contact_email ?? null,
             ] : null,
             'total_amount' => $this->total_amount ?? null,
             'note' => $this->note ?? null,
             'status' => $this->status ?? null,
             
             'details' => $this->invoice_details ? collect($this->invoice_details)->map(function ($detail) {
+                $product = $detail['product'] ?? null;
+              
                 return [
                     'id' => $detail['id'] ?? null,
-                    'product' => isset($detail['product']) ? [
-                        'id' => $detail['product']['id'] ?? null,
-                        'name' => $detail['product']['name'] ?? null,
-                        'sku' => $detail['product']['bar_code'] ?? null,
-                    ] : null,
+                    'product' => $product ? [
+                        'id' => $product['id'] ?? null,
+                        'name' => $product['name'] ?? null,
+                        'sku' => $detail['product']['sku'] ?? 'Không có mã',
+                        ] : null,
                     'quantity_olded' => $detail['quantity_olded'] ?? null,
                     'quantity_import' => $detail['quantity_import'] ?? null,
                     'cost_import' => $detail['cost_import'] ?? null,
