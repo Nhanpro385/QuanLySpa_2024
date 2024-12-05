@@ -26,6 +26,8 @@ class CommentResource extends JsonResource
             'status' => $this->status,
             'type' => $this->type,
             'image_url' => $images,
+            'replies' => $this->replies,
+
 
             'created_by' => $this->createdByUser ? [
                 'id' => (string) $this->createdByUser->id,

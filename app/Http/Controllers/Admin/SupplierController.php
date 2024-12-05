@@ -114,7 +114,7 @@ class SupplierController extends Controller
 
             $supplier = Supplier::withTrashed()->findOrFail($id);
 
-        
+
             if ($supplier->forceDelete()) {
                 return response()->json([
                     'status' => 'success',

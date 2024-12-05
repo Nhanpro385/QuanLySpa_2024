@@ -56,6 +56,10 @@ class Promotion extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+    public function getPromotionTypeAttribute($value)
+{
+    return $value == 1 ? 'Percent' : 'Cash';
+}
     protected static function boot()
     {
         //Payment
