@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Modal, Rate, Row, List, Avatar, Card } from "antd";
 
 const CommentDetailModal = ({ visible, onOk, onCancel, commentDetails }) => {
-    console.log("Comment details:", commentDetails);
+
     
     const data = commentDetails.replies || [];
 
@@ -38,6 +38,9 @@ const CommentDetailModal = ({ visible, onOk, onCancel, commentDetails }) => {
                             pagination={{
                                 position: "bottom",
                                 align: "center",
+                                pageSize: 5,
+                                showSizeChanger: false,
+                                hideOnSinglePage: true,
                             }}
                             dataSource={data}
                             renderItem={(item, index) => (

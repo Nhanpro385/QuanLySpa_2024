@@ -8,58 +8,90 @@ import { useSelector } from "react-redux";
 import usecommentsActions from "../../modules/Comment/hooks/usecomment";
 import debounce from "lodash/debounce";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
+import ReplyCommentEdit from "../../modules/Comment/compoments/ReplyCommentEdit";
+
 const { Text } = Typography;
 
 const CommentManagement = () => {
     const [api, contextHolder] = notification.useNotification();
-    const { getcomments, replycomments, searchcomments } = usecommentsActions();
-    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const {
+        getcomments,
+        replycomments,
+        searchcomments,
+        deletecomments,
+        updatecomments,
+    } = usecommentsActions();
+
+    // Modal states
     const [selectedComment, setSelectedComment] = useState(null); // State to hold selected comment details
-    const [isReplyModalOpen, setReplyModalOpen] = useState(false); // State for reply modal
+    const [activeModal, setActiveModal] = useState(null); // Manage which modal is active ('detail', 'reply', 'edit')
+
     const [dataSource, setDataSource] = useState([]);
     const commentSlice = useSelector((state) => state.comments);
     const pagination = commentSlice.comments?.meta || {};
+
     const [searchquery, setSearchQuery] = useState({
         search: "",
         page: 1,
         per_page: 5,
     });
+
     useEffect(() => {
-        getcomments();
+        getcomments(); // Initial fetch
     }, []);
 
-    const handleViewDetail = (comment) => {
-        setSelectedComment(comment); // Set selected comment details
-        showModal(); // Show detail modal
-    };
+    useEffect(() => {
+        if (
+            searchquery.search ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 5
+        ) {
+            searchcomments(searchquery);
+        } else {
+            getcomments();
+        }
+    }, [searchquery]);
 
-    const handleEdit = (comment) => {
-        console.log("Editing comment:", comment);
-        // Implement edit functionality (e.g., show edit modal)
-    };
+    useEffect(() => {
+        setDataSource(
+            commentSlice.comments?.data.map((comment, index) => ({
+                ...comment,
+                key: index + 1,
+            }))
+        );
+    }, [commentSlice]);
 
-    const handleDelete = (key) => {
-        console.log("Deleting comment with ID:", key);
-        // Implement delete functionality
-    };
-
-    const handleReplyClick = (comment) => {
-        console.log("Replying to comment:", comment);
-
-        setSelectedComment(comment); // Set selected comment for reply
-        setReplyModalOpen(true); // Open reply modal
+    const handleDelete = async (key) => {
+        try {
+            const response = await deletecomments(key.id);
+            if (response.payload.status === "success") {
+                api.success({
+                    message: response.payload.message,
+                    description: "Bình luận đã được xóa.",
+                    duration: 2,
+                });
+                getcomments();
+            } else {
+                api.error({
+                    message: response.payload.message,
+                    description: "Vui lòng thử lại sau.",
+                    duration: 2,
+                });
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
     };
 
     const handleReplySubmit = async (replyContent) => {
         try {
             const response = await replycomments(replyContent);
-            if (response.payload.status == "success") {
+            if (response.payload.status === "success") {
                 api.success({
                     message: "Trả lời bình luận thành công",
                     placement: "topRight",
                     description: "Bình luận đã được trả lời.",
                 });
-
                 getcomments(); // Refresh comments
             } else {
                 api.error({
@@ -69,36 +101,41 @@ const CommentManagement = () => {
                 });
             }
         } catch (error) {
-            console.error("Reply error:", error);
+            console.error("Error replying to comment:", error);
         }
-        // setReplyModalOpen(false); // Close reply modal
-        // setSelectedComment(null); // Clear selected comment
+        setActiveModal(null); // Close modal
+    };
+    const handleEditComment = async (replyContent) => {
+        try {
+            const response = await updatecomments({
+                id: replyContent.id,
+                data: replyContent,
+            });
+            if (response.payload.status === "success") {
+                api.success({
+                    message: response.payload.message,
+                    description: "Bình luận đã Cập nhật",
+                    duration: 2,
+                });
+                getcomments();
+                return true;
+            } else {
+                api.error({
+                    message: response.payload.message,
+                    description: "Vui lòng thử lại sau.",
+                    duration: 2,
+                });
+                return false;
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    const handlePageChange = (page, pagination) => {
-        setSearchQuery({ ...searchquery, page: page, per_page: pagination });
+    const handlePageChange = (page, pageSize) => {
+        setSearchQuery({ ...searchquery, page, per_page: pageSize });
     };
-    console.log("searchquery", searchquery);
-    
-    useEffect(() => {
-        setDataSource(
-            commentSlice.comments?.data.map((comment, index) => ({
-                ...comment,
-                key: index + 1,
-            }))
-        );
-    }, [commentSlice]);
-    useEffect(() => {
-        if (
-            searchquery.search !== "" ||
-            searchquery.page !== 1 ||
-            searchquery.per_page !== 5
-        ) {
-            searchcomments(searchquery);
-        } else {
-            getcomments();
-        }
-    }, [searchquery]);
+
     return (
         <div>
             {contextHolder}
@@ -110,9 +147,7 @@ const CommentManagement = () => {
                     <Button
                         icon={<Loading3QuartersOutlined />}
                         type="primary"
-                        onClick={() => {
-                            getcomments();
-                        }}
+                        onClick={() => getcomments()}
                     >
                         Làm mới
                     </Button>
@@ -121,34 +156,54 @@ const CommentManagement = () => {
                 <CommentTable
                     loading={commentSlice.loading}
                     dataSource={dataSource}
-                    handleViewDetail={handleViewDetail}
+                    handleViewDetail={(comment) => {
+                        setSelectedComment(comment);
+                        setActiveModal("detail");
+                    }}
                     handleDelete={handleDelete}
-                    handleEdit={handleEdit}
+                    handleReplyClick={(comment) => {
+                        setSelectedComment(comment);
+                        setActiveModal("reply");
+                    }}
+                    handleEdit={(comment) => {
+                        setSelectedComment(comment);
+                        setActiveModal("edit");
+                    }}
                     pagination={pagination}
-                    handleReplyClick={handleReplyClick} // Pass reply handler
                     handlePageChange={handlePageChange}
                 />
             </Card>
 
-            {isReplyModalOpen &&
-                selectedComment && ( // Render reply modal if it's open and a comment is selected
-                    <ReplyComment
-                        visible={isReplyModalOpen}
-                        onClose={() => setReplyModalOpen(false)} // Close reply modal
-                        onSubmit={handleReplySubmit}
-                        comment={selectedComment}
-                    />
-                )}
-
-            {selectedComment && ( // Render detail modal only if a comment is selected
+            {activeModal === "detail" && selectedComment && (
                 <CommentDetailModal
-                    visible={isModalOpen}
-                    onOk={handleOk}
+                    visible={true}
+                    onOk={() => setActiveModal(null)}
                     onCancel={() => {
-                        handleCancel();
-                        setSelectedComment(null); // Clear selected comment on modal close
+                        setActiveModal(null);
+                        setSelectedComment(null);
                     }}
-                    commentDetails={selectedComment} // Pass comment details to modal
+                    commentDetails={selectedComment}
+                />
+            )}
+
+            {activeModal === "reply" && selectedComment && (
+                <ReplyComment
+                    visible={true}
+                    onClose={() => setActiveModal(null)}
+                    onSubmit={handleReplySubmit}
+                    comment={selectedComment}
+                />
+            )}
+
+            {activeModal === "edit" && selectedComment && (
+                <ReplyCommentEdit
+                    visible={true}
+                    onClose={() => {
+                        setActiveModal(null);
+                        setSelectedComment(null);
+                    }}
+                    onSubmit={handleEditComment}
+                    comment={selectedComment}
                 />
             )}
         </div>

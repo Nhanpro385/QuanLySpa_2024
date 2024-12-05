@@ -23,13 +23,20 @@ const CommentTable = ({
         },
         {
             title: "Tên người dùng",
-            dataIndex: "customer_id",
-            key: "customer_id",
+            dataIndex: "user",
+            key: "user",
+            render: (user,record) => (
+                <Space>
+                    <Avatar size="small" icon={<UserOutlined />} />
+                    <Text>{record.type == 0 ? `Admin: ${record.created_by.full_name}` : record.customer_id}</Text>
+                </Space>
+            ),
         },
         {
-            title: "Sản phẩm bình luận",
+            title: "Dịch vụ",
             dataIndex: "service_id",
             key: "service_id",
+            render: (service_id) => <Text>{service_id ? service_id : "Không có"}</Text>,
         },
         {
             title: "Nội dung",
@@ -98,7 +105,7 @@ const CommentTable = ({
                                     <Button
                                         block
                                         danger
-                                        onClick={() => handleDelete(record.key)}
+                                        onClick={() => handleDelete(record)}
                                     >
                                         Xóa
                                     </Button>

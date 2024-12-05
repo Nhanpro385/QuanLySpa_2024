@@ -17,11 +17,10 @@ import {
     List,
     Space,
     Rate,
+    Input,
+    Form,
 } from "antd";
-import {
-    MessageOutlined,
-    LoadingOutlined,
-} from "@ant-design/icons";
+import { MessageOutlined, LoadingOutlined } from "@ant-design/icons";
 
 const ServicesDetailById = () => {
     const navigate = useNavigate();
@@ -54,7 +53,9 @@ const ServicesDetailById = () => {
         return (
             <div style={{ textAlign: "center", paddingTop: "50px" }}>
                 <Spin
-                    indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+                    indicator={
+                        <LoadingOutlined style={{ fontSize: 24 }} spin />
+                    }
                 />
             </div>
         );
@@ -77,7 +78,9 @@ const ServicesDetailById = () => {
             time: reply?.created_at || "Không có",
             replies: reply?.clientReplies?.map((nestedReply, nestedIndex) => ({
                 key: `${index}-${replyIndex}-${nestedIndex}`,
-                title: nestedReply?.customer?.full_name || "Người dùng không xác định",
+                title:
+                    nestedReply?.customer?.full_name ||
+                    "Người dùng không xác định",
                 avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${nestedIndex}`,
                 description: "Phản hồi từ nhân viên.",
                 content: nestedReply?.comment || "Không có",
@@ -170,7 +173,10 @@ const ServicesDetailById = () => {
                     </Col>
                     <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
                         <Card bordered={false}>
-                            <Descriptions title="Thông tin dịch vụ" layout="vertical">
+                            <Descriptions
+                                title="Thông tin dịch vụ"
+                                layout="vertical"
+                            >
                                 <Descriptions.Item label="Mô tả">
                                     {service?.description ||
                                         "Thông tin không có sẵn"}
@@ -191,7 +197,11 @@ const ServicesDetailById = () => {
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Trạng thái">
                                     <Tag
-                                        color={service?.status === 1 ? "green" : "red"}
+                                        color={
+                                            service?.status === 1
+                                                ? "green"
+                                                : "red"
+                                        }
                                     >
                                         {service?.status === 1
                                             ? "Hoạt động"
@@ -211,6 +221,46 @@ const ServicesDetailById = () => {
                     pagination={{
                         pageSize: 3,
                     }}
+                    header={
+                            <Form layout="vertical">
+                        <Row gutter={[16, 16]} align={"middle"}>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <h3>Bình luận và đánh giá</h3>
+                                </Col>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <span>Đánh giá của bạn: </span>
+                                    <Rate
+                                        style={{ marginBottom: "10px" }}
+                                        defaultValue={0}
+                                    />
+                                </Col>
+                                <Input.TextArea
+                                    placeholder="Nhập bình luận của bạn"
+                                    autoSize={{ minRows: 2, maxRows: 6 }}
+                                />
+                                <Button
+                                    type="primary"
+                                    style={{ marginTop: "10px" }}
+                                >
+                                    Gửi bình luận
+                                </Button>
+                        </Row>
+                            </Form>
+                    }
                     dataSource={data}
                     renderItem={(item) => (
                         <List.Item

@@ -9,6 +9,7 @@ import {
     Col,
     Typography,
     Card,
+    Input,
 } from "antd";
 import JoditEditor from "jodit-react";
 import { Controller, useForm } from "react-hook-form";
@@ -96,9 +97,10 @@ const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {
                             required: "Nội dung trả lời không được để trống!",
                         }}
                         render={({ field }) => (
-                            <JoditEditor
-                                ref={editor}
-                                value={field.value}
+                            <Input.TextArea
+                                {...field}
+                                placeholder="Nhập nội dung trả lời"
+                                
                                 tabIndex={1}
                                 onBlur={(newContent) => {
                                     field.onChange(newContent);

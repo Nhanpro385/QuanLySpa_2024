@@ -57,8 +57,10 @@ export const commentsDelete = createAsyncThunk(
         }
 
         try {
-            await axiosInstance.delete(endpoints.comments.delete(id));
-            return id;
+            const res = await axiosInstance.delete(
+                endpoints.comments.delete(id)
+            );
+            return res.data;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
@@ -81,9 +83,9 @@ export const commentsUpdate = createAsyncThunk(
         }
 
         try {
-            const response = await axiosInstance.put(
+            const response = await axiosInstance.post(
                 endpoints.comments.update(data.id),
-                data
+                data.data
             );
             return response.data;
         } catch (error) {
@@ -176,8 +178,6 @@ const commentsSlice = createSlice({
                 state.error = null;
             })
             .addCase(commentsDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
-
                 state.comments.data = state.comments.data.filter(
                     (cate) => cate.id !== action.payload
                 );
