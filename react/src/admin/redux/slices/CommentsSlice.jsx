@@ -133,6 +133,94 @@ export const searchComments = createAsyncThunk(
         return response.data;
     }
 );
+export const commentsAddClient = createAsyncThunk(
+    "comments/addClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.comments.createClient,
+                data,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi thêm bình luận",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || [],
+            });
+        }
+    }
+);
+export const commentsUpdateClient = createAsyncThunk(
+    "comments/updateClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.comments.updateClient(data.id),
+                data.data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi thêm bình luận",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || [],
+            });
+        }
+    }
+);
+export const commentsDeleteClient = createAsyncThunk(
+    "comments/deleteClient",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await axiosInstance.delete(
+                endpoints.comments.deleteClient(id)
+            );
+            return res.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi thêm bình luận",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || [],
+            });
+        }
+    }
+);
+export const replyCommentClient = createAsyncThunk(
+    "comments/replyClient",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(
+                endpoints.comments.replyClient(data.parent_comment_id),
+                data.data
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi thêm bình luận",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || [],
+            });
+        }
+    }
+);
 
 const initialState = {
     comments: {
@@ -240,6 +328,59 @@ const commentsSlice = createSlice({
             .addCase(searchComments.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(commentsAddClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(commentsAddClient.fulfilled, (state, action) => {
+                state.comments.data.push(action.payload.data);
+                state.loading = false;
+            })
+            .addCase(commentsAddClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(commentsUpdateClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(commentsUpdateClient.fulfilled, (state, action) => {
+                state.comments.data = state.comments.data.map((cate) =>
+                    cate.id === action.payload.data.id
+                        ? action.payload.data
+                        : cate
+                );
+                state.loading = false;
+            })
+            .addCase(commentsUpdateClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message; // Nhận thông báo lỗi
+            })
+            .addCase(commentsDeleteClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(commentsDeleteClient.fulfilled, (state, action) => {
+                state.comments.data = state.comments.data.filter(
+                    (cate) => cate.id !== action.payload
+                );
+                state.loading = false;
+            })
+            .addCase(commentsDeleteClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message; // Nhận thông báo lỗi
+            })
+            .addCase(replyCommentClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(replyCommentClient.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(replyCommentClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action;
             });
     },
 });

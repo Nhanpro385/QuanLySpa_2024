@@ -25,7 +25,8 @@ const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {
         setValue,
         formState: { errors },
     } = useForm();
-
+    console.log(comment);
+    
     const handleFormSubmit = (data) => {
         const replyContent = data.description?.trim();
         if (!replyContent) {

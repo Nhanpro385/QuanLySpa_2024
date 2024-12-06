@@ -81,20 +81,25 @@ const endpoints = {
     },
     Products: {
         list: `${API_BASE_URL}/products`,
-        detail: (id) => `${API_BASE_URL}/products/${id}?inventories=true&productImages=true`,
+        detail: (id) =>
+            `${API_BASE_URL}/products/${id}?inventories=true&productImages=true`,
         create: `${API_BASE_URL}/products`,
         update: (id) => `${API_BASE_URL}/products/${id}`,
         delete: (id) => `${API_BASE_URL}/products/${id}`,
         search: `${API_BASE_URL}/products`,
     },
     comments: {
-        list: `${API_BASE_URL}/comment`,
+        list: `${API_BASE_URL}/comment?sort_by=created_at&sort_order=desc`,
         detail: (id) => `${API_BASE_URL}/comment/${id}`,
         create: `${API_BASE_URL}/comment`,
         update: (id) => `${API_BASE_URL}/comment/${id}`,
         delete: (id) => `${API_BASE_URL}/comment/${id}`,
         reply: (id) => `${API_BASE_URL}/comment/${id}/reply`,
         search: `${API_BASE_URL}/comment`,
+        createClient: `${API_AUTH_URL3}/comment`,
+        updateClient: (id) => `${API_AUTH_URL3}/comment/${id}`,
+        deleteClient: (id) => `${API_AUTH_URL3}/comment/${id}`,
+        replyClient: (id) => `${API_AUTH_URL3}/comment/${id}/reply`,
     },
     services: {
         list: `${API_BASE_URL}/services`,
@@ -107,7 +112,7 @@ const endpoints = {
         updateProduct: (id) => `${API_BASE_URL}/services/products/${id}`,
         listClient: `${API_AUTH_URL3}/services`,
         detailClient: (id) =>
-            `${API_AUTH_URL3}/services/${id}?products=true&serviceImages=true&comments=true`,
+            `${API_AUTH_URL3}/services/${id}?products=true&serviceImages=true&comments=true&image_url=true`,
     },
     shifts: {
         list: `${API_BASE_URL}/shifts`,
@@ -131,7 +136,6 @@ const endpoints = {
         getExportDetail: (id) => `${API_BASE_URL}/outbound-invoices/${id}`,
         updateImport: (id) => `${API_BASE_URL}/inbound-invoices/${id}`,
         updateExport: (id) => `${API_BASE_URL}/outbound-invoices/${id}`,
-        
     },
     appointments: {
         list: `${API_BASE_URL}/appointments`,

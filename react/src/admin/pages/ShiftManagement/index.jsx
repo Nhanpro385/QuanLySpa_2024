@@ -7,8 +7,9 @@ import {
     Input,
     notification,
     DatePicker,
+    Card,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Loading3QuartersOutlined, SearchOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -267,7 +268,6 @@ const ShiftManagement = () => {
                     message: "Thêm nhân viên vào ca làm việc thất bại",
                     description: res.payload.errors.shift_id[0],
                 });
-                
             }
         } catch (error) {}
     };
@@ -332,14 +332,27 @@ const ShiftManagement = () => {
                     />
                 </Col>
             </Row>
-            <ShiftTable
-                dataSource={dataSource}
-                columns={columns}
-                onClick={handleActionClick}
-                pagination={pagnation}
-                onChangePage={handlechangePage}
-                loading={loading}
-            />
+            <Card
+                extra={
+                    <Button
+                        icon={<Loading3QuartersOutlined />}
+                        type="primary"
+                        onClick={() => getshifts()}
+                        loading={loading}
+                    >
+                        Làm mới
+                    </Button>
+                }
+            >
+                <ShiftTable
+                    dataSource={dataSource}
+                    columns={columns}
+                    onClick={handleActionClick}
+                    pagination={pagnation}
+                    onChangePage={handlechangePage}
+                    loading={loading}
+                />
+            </Card>
             <ModalAddShiftEdit
                 isModalOpen={isModalOpen2}
                 handleOk={handleOk2}

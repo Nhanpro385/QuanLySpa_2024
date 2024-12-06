@@ -7,6 +7,10 @@ import {
     commentsGetById,
     replyComment,
     searchComments,
+    commentsAddClient,
+    commentsUpdateClient,
+    commentsDeleteClient,
+    replyCommentClient,
 } from "@admin/redux/slices/CommentsSlice";
 const usecommentsActions = () => {
     const dispatch = useDispatch();
@@ -38,6 +42,19 @@ const usecommentsActions = () => {
     const searchcomments = async (config) => {
         return await dispatch(searchComments(config));
     };
+    const addcommentsClient = async (data) => {
+        return await dispatch(commentsAddClient(data));
+    };
+    const updatecommentsClient = async (data) => {
+        return await dispatch(commentsUpdateClient(data));
+    };
+    const deletecommentsClient = async (id) => {
+        return await dispatch(commentsDeleteClient(id));
+    };
+    const replycommentsClient = async (data) => {
+        return await dispatch(replyCommentClient(data));
+    };
+
     return {
         addcomments,
         getcomments,
@@ -46,6 +63,10 @@ const usecommentsActions = () => {
         getcommentsById,
         replycomments,
         searchcomments,
+        addcommentsClient,
+        updatecommentsClient,
+        deletecommentsClient,
+        replycommentsClient,
     };
 };
 

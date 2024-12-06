@@ -3,6 +3,7 @@ import style from "../style/servicesDetailbyid.module.scss";
 import { useParams, useNavigate } from "react-router-dom";
 import useServicesActions from "../../../../admin/modules/services/hooks/useServices";
 import { useSelector } from "react-redux";
+import { generateSnowflakeId } from "../../../../admin/utils";
 import {
     Divider,
     Card,
@@ -19,8 +20,15 @@ import {
     Rate,
     Input,
     Form,
+    Upload,
+    notification,
 } from "antd";
-import { MessageOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+    MessageOutlined,
+    LoadingOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
+import usecommentsActions from "../../../../admin/modules/Comment/hooks/usecomment";
 
 const ServicesDetailById = () => {
     const navigate = useNavigate();
@@ -28,8 +36,13 @@ const ServicesDetailById = () => {
     const [service, setService] = useState({});
     const [expandedKeys, setExpandedKeys] = useState({});
     const { getServicesDetailClient } = useServicesActions();
+    const { addcommentsClient, replycommentsClient } = usecommentsActions();
     const services = useSelector((state) => state.services);
-
+    const comments = useSelector((state) => state.comments);
+    const [form] = Form.useForm();
+    const [formReply] = Form.useForm();
+    const [fileList, setFileList] = useState([]);
+    const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         getServicesDetailClient(id);
     }, [id]);
@@ -68,16 +81,26 @@ const ServicesDetailById = () => {
         description: "Phản hồi từ khách hàng.",
         content: item?.comment || "Không có",
         time: item?.created_at || "Không có",
+        images: item?.image_url || [],
         rating: item.rate || 0,
+        id: item.id,
+        type: item.type,
         replies: item?.clientReplies?.map((reply, replyIndex) => ({
             key: `${index}-${replyIndex}`,
-            title: reply?.customer?.full_name || "Người dùng không xác định",
+            type: reply.type,
+            id: reply.id,
+            title: reply?.type === 1 ? reply?.customer?.full_name : "Nhân viên",
             avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${replyIndex}`,
-            description: "Phản hồi từ nhân viên.",
+            description:
+                reply.type === 1
+                    ? "Phản hồi từ khách hàng."
+                    : "Phản hồi từ nhân viên.",
             content: reply?.comment || "Không có",
             time: reply?.created_at || "Không có",
             replies: reply?.clientReplies?.map((nestedReply, nestedIndex) => ({
                 key: `${index}-${replyIndex}-${nestedIndex}`,
+                type: nestedReply.type,
+                id: nestedReply.id,
                 title:
                     nestedReply?.customer?.full_name ||
                     "Người dùng không xác định",
@@ -109,8 +132,81 @@ const ServicesDetailById = () => {
         </div>
     );
 
+    const handleFinish = async (values) => {
+        try {
+            const { rate, comment } = values;
+            const images = fileList.map((file) => file.originFileObj); // Lấy file gốc
+            const payload = {
+                id: generateSnowflakeId(),
+                service_id: service.id,
+                customer_id: JSON.parse(localStorage.getItem("user")).id,
+                comment: comment,
+                image_url: images,
+                rate: rate,
+            };
+            const result = await addcommentsClient(payload);
+            if (result.payload.status === "success") {
+                api.success({
+                    message: "Bình luận thành công",
+                    description: "Bình luận của bạn đã được gửi thành công",
+                });
+                form.resetFields();
+                setFileList([]);
+                getServicesDetailClient(id);
+            } else {
+                api.error({
+                    message: "Bình luận thất bại",
+                    description: result.payload.message,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleFinishFailed = (errorInfo) => {
+        // Xử lý khi form không hợp lệ
+        console.log("Lỗi form:", errorInfo);
+    };
+
+    const handleUploadChange = ({ fileList }) => {
+        setFileList(fileList);
+    };
+    const handleFinishReply = async (values) => {
+        try {
+            const { comment, idparent } = values;
+            console.log(values);
+
+            const payload = {
+                id: generateSnowflakeId(),
+                service_id: service.id,
+                customer_id: JSON.parse(localStorage.getItem("user")).id,
+                comment: comment,
+            };
+            const result = await replycommentsClient({
+                parent_comment_id: idparent,
+                data: payload,
+            });
+            if (result.payload.status === "success") {
+                api.success({
+                    message: "Phản hồi thành công",
+                    description: "Phản hồi của bạn đã được gửi thành công",
+                });
+                formReply.resetFields();
+                getServicesDetailClient(id);
+            } else {
+                api.error({
+                    message: "Phản hồi thất bại",
+                    description: result.payload.message,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const renderReplies = (replies) => {
-        return replies.map((reply) => (
+        return replies.map((reply, index) => (
             <List.Item key={reply.key} className="bg-light">
                 <List.Item.Meta
                     avatar={<Avatar src={reply?.avatar} />}
@@ -121,8 +217,54 @@ const ServicesDetailById = () => {
                 <p style={{ fontSize: "12px", color: "#666" }}>{reply?.time}</p>
                 {reply.replies && reply.replies.length > 0 && (
                     <div style={{ marginLeft: "20px" }}>
-                        {renderReplies(reply.replies)}
+                        {renderReplies(reply.replies, reply.key)}{" "}
+                        {/* Truyền `reply.key` làm idparent */}
                     </div>
+                )}
+                {/* Hiển thị form chỉ ở phần tử cuối */}
+                {reply.type === 0 && index === replies.length - 1 && (
+                    <Form
+                        form={formReply}
+                        layout="vertical"
+                        onFinish={(values) =>
+                            handleFinishReply({ ...values, idparent: reply.id })
+                        }
+                        initialValues={{ parent_id: reply.id }}
+                    >
+                        <Row gutter={[16, 16]} align="middle">
+                            <Col span={24}>
+                                <span>Phản hồi của bạn: </span>
+                            </Col>
+                            <Col span={24}>
+                                <Form.Item
+                                    name="comment"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập phản hồi",
+                                        },
+                                    ]}
+                                >
+                                    <Input.TextArea
+                                        placeholder="Nhập phản hồi của bạn"
+                                        autoSize={{
+                                            minRows: 2,
+                                            maxRows: 6,
+                                        }}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span={24}>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    style={{ marginTop: "10px" }}
+                                >
+                                    Gửi phản hồi
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Form>
                 )}
             </List.Item>
         ));
@@ -130,6 +272,7 @@ const ServicesDetailById = () => {
 
     return (
         <div className="container" style={{ padding: "20px" }}>
+            {contextHolder}
             <Divider orientation="left">Chi tiết dịch vụ</Divider>
             <h1
                 className="title"
@@ -220,46 +363,94 @@ const ServicesDetailById = () => {
                     size="large"
                     pagination={{
                         pageSize: 3,
+                        showSizeChanger: false,
                     }}
                     header={
-                            <Form layout="vertical">
-                        <Row gutter={[16, 16]} align={"middle"}>
-                                <Col
-                                    xxl={24}
-                                    xl={24}
-                                    lg={24}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
-                                >
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={handleFinish}
+                            onFinishFailed={handleFinishFailed}
+                        >
+                            <Row gutter={[16, 16]} align="middle">
+                                <Col span={24}>
                                     <h3>Bình luận và đánh giá</h3>
                                 </Col>
-                                <Col
-                                    xxl={24}
-                                    xl={24}
-                                    lg={24}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
-                                >
+                                <Col span={24}>
                                     <span>Đánh giá của bạn: </span>
-                                    <Rate
-                                        style={{ marginBottom: "10px" }}
-                                        defaultValue={0}
-                                    />
+                                    <Form.Item
+                                        name="rate"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng chọn số sao đánh giá",
+                                            },
+                                        ]}
+                                    >
+                                        <Rate
+                                            style={{ marginBottom: "10px" }}
+                                        />
+                                    </Form.Item>
                                 </Col>
-                                <Input.TextArea
-                                    placeholder="Nhập bình luận của bạn"
-                                    autoSize={{ minRows: 2, maxRows: 6 }}
-                                />
-                                <Button
-                                    type="primary"
-                                    style={{ marginTop: "10px" }}
-                                >
-                                    Gửi bình luận
-                                </Button>
-                        </Row>
-                            </Form>
+                                <Col span={24}>
+                                    <span>Bình luận của bạn: </span>
+                                </Col>
+                                <Col span={24}>
+                                    <Form.Item
+                                        name="comment"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng nhập bình luận",
+                                            },
+                                        ]}
+                                    >
+                                        <Input.TextArea
+                                            placeholder="Nhập bình luận của bạn"
+                                            autoSize={{
+                                                minRows: 2,
+                                                maxRows: 6,
+                                            }}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={24}>
+                                    <span>Hình ảnh của bạn: </span>
+                                    <Form.Item name="images">
+                                        <Upload
+                                            listType="picture-card"
+                                            fileList={fileList}
+                                            beforeUpload={() => false}
+                                            onChange={handleUploadChange}
+                                            multiple
+                                            maxCount={5}
+                                        >
+                                            {fileList.length >= 5 ? null : (
+                                                <div>
+                                                    <PlusOutlined />
+                                                    <div
+                                                        style={{ marginTop: 8 }}
+                                                    >
+                                                        Tải lên
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </Upload>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={24}>
+                                    <Button
+                                        type="primary"
+                                        htmlType="submit"
+                                        style={{ marginTop: "10px" }}
+                                    >
+                                        Gửi bình luận
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Form>
                     }
                     dataSource={data}
                     renderItem={(item) => (
@@ -299,6 +490,22 @@ const ServicesDetailById = () => {
                             <p style={{ fontSize: "12px", color: "#666" }}>
                                 {item?.time}
                             </p>
+                            {item.images.length > 0 && (
+                                <Row gutter={[16, 16]}>
+                                    {item.images.map((image, index) => (
+                                        <Col span={6} key={index}>
+                                            <Image
+                                                width={100}
+                                                src={
+                                                    "http://127.0.0.1:8000/storage/uploads/comments/" +
+                                                    image.image_url
+                                                }
+                                            />
+                                        </Col>
+                                    ))}
+                                </Row>
+                            )}
+
                             {expandedKeys[item.key] && (
                                 <div>{renderReplies(item.replies)}</div>
                             )}
