@@ -46,19 +46,29 @@ class Inventory extends Model
         return $this->belongsTo(User::class, 'updated_by', 'id');
     }
 
-    public static function updateOrCreateInventory(string $productId, int $quantity, ?string $userId = null)
-{
-    $inventory = self::firstOrNew(['product_id' => $productId]);
-
-    if ($inventory->exists) {
-        $inventory->quantity += $quantity;
-    } else {
-        $inventory->quantity = $quantity;
-        $inventory->created_by = $userId;
+    public static function logInventoryChange(string $productId, int $quantityChange, string $userId)
+    {
+        // Tạo dòng mới trong bảng inventory để ghi nhận thay đổi
+        self::create([
+            'product_id' => $productId,
+            'quantity' => $quantityChange,
+            'created_by' => $userId,
+            'updated_by' => $userId,
+        ]);
     }
-
-    $inventory->updated_by = $userId;
-    $inventory->save();
-}
-
+    public static function getCurrentQuantity(string $productId): int
+    {
+        $latestInventory = self::where('product_id', $productId)
+            ->latest('created_at') // Sắp xếp theo thời gian tạo mới nhất
+            ->first();
+    
+        return $latestInventory?->quantity ?? 0;
+    }
+    public static function getInventoryHistory(string $productId)
+    {
+        return self::where('product_id', $productId)
+            ->orderBy('created_at', 'asc') // Sắp xếp từ cũ đến mới
+            ->get();
+    }
+            
 }
