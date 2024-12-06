@@ -54,38 +54,50 @@ class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
         });
 
 
- //appointment
+        //appointment
 
- static::deleting(function ($appointment) {
-    Appointment::where('customer_id', $appointment->id)->update(['customer_id' => null]);
-});
+        static::deleting(function ($appointment) {
+            Appointment::where('customer_id', $appointment->id)->update(['customer_id' => null]);
+        });
 
-static::softDeleted(function ($appointment) {
+        static::softDeleted(function ($appointment) {
 
-    Appointment::where('customer_id', $appointment->id)->update(['customer_id' => null]);
-});
+            Appointment::where('customer_id', $appointment->id)->update(['customer_id' => null]);
+        });
 
- //Consulation
+        //Consulation
 
- static::deleting(function ($consulation) {
-    Consulation::where('customer_id', $consulation->id)->update(['customer_id' => null]);
-});
+        static::deleting(function ($consulation) {
+            Consulation::where('customer_id', $consulation->id)->update(['customer_id' => null]);
+        });
 
-static::softDeleted(function ($consulation) {
+        static::softDeleted(function ($consulation) {
 
-    Consulation::where('customer_id', $consulation->id)->update(['customer_id' => null]);
-});
+            Consulation::where('customer_id', $consulation->id)->update(['customer_id' => null]);
+        });
 
-//Comment
+        //Comment
 
-static::deleting(function ($comment) {
-    Comment::where('customer_id', $comment->id)->update(['customer_id' => null]);
-});
+        static::deleting(function ($comment) {
+            Comment::where('customer_id', $comment->id)->update(['customer_id' => null]);
+        });
 
-static::softDeleted(function ($comment) {
+        static::softDeleted(function ($comment) {
 
-    Comment::where('customer_id', $comment->id)->update(['customer_id' => null]);
-});
+            Comment::where('customer_id', $comment->id)->update(['customer_id' => null]);
+
+        });
+        //treatmentHistory
+        static::deleting(function ($treatmentHistory) {
+            TreatmentHistory::where('customer_id', $treatmentHistory->id)->update(['customer_id' => null]);
+        });
+
+        static::softDeleted(function ($treatmentHistory) {
+
+            TreatmentHistory::where('customer_id', $treatmentHistory->id)->update(['customer_id' => null]);
+
+        });
+
 
     }
 
@@ -106,9 +118,6 @@ static::softDeleted(function ($comment) {
     {
         return $this->hasMany(Consulation::class, 'customer_id', 'id');
     }
-
-
-
 
 
 
