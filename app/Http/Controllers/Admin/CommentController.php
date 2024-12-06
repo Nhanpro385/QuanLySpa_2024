@@ -144,6 +144,12 @@ class CommentController extends Controller
 
             $validatedData = $request->validated();
             $validatedData['updated_by'] = Auth::id();
+            if ($comment->parent_comment_id) {
+                $validatedData['parent_comment_id'] = $comment->parent_comment_id;
+            }
+            if ($comment->customer_id) {
+                $validatedData['customer_id'] = $comment->customer_id;
+            }
 
             if ($request->hasFile('image_url')) {
 
@@ -204,26 +210,14 @@ class CommentController extends Controller
             $validatedData['created_by'] = Auth::id();
             $validatedData['updated_by'] = Auth::id();
             $validatedData['type'] = 0;
+            if ($request->has('service_id')) {
+                $validatedData['service_id'] = $request->input('service_id');
+            }
+            if ($request->has('customer_id')) {
+                $validatedData['customer_id'] = $request->input('customer_id');
+            }
             $reply = Comment::create($validatedData);
 
-
-            if ($request->hasFile('image_url')) {
-                $image = $request->file('image_url');
-
-                if ($image->isValid()) {
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-                    $imagePath = $image->storeAs('uploads/comments', $imageName, 'public');
-
-
-                    CommentImage::create([
-                        'comment_id' => $reply->id,
-                        'image_url' => $imagePath,
-                        'created_by' => Auth::id(),
-                        'updated_by' => Auth::id(),
-                    ]);
-                }
-            }
 
             return response()->json([
                 'status' => 'success',
