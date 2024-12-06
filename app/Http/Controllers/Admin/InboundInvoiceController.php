@@ -62,15 +62,12 @@ class InboundInvoiceController extends Controller
 
     public function store(StoreInboundInvoiceRequest $request)
     {
-        // Lấy dữ liệu đã được xác thực
         $validated = $request->validated();
         $userId = auth()->id();
     
-        // Bắt đầu giao dịch
         DB::beginTransaction();
     
         try {
-            // Tạo hóa đơn nhập hàng
             $invoice = InboundInvoice::create([
                 'staff_id' => $userId,
                 'supplier_id' => $validated['supplier_id'],
@@ -80,19 +77,18 @@ class InboundInvoiceController extends Controller
                 'created_by' => $userId,
             ]);
     
-            // Lặp qua từng chi tiết hóa đơn
             foreach ($validated['details'] as $detail) {
                 $productId = $detail['product_id'];
     
-                // Lấy dữ liệu từ bảng `inventories`
-                $inventory = Inventory::where('product_id', $productId)->first();
-                $quantityOlded = $inventory->quantity ?? 0; // Nếu không có dữ liệu, gán mặc định là 0
+                // Lấy dữ liệu cũ nhất từ inventory
+                $latestInventory = Inventory::where('product_id', $productId)
+                    ->orderByDesc('created_at')
+                    ->first();
+                $quantityOlded = $latestInventory->quantity ?? 0;
     
-                // Lấy dữ liệu từ bảng `products`
                 $product = Product::findOrFail($productId);
-                $costOlded = $product->cost ?? 0; // Nếu không có dữ liệu, gán mặc định là 0
+                $costOlded = $product->cost ?? 0;
     
-                // Xác thực dữ liệu nhập vào (không cần `quantity_olded` và `cost_olded` từ request)
                 $validator = Validator::make($detail, [
                     'product_id' => 'required|exists:products,id',
                     'quantity_import' => 'required|integer|min:1',
@@ -115,8 +111,7 @@ class InboundInvoiceController extends Controller
                     ], 422);
                 }
     
-                // Tạo chi tiết hóa đơn
-                $invoiceDetail = InboundInvoiceDetail::create([
+                InboundInvoiceDetail::create([
                     'inbound_invoice_id' => $invoice->id,
                     'product_id' => $productId,
                     'quantity_olded' => $quantityOlded,
@@ -127,15 +122,14 @@ class InboundInvoiceController extends Controller
                     'created_by' => $userId,
                 ]);
     
-                // Cập nhật hoặc thêm mới kho (inventory)
-                Inventory::updateOrCreateInventory(
-                    $productId,
-                    $detail['quantity_import'], // Số lượng nhập
-                    $userId
-                );
+                // Thêm một dòng mới trong Inventory
+                Inventory::create([
+                    'product_id' => $productId,
+                    'quantity' => $detail['quantity_import'] + $quantityOlded,
+                    'created_by' => $userId,
+                ]);
             }
     
-            // Hoàn tất giao dịch
             DB::commit();
     
             return response()->json([
@@ -144,7 +138,6 @@ class InboundInvoiceController extends Controller
                 'data' => new InboundInvoiceResource($invoice->load('details.product', 'createdBy', 'updatedBy', 'supplier', 'staff')),
             ], 201);
         } catch (\Exception $e) {
-            // Hủy giao dịch nếu có lỗi
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
@@ -206,7 +199,7 @@ class InboundInvoiceController extends Controller
                     // Khôi phục tồn kho trước khi cập nhật
                     $inventory = Inventory::where('product_id', $inboundDetail->product_id)->first();
                     if ($inventory) {
-                        $inventory->quantity -= $inboundDetail->quantity_import; // Giảm số lượng nhập cũ
+                        $inventory->quantity -= $inboundDetail->quantity_import; // Trừ số lượng cũ khỏi tồn kho
                         $inventory->save();
                     }
     
@@ -219,7 +212,7 @@ class InboundInvoiceController extends Controller
                     // Cập nhật tồn kho mới
                     $inventory = Inventory::where('product_id', $detail['product_id'])->first();
                     if ($inventory) {
-                        $inventory->quantity += $detail['quantity_import']; // Cộng số lượng nhập mới
+                        $inventory->quantity += $detail['quantity_import']; // Cộng số lượng nhập mới vào tồn kho
                         $inventory->save();
                     }
                 } else {
@@ -267,7 +260,6 @@ class InboundInvoiceController extends Controller
         }
     }
     
-
     
     /**
      * Xóa một hóa đơn nhập (soft delete).
