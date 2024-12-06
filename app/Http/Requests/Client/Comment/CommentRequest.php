@@ -27,7 +27,12 @@ class CommentRequest extends FormRequest
             'service_id' => 'required|integer|exists:services,id',
             'parent_comment_id' => 'nullable|exists:comments,id|integer',
             'comment' => 'required|string|max:500',
-
+            'rate' => [
+                'required',
+                'integer',
+                'min:1',
+                'max:5',   
+            ],
 
             // 'status' => 'required|boolean',
             'image_urls' => 'nullable|array',
