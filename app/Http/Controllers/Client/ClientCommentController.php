@@ -87,7 +87,8 @@ class ClientCommentController extends Controller
                 'service_id' => $validatedData['service_id'] ?? null,
                 'comment' => $validatedData['comment'],
                 'customer_id'=>$userId,
-                'type' => 1
+                'type' => 1,
+                'rate' => $validatedData['rate'],
 
 
             ]);

@@ -25,7 +25,7 @@ class CommentController extends Controller
     public function index(Request $request, CommentFilter $filter)
     {
         try {
-            $query = Comment::with(['createdByUser', 'updatedByUser']);
+            $query = Comment::with(['createdByUser', 'updatedByUser'])->orderBy('created_at', 'desc');
 
 
             $comments = $filter->apply($request, $query)->paginate($request->input('per_page', 5));

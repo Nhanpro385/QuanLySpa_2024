@@ -22,13 +22,18 @@ class CommentUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            
+
             'customer_id' => 'required|integer|exists:customers,id',
             'service_id' => 'required|integer|exists:services,id',
             'parent_comment_id' => 'nullable|exists:comments,id|integer',
             'comment' => 'required|string|max:500',
 
-
+            'rate' => [
+                'required',
+                'integer',
+                'min:1',
+                'max:5',
+            ],
             // 'status' => 'required|boolean',
             'image_urls' => 'nullable|array',
             'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
