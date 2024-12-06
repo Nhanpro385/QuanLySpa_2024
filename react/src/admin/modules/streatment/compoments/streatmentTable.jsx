@@ -1,14 +1,16 @@
 import React from "react";
-import { Table, Button, Dropdown, Space, Tag } from "antd";
+import { Table, Button, Dropdown, Space, Tag, Popconfirm } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-
+import { useNavigate } from "react-router-dom";
 const StreatmentsTable = ({
     sreatment,
-    onClick,
+    handelDetail,
+    handleDelete,
     loading,
     handelPageChange,
     pageconfig,
 }) => {
+    const navigate = useNavigate();
     const dataSource = sreatment.map((item, index) => ({
         ...item,
         key: index,
@@ -65,8 +67,54 @@ const StreatmentsTable = ({
             render: (text, record) => (
                 <Dropdown
                     menu={{
-                        items,
-                        onClick: (e) => onClick({ key: e.key, record }),
+                        items: [
+                            {
+                                key: "1",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() =>
+                                            navigate(
+                                                `/admin/khachhang/lichsutrilieu/chinhsua/${record.id}`
+                                            )
+                                        }
+                                    >
+                                        {" "}
+                                        Sửa{" "}
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "2",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => handelDetail(record)}
+                                    >
+                                        {" "}
+                                        Chi tiết{" "}
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "3",
+                                label: (
+                                    <Popconfirm
+                                        title="Bạn có chắc chắn muốn xóa?"
+                                        onConfirm={() =>
+                                            handleDelete(record.id)
+                                        }
+                                        okText="Có"
+                                        cancelText="Không"
+                                    >
+                                        <Button block danger>
+                                            {" "}
+                                            Xóa{" "}
+                                        </Button>
+                                    </Popconfirm>
+                                ),
+                            },
+                        ],
                     }}
                     trigger={["click"]}
                 >

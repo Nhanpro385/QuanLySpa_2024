@@ -1,40 +1,40 @@
 import React from "react";
-import { Table, Button, Dropdown, Space } from "antd";
+import { Table, Button, Dropdown, Space, Popconfirm } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const items = [
-    {
-        key: "1",
-        label: <Button block> Sửa </Button>,
-    },
-    {
-        key: "2",
-        label: (
-            <Button block >
-         
-                Chi tiết 
-            </Button>
-        ),
-    },
-    {
-        key: "3",
-        label: (
-            <Button block disabled>
-                {" "}
-                Lịch sử làm việc (Chưa hoàn thành)
-            </Button>
-        ),
-    },
-    {
-        key: "4",
-        label: (
-            <Button block danger>
-                Xóa
-            </Button>
-        ),
-    },
-];
+// const items = [
+//     {
+//         key: "1",
+//         label: <Button block> Sửa </Button>,
+//     },
+//     {
+//         key: "2",
+//         label: (
+//             <Button block >
+
+//                 Chi tiết
+//             </Button>
+//         ),
+//     },
+//     {
+//         key: "3",
+//         label: (
+//             <Button block disabled>
+//                 {" "}
+//                 Lịch sử làm việc (Chưa hoàn thành)
+//             </Button>
+//         ),
+//     },
+//     {
+//         key: "4",
+//         label: (
+//             <Button block danger>
+//                 Xóa
+//             </Button>
+//         ),
+//     },
+// ];
 
 const StaffTable = ({
     dataSource,
@@ -46,24 +46,7 @@ const StaffTable = ({
 }) => {
     const navigate = useNavigate(); // Ensure `useNavigate` is called correctly
 
-    const onClick = ({ key, record }) => {
-        switch (key) {
-            case "1":
-                handleEdit(record.key); // Ensure `record.key` is unique
-                break;
-            case "2":
-                navigate(`/admin/nhanvien/${record.key}`);
-                break;
-            case "3":
-                navigate(`/admin/nhanvien/${record.key}/history`);
-                break;
-            case "4":
-                handleDelete(record.key);
-                break;
-            default:
-                break;
-        }
-    };
+   
 
     const columns = [
         {
@@ -97,8 +80,61 @@ const StaffTable = ({
             render: (text, record) => (
                 <Dropdown
                     menu={{
-                        items,
-                        onClick: (e) => onClick({ key: e.key, record }),
+                        items: [
+                            {
+                                key: "1",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => handleEdit(record.key)}
+                                    >
+                                        {" "}
+                                        Sửa{" "}
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "2",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() =>
+                                            navigate(
+                                                `/admin/nhanvien/${record.key}`
+                                            )
+                                        }
+                                    >
+                                        {" "}
+                                        Chi tiết{" "}
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "3",
+                                label: (
+                                    <Button block disabled>
+                                        {" "}
+                                        Lịch sử làm việc (Chưa hoàn thành){" "}
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "4",
+                                label: (
+                                    <Popconfirm
+                                        title="Bạn có chắc chắn muốn xóa nhân viên này không?"
+                                        onConfirm={() =>
+                                            handleDelete(record.key)
+                                        }
+                                    >
+                                        <Button block danger>
+                                            {" "}
+                                            Xóa{" "}
+                                        </Button>
+                                    </Popconfirm>
+                                ),
+                            },
+                        ],
                     }}
                     trigger={["click"]}
                 >

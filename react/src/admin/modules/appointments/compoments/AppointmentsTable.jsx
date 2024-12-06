@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Dropdown, Space, Tag } from "antd";
+import { Table, Button, Dropdown, Space, Tag, Popconfirm } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 const AppointmentsTable = ({
@@ -13,39 +13,39 @@ const AppointmentsTable = ({
 }) => {
     console.log(dataSource);
 
-    const items = [
-        {
-            key: "1",
-            label: (
-                <Button block onClick={(e) => e.preventDefault()}>
-                    Sửa
-                </Button>
-            ),
-        },
-        {
-            key: "2",
-            label: (
-                <Button block onClick={(e) => e.preventDefault()}>
-                    Chi tiết
-                </Button>
-            ),
-        },
-        {
-            key: "3",
-            label: (
-                <Button
-                    block
-                    danger
-                    onClick={(e) => {
-                        e.preventDefault(); // Prevent event propagation
-                        handleDelete(); // Pass the appropriate delete logic here
-                    }}
-                >
-                    Xóa
-                </Button>
-            ),
-        },
-    ];
+    // const items = [
+    //     {
+    //         key: "1",
+    //         label: (
+    //             <Button block onClick={(e) => e.preventDefault()}>
+    //                 Sửa
+    //             </Button>
+    //         ),
+    //     },
+    //     {
+    //         key: "2",
+    //         label: (
+    //             <Button block onClick={(e) => e.preventDefault()}>
+    //                 Chi tiết
+    //             </Button>
+    //         ),
+    //     },
+    //     {
+    //         key: "3",
+    //         label: (
+    //             <Button
+    //                 block
+    //                 danger
+    //                 onClick={(e) => {
+    //                     e.preventDefault(); // Prevent event propagation
+    //                     handleDelete(); // Pass the appropriate delete logic here
+    //                 }}
+    //             >
+    //                 Xóa
+    //             </Button>
+    //         ),
+    //     },
+    // ];
 
     const columns = [
         {
@@ -59,7 +59,7 @@ const AppointmentsTable = ({
             key: "service_name",
             render: (text, record) => {
                 return <span>{record.service_name || "Không có"}</span>;
-            }
+            },
         },
         {
             title: "Tên Khách Hàng",
@@ -72,7 +72,7 @@ const AppointmentsTable = ({
             key: "employee_name",
             render: (text, record) => {
                 return <span>{record.employee_name || "Không có"}</span>;
-            }
+            },
         },
         {
             title: "Thời Gian Bắt Đầu",
@@ -115,17 +115,53 @@ const AppointmentsTable = ({
                 <span>
                     <Dropdown
                         menu={{
-                            items,
-                            onClick: (e) => {
-                                const key = e.key;
-                                console.log(key);
-
-                                if (key == "3") {
-                                    handleDelete(record); // Pass record to handleDelete
-                                }
-                                if (key == "1") onEdit(record.key);
-                                if (key == "2") onViewDetail(record.key);
-                            },
+                            items: [
+                                {
+                                    key: "1",
+                                    label: (
+                                        <Button
+                                            block
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                onEdit(record.id);
+                                            }}
+                                        >
+                                            Sửa
+                                        </Button>
+                                    ),
+                                },
+                                {
+                                    key: "2",
+                                    label: (
+                                        <Button
+                                            block
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                onViewDetail(record.id);
+                                            }}
+                                        >
+                                            Chi tiết
+                                        </Button>
+                                    ),
+                                },
+                                {
+                                    key: "3",
+                                    label: (
+                                        <Popconfirm
+                                            title="Bạn có chắc chắn muốn xóa?"
+                                            onConfirm={() =>
+                                                handleDelete(record)
+                                            }
+                                            okText="Có"
+                                            cancelText="Không"
+                                        >
+                                            <Button block danger>
+                                                Xóa
+                                            </Button>
+                                        </Popconfirm>
+                                    ),
+                                },
+                            ],
                         }}
                         trigger={["click"]}
                     >

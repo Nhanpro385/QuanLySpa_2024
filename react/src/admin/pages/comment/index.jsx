@@ -157,16 +157,16 @@ const CommentManagement = () => {
                     loading={commentSlice.loading}
                     dataSource={dataSource}
                     handleViewDetail={(comment) => {
-                        setSelectedComment(comment);
+                        setSelectedComment(() => comment);
                         setActiveModal("detail");
                     }}
                     handleDelete={handleDelete}
                     handleReplyClick={(comment) => {
-                        setSelectedComment(comment);
+                        setSelectedComment(() => comment);
                         setActiveModal("reply");
                     }}
                     handleEdit={(comment) => {
-                        setSelectedComment(comment);
+                        setSelectedComment(() => comment);
                         setActiveModal("edit");
                     }}
                     pagination={pagination}

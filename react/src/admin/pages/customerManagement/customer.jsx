@@ -132,26 +132,10 @@ function Customer() {
         setSearchQuery((prev) => ({ ...prev, page, per_page: Pagination }));
     };
 
-    const handleActionClick = ({ key, record }) => {
-        switch (key) {
-            case "1":
-                handleEdit(record);
-                break;
-            case "2":
-                handleDetailCustomer(record.id);
-                break;
-            case "3":
-                navigate(`/admin/khachhang/lichsutrilieu/${record.id}`);
-                break;
-            case "4":
-                handleDelete(record.id);
-                break;
-            default:
-                break;
-        }
-    };
     const handleDetailCustomer = async (id) => {
         try {
+            console.log(id);
+            
             const resultAction = await getCustomerById(id);
             if (!customers.loading) {
                 if (resultAction.meta.requestStatus === "fulfilled") {
@@ -166,15 +150,15 @@ function Customer() {
     };
     return (
         <Card
-        extra={
-            <Button
-                type="primary"
-                onClick={() => getCustomer()}
-                loading={customers.loading}
-            >
-                Làm mới
-            </Button>
-        }
+            extra={
+                <Button
+                    type="primary"
+                    onClick={() => getCustomer()}
+                    loading={customers.loading}
+                >
+                    Làm mới
+                </Button>
+            }
         >
             <h1 className="text-center mb-4">Quản lý khách hàng</h1>
 
@@ -209,10 +193,12 @@ function Customer() {
             {/* Customer Table */}
             <CustomerTable
                 customers={CustomerData}
-                onClick={handleActionClick}
                 loading={customers.loading}
                 handelPageChange={handlePageChange}
                 pagination={pagination}
+                handleEdit={handleEdit}
+                handleDetailCustomer={handleDetailCustomer}
+                handleDelete={handleDelete}
             />
 
             {/* Modal */}

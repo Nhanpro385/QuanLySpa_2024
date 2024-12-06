@@ -23,7 +23,7 @@ const ShiftTable = ({
                 showQuickJumper: true,
                 showSizeChanger: true,
                 onChange: onChangePage,
-                showTotal: (total) => `Tổng ${total} khách hàng`,
+                showTotal: (total) => `Tổng ${total} ca làm việc`,  
             }}
         />
     );

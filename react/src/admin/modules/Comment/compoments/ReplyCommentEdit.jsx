@@ -36,6 +36,7 @@ const ReplyCommentEdit = ({ visible, onClose, onSubmit, comment }) => {
             });
         }
     }, [visible, comment, reset]);
+    console.log(comment);
 
     const handleFormSubmit = (data) => {
         const payload = {

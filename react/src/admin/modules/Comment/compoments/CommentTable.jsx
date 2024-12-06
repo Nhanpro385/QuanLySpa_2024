@@ -1,5 +1,14 @@
 import React from "react";
-import { Table, Avatar, Rate, Button, Space, Dropdown, Typography } from "antd";
+import {
+    Table,
+    Avatar,
+    Rate,
+    Button,
+    Space,
+    Dropdown,
+    Typography,
+    Popconfirm,
+} from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
@@ -25,10 +34,14 @@ const CommentTable = ({
             title: "Tên người dùng",
             dataIndex: "user",
             key: "user",
-            render: (user,record) => (
+            render: (user, record) => (
                 <Space>
                     <Avatar size="small" icon={<UserOutlined />} />
-                    <Text>{record.type == 0 ? `Admin: ${record.created_by.full_name}` : record.customer_id}</Text>
+                    <Text>
+                        {record.type == 0
+                            ? `Admin: ${record.created_by.full_name}`
+                            : record.customer_id}
+                    </Text>
                 </Space>
             ),
         },
@@ -36,7 +49,9 @@ const CommentTable = ({
             title: "Dịch vụ",
             dataIndex: "service_id",
             key: "service_id",
-            render: (service_id) => <Text>{service_id ? service_id : "Không có"}</Text>,
+            render: (service_id) => (
+                <Text>{service_id ? service_id : "Không có"}</Text>
+            ),
         },
         {
             title: "Nội dung",
@@ -55,7 +70,9 @@ const CommentTable = ({
             key: "admin_reply",
             render: (admin_reply, record) => (
                 <Text type={record?.replies?.length > 0 ? "success" : "danger"}>
-                    {record?.replies?.length > 0 ? "Đã trả lời" : "Chưa trả lời"}
+                    {record?.replies?.length > 0
+                        ? "Đã trả lời"
+                        : "Chưa trả lời"}
                 </Text>
             ),
         },

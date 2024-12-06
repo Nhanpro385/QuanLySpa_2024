@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Input, Modal, Row, Col, notification, Card } from "antd";
+import {
+    Table,
+    Button,
+    Input,
+    Modal,
+    Row,
+    Col,
+    notification,
+    Card,
+} from "antd";
 import ServicesAdd from "./add_services";
 import useModal from "../../modules/appointments/hooks/openmodal";
-import { DownOutlined, Loading3QuartersOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+    DownOutlined,
+    Loading3QuartersOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import ServiceModalEdit from "../../modules/services/compoments/ServiceModalEdit";
 import ServiceTable from "../../modules/services/compoments/ServiceTable";
@@ -65,12 +78,10 @@ function Services() {
         }
     }, [services]);
     console.log(ServiceData);
-    
 
     const handleEdit = async (record) => {
         try {
             const res = await getservicesById(record.key);
-        
 
             if (res.payload.status === "success") {
                 setEditService(res.payload.data);
@@ -87,12 +98,10 @@ function Services() {
             if (res.payload.status === "success") {
                 setDetailService(res.payload.data);
                 showModal3();
-
-            }else{
+            } else {
                 api.error({
                     message: "Lấy thông tin dịch vụ thất bại",
                 });
-                
             }
         } catch (err) {
             console.log(err);
@@ -135,7 +144,6 @@ function Services() {
     };
     const handleSubmitEdit = async (data) => {
         try {
-            
             const formData = new FormData();
 
             for (let key in data) {
@@ -164,8 +172,6 @@ function Services() {
         }
     };
     const onAddproduct = (record) => {
-        console.log(record);
-
         Navigate("/admin/dichvu/themsanphamdichvu/" + record.key);
     };
     const onEditproduct = (record) => {
@@ -173,16 +179,16 @@ function Services() {
     };
     return (
         <Card
-        extra={
-            <Button
-            icon={<Loading3QuartersOutlined />}
-                type="primary"
-                onClick={() => getservices()}
-                loading={services.loading}
-            >
-                Làm mới
-            </Button>
-        }
+            extra={
+                <Button
+                    icon={<Loading3QuartersOutlined />}
+                    type="primary"
+                    onClick={() => getservices()}
+                    loading={services.loading}
+                >
+                    Làm mới
+                </Button>
+            }
         >
             {contextHolder}
             <h1 className="text-center">Quản lý dịch vụ</h1>
@@ -243,9 +249,9 @@ function Services() {
                 error={errorEdit}
             />
             <ServiceModalDetail
-            isOpen={isModalOpen3}
-            onClose={handleCancel3}
-            servicedata={DetailService}
+                isOpen={isModalOpen3}
+                onClose={handleCancel3}
+                servicedata={DetailService}
             />
         </Card>
     );

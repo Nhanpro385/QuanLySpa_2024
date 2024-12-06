@@ -1,6 +1,6 @@
 // ServiceCategoryTable.jsx
 import React from "react";
-import { Table, Space, Button } from "antd";
+import { Table, Space, Button, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const ServiceCategoryTable = ({
@@ -11,7 +11,6 @@ const ServiceCategoryTable = ({
     pagination,
     handlePageChange,
 }) => {
-   
     const columns = [
         {
             title: "STT",
@@ -38,13 +37,16 @@ const ServiceCategoryTable = ({
                     <Button type="primary" onClick={() => editCate(record)}>
                         <EditOutlined />
                     </Button>
-                    <Button
-                        color="primary"
-                        variant="outlined"
-                        onClick={() => deleteCate(record)}
+                    <Popconfirm
+                        title="Bạn có chắc chắn muốn xóa?"
+                        onConfirm={() => deleteCate(record)}
+                        okText="Có"
+                        cancelText="Không"
                     >
-                        <DeleteOutlined />
-                    </Button>
+                        <Button color="primary" variant="outlined">
+                            <DeleteOutlined />
+                        </Button>
+                    </Popconfirm>
                 </Space>
             ),
         },

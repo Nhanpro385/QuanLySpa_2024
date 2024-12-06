@@ -1,12 +1,12 @@
 import React from "react";
-import { Table, Button, Tag } from "antd";
+import { Table, Button, Tag, Popconfirm } from "antd";
 
 const PromotionTable = ({
     dataSource,
     handleEdit,
     handleDelete,
     pagination,
-    handlePageChange
+    handlePageChange,
 }) => {
     const columns = [
         {
@@ -67,12 +67,14 @@ const PromotionTable = ({
                     >
                         Sửa
                     </Button>
-                    <Button
-                        type="danger"
-                        onClick={() => handleDelete(record.key)}
+                    <Popconfirm
+                        title="Bạn có chắc chắn muốn xóa?"
+                        onConfirm={() => handleDelete(record.key)}
+                        okText="Có"
+                        cancelText="Không"
                     >
-                        Xóa
-                    </Button>
+                        <Button type="danger">Xóa</Button>
+                    </Popconfirm>
                 </span>
             ),
         },

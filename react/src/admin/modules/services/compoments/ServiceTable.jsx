@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Dropdown, Space, Modal, Tag } from "antd";
+import { Table, Button, Dropdown, Space, Modal, Tag, Popconfirm } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import ServiceActions from "./ServiceActions";
 
@@ -43,7 +43,11 @@ const ServiceTable = ({
             key: "status",
             render: (text, record) => (
                 <span>
-                    {record.status == 1 ? <Tag color="green">Hoạt động</Tag> : <Tag color="red">Không hoạt động</Tag>}
+                    {record.status == 1 ? (
+                        <Tag color="green">Hoạt động</Tag>
+                    ) : (
+                        <Tag color="red">Không hoạt động</Tag>
+                    )}
                 </span>
             ),
         },
@@ -52,16 +56,58 @@ const ServiceTable = ({
             key: "action",
             render: (text, record) => (
                 <Dropdown
-                    overlay={
-                        <ServiceActions
-                            record={record}
-                            onEdit={onEdit}
-                            onDelete={onDelete}
-                            onAddproduct={onAddproduct}
-                            onViewDetails={onViewDetails}
-                            onEditproduct={onEditproduct}
-                        />
-                    }
+                    menu={{
+                        items: [
+                            {
+                                key: "1",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => onEdit(record)}
+                                    >
+                                        Sửa
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "2",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => onViewDetails(record)}
+                                    >
+                                        Chi tiết
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "3",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => onAddproduct(record)}
+                                    >
+                                        Thêm sản phẩm Dịch vụ
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "4",
+                                label: (
+                                    <Popconfirm
+                                        title="Bạn có chắc chắn muốn xóa?"
+                                        onConfirm={() => onDelete(record)}
+                                        okText="Có"
+                                        cancelText="Không"
+                                    >
+                                        <Button block danger>
+                                            Xóa
+                                        </Button>
+                                    </Popconfirm>
+                                ),
+                            },
+                        ],
+                    }}
                     trigger={["click"]}
                 >
                     <Button type="primary">

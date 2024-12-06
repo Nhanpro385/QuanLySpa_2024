@@ -1,14 +1,18 @@
 import React from "react";
-import { Table, Button, Dropdown, Space } from "antd";
+import { Table, Button, Dropdown, Space, Popconfirm } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const CustomerTable = ({
     customers,
-    onClick,
     loading,
     handelPageChange,
     pagination,
+    handleDelete,
+    handleDetailCustomer,
+    handleEdit,
 }) => {
+    const Navigate = useNavigate();
     const columns = [
         {
             title: "STT",
@@ -21,7 +25,6 @@ const CustomerTable = ({
             dataIndex: "full_name",
             key: "full_name",
         },
-
         {
             title: "Số điện thoại",
             dataIndex: "phone",
@@ -38,8 +41,60 @@ const CustomerTable = ({
             render: (text, record) => (
                 <Dropdown
                     menu={{
-                        items,
-                        onClick: (e) => onClick({ key: e.key, record }),
+                        items: [
+                            {
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() =>
+                                            handleDetailCustomer(record.id)
+                                        }
+                                    >
+                                        Xem chi tiết
+                                    </Button>
+                                ),
+                                key: "detail",
+                            },
+                            {
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => handleEdit(record)}
+                                    >
+                                        Sửa
+                                    </Button>
+                                ),
+                                key: "edit",
+                            },
+                            {
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => {
+                                            Navigate(
+                                                `/admin/khachhang/lichsutrilieu/${record.id}`
+                                            );
+                                        }}
+                                    >
+                                        Xem thông tin trị liệu
+                                    </Button>
+                                ),
+                                key: "streatment",
+                            },
+                            {
+                                label: (
+                                    <Popconfirm
+                                        title="Bạn có chắc chắn muốn xóa?"
+                                        onConfirm={() =>
+                                            handleDelete(record.id)
+                                        }
+                                    >
+                                        <Button block>Xóa</Button>
+                                    </Popconfirm>
+                                ),
+                                key: "delete",
+                            },
+                        ],
                     }}
                     trigger={["click"]}
                 >
@@ -50,26 +105,6 @@ const CustomerTable = ({
                         </Space>
                     </Button>
                 </Dropdown>
-            ),
-        },
-    ];
-
-    const items = [
-        { key: "1", label: <Button block> Sửa </Button> },
-        {
-            key: "2",
-            label: <Button block> Chi tiết</Button>,
-        },
-        {
-            key: "3",
-            label: <Button block> Lịch sử trị liệu </Button>,
-        },
-        {
-            key: "4",
-            label: (
-                <Button block danger>
-                    Xóa
-                </Button>
             ),
         },
     ];

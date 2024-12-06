@@ -3,19 +3,19 @@ import {
     Button,
     Col,
     Row,
-    Select,
-    Input,
     notification,
     DatePicker,
     Card,
+    Space,
+    Popconfirm,
+    Dropdown,
 } from "antd";
-import { Loading3QuartersOutlined, SearchOutlined } from "@ant-design/icons";
+import { Loading3QuartersOutlined, DownOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import ShiftTable from "../../modules/ShiftManagement/compoments/ShiftTable";
-import ShiftActions from "../../modules/ShiftManagement/compoments/ShiftActions";
 
 import ShiftCalendar from "../../modules/ShiftManagement/compoments/ShiftCalendar";
 
@@ -236,7 +236,67 @@ const ShiftManagement = () => {
             title: "Hành Động",
             key: "action",
             render: (text, record) => (
-                <ShiftActions record={record} onClick={handleActionClick} />
+                <Dropdown
+                    menu={{
+                        items: [
+                            {
+                                key: "1",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => handleEdit(record.key)}
+                                    >
+                                        Sửa Ca Làm
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "2",
+                                label: (
+                                    <Button block disabled>
+                                        Chi tiết Ca (Chưa có)
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "3",
+                                label: (
+                                    <Button
+                                        block
+                                        onClick={() => handleaddstaff(record)}
+                                    >
+                                        thêm nhân viên{" "}
+                                    </Button>
+                                ),
+                            },
+                            {
+                                key: "4",
+                                label: (
+                                    <Popconfirm
+                                        title="Bạn có chắc chắn muốn xóa ca làm việc này không?"
+                                        onConfirm={() =>
+                                            handleDelete(record.key)
+                                        }
+                                        okText="Có"
+                                        cancelText="Không"
+                                    >
+                                        <Button block danger>
+                                            Xóa Ca
+                                        </Button>
+                                    </Popconfirm>
+                                ),
+                            },
+                        ],
+                    }}
+                    trigger={["click"]}
+                >
+                    <Button type="primary">
+                        <Space>
+                            Hành động
+                            <DownOutlined />
+                        </Space>
+                    </Button>
+                </Dropdown>
             ),
         },
     ];
@@ -271,25 +331,6 @@ const ShiftManagement = () => {
             }
         } catch (error) {}
     };
-    const handleActionClick = (key, record) => {
-        switch (key.key) {
-            case "1":
-                handleEdit(record.key);
-                break;
-            case "2":
-                navigate(`/admin/staffs/${record.key}`);
-                break;
-            case "3":
-                handleaddstaff(record);
-                break;
-            case "4":
-                handleDelete(record.key);
-                break;
-            default:
-                break;
-        }
-    };
-    const handleAddstaff = async (value) => {};
 
     return (
         <div>
@@ -347,7 +388,7 @@ const ShiftManagement = () => {
                 <ShiftTable
                     dataSource={dataSource}
                     columns={columns}
-                    onClick={handleActionClick}
+                  
                     pagination={pagnation}
                     onChangePage={handlechangePage}
                     loading={loading}

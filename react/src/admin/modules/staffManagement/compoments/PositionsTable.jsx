@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Space } from "antd";
+import { Table, Button, Space, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const PositionsTable = ({
@@ -10,7 +10,6 @@ const PositionsTable = ({
     pagination,
     onChangePage,
 }) => {
-    
     const columns = [
         {
             title: "STT",
@@ -37,9 +36,16 @@ const PositionsTable = ({
                     <Button type="primary" onClick={() => editCate(record)}>
                         <EditOutlined />
                     </Button>
-                    <Button danger onClick={() => deleteCate(record)}>
+                    <Popconfirm
+                        title="Bạn có chắc chắn muốn xóa?"
+                        onConfirm={() => deleteCate(record)}
+                        okText="Có"
+                        cancelText="Không"
+                    >
+                    <Button danger>
                         <DeleteOutlined />
                     </Button>
+                    </Popconfirm>
                 </Space>
             ),
         },

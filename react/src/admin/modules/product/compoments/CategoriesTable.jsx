@@ -1,7 +1,7 @@
 // src/modules/product/components/CategoriesTable.jsx
 
 import React from "react";
-import { Table, Button, Space } from "antd";
+import { Table, Button, Space, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const CategoriesTable = ({
@@ -38,9 +38,16 @@ const CategoriesTable = ({
                     <Button type="primary" onClick={() => editCate(record.id)}>
                         <EditOutlined />
                     </Button>
-                    <Button type="danger" onClick={() => deleteCate(record.id)}>
-                        <DeleteOutlined />
-                    </Button>
+                    <Popconfirm
+                        title="Bạn có chắc chắn muốn xóa?"
+                        onConfirm={() => deleteCate(record.id)}
+                        okText="Có"
+                        cancelText="Không"
+                    >
+                        <Button type="danger">
+                            <DeleteOutlined />
+                        </Button>
+                    </Popconfirm>
                 </Space>
             ),
         },

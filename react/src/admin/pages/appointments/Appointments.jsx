@@ -108,7 +108,7 @@ function Appointments() {
                 return;
             }
             api.success({
-                message: res.payload.message || "Hủy lịch hẹn thành công",
+                message: res?.payload?.message || "Hủy lịch hẹn thành công",
                 duration: 3,
             });
             getappointments();

@@ -66,26 +66,7 @@ const StreatMents = () => {
             getStreatments();
         }
     }, [searchQuery]);
-    const onClick = ({ key, record }) => {
-        console.log("record", record);
 
-        switch (key) {
-            case "1":
-                navigate(
-                    `/admin/khachhang/lichsutrilieu/chinhsua/${record.id}`
-                );
-                break;
-            case "2":
-                handelDetail(record);
-                break;
-            case "3":
-                handleDelete(record.id);
-                break;
-
-            default:
-                break;
-        }
-    };
     const handelDetail = async (record) => {
         try {
             await getStreatmentById(record.id);
@@ -117,15 +98,15 @@ const StreatMents = () => {
 
     return (
         <Card
-        extra={
-            <Button
-                type="primary"
-                onClick={() => getStreatments()}
-                loading={streatments.loading}
-            >
-                Làm mới
-            </Button>
-        }
+            extra={
+                <Button
+                    type="primary"
+                    onClick={() => getStreatments()}
+                    loading={streatments.loading}
+                >
+                    Làm mới
+                </Button>
+            }
         >
             <h1 className="text-center mb-4">
                 Quản lý Lịch sử Trị liệu của khách hàng
@@ -158,10 +139,12 @@ const StreatMents = () => {
 
             <StreatmentsTable
                 sreatment={streatmentData}
-                onClick={onClick}
                 loading={streatments.loading}
                 handelPageChange={handelPageChange}
                 pageconfig={pageconfig}
+                handelDetail={handelDetail}
+                handleDelete={handleDelete}
+
             />
 
             <ModalStreatmentDetail

@@ -11,24 +11,24 @@ const TableProduct = ({
     handleDetail,
     loading,
 }) => {
-    const items = [
-        {
-            key: "1",
-            label: <Button block> Sửa </Button>,
-        },
-        {
-            key: "2",
-            label: <Button block> Chi tiết </Button>,
-        },
-        {
-            key: "4",
-            label: (
-                <Button block danger>
-                    Xóa
-                </Button>
-            ),
-        },
-    ];
+    // const items = [
+    //     {
+    //         key: "1",
+    //         label: <Button block> Sửa </Button>,
+    //     },
+    //     {
+    //         key: "2",
+    //         label: <Button block> Chi tiết </Button>,
+    //     },
+    //     {
+    //         key: "4",
+    //         label: (
+    //             <Button block danger>
+    //                 Xóa
+    //             </Button>
+    //         ),
+    //     },
+    // ];
     const onClick = ({ key, record }) => {
         switch (key) {
             case "1":
@@ -108,8 +108,53 @@ const TableProduct = ({
                 <span>
                     <Dropdown
                         menu={{
-                            items,
-                            onClick: (e) => onClick({ key: e.key, record }),
+                            items: [
+                                {
+                                    key: "1",
+                                    label: (
+                                        <Button
+                                            block
+                                            onClick={() =>
+                                                handleEdit(record.key)
+                                            }
+                                        >
+                                            {" "}
+                                            Sửa{" "}
+                                        </Button>
+                                    ),
+                                },
+                                {
+                                    key: "2",
+                                    label: (
+                                        <Button
+                                            block
+                                            onClick={() =>
+                                                handleDetail(record.key)
+                                            }
+                                        >
+                                            {" "}
+                                            Chi tiết{" "}
+                                        </Button>
+                                    ),
+                                },
+                                {
+                                    key: "4",
+                                    label: (
+                                        <Popconfirm
+                                            title="Bạn có chắc chắn muốn xóa?"
+                                            onConfirm={() =>
+                                                handleDelete(record.key)
+                                            }
+                                            okText="Có"
+                                            cancelText="Không"
+                                        >
+                                            <Button block danger>
+                                                Xóa
+                                            </Button>
+                                        </Popconfirm>
+                                    ),
+                                },
+                            ],
                         }}
                         trigger={["click"]}
                     >

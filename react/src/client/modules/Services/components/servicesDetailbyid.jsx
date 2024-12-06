@@ -43,6 +43,7 @@ const ServicesDetailById = () => {
     const [formReply] = Form.useForm();
     const [fileList, setFileList] = useState([]);
     const [api, contextHolder] = notification.useNotification();
+    const [keyreply, setKeyReply] = useState(null);
     useEffect(() => {
         getServicesDetailClient(id);
     }, [id]);
@@ -85,31 +86,7 @@ const ServicesDetailById = () => {
         rating: item.rate || 0,
         id: item.id,
         type: item.type,
-        replies: item?.clientReplies?.map((reply, replyIndex) => ({
-            key: `${index}-${replyIndex}`,
-            type: reply.type,
-            id: reply.id,
-            title: reply?.type === 1 ? reply?.customer?.full_name : "Nhân viên",
-            avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${replyIndex}`,
-            description:
-                reply.type === 1
-                    ? "Phản hồi từ khách hàng."
-                    : "Phản hồi từ nhân viên.",
-            content: reply?.comment || "Không có",
-            time: reply?.created_at || "Không có",
-            replies: reply?.clientReplies?.map((nestedReply, nestedIndex) => ({
-                key: `${index}-${replyIndex}-${nestedIndex}`,
-                type: nestedReply.type,
-                id: nestedReply.id,
-                title:
-                    nestedReply?.customer?.full_name ||
-                    "Người dùng không xác định",
-                avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${nestedIndex}`,
-                description: "Phản hồi từ nhân viên.",
-                content: nestedReply?.comment || "Không có",
-                time: nestedReply?.created_at || "Không có",
-            })),
-        })),
+        ...item,
     }));
 
     const IconText = ({ icon, text }) => (
@@ -131,6 +108,7 @@ const ServicesDetailById = () => {
             <Button onClick={"onLoadMore"}>Xem thêm</Button>
         </div>
     );
+    console.log(keyreply);
 
     const handleFinish = async (values) => {
         try {
@@ -139,7 +117,7 @@ const ServicesDetailById = () => {
             const payload = {
                 id: generateSnowflakeId(),
                 service_id: service.id,
-                customer_id: JSON.parse(localStorage.getItem("user")).id,
+                customer_id: JSON.parse(localStorage.getItem("user"))?.id,
                 comment: comment,
                 image_url: images,
                 rate: rate,
@@ -180,6 +158,7 @@ const ServicesDetailById = () => {
             const payload = {
                 id: generateSnowflakeId(),
                 service_id: service.id,
+                rate: 1,
                 customer_id: JSON.parse(localStorage.getItem("user")).id,
                 comment: comment,
             };
@@ -207,22 +186,47 @@ const ServicesDetailById = () => {
 
     const renderReplies = (replies) => {
         return replies.map((reply, index) => (
-            <List.Item key={reply.key} className="bg-light">
-                <List.Item.Meta
-                    avatar={<Avatar src={reply?.avatar} />}
-                    title={reply?.title}
-                    description={reply?.description}
-                />
-                {reply.content}
+            <div
+                key={reply.key}
+                className="bg-light p-3 mb-3 rounded border"
+                style={{ marginLeft: "20px" }}
+            >
+                <div className="d-flex align-items-center mb-2">
+                    <Avatar
+                        src={
+                            "https://api.dicebear.com/7.x/miniavs/svg?seed=" +
+                            index
+                        }
+                        size="large"
+                        className="mr-3"
+                    />
+                    <div>
+                        <h5 className="mb-0">
+                            {`${reply?.customer?.full_name || "Không tên"} - ${
+                                reply?.type === 0
+                                    ? "Quản trị viên"
+                                    : "Khách hàng"
+                            }`}
+                        </h5>
+                        <Button
+                            type="link"
+                            onClick={() => setKeyReply(reply.id)}
+                            style={{ marginLeft: "20px" }}
+                        >
+                            trả lời
+                        </Button>
+                    </div>
+                </div>
+                <p>{reply.comment}</p>
                 <p style={{ fontSize: "12px", color: "#666" }}>{reply?.time}</p>
-                {reply.replies && reply.replies.length > 0 && (
-                    <div style={{ marginLeft: "20px" }}>
-                        {renderReplies(reply.replies, reply.key)}{" "}
-                        {/* Truyền `reply.key` làm idparent */}
+
+                {reply.clientReplies && reply.clientReplies.length > 0 && (
+                    <div className="ml-4">
+                        {renderReplies(reply.clientReplies)}
                     </div>
                 )}
-                {/* Hiển thị form chỉ ở phần tử cuối */}
-                {reply.type === 0 && index === replies.length - 1 && (
+
+                {keyreply === reply.id && (
                     <Form
                         form={formReply}
                         layout="vertical"
@@ -231,42 +235,37 @@ const ServicesDetailById = () => {
                         }
                         initialValues={{ parent_id: reply.id }}
                     >
-                        <Row gutter={[16, 16]} align="middle">
-                            <Col span={24}>
-                                <span>Phản hồi của bạn: </span>
-                            </Col>
-                            <Col span={24}>
-                                <Form.Item
-                                    name="comment"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Vui lòng nhập phản hồi",
-                                        },
-                                    ]}
-                                >
-                                    <Input.TextArea
-                                        placeholder="Nhập phản hồi của bạn"
-                                        autoSize={{
-                                            minRows: 2,
-                                            maxRows: 6,
-                                        }}
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={24}>
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    style={{ marginTop: "10px" }}
-                                >
-                                    Gửi phản hồi
-                                </Button>
-                            </Col>
-                        </Row>
+                        <div className="mb-3">
+                            <span>Phản hồi của bạn: </span>
+                        </div>
+                        <div className="mb-3">
+                            <Form.Item
+                                name="comment"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng nhập phản hồi",
+                                    },
+                                ]}
+                            >
+                                <Input.TextArea
+                                    placeholder="Nhập phản hồi của bạn"
+                                    autoSize={{ minRows: 2, maxRows: 6 }}
+                                />
+                            </Form.Item>
+                        </div>
+                        <div>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                className="mt-2"
+                            >
+                                Gửi phản hồi
+                            </Button>
+                        </div>
                     </Form>
                 )}
-            </List.Item>
+            </div>
         ));
     };
 
@@ -449,6 +448,18 @@ const ServicesDetailById = () => {
                                         Gửi bình luận
                                     </Button>
                                 </Col>
+                                <Col span={24}>
+                                    <Button
+                                        shape="round"
+                                        icon={<LoadingOutlined />}
+                                        onClick={() => {
+                                            getServicesDetailClient(id);
+                                        }}
+                                        style={{ marginTop: "10px" }}
+                                    >
+                                        làm mới
+                                    </Button>
+                                </Col>
                             </Row>
                         </Form>
                     }
@@ -505,9 +516,8 @@ const ServicesDetailById = () => {
                                     ))}
                                 </Row>
                             )}
-
                             {expandedKeys[item.key] && (
-                                <div>{renderReplies(item.replies)}</div>
+                                <div>{renderReplies(item.clientReplies)}</div>
                             )}
                         </List.Item>
                     )}
