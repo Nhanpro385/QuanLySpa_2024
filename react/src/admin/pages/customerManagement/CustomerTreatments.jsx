@@ -1,16 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    Button,
-    Card,
-    Input,
-    Row,
-    Col,
-    Dropdown,
-    Space,
-    Select,
-    message,
-    DatePicker,
-} from "antd";
+import { Button, Card, Row, Col, notification, DatePicker } from "antd";
 import { DownOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -31,6 +20,7 @@ const StreatMents = () => {
     useEffect(() => {
         document.title = "Lịch sử trị liệu";
     }, []);
+    const [api, contextHolder] = notification.useNotification();
     const streatments = useSelector((state) => state.streatments);
     const [searchQuery, setSearchQuery] = useState({
         search: "",
@@ -69,13 +59,21 @@ const StreatMents = () => {
 
     const handelDetail = async (record) => {
         try {
-            await getStreatmentById(record.id);
-            if (streatments.streament && streatments.loading === false) {
+            const res = await getStreatmentById(record.id);
+            if (
+                streatments.streament &&
+                streatments.loading === false &&
+                res.payload.status == "success"
+            ) {
                 setStreatmentsDetail(streatments.streament.data);
             }
             showModal();
         } catch (error) {
-            message.error("Đã xảy ra lỗi khi lấy thông tin lịch sử trị liệu");
+            api.error({
+                message: "Lỗi",
+                description: res ? res.payload.message : "Đã xảy ra lỗi",
+                duration: 3,
+            });
         }
     };
 
@@ -89,10 +87,26 @@ const StreatMents = () => {
     const handleDelete = async (id) => {
         try {
             const resultAction = await deleteStreatment(id);
-            getStreatments();
-            message.success("Xóa lịch sử trị liệu thành công");
+            if (resultAction.payload.status == "success") {
+                getStreatments();
+                api.success({
+                    message: "Xóa lịch sử trị liệu thành công",
+                    duration: 3,
+                });
+            } else {
+                api.error({
+                    message: "Không thể xóa lịch sử trị liệu",
+                    description:
+                        resultAction.payload.message || "Vui lòng thử lại sau",
+                    duration: 3,
+                });
+            }
         } catch (error) {
-            message.error("Đã xảy ra lỗi khi xóa lịch sử trị liệu");
+            api.error({
+                message: "Không thể xóa lịch sử trị liệu",
+                description: "Vui lòng thử lại sau",
+                duration: 3,
+            });
         }
     };
 
@@ -108,6 +122,7 @@ const StreatMents = () => {
                 </Button>
             }
         >
+            {contextHolder}
             <h1 className="text-center mb-4">
                 Quản lý Lịch sử Trị liệu của khách hàng
             </h1>
@@ -144,7 +159,6 @@ const StreatMents = () => {
                 pageconfig={pageconfig}
                 handelDetail={handelDetail}
                 handleDelete={handleDelete}
-
             />
 
             <ModalStreatmentDetail

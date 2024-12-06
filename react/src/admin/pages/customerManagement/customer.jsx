@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Input, Row, Col, message } from "antd";
+import { Button, Card, Input, Row, Col, notification } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -22,6 +22,7 @@ function Customer() {
     useEffect(() => {
         document.title = "Quản lý khách hàng";
     }, []);
+    const [api, contextHolder] = notification.useNotification();
     const [searchQuery, setSearchQuery] = useState({
         search: "",
         page: 1,
@@ -74,11 +75,16 @@ function Customer() {
         try {
             const resultAction = await getCustomerById(record.id);
 
-            if (resultAction.meta.requestStatus === "fulfilled") {
+            if (resultAction.payload.status == "success") {
                 setCurrentCustomer(resultAction.payload.data);
                 showModal();
             } else {
-                message.error("Không thể tìm thấy khách hàng");
+                api.error({
+                    message: "Không thể tìm thấy khách hàng",
+                    description:
+                        resultAction.payload.message || "Vui lòng thử lại sau",
+                    duration: 3,
+                });
             }
         } catch (error) {
             console.log(error);
@@ -87,11 +93,22 @@ function Customer() {
 
     const handleDelete = async (id) => {
         try {
-            await deleteCustomer(id);
-            message.success("Khách hàng đã được xóa");
-        } catch (error) {
-            message.error("Đã xảy ra lỗi khi xóa khách hàng");
-        }
+            const res = await deleteCustomer(id);
+            console.log(res);
+            if (res.payload.status == "success") {
+                api.success({
+                    message: "Xóa khách hàng thành công",
+                    duration: 3,
+                });
+                getCustomer();
+            } else {
+                api.error({
+                    message: "Xóa khách hàng không thành công",
+                    description: res.payload.message || "Vui lòng thử lại sau",
+                    duration: 3,
+                });
+            }
+        } catch (error) {}
     };
 
     const handleEditSubmit = async (updatedCustomer) => {
@@ -112,15 +129,27 @@ function Customer() {
             const resultAction = await updateCustomer(payload);
             console.log(resultAction);
 
-            if (resultAction.meta.requestStatus === "fulfilled") {
-                message.success("Khách hàng đã được cập nhật");
+            if (resultAction.payload.status === "success") {
+                api.success({
+                    message: "Cập nhật khách hàng thành công",
+                    duration: 3,
+                });
                 handleCancel();
             } else {
                 setFormErrors(resultAction.payload.errors);
-                message.error("Cập nhật khách hàng không thành công");
+                api.error({
+                    message: "Cập nhật khách hàng không thành công",
+                    description:
+                        resultAction.payload.message || "Vui lòng thử lại sau",
+                    duration: 3,
+                });
             }
         } catch (error) {
-            message.error("Đã xảy ra lỗi khi cập nhật khách hàng");
+            api.error({
+                message: "Cập nhật khách hàng không thành công",
+                description: error.message || "Vui lòng thử lại sau",
+                duration: 3,
+            });
         }
     };
 
@@ -135,13 +164,19 @@ function Customer() {
     const handleDetailCustomer = async (id) => {
         try {
             console.log(id);
-            
+
             const resultAction = await getCustomerById(id);
             if (!customers.loading) {
-                if (resultAction.meta.requestStatus === "fulfilled") {
+                if (resultAction.payload.status === "success") {
                     showModal2();
                 } else {
-                    message.error("Không thể tìm thấy khách hàng");
+                    api.error({
+                        message: "Không thể tìm thấy khách hàng",
+                        description:
+                            resultAction.payload.message ||
+                            "Vui lòng thử lại sau",
+                        duration: 3,
+                    });
                 }
             }
         } catch (error) {
@@ -160,6 +195,7 @@ function Customer() {
                 </Button>
             }
         >
+            {contextHolder}
             <h1 className="text-center mb-4">Quản lý khách hàng</h1>
 
             {/* Header */}

@@ -75,7 +75,7 @@ const Profile = () => {
             );
             setValue(
                 "gender",
-                UserData.gender === "Nữ" ? 1 : UserData.gender === "Nam" ? 2 : 0
+                UserData.gender == "Nữ" ? 1 : UserData.gender == "Nam" ? 2 : 0
             );
             setValue("address", UserData.address || "");
             setValue("note", UserData.note || "");

@@ -10,6 +10,7 @@ import {
     Input,
     message,
     Row,
+    notification,
     Tabs,
 } from "antd";
 import Statistics_staff from "../../modules/staffManagement/compoments/statistics_page";
@@ -22,7 +23,7 @@ const CustomerDetail = () => {
     const { id } = useParams(); // Lấy ID từ URL
     const { getCustomerById, updateCustomer } = useCustomerActions(); // Gọi API lấy dữ liệu khách hàng
     const { customer, loading } = useSelector((state) => state.customers); // Lấy thông tin customer từ store
-
+    const [api, contextHolder] = notification.useNotification();
     // Sử dụng react-hook-form
     const {
         control,
@@ -61,10 +62,13 @@ const CustomerDetail = () => {
         };
         try {
             const resultAction = await updateCustomer(payload);
-            if (resultAction.meta.requestStatus === "fulfilled") {
-                message.success("Cập nhật khách hàng thành công");
+            if (resultAction.payload.status === "success") {
+                api.success({
+                    message: "Cập nhật khách hàng thành công",
+                    description: resultAction.payload.message || "Thành công",
+                    duration: 3,
+                });
             } else {
-                console.log(resultAction.payload.errors);
                 Object.keys(resultAction.payload.errors).map((key) => {
                     if (
                         [
@@ -82,7 +86,13 @@ const CustomerDetail = () => {
                             message: resultAction.payload.errors[key][0],
                         });
                     } else {
-                        message.error(resultAction.payload.errors[key][0]);
+                        api.error({
+                            message: "Cập nhật khách hàng không thành công",
+                            description:
+                                resultAction.payload.errors[key][0] ||
+                                "Vui lòng thử lại sau",
+                            duration: 3,
+                        });
                     }
                 });
             }
@@ -95,6 +105,7 @@ const CustomerDetail = () => {
 
     return (
         <Row gutter={[16, 16]}>
+            {contextHolder}
             <Col span={24}>
                 <Card>
                     <Row gutter={[16, 16]}>

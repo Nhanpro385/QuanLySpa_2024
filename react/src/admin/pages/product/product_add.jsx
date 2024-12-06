@@ -7,7 +7,7 @@ import {
     Input,
     DatePicker,
     InputNumber,
-    Image,
+    notification,
     Upload,
     Form,
     Select,
@@ -29,6 +29,7 @@ const Product_add = () => {
     useEffect(() => {
         document.title = "Thêm sản phẩm";
     }, []);
+    const [api, contextHolder] = notification.useNotification();
     const {
         control,
         handleSubmit,
@@ -77,7 +78,11 @@ const Product_add = () => {
             console.log(res);
 
             if (res.payload.status === "success") {
-                message.success("Thêm sản phẩm thành công!");
+                api.success({
+                    message: "Thêm sản phẩm thành công!",
+                    description: "Bạn đã thêm sản phẩm thành công.",
+                    duration: 3,
+                });
                 reset();
                 setFile([]);
                 setContent("");
@@ -102,7 +107,7 @@ const Product_add = () => {
                             message: res.payload.errors[key][0],
                         });
                     } else {
-                        message.error({
+                        api.error({
                             message: "Có lỗi xảy ra",
                             description: res.payload.errors[key][0],
                             duration: 3,
@@ -110,7 +115,11 @@ const Product_add = () => {
                     }
                 });
 
-                message.error("Thêm sản phẩm thất bại!");
+                api.error({
+                    message: "Thêm sản phẩm không thành công!",
+                    description: "Vui lòng kiểm tra lại thông tin.",
+                    duration: 3, 
+                });
             }
         } catch (error) {
             console.log("error", error);
@@ -128,6 +137,7 @@ const Product_add = () => {
     }, [searchQuery]);
     return (
         <>
+            {contextHolder}
             <h1 className="text-center">Thêm sản phẩm</h1>
             <Form onFinish={handleSubmit(onSubmit)} layout="vertical">
                 <Row gutter={[16, 16]}>
@@ -204,7 +214,7 @@ const Product_add = () => {
                                 </Col>
                                 <Col xl={6} md={6} sm={12} xs={24}>
                                     <Form.Item
-                                        label="Dung tích sản phẩm"
+                                        label="Dung tích"
                                         required
                                     >
                                         <Controller
@@ -231,7 +241,7 @@ const Product_add = () => {
                                 </Col>
                                 <Col xl={6} md={6} sm={12} xs={24}>
                                     <Form.Item
-                                        label="Mã code sản phẩm"
+                                        label="Mã code"
                                         required
                                     >
                                         <Controller
@@ -338,7 +348,6 @@ const Product_add = () => {
                                                             ","
                                                         )
                                                     }
-                                                    
                                                     placeholder="Giá Nhập"
                                                 />
                                             )}
@@ -371,7 +380,6 @@ const Product_add = () => {
                                                             ","
                                                         )
                                                     }
-                                                    
                                                     placeholder="Giá Bán"
                                                 />
                                             )}

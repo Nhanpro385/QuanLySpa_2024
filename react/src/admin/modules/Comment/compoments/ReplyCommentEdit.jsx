@@ -11,6 +11,7 @@ import {
     Row,
     Col,
     Tag,
+    notification,
     Card,
 } from "antd";
 import { Controller, useForm } from "react-hook-form";
@@ -20,6 +21,7 @@ const { Text } = Typography;
 
 const ReplyCommentEdit = ({ visible, onClose, onSubmit, comment }) => {
     const [loading, setLoading] = useState(false);
+    const [api, contextHolder] = notification.useNotification();
     const {
         control,
         handleSubmit,
@@ -52,7 +54,11 @@ const ReplyCommentEdit = ({ visible, onClose, onSubmit, comment }) => {
         onSubmit(payload)
             .finally(() => setLoading(false))
             .catch(() => {
-                message.error("Gửi trả lời thất bại!");
+                api.error({
+                    message: "Gửi trả lời thất bại!",
+                    description: "Vui lòng thử lại sau.",
+                    duration: 3,
+                });
             });
     };
 
@@ -76,6 +82,7 @@ const ReplyCommentEdit = ({ visible, onClose, onSubmit, comment }) => {
             ]}
             width={800}
         >
+            {contextHolder}
             <Card bordered={false}>
                 <Row gutter={[16, 16]}>
                     <Col span={12}>

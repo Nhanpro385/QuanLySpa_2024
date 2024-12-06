@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-    Table,
     Button,
-    Image,
     message,
     Row,
     Col,
+    notification,
     Input,
     Select,
-    DatePicker,
     Tag,
     Card,
 } from "antd";
@@ -33,6 +31,7 @@ function Products() {
     const [productDataDetail, setProductDataDetail] = useState({});
     const [ErrorEdit, setErrorEdit] = useState({});
     const product = useSelector((state) => state.products);
+    const [api, contextHolder] = notification.useNotification();
     const {
         getproduct,
         updateproduct,
@@ -100,22 +99,36 @@ function Products() {
                 setDataEdit(result.payload.data);
                 showModal();
             } else {
-                message.error("Không tìm thấy sản phẩm");
+                api.error({
+                    message: "Lỗi",
+                    description: result.payload.message || "Đã xảy ra lỗi",
+                    duration: 3,
+                });
             }
         } catch (error) {
-            message.error("Không tìm thấy sản phẩm");
+            api.error({
+                message: "Lỗi",
+                description: "Đã xảy ra lỗi",
+                duration: 3,
+            });
         }
     };
 
     const handleDelete = async (record) => {
         const result = await deleteproduct(record);
-        console.log(result);
 
         if (result.payload.status == "success") {
-            message.success("Xóa sản phẩm thành công");
+            api.success({
+                message: "Xóa sản phẩm thành công",
+                duration: 3,
+            });
             getproduct();
         } else {
-            message.error(result.payload.message || "Xóa sản phẩm thất bại");
+            api.error({
+                message: "Xóa sản phẩm thất bại",
+                description: result.payload.message || "Đã xảy ra lỗi",
+                duration: 3,
+            });
         }
     };
 
@@ -138,34 +151,48 @@ function Products() {
                 data: formData,
             });
             console.log(result);
-            
+
             if (result.payload.status === "success") {
-                message.success("Cập nhật sản phẩm thành công");
+                api.success({
+                    message: "Cập nhật sản phẩm thành công",
+                    duration: 3,
+                });
+
                 getproduct();
                 handleCancel();
                 return true;
             } else {
-                message.error(
-                    result.payload.message || "Cập nhật sản phẩm thất bại"
-                );
+                api.error({
+                    message: "Cập nhật sản phẩm thất bại",
+                    duration: 3,
+                    description: result.payload.message || "Đã xảy ra lỗi",
+                });
                 if (result.payload.errors) {
                     setErrorEdit((prev) => result.payload.errors);
                 }
                 return false;
             }
         } catch (error) {
-            message.error("Cập nhật sản phẩm thất bại");
+            api.error({
+                message: "Cập nhật sản phẩm thất bại",
+                duration: 3,
+                description: error.message || "Đã xảy ra lỗi",
+            });
         }
     };
     const handleDetail = async (record) => {
         try {
             const result = await getproductById(record);
 
-            if (result.meta.requestStatus === "fulfilled") {
+            if (result.payload.status == "success") {
                 setProductDataDetail(result.payload.data);
                 showModal2();
             } else {
-                message.error("Không tìm thấy sản phẩm");
+                api.error({
+                    message: "Lỗi",
+                    description: result.payload.message || "Đã xảy ra lỗi",
+                    duration: 3,
+                });
             }
         } catch (error) {
             console.log(error);
@@ -174,17 +201,18 @@ function Products() {
 
     return (
         <Card
-        extra={
-            <Button
-            icon={<Loading3QuartersOutlined />}
-                type="primary"
-                onClick={() => getproduct()}
-                loading={product.loading}
-            >
-                Làm mới
-            </Button>
-        }
+            extra={
+                <Button
+                    icon={<Loading3QuartersOutlined />}
+                    type="primary"
+                    onClick={() => getproduct()}
+                    loading={product.loading}
+                >
+                    Làm mới
+                </Button>
+            }
         >
+            {contextHolder}
             <h1 className="text-center">Quản Lý Sản Phẩm</h1>
             <Row gutter={[16, 16]} className="mb-2">
                 <Col xl={18} md={12} xs={24}>

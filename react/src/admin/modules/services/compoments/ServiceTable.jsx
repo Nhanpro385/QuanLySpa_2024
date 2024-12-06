@@ -38,7 +38,7 @@ const ServiceTable = ({
         },
         { title: "Thời gian dự kiến", dataIndex: "duration", key: "duration" },
         {
-            title: "trạng thái",
+            title: "Trạng thái",
             dataIndex: "status",
             key: "status",
             render: (text, record) => (

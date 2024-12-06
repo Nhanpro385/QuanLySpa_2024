@@ -11,41 +11,6 @@ const TableProduct = ({
     handleDetail,
     loading,
 }) => {
-    // const items = [
-    //     {
-    //         key: "1",
-    //         label: <Button block> Sửa </Button>,
-    //     },
-    //     {
-    //         key: "2",
-    //         label: <Button block> Chi tiết </Button>,
-    //     },
-    //     {
-    //         key: "4",
-    //         label: (
-    //             <Button block danger>
-    //                 Xóa
-    //             </Button>
-    //         ),
-    //     },
-    // ];
-    const onClick = ({ key, record }) => {
-        switch (key) {
-            case "1":
-                handleEdit(record.key);
-                break;
-            case "2":
-                handleDetail(record.key);
-                break;
-            case "3":
-                break;
-            case "4":
-                handleDelete(record.key);
-                break;
-            default:
-                break;
-        }
-    };
     const columns = [
         {
             title: "#",
@@ -86,11 +51,6 @@ const TableProduct = ({
             ),
         },
 
-        {
-            title: "Dung tích",
-            dataIndex: "capacity",
-            key: "capacity",
-        },
         {
             title: "Hạn sử dụng",
             dataIndex: "date",

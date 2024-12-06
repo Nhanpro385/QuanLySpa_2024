@@ -192,7 +192,10 @@ const Profile = () => {
             }
         } catch (e) {
             console.error(e);
-            message.error("Có lỗi xảy ra trong quá trình đổi mật khẩu!");
+            api.error({
+                message: "Đã xảy ra lỗi!",
+                duration: 2,
+            });
         }
     };
 

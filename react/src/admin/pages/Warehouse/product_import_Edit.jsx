@@ -9,6 +9,7 @@ import {
     Select,
     Table,
     message,
+    notification,
 } from "antd";
 import React, { useState, useEffect } from "react";
 import "./../../modules/warehouse/styles/ProductImport.scss";
@@ -27,6 +28,7 @@ const Product_import_Edit = () => {
     const [supplierData, setSupplierData] = useState([]);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [note, setNote] = useState("");
+    const [api, contextHolder] = notification.useNotification();
     const product = useSelector((state) => state.products);
     const supplier = useSelector((state) => state.supplier);
     const [searchSupplierQuery, setsearchSupplierQuery] = useState({
@@ -68,8 +70,11 @@ const Product_import_Edit = () => {
     }, [product]);
 
     useEffect(() => {
-        if (supplier.Suppliers.data && supplier.Suppliers.data.length > 0) {
-            const data = supplier.Suppliers.data.map((item, index) => ({
+        if (
+            supplier?.Suppliers?.data &&
+            supplier?.Suppliers?.data?.length > 0
+        ) {
+            const data = supplier?.Suppliers?.data.map((item, index) => ({
                 key: index + 1,
                 id: item.id,
                 name: item.name,
@@ -82,7 +87,7 @@ const Product_import_Edit = () => {
         setProducts([
             ...products,
             {
-                key: products.length + 1,
+                key: products?.length + 1,
                 id: "",
                 name: "",
                 quantity: 1,
@@ -135,11 +140,19 @@ const Product_import_Edit = () => {
 
     const validateForm = () => {
         if (!selectedSupplier) {
-            message.error("Vui lòng chọn nhà cung cấp.");
+            api.error({
+                message: "Lỗi",
+                description: "Vui lòng chọn nhà cung cấp",
+                duration: 3,
+            });
             return false;
         }
         if (products.length === 0) {
-            message.error("Danh sách sản phẩm không được để trống.");
+            api.error({
+                message: "Lỗi",
+                description: "Vui lòng thêm sản phẩm",
+                duration: 3,
+            });
             return false;
         }
         const invalidProducts = products.some(
@@ -147,7 +160,11 @@ const Product_import_Edit = () => {
                 !product.id || product.quantity <= 0 || product.cost <= 0
         );
         if (invalidProducts) {
-            message.error("Vui lòng điền đầy đủ thông tin sản phẩm.");
+            api.error({
+                message: "Lỗi",
+                description: "Vui lòng nhập đúng thông tin sản phẩm",
+                duration: 3,
+            });
             return false;
         }
         return true;
@@ -172,8 +189,11 @@ const Product_import_Edit = () => {
                 })),
             };
             const response = await updateImportAction(payload);
-            if (response.meta.requestStatus === "fulfilled") {
-                message.success("Nhập hàng thành công");
+            if (response.payload.status === "success") {
+                api.success({
+                    message: "Nhập hàng thành công",
+                    duration: 3,
+                });
                 setProducts([]);
                 setSelectedSupplier(null);
                 setNote("");
@@ -314,6 +334,7 @@ const Product_import_Edit = () => {
                     </Button>
                 }
             >
+                {contextHolder}
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
                         <Col xl={16} md={16} sm={24} xs={24}>

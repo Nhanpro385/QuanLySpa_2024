@@ -65,7 +65,7 @@ const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
             children: servicedata?.image_url ? (
                 <Image
                     src={
-                        "http://127.0.0.1:8000/storage/uploads/services/" +
+                        "http://127.0.0.1:8000/storage/uploads/services/special/" +
                         servicedata?.image_url
                     }
                     width={200}

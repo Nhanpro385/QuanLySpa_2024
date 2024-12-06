@@ -63,7 +63,7 @@ function ServiceModalEdit({
                 "service_category_id",
                 service?.service_category_id?.id || ""
             );
-            setValue("priority", service?.priority || "");
+            setValue("priority", service?.priority || 0);
             // Get service categories from API
             getServiceCategories();
             getServiceCategoriesById(service?.service_category_id?.id);
@@ -340,6 +340,7 @@ function ServiceModalEdit({
                                             }}
                                             render={({ field }) => (
                                                 <Input
+                                                min={0}
                                                     {...field}
                                                     type="number"
                                                     placeholder="mức độ ưu tiên"

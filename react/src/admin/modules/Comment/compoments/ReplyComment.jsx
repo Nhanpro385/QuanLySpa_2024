@@ -4,6 +4,7 @@ import {
     Button,
     Form,
     message,
+    notification,
     Row,
     Rate,
     Col,
@@ -25,12 +26,16 @@ const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {
         setValue,
         formState: { errors },
     } = useForm();
-    console.log(comment);
-    
+    const [api, contextHolder] = notification.useNotification();
+
     const handleFormSubmit = (data) => {
         const replyContent = data.description?.trim();
         if (!replyContent) {
-            message.error("Nội dung trả lời không được để trống!");
+            api.error({
+                message: "Nội dung trả lời không được để trống!",
+                description: "Vui lòng nhập nội dung trả lời trước khi gửi.",
+                duration: 3,
+            });
             return;
         }
         const payload = {
@@ -72,6 +77,7 @@ const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {
             ]}
             width={800}
         >
+            {contextHolder}
             <Form layout="vertical">
                 <Row gutter={16}>
                     <Col xl={12} lg={12} md={12} sm={24} xs={24}>
@@ -101,7 +107,6 @@ const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {
                             <Input.TextArea
                                 {...field}
                                 placeholder="Nhập nội dung trả lời"
-                                
                                 tabIndex={1}
                                 onBlur={(newContent) => {
                                     field.onChange(newContent);

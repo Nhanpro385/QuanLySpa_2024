@@ -85,11 +85,14 @@ const CustomerTable = ({
                                 label: (
                                     <Popconfirm
                                         title="Bạn có chắc chắn muốn xóa?"
+
                                         onConfirm={() =>
                                             handleDelete(record.id)
                                         }
                                     >
-                                        <Button block>Xóa</Button>
+                                        <Button block
+                                            type="primary"
+                                        >Xóa</Button>
                                     </Popconfirm>
                                 ),
                                 key: "delete",

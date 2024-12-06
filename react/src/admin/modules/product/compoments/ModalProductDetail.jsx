@@ -89,7 +89,6 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
             span: 1,
             children: (
                 <Image
-              
                     src={
                         "http://127.0.0.1:8000/storage/uploads/products/" +
                         ProductData?.image_url
@@ -150,11 +149,14 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
                 </Card>
                 <Card>
                     <Table
-                        title={() => "Danh sách sản phẩm trong kho"}
+                        title={() => "Danh sách sản phẩm trong kho gần nhất"}
                         columns={productColumns}
                         dataSource={ProductData?.inventories || []}
                         rowKey="id"
-                        pagination={true}
+                        pagination={{
+                            pageSize: 5,
+                            showSizeChanger: false,
+                        }}
                         bordered
                     />
                 </Card>
@@ -173,7 +175,7 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
                                     key={image.id}
                                     src={
                                         "http://127.0.0.1:8000/storage/uploads/products/" +
-                                        image?.image_url || ""
+                                            image?.image_url || ""
                                     }
                                     alt={`Image for ${ProductData?.name}`}
                                     fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"

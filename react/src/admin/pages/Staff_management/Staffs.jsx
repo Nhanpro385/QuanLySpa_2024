@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Col, Row, Select, Input, message, Card } from "antd";
+import {
+    Table,
+    Button,
+    Col,
+    Row,
+    notification,
+    Input,
+    message,
+    Card,
+} from "antd";
 const { Search } = Input;
 
-import { Loading3QuartersOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+    Loading3QuartersOutlined,
+    LoadingOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 import "@schedule-x/theme-default/dist/index.css";
@@ -18,7 +31,7 @@ function Staffs() {
     }, []);
     const { getusers, updateusers, deleteusers, getusersById, searchusers } =
         useUsersActions();
-
+    const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
     const [errorForm, setErrorForm] = React.useState(null);
     const [userEdit, setUserEdit] = React.useState(null);
@@ -52,48 +65,79 @@ function Staffs() {
     const handleEdit = async (key) => {
         try {
             const res = await getusersById(key);
-            if (res.meta.requestStatus === "fulfilled") {
+            if (res.payload.status == "success") {
                 setUserEdit(res.payload.data);
                 showModal();
+            } else {
+                api.error({
+                    message: "Lỗi",
+                    description: res.payload.message || "Có lỗi xảy ra",
+                    duration: 3,
+                });
             }
-        } catch (err) {
-            message.error("Lỗi");
-        }
+        } catch (err) {}
     };
     const handleEditSubmit = async (values) => {
         try {
             const res = await updateusers(values);
-            if (res.payload.status === 403) {
-                message.error(res.payload.message);
+            if (res.payload.status == 403) {
+                api.error({
+                    message: "Lỗi",
+                    description: res.payload.message || "Có lỗi xảy ra",
+                    duration: 3,
+                });
                 return;
             }
-            if (res.meta.requestStatus === "fulfilled") {
+            if (res.payload.status == "success") {
                 getusers();
-                message.success("Cập nhật thành công");
+                api.success({
+                    message: "Cập nhật thành công",
+                    duration: 3,
+                });
+
                 handleCancel();
             } else {
                 setErrorForm((prev) => res.payload.errors);
-                message.error("Cập nhật thất bại");
+                api.error({
+                    message: "Lỗi",
+                    description: res.payload.message || "Có lỗi xảy ra",
+                    duration: 3,
+                });
             }
         } catch (err) {
-            message.error("Cập nhật thất bại");
+            api.error({
+                message: "Lỗi",
+                description: "Có lỗi xảy ra",
+                duration: 3,
+            });
         }
     };
     const handleDelete = async (key) => {
         try {
             const res = await deleteusers(key);
             console.log(res);
-            if (res.payload.status === 403) {
-                message.error(res.payload.message);
+            if (res.payload.status == 403) {
+                api.error({
+                    message: "Lỗi",
+                    description: res.payload.message || "Có lỗi xảy ra",
+                    duration: 3,
+                });
                 return;
             }
 
-            if (res.meta.requestStatus === "fulfilled") {
+            if (res.payload.status == "success") {
                 getusers();
-                message.success("Xóa thành công");
+                api.success({
+                    message: "Xóa thành công",
+                    duration: 3,
+                });
             }
         } catch (err) {
-            message.error("Xóa thất bại");
+            api.error({
+                message: "Lỗi",
+                description: "Có lỗi xảy ra",
+                duration: 3,
+            });
         }
     };
 
@@ -119,22 +163,20 @@ function Staffs() {
         setSearchQuery({ ...searchquery, page, per_page: pagination });
     };
 
-   
-   
-
     return (
         <Card
-        extra={
-            <Button
-            icon={<Loading3QuartersOutlined />}
-                type="primary"
-                onClick={() => getusers()}
-                loading={loading}
-            >
-                Làm mới
-            </Button>
-        }
+            extra={
+                <Button
+                    icon={<Loading3QuartersOutlined />}
+                    type="primary"
+                    onClick={() => getusers()}
+                    loading={loading}
+                >
+                    Làm mới
+                </Button>
+            }
         >
+            {contextHolder}
             <h1 className="text-center">Quản lý nhân viên</h1>
             <Row className="mb-3" gutter={[16, 16]}>
                 <Col xxl={21} xl={20} lg={18} md={18} sm={12} xs={24}>

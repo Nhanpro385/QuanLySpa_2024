@@ -8,6 +8,7 @@ import {
     Row,
     Select,
     Table,
+    notification,
     message,
 } from "antd";
 import React, { useState, useEffect } from "react";
@@ -22,7 +23,7 @@ const WarehouseExport = () => {
     const navigator = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
-
+    const [api, contextHolder] = notification.useNotification();
     const [note, setNote] = useState("");
     const product = useSelector((state) => state.products);
 
@@ -112,7 +113,10 @@ const WarehouseExport = () => {
 
     const validateForm = () => {
         if (products.length === 0) {
-            message.error("Danh sách sản phẩm không được để trống.");
+            api.error({
+                message: "Vui lòng thêm sản phẩm.",
+                duration: 3,
+            });
             return false;
         }
         const invalidProducts = products.some(
@@ -120,7 +124,10 @@ const WarehouseExport = () => {
                 !product.id || product.quantity <= 0 || product.price <= 0
         );
         if (invalidProducts) {
-            message.error("Vui lòng điền đầy đủ thông tin sản phẩm.");
+            api.error({
+                message: "Vui lòng kiểm tra thông tin sản phẩm.",
+                duration: 3,
+            });
             return false;
         }
 
@@ -130,7 +137,7 @@ const WarehouseExport = () => {
     const submitProduct = async () => {
         try {
             if (!validateForm()) return;
-            console.log(products);
+            
 
             const payload = {
                 total_amount: products.reduce(
@@ -149,18 +156,35 @@ const WarehouseExport = () => {
             console.log(response);
 
             if (response.payload.error) {
-                message.error(response.payload.error.error);
+                api.error({
+                    message: "Đã xảy ra lỗi khi xuất hàng.",
+                    description:
+                        response?.payload?.error || "Vui lòng thử lại sau",
+                    duration: 3,
+                });
                 return;
             }
             if (response.payload.status !== "success") {
-                message.error(response.payload.message);
+                api.error({
+                    message: "Đã xảy ra lỗi khi xuất hàng.",
+                    description:
+                        response?.payload?.message || "Vui lòng thử lại sau",
+                    duration: 3,
+                });
                 return;
             }
-            message.success("Xuất hàng thành công.");
+            api.success({
+                message: "Xuất hàng thành công",
+                duration: 3,
+            });
+
             navigator("/admin/warehouse");
         } catch (error) {
-            console.error("Error submitting products:", error);
-            message.error("Đã xảy ra lỗi khi xuất hàng.");
+            api.error({
+                message: "Đã xảy ra lỗi khi xuất hàng.",
+                description: "Vui lòng thử lại sau",
+                duration: 3,
+            });
         }
     };
 
@@ -268,6 +292,7 @@ const WarehouseExport = () => {
                     </Button>
                 }
             >
+                {contextHolder}
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
                         <Col xl={16} md={16} sm={24} xs={24}>

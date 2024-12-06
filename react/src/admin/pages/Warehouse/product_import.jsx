@@ -9,6 +9,7 @@ import {
     Select,
     Table,
     message,
+    notification,
 } from "antd";
 import React, { useState, useEffect } from "react";
 import "./../../modules/warehouse/styles/ProductImport.scss";
@@ -32,6 +33,7 @@ const WarehouseImport = () => {
         per_page: 100,
         search: "",
     });
+    const [api, contextHolder] = notification.useNotification();
     const [searchProductQuery, setsearchProductQuery] = useState({
         page: 1,
         per_page: 100,
@@ -79,18 +81,17 @@ const WarehouseImport = () => {
                 name: "",
                 quantity: 1,
                 cost: 0,
-        
+
                 price: 0,
                 total: 0,
             },
         ]);
     };
-    
+
     const updateProduct = (index, fieldValues) => {
         const updatedProducts = [...products];
         const { id, name, quantity, cost } = fieldValues;
-        
-        
+
         const existingProductIndex = products.findIndex(
             (product) => product.id === id
         );
@@ -128,11 +129,18 @@ const WarehouseImport = () => {
 
     const validateForm = () => {
         if (!selectedSupplier) {
-            message.error("Vui lòng chọn nhà cung cấp.");
+            api.error({
+                message: "Vui lòng chọn nhà cung cấp",
+                duration: 3,
+            });
             return false;
         }
         if (products.length === 0) {
-            message.error("Danh sách sản phẩm không được để trống.");
+            api.error({
+                message: "Vui lòng thêm sản phẩm",
+                duration: 3,
+            });
+
             return false;
         }
         const invalidProducts = products.some(
@@ -140,7 +148,11 @@ const WarehouseImport = () => {
                 !product.id || product.quantity <= 0 || product.cost <= 0
         );
         if (invalidProducts) {
-            message.error("Vui lòng điền đầy đủ thông tin sản phẩm.");
+            api.error({
+                message: "Vui lòng nhập đúng thông tin sản phẩm",
+                duration: 3,
+            });
+
             return false;
         }
         return true;
@@ -165,8 +177,12 @@ const WarehouseImport = () => {
                 })),
             };
             const response = await warehouseImportAction(payload);
-            if (response.meta.requestStatus === "fulfilled") {
-                message.success("Nhập hàng thành công");
+            if (response.payload.status === "success") {
+                api.success({
+                    message: "Nhập hàng thành công",
+                    duration: 3,
+                });
+
                 setProducts([]);
                 setSelectedSupplier(null);
                 setNote("");
@@ -307,6 +323,7 @@ const WarehouseImport = () => {
                     </Button>
                 }
             >
+                {contextHolder}
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
                         <Col xl={16} md={16} sm={24} xs={24}>

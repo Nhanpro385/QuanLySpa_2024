@@ -77,8 +77,10 @@ export const CustomerDelete = createAsyncThunk(
         }
 
         try {
-            await axiosInstance.delete(endpoints.Customers.delete(id));
-            return id;
+            const res = await axiosInstance.delete(
+                endpoints.Customers.delete(id)
+            );
+            return res.data;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
@@ -215,8 +217,6 @@ const CustomerSlice = createSlice({
                 state.error = null;
             })
             .addCase(CustomerDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
-
                 state.customers.data = state.customers.data.filter(
                     (customer) => customer.id !== action.payload
                 );
