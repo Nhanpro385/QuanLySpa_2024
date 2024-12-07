@@ -181,14 +181,15 @@ class InboundInvoiceController extends Controller
             // Cập nhật thông tin hóa đơn (trừ các chi tiết liên quan đến tồn kho)
             $invoice->update(array_merge(
                 $request->only([
-                   
                     'supplier_id',
                     'note',
                     'total_amount',
                     'status',
                 ]),
-                ['updated_by' => $updatedBy,
-                'staff_id'=> $updatedBy] // Ghi nhận người cập nhật
+                [
+                    'updated_by' => $updatedBy,
+                    'staff_id' => $updatedBy, // Ghi nhận người cập nhật
+                ]
             ));
     
             // Xử lý từng chi tiết hóa đơn
@@ -197,9 +198,13 @@ class InboundInvoiceController extends Controller
                 $inboundDetail = InboundInvoiceDetail::find($detail['id']);
     
                 if ($inboundDetail) {
-                    // Khôi phục tồn kho trước khi cập nhật
-                    $inventory = Inventory::where('product_id', $inboundDetail->product_id)->first();
+                    // Lấy dòng tồn kho mới nhất của sản phẩm
+                    $inventory = Inventory::where('product_id', $inboundDetail->product_id)
+                        ->latest('created_at')
+                        ->first();
+    
                     if ($inventory) {
+                        // Khôi phục tồn kho trước khi cập nhật
                         $inventory->quantity -= $inboundDetail->quantity_import; // Trừ số lượng cũ khỏi tồn kho
                         $inventory->save();
                     }
@@ -207,28 +212,34 @@ class InboundInvoiceController extends Controller
                     // Ngăn cập nhật các giá trị olded
                     unset($detail['quantity_olded'], $detail['cost_olded']);
     
-                    // Cập nhật chi tiết hóa đơn (chỉ các trường được phép)
+                    // Cập nhật chi tiết hóa đơn
                     $inboundDetail->update($detail);
     
-                    // Cập nhật tồn kho mới
-                    $inventory = Inventory::where('product_id', $detail['product_id'])->first();
+                    // Lấy dòng tồn kho mới nhất sau khi cập nhật
+                    $inventory = Inventory::where('product_id', $detail['product_id'])
+                        ->latest('created_at')
+                        ->first();
+    
                     if ($inventory) {
                         $inventory->quantity += $detail['quantity_import']; // Cộng số lượng nhập mới vào tồn kho
                         $inventory->save();
                     }
                 } else {
-                    // Nếu chi tiết không tồn tại, tạo mới (nếu cần)
+                    // Nếu chi tiết không tồn tại, tạo mới
                     $newDetail = InboundInvoiceDetail::create([
                         'inbound_invoice_id' => $invoice->id,
                         'product_id' => $detail['product_id'],
                         'quantity_import' => $detail['quantity_import'],
                         'cost_import' => $detail['cost_import'],
-                        'cost_olded' => $detail['cost_olded'], // Giá trị mới không thể thay đổi
+                        'cost_olded' => $detail['cost_olded'],
                         'unit_price' => $detail['unit_price'],
                     ]);
     
                     // Cập nhật tồn kho cho sản phẩm mới
-                    $inventory = Inventory::where('product_id', $detail['product_id'])->first();
+                    $inventory = Inventory::where('product_id', $detail['product_id'])
+                        ->latest('created_at')
+                        ->first();
+    
                     if ($inventory) {
                         $inventory->quantity += $detail['quantity_import'];
                         $inventory->save();
@@ -237,6 +248,8 @@ class InboundInvoiceController extends Controller
                         Inventory::create([
                             'product_id' => $detail['product_id'],
                             'quantity' => $detail['quantity_import'],
+                            'created_by' => $updatedBy,
+                            'updated_by' => $updatedBy,
                         ]);
                     }
                 }
@@ -260,6 +273,7 @@ class InboundInvoiceController extends Controller
             ], 500);
         }
     }
+    
     
     
     /**
