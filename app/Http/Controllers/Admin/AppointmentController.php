@@ -22,6 +22,7 @@ use App\Models\Service;
 use App\Models\Shift;
 use App\Models\StaffShift;
 use App\Models\TreatmentHistory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -94,13 +95,16 @@ class AppointmentController extends Controller
             $validateData = $request->validated();
 
             // 1. Kiểm tra ca làm
-            $shift = Shift::where('id', '=', $validateData['shift_id'])->where('shift_date', '=', $validateData['appointment_date'])->first();
+            $shift = Shift::where('id', '=', $validateData['shift_id'])->where('shift_date', '=', $validateData['appointment_date'])
+                ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
+                ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
+                ->first();
 
             if (!$shift) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Dữ liệu đầu vào không hợp lệ.",
-                    'error' => 'Ca làm hiện tại và lịch hẹn không hợp lệ.'
+                    'error' => 'Ca làm hiện tại và lịch hẹn thời gian không hợp lệ.'
                 ], 404);
             }
 
@@ -403,6 +407,8 @@ class AppointmentController extends Controller
             // 1. Kiểm tra ca làm
             $shift = Shift::where('id', '=', $appointment->shift_id)
                 ->where('shift_date', '=', $appointment->appointment_date)
+                ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
+                ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
                 ->first();
 
             if (!$shift) {

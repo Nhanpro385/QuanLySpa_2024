@@ -23,12 +23,16 @@ class AppointmentController extends Controller
             $validateData = $request->validated();
 
             // 1. Kiểm tra ca làm
-            $shift = Shift::where('id', '=', $validateData['shift_id'])->first();
+            $shift = Shift::where('id', '=', $validateData['shift_id'])
+                ->whereDate('shift_date', Carbon::today())
+                ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
+                ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
+                ->first();
 
             if (!$shift) {
                 return response()->json([
                     "status" => "error",
-                    "message" => "Dữ liệu đầu vào không hợp lệ.",
+                    "message" => "Thời gian lịch hẹn không hợp lệ.",
                     'error' => 'Ca làm hiện tại và lịch hẹn không hợp lệ.'
                 ], 404);
             }
