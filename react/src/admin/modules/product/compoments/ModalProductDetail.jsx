@@ -109,13 +109,13 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
 
     const productColumns = [
         {
-            title: "Mã sản phẩm",
+            title: "#",
             dataIndex: "key",
             key: "key",
             render: (text, record, index) => <span>{index + 1}</span>,
         },
         {
-            title: "Tên sản phẩm",
+            title: "Mã sản phẩm",
             dataIndex: "id",
             key: "id",
         },
