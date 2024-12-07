@@ -13,7 +13,7 @@ import { MeetingProvider, MeetingConsumer } from "@videosdk.live/react-sdk";
 import useconsulationsAction from "../../consulations/hooks/useconsulationsAction";
 import JoinScreenAdmin from "./JoinScreenAdmin";
 import MeetingViewAdmin from "./MeetingViewAdmin";
-
+import useAuthActions from "../../authen/hooks/useAuth";
 import styles from "../styles/Videocall.module.scss";
 import {
     VIDEOSDK_TOKEN,
@@ -24,7 +24,10 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 const VideoCall_ContentAdmin = () => {
     const consulations = useSelector((state) => state.consulations);
+    const auth = useSelector((state) => state.auth);
+
     const { getbyidconsulations } = useconsulationsAction();
+    const { authGetmeAdmin } = useAuthActions();
     const [ConsultationsDetail, setConsultationsDetail] = useState({});
     const { idmeet } = useParams();
     const [meetingId, setMeetingId] = useState(null); // id của cuộc gọi
@@ -54,7 +57,6 @@ const VideoCall_ContentAdmin = () => {
     ];
     const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
-        console.log(consulations);
         if (consulations.consulation && !consulations.loading) {
             if (consulations.consulation) {
                 setConsultationsDetail(consulations.consulation.data);
@@ -69,6 +71,7 @@ const VideoCall_ContentAdmin = () => {
     }, [consulations]);
     useEffect(() => {
         getbyidconsulations(idmeet);
+        authGetmeAdmin();
         validateMeeting({ roomId: idmeet, token: VIDEOSDK_TOKEN }).then(
             ({ meetingId, err }) => {
                 if (err) {
@@ -113,7 +116,7 @@ const VideoCall_ContentAdmin = () => {
                                         meetingId,
                                         micEnabled: true,
                                         webcamEnabled: true,
-                                        name: "hao",
+                                        name: `${auth?.user?.data?.full_name} - ${auth?.user?.data?.position?.name}`,
                                     }}
                                     token={VIDEOSDK_TOKEN}
                                 >
@@ -128,9 +131,6 @@ const VideoCall_ContentAdmin = () => {
                                 </MeetingProvider>
                             ) : (
                                 <>
-                                    {/* <JoinScreenAdmin
-                                        getMeetingAndToken={getMeetingAndToken}
-                                    /> */}
                                     <Result
                                         status="404"
                                         title="Không tìm thấy cuộc gọi"
@@ -140,7 +140,7 @@ const VideoCall_ContentAdmin = () => {
                                             <Button
                                                 type="primary"
                                                 onClick={() =>
-                                                    window.history.back()
+                                                    getMeetingAndToken(idmeet)
                                                 }
                                             >
                                                 Quay lại

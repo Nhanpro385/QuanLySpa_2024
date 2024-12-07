@@ -419,7 +419,7 @@ const Profile = () => {
                                 </Col>
                             </Row>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
+                                <Button type="primary" htmlType="submit" loading={auth.loading}>
                                     Cập nhật thông tin
                                 </Button>
                             </Form.Item>

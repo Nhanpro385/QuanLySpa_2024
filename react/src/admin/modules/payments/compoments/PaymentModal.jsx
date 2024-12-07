@@ -20,12 +20,13 @@ import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import { get } from "lodash";
 
-const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
+const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
     const [DataAppointment, setDataAppointment] = useState({});
     useEffect(() => {
         console.log(data);
         setDataAppointment(data);
     }, [data]);
+
     const [form] = Form.useForm();
     const { getproduct, searchproduct } = useproductActions();
     const { getPromotions } = usePromotionActions();
@@ -40,8 +41,8 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
             return sum + item.quantity * parseFloat(item.price || 0);
         }, 0);
         const serviceTotal = parseFloat(DataAppointment?.service_total || 0);
-
         setTotalAmount(productTotal + serviceTotal);
+       
     }, [selectedProducts, DataAppointment]);
     useEffect(() => {
         if (data) {
@@ -76,7 +77,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
             // Đặt giá trị cho form
             form.setFieldsValue({
                 status: data.status || 0,
-                paymentMethod: data.paymentMethod || 1,
+                paymentMethod: data.payment_type ,
                 promotion_name: data.promotion_id?.id || "",
                 products: data.products.map((item) => item.product_id) || [],
             });
@@ -84,11 +85,11 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
     }, [data, DataProduct, form]);
 
     const handleFinish = (values) => {
-        onSubmit({
+        payment({
             paymentMethod: values.paymentMethod || 1,
             promotion_name: values.promotion_name || "",
             status: values.status,
-            promotion_id : values.promotion_name,
+            promotion_id: values.promotion_name,
             products: selectedProducts.map((item) => ({
                 id: item.id,
                 quantity: item.quantity,
@@ -365,7 +366,10 @@ const PaymentModal = ({ isOpen, onClose, onSubmit, error, data }) => {
                                                 >
                                                     {item.promotion_type ==
                                                     "Percent"
-                                                        ? `Giảm giá ${parseInt(item.discount_percent || 0)}%` 
+                                                        ? `Giảm giá ${parseInt(
+                                                              item.discount_percent ||
+                                                                  0
+                                                          )}%`
                                                         : "Giảm giá tiền mặt"}
                                                 </Tag>
 

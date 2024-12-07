@@ -116,11 +116,12 @@ const PaymentManagement = () => {
 
                 closePaymentModal();
                 getpayment();
+                return true;
             } else {
                 api.error({
                     message: res.payload.message || "Có lỗi xảy ra",
                     duration: 3,
-                    description: res.payload.errors["promotion_name"] || "",
+                    description: res.payload.message || res.payload.error || "vui lòng thử lại",
                 });
                 setErrorpayment((prev) => res.payload.errors || {});
             }
@@ -229,22 +230,22 @@ const PaymentManagement = () => {
                     </Card>
                 </Col>
             </Row>
-
-            <PaymentModal
-                data={selectedInvoice}
-                isOpen={isPaymentModalOpen}
-                onClose={closePaymentModal}
-                onSubmit={handlePaymentSubmit}
-            />
             <PaymentModalDetail
                 isOpen={isPaymentModalOpen2}
                 onClose={closePaymentModal2}
                 selectedInvoice={selectedInvoice} // Truyền selectedInvoice vào modal
             />
+
+            <PaymentModal
+                data={selectedInvoice}
+                isOpen={isPaymentModalOpen}
+                onClose={closePaymentModal}
+                payment={handlePaymentSubmit}
+            />
             <PaymentModalAddnew
                 isOpen={isPaymentModalOpen3}
                 onClose={closePaymentModal3}
-                onSubmit={handleaddnewpayment}
+                addpayment={handleaddnewpayment}
             />
         </>
     );

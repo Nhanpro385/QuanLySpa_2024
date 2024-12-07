@@ -190,7 +190,7 @@ const handleError = (error) => ({
     status: error.response?.status || 500,
     message: error.response?.data?.message || "Có lỗi xảy ra",
     errors: error.response?.data?.errors || [],
-    error: error.response?.data || {},
+    error: error.response?.data.error || {},
 });
 
 // Initial state
@@ -288,7 +288,7 @@ const warehouseSlice = createSlice({
         builder.addCase(getWarehouseExport.rejected, (state, action) => {
             state.export.loading = false;
             state.export.error = action.payload;
-        })
+        });
         builder.addCase(searchWarehouseImport.pending, (state) => {
             state.import.loading = true;
             state.import.error = null;
@@ -312,7 +312,7 @@ const warehouseSlice = createSlice({
         builder.addCase(searchWarehouseExport.rejected, (state, action) => {
             state.export.loading = false;
             state.export.error = action.payload;
-        })
+        });
         builder.addCase(getImportDetail.pending, (state) => {
             state.import.loading = true;
             state.import.error = null;
@@ -361,8 +361,6 @@ const warehouseSlice = createSlice({
             state.export.loading = false;
             state.export.error = action.payload;
         });
-        
-        
     },
 });
 

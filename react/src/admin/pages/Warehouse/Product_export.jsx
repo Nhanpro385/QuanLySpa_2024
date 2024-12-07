@@ -137,7 +137,6 @@ const WarehouseExport = () => {
     const submitProduct = async () => {
         try {
             if (!validateForm()) return;
-            
 
             const payload = {
                 total_amount: products.reduce(
@@ -155,7 +154,10 @@ const WarehouseExport = () => {
             const response = await warehouseExportAction(payload);
             console.log(response);
 
-            if (response.payload.error) {
+            if (
+                response.payload.error &&
+                response.payload.status != "success"
+            ) {
                 api.error({
                     message: "Đã xảy ra lỗi khi xuất hàng.",
                     description:
@@ -164,7 +166,7 @@ const WarehouseExport = () => {
                 });
                 return;
             }
-            if (response.payload.status !== "success") {
+            if (response.payload.status != "success") {
                 api.error({
                     message: "Đã xảy ra lỗi khi xuất hàng.",
                     description:
@@ -173,12 +175,14 @@ const WarehouseExport = () => {
                 });
                 return;
             }
-            api.success({
-                message: "Xuất hàng thành công",
-                duration: 3,
-            });
+            if (response.payload.status == "success") {
+                api.success({
+                    message: "Xuất hàng thành công",
+                    duration: 3,
+                });
 
-            navigator("/admin/warehouse");
+                navigator("/admin/warehouse");
+            }
         } catch (error) {
             api.error({
                 message: "Đã xảy ra lỗi khi xuất hàng.",
@@ -295,7 +299,7 @@ const WarehouseExport = () => {
                 {contextHolder}
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
-                        <Col xl={16} md={16} sm={24} xs={24}>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card
                                 title="Danh sách xuất hàng"
                                 className="mt-3 bg-light"
@@ -308,11 +312,13 @@ const WarehouseExport = () => {
                                 <Table
                                     columns={columns}
                                     dataSource={products}
-                                    pagination={false}
+                                    pagination={{
+                                        pageSize: 5,
+                                    }}
                                 />
                             </Card>
                         </Col>
-                        <Col xl={8} md={8} sm={24} xs={24}>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card className="bg-light">
                                 <Form.Item label="Mô tả">
                                     <Input.TextArea
@@ -334,10 +340,10 @@ const WarehouseExport = () => {
                                 </h3>
                                 <Button
                                     type="primary"
-                                    className="w-100 mt-3"
+                                    className="mt-3"
                                     onClick={submitProduct}
                                 >
-                                    Nhập hàng
+                                    xuất hàng
                                 </Button>
                             </Card>
                         </Col>

@@ -65,7 +65,7 @@ function ServiceModalEdit({
             );
             setValue("priority", service?.priority || 0);
             // Get service categories from API
-            getServiceCategories();
+            getServiceCategories(100);
             getServiceCategoriesById(service?.service_category_id?.id);
         }
     }, [service]);
@@ -106,8 +106,8 @@ function ServiceModalEdit({
                 service.service_category_id,
             ].map((item) => {
                 return {
-                    id: item.id,
-                    name: item.name,
+                    id: item?.id,
+                    name: item?.name,
                 };
             });
             // check trung lap

@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import { get } from "lodash";
 
-const PaymentModalAddnew = ({ isOpen, onClose, onSubmit, error }) => {
+const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
     const [form] = Form.useForm();
     const { getproduct, searchproduct } = useproductActions();
     const { getPromotions } = usePromotionActions();
@@ -31,15 +31,19 @@ const PaymentModalAddnew = ({ isOpen, onClose, onSubmit, error }) => {
     const [selectedProducts, setSelectedProducts] = useState([]);
 
     const handleFinish = (values) => {
-    
-        onSubmit({
-            payment_type: values.paymentMethod || 1,
+        console.log(values);
+        
+        addpayment({
+            payment_type: values.paymentMethod ,
             promotion_name: values.promotion_name || null,
             status: 1,
             products: selectedProducts.map((item) => ({
                 product_id: item.id,
                 quantity: item.quantity,
             })),
+        }).then((e) => {
+            setSelectedProducts([]);
+            form.resetFields();
         });
     };
 
@@ -200,7 +204,7 @@ const PaymentModalAddnew = ({ isOpen, onClose, onSubmit, error }) => {
                     Hủy
                 </Button>,
                 <Button
-                    form="paymentForm"
+                    form="paymentFormadd"
                     key="submit"
                     htmlType="submit"
                     type="primary"
@@ -213,7 +217,7 @@ const PaymentModalAddnew = ({ isOpen, onClose, onSubmit, error }) => {
                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                     <Card title="Thanh toán">
                         <Form
-                            id="paymentForm"
+                            id="paymentFormadd"
                             form={form}
                             layout="vertical"
                             onFinish={handleFinish}

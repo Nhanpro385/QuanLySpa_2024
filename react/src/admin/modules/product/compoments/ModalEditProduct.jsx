@@ -58,8 +58,8 @@ const ModalEditProduct = ({
         ) {
             setCategoryData(
                 categories?.categories?.data?.map((item) => ({
-                    label: item.name,
-                    value: item.id,
+                    label: item?.name,
+                    value: item?.id,
                 }))
             );
         }
@@ -119,7 +119,7 @@ const ModalEditProduct = ({
                 date: dayjs(data.date).format("YYYY-MM-DD"),
 
                 description: data.description,
-                category_id: data.category_id.value,
+                category_id: data.category_id.value ||"",
                 priority: 1,
             };
             handleSubmitEdit(payload.id, payload).then((result) => {

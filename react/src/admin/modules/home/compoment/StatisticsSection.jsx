@@ -37,14 +37,14 @@ const StatisticsSection = ({
                             size={getProgressSize()}
                             type="circle"
                             percent={Math.min(
-                                (parseInt(monthlyRevenues?.total_revenue || 0) /
+                                (parseInt(dailyRevenues?.total_revenue || 0) /
                                     2000000) *
                                     100,
                                 100
                             )}
                             format={() =>
                                 parseInt(
-                                    monthlyRevenues?.total_revenue || 0
+                                    dailyRevenues?.total_revenue || 0
                                 ).toLocaleString() + " VND"
                             }
                         />
