@@ -60,6 +60,11 @@ const options = [
         value: "9",
         url: "https://vinmec-prod.s3.amazonaws.com/images/20190529_075246_910718_mun-rop-sinh-duc.max-800x800.jpg",
     },
+    {
+        label: "Khác",
+        value: "10",
+        url: "https://th.bing.com/th/id/OIP.JFJrgIUq4OQ_IC6e4RNrrgHaEs?w=297&h=189&c=7&r=0&o=5&dpr=1.5&pid=1.7",
+    },
 ];
 import { useAuth } from "../../../config/AuthContext";
 import useconsulationsAction from "../../../../admin/modules/consulations/hooks/useconsulationsAction";

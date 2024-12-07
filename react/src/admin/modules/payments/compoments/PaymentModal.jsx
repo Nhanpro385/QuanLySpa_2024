@@ -86,7 +86,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
 
     const handleFinish = (values) => {
         payment({
-            paymentMethod: values.paymentMethod || 1,
+            paymentMethod: values.paymentMethod,
             promotion_name: values.promotion_name || "",
             status: values.status,
             promotion_id: values.promotion_name,

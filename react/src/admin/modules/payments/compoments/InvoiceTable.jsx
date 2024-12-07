@@ -28,7 +28,13 @@ const InvoiceTable = ({
             render: (text) => text || "Chưa có",
         },
 
-        { title: "Tổng tiền", dataIndex: "total_amount", key: "total_amount" },
+        {
+            title: "Tổng tiền",
+            dataIndex: "total_amount",
+            key: "total_amount",
+            render: (text) => parseInt(text).toLocaleString() + " VND",
+        },
+
         {
             title: "Phương thức thanh toán",
             dataIndex: "payment_type",
