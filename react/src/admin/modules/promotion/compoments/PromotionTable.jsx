@@ -1,7 +1,15 @@
 import React from "react";
 import { Table, Button, Tag } from "antd";
 
-const PromotionTable = ({ dataSource, handleEdit, handleDelete }) => {
+const PromotionTable = ({
+    dataSource,
+    handleEdit,
+    handleDelete,
+    pagination,
+    loading,
+    handlePageChange
+}) => {
+
     const columns = [
         {
             title: "STT",
@@ -74,7 +82,22 @@ const PromotionTable = ({ dataSource, handleEdit, handleDelete }) => {
         },
     ];
 
-    return <Table dataSource={dataSource} columns={columns} />;
+    return (
+        <Table
+            dataSource={dataSource}
+            columns={columns}
+            loading={loading}
+            pagination={{
+                current: pagination.current_page,
+                pageSize: pagination.per_page,
+                total: pagination.total,
+                showQuickJumper: true,
+                showSizeChanger: true,
+                onChange: handlePageChange,
+                showTotal: (total) => `Tổng ${total} khuyến mãi`,
+            }}
+        />
+    )
 };
 
 export default PromotionTable;

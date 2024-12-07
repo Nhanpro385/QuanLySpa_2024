@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Col, Card, Progress } from "antd";
+import { Button, Row, Col, Card, Progress, Input } from "antd";
 import {
     EllipsisOutlined,
     ClockCircleOutlined,
@@ -10,14 +10,37 @@ import PromotionTable from "../../modules/promotion/compoments/PromotionTable";
 import { useNavigate } from "react-router-dom";
 import usePromotionActions from "../../modules/promotion/hooks/usepromotionAction";
 import { useSelector } from "react-redux";
+
 function Promotions() {
     const navigate = useNavigate();
-    const { getPromotions, deletePromotions } = usePromotionActions();
+    const { getPromotions, deletePromotions, searchPromotions } = usePromotionActions();
     const [PromotionsData, setPromotionsData] = useState([]);
     const promotions = useSelector((state) => state.promotions);
+
+    const [searchQuery, setSearchQuery] = useState({
+        search: "",
+        page: 1,
+        per_page: 5,
+    });
+
+    const pagination = promotions.promotions.meta || {};
+
     useEffect(() => {
         getPromotions();
     }, []);
+
+    useEffect(() => {
+        if (
+            searchQuery.search ||
+            searchQuery.page !== 1 ||
+            searchQuery.per_page !== 5
+        ) {
+            searchPromotions(searchQuery);
+        } else {
+            getPromotions();
+        }
+    }, [searchQuery]);
+
     useEffect(() => {
         console.log(promotions.promotions.data);
 
@@ -50,6 +73,14 @@ function Promotions() {
         navigate("/admin/khuyenmai/them");
     };
 
+    const onSearch = (value) => {
+        setSearchQuery((prev) => ({ ...prev, search: value }));
+    };
+
+    const handlePageChange = (page, pagination) => {
+        setSearchQuery((prev) => ({ ...prev, page, per_page: pagination }));
+    };
+
     return (
         <div>
             <h1 className="text-center">Quản lý chương trình khuyến mãi</h1>
@@ -66,13 +97,25 @@ function Promotions() {
                     <FireOutlined />
                     Thêm mới chương trình
                 </Button>
-            </div>
 
+            </div>
+            <div style={{ width: '600px' }}>
+                <Input.Search
+                    placeholder="Tìm kiếm khuyến mãi theo tên"
+                    allowClear
+                    enterButton="Tìm kiếm"
+                    onSearch={onSearch}
+                    onChange={(e) => onSearch(e.target.value)}
+                />
+            </div>
             {/* Promotion Table */}
             <PromotionTable
+                loading={Promotions.loading}
                 dataSource={PromotionsData}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
+                pagination={pagination}
+                handlePageChange={handlePageChange}
             />
 
             {/* Promotion Cards */}
@@ -108,8 +151,8 @@ function Promotions() {
                                     {promotion.promotion_type === "Cash"
                                         ? `hóa đơn từ 
                                                  ${parseInt(
-                                                     promotion.min_order_amount
-                                                 ).toLocaleString()} VNĐ trở lên sẽ được giảm giá`
+                                            promotion.min_order_amount
+                                        ).toLocaleString()} VNĐ trở lên sẽ được giảm giá`
                                         : `Giảm ${promotion.discount_percent}%`}
                                     <Progress
                                         percent={progressPercent} // Sử dụng progress tính từ ngày
@@ -142,8 +185,8 @@ function Promotions() {
                                         >
                                             {promotion.promotion_type === "Cash"
                                                 ? `Giảm ${parseInt(
-                                                      promotion.discount_percent
-                                                  ).toLocaleString()} VNĐ`
+                                                    promotion.discount_percent
+                                                ).toLocaleString()} VNĐ`
                                                 : `Giảm ${promotion.discount_percent}%`}
                                         </span>
                                     </div>
