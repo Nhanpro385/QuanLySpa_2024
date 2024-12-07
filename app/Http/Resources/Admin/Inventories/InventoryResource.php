@@ -21,6 +21,7 @@ class InventoryResource extends JsonResource
             'product' => $this->product ? [
                 'id' => $this->product->id,
                 'name' => $this->product->name,
+                'date'=>$this->product->date
             ] : null,
             'created_by' => $this->createdBy ? [
                 'id' => $this->createdBy->id,
@@ -28,7 +29,7 @@ class InventoryResource extends JsonResource
             ] : null,
             'updated_by' => $this->updatedBy ? [
                 'id' => $this->updatedBy->id,
-                'name' => $this->updatedBy->name,
+                'name' => $this->updatedBy->full_name,
             ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
