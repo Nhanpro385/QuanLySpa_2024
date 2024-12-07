@@ -6,10 +6,17 @@ import useconsulationsAction from "../../consulations/hooks/useconsulationsActio
 import { useNavigate } from "react-router-dom";
 function ControlsAdmin({ meetingId: idmeet, joined, setJoined }) {
     const navigate = useNavigate();
-    const { leave, toggleMic, toggleWebcam, changeMic, end, meetingId } =
-        useMeeting({
-            onMeetingStateChanged,
-        });
+    const {
+        leave,
+        toggleMic,
+        toggleWebcam,
+        changeMic,
+        end,
+        meetingId,
+        disableWebcam,
+    } = useMeeting({
+        onMeetingStateChanged,
+    });
     const { updateconsulations } = useconsulationsAction();
     function onMeetingStateChanged(data) {
         const { state } = data;
@@ -18,6 +25,7 @@ function ControlsAdmin({ meetingId: idmeet, joined, setJoined }) {
             case "CLOSING":
                 setJoined(null);
                 navigate("/admin/tuvankhachhang/videocall/" + idmeet);
+                disableWebcam();
                 break;
             case "CLOSED":
                 // updateconsulations({

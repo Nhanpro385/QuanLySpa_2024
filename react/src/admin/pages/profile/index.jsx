@@ -64,7 +64,7 @@ const Profile = () => {
 
     useEffect(() => {
         if (UserData) {
-            setValue("name", UserData.full_name || "");
+            setValue("full_name", UserData.full_name || "");
             setValue("email", UserData.email || "");
             setValue("phone", UserData.phone || "");
             setValue(
@@ -85,7 +85,7 @@ const Profile = () => {
     const onSubmit = async (data) => {
         try {
             const payload = {
-                full_name: data.name,
+                full_name: data.full_name,
                 email: data.email,
                 phone: data.phone,
                 date_of_birth: data.date_of_birth,
@@ -104,6 +104,8 @@ const Profile = () => {
                 });
             } else {
                 if (Object.keys(res.payload.errors).length > 0) {
+                    console.log(res.payload.errors);
+                    
                     Object.keys(res.payload.errors).map((key) => {
                         setError(key, {
                             type: "manual",
@@ -122,7 +124,6 @@ const Profile = () => {
             console.log(error);
         }
     };
-    console.log(errors);
 
     const handleChangePass = async (data) => {
         try {
@@ -146,8 +147,15 @@ const Profile = () => {
                 api.error({
                     message: res.payload.message,
                 });
-              
-            }else{
+            } else {
+                if (res.payload?.errors?.length > 0) {
+                    Object.keys(res.payload.errors).map((key) => {
+                        setError(key, {
+                            type: "manual",
+                            message: res.payload.errors[key][0],
+                        });
+                    });
+                }
                 api.success({
                     message: res.payload.message,
                 });
@@ -272,27 +280,43 @@ const Profile = () => {
                             onFinish={handleSubmit(onSubmit)}
                         >
                             <Row gutter={[16, 16]}>
-                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={12}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Form.Item label="Tên đầy đủ">
                                         <Controller
-                                            name="name"
+                                            name="full_name"
                                             control={control}
                                             rules={{
                                                 required:
                                                     "Vui lòng nhập tên đầy đủ",
                                             }}
                                             render={({ field }) => (
-                                                <Input {...field} />
+                                                <Input 
+                                                    minLength={10}
+                                                {...field} />
                                             )}
                                         />
-                                        {errors.name && (
+                                        {errors.full_name && (
                                             <Text type="danger">
-                                                {errors.name.message}
+                                                {errors.full_name.message}
                                             </Text>
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={12}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Form.Item label="Email">
                                         <Controller
                                             name="email"
@@ -311,7 +335,14 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={12}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Form.Item label="Số điện thoại">
                                         <Controller
                                             name="phone"
@@ -331,7 +362,14 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
+                                <Col
+                                    xxl={6}
+                                    xl={6}
+                                    lg={6}
+                                    md={6}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Form.Item label="Giới tính">
                                         <Controller
                                             name="gender"
@@ -361,7 +399,14 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
+                                <Col
+                                    xxl={6}
+                                    xl={6}
+                                    lg={6}
+                                    md={6}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Form.Item label="Ngày sinh">
                                         <Controller
                                             name="date_of_birth"
@@ -381,7 +426,14 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={12}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Form.Item label="Địa chỉ">
                                         <Controller
                                             name="address"
@@ -401,7 +453,14 @@ const Profile = () => {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={12}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Form.Item label="Ghi chú">
                                         <Controller
                                             name="note"
@@ -419,7 +478,11 @@ const Profile = () => {
                                 </Col>
                             </Row>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" loading={auth.loading}>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    loading={auth.loading}
+                                >
                                     Cập nhật thông tin
                                 </Button>
                             </Form.Item>
