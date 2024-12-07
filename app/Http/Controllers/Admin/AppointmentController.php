@@ -423,8 +423,6 @@ class AppointmentController extends Controller
             // 1. Kiểm tra ca làm
             $shift = Shift::where('id', '=', $appointment->shift_id)
                 ->where('shift_date', '=', $appointment->appointment_date)
-                ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
-                ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
                 ->first();
 
             if (!$shift) {
