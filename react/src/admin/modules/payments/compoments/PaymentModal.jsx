@@ -400,7 +400,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                                     onChange={handleProductSelect}
                                 />
                             </Form.Item>
-                            <Form.Item label="trạng thái" name="status">
+                            <Form.Item label="Trạng thái" name="status">
                                 <Select placeholder="Chọn trạng thái">
                                     <Select.Option value={1}>
                                         Đã thanh toán
