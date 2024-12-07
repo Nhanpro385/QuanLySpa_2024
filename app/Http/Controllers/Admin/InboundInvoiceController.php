@@ -181,13 +181,14 @@ class InboundInvoiceController extends Controller
             // Cập nhật thông tin hóa đơn (trừ các chi tiết liên quan đến tồn kho)
             $invoice->update(array_merge(
                 $request->only([
-                    'staff_id',
+                   
                     'supplier_id',
                     'note',
                     'total_amount',
                     'status',
                 ]),
-                ['updated_by' => $updatedBy] // Ghi nhận người cập nhật
+                ['updated_by' => $updatedBy,
+                'staff_id'=> $updatedBy] // Ghi nhận người cập nhật
             ));
     
             // Xử lý từng chi tiết hóa đơn
