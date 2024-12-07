@@ -6,8 +6,10 @@ const PromotionTable = ({
     handleEdit,
     handleDelete,
     pagination,
-    handlePageChange,
+    loading,
+    handlePageChange
 }) => {
+
     const columns = [
         {
             title: "STT",
@@ -84,19 +86,18 @@ const PromotionTable = ({
         <Table
             dataSource={dataSource}
             columns={columns}
+            loading={loading}
             pagination={{
                 current: pagination.current_page,
                 pageSize: pagination.per_page,
                 total: pagination.total,
-                showSizeChanger: true,
                 showQuickJumper: true,
-                showTotal: (total) => `Tổng ${total} mục`,
-                pageSizeOptions: ["5", "10", "20", "50"],
-                responsive: true,
+                showSizeChanger: true,
                 onChange: handlePageChange,
+                showTotal: (total) => `Tổng ${total} khuyến mãi`,
             }}
         />
-    );
+    )
 };
 
 export default PromotionTable;
