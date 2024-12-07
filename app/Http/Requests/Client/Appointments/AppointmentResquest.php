@@ -26,6 +26,7 @@ class AppointmentResquest extends FormRequest
         return [
             'shift_id' => 'required|numeric|exists:shifts,id',
             'note' => 'nullable',
+            'start_time' => 'required',
             'services' => 'required|array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|numeric|min:1',
@@ -63,6 +64,7 @@ class AppointmentResquest extends FormRequest
             'users.array' => 'Danh sách người dùng phải là một mảng.',
             'users.*.staff_id.required' => 'Mã nhân viên là bắt buộc.',
             'users.*.staff_id.exists' => 'Mã nhân viên không hợp lệ.',
+
         ];
     }
 

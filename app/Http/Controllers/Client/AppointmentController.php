@@ -24,9 +24,6 @@ class AppointmentController extends Controller
 
             // 1. Kiểm tra ca làm
             $shift = Shift::where('id', '=', $validateData['shift_id'])
-                ->whereDate('shift_date', Carbon::today())
-                ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
-                ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
                 ->first();
 
             if (!$shift) {
@@ -67,6 +64,22 @@ class AppointmentController extends Controller
                 ], 403);
             }
 
+            if ($today == $shift->shift_date) {
+                $shift = Shift::where('id', '=', $validateData['shift_id'])
+                    ->whereDate('shift_date', Carbon::today())
+                    ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
+                    ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
+                    ->first();
+
+                if (!$shift) {
+                    return response()->json([
+                        "status" => "error",
+                        "message" => "Thời gian lịch hẹn không hợp lệ.",
+                        'error' => 'Ca làm hiện tại và lịch hẹn không hợp lệ.'
+                    ], 404);
+                }
+            }
+
 
             // Thêm mới lịch hẹn và liên kết nhân viên
             DB::beginTransaction();
@@ -76,7 +89,7 @@ class AppointmentController extends Controller
                 'id' => app(Snowflake::class)->next(),
                 'shift_id' => $validateData['shift_id'],
                 'customer_id' => auth('customer_api')->user()->id,
-                'start_time' => $shift->start_time,
+                'start_time' => $validateData['start_time'] ?? $shift->start_time,
                 'note' => $validateData['note'],
                 'appointment_date' => $shift->shift_date,
                 'status' => 1

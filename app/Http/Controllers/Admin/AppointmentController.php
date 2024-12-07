@@ -96,8 +96,6 @@ class AppointmentController extends Controller
 
             // 1. Kiểm tra ca làm
             $shift = Shift::where('id', '=', $validateData['shift_id'])->where('shift_date', '=', $validateData['appointment_date'])
-                ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
-                ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
                 ->first();
 
             if (!$shift) {
@@ -106,6 +104,24 @@ class AppointmentController extends Controller
                     "message" => "Dữ liệu đầu vào không hợp lệ.",
                     'error' => 'Ca làm hiện tại và lịch hẹn thời gian không hợp lệ.'
                 ], 404);
+            }
+
+            $currentDate = Carbon::now();
+            $today = $currentDate->format('Y-m-d');
+            if ($today == $shift->shift_date) {
+                $shift = Shift::where('id', '=', $validateData['shift_id'])
+                    ->whereDate('shift_date', Carbon::today())
+                    ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
+                    ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
+                    ->first();
+
+                if (!$shift) {
+                    return response()->json([
+                        "status" => "error",
+                        "message" => "Thời gian lịch hẹn không hợp lệ.",
+                        'error' => 'Thời gian lịch hẹn không hợp lệ.'
+                    ], 404);
+                }
             }
 
             // 2. Kiểm tra nhân viên trong ca làm
