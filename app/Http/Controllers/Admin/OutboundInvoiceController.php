@@ -141,8 +141,9 @@ class OutboundInvoiceController extends Controller
     
             // Cập nhật thông tin hóa đơn chính
             $invoice->update(array_merge(
-                $request->only(['staff_id', 'note', 'total_amount', 'status']),
-                ['updated_by' => $updatedBy]
+                $request->only(['note', 'total_amount', 'status']),
+                ['updated_by' => $updatedBy,
+                'staff_id'=> $updatedBy]
             ));
     
             // Duyệt qua từng chi tiết hóa đơn để xử lý
