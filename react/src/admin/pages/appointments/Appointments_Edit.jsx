@@ -278,14 +278,7 @@ const Appointment_Edit = () => {
                     duration: 5,
                 });
                 return;
-            } else if (selectedServices.length < data.employee.length) {
-                api.error({
-                    message: "Thêm lịch hẹn thất bại",
-                    description: "Số lượng nhân viên nhiều hơn số dịch vụ",
-                    duration: 5,
-                });
-                return;
-            }
+            } 
             const payload = {
                 id: idAppointment,
                 services: selectedServices.map((service) => ({
@@ -498,7 +491,7 @@ const Appointment_Edit = () => {
             {contextHolder}
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>
-                    <Col span={6}>
+                    <Col xxl={6} xl={6} lg={6} md={12} sm={12} xs={12}>
                         <Form.Item label="Họ và tên" required>
                             <Controller
                                 name="full_name"
@@ -519,7 +512,7 @@ const Appointment_Edit = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xxl={6} xl={6} lg={6} md={12} sm={12} xs={12}>
                         <Form.Item label="Số điện thoại" required>
                             <Controller
                                 name="phone"
@@ -540,7 +533,7 @@ const Appointment_Edit = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xxl={6} xl={6} lg={6} md={12} sm={12} xs={12}>
                         <Form.Item label="Thời gian hẹn" required>
                             <Controller
                                 name="appointment_date"
@@ -559,6 +552,7 @@ const Appointment_Edit = () => {
                                             field.onChange(date);
                                             handleChangeDate(date);
                                         }}
+                                        disabled
                                     />
                                 )}
                             />
@@ -569,7 +563,7 @@ const Appointment_Edit = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xxl={6} xl={6} lg={6} md={12} sm={12} xs={12}>
                         <Form.Item label="Thời gian dự kiến" required>
                             <Controller
                                 name="expected_time"
@@ -585,7 +579,7 @@ const Appointment_Edit = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xxl={12} xl={12} lg={12} md={24} sm={24} xs={24}>
                         <Form.Item label="Ca làm việc" required>
                             <Controller
                                 name="shift"
@@ -606,6 +600,7 @@ const Appointment_Edit = () => {
                                         placeholder="Chọn ca làm việc"
                                         options={shiftsOptions}
                                         onChange={HandleShiftChange}
+                                        disabled
                                     />
                                 )}
                             />
@@ -616,7 +611,7 @@ const Appointment_Edit = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xxl={12} xl={12} lg={12} md={24} sm={24} xs={24}>
                         <Form.Item label="Dịch vụ">
                             <Controller
                                 name="service"
@@ -645,7 +640,7 @@ const Appointment_Edit = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xxl={12} xl={12} lg={12} md={24} sm={24} xs={24}>
                         <Form.Item label="Chọn nhân viên" required>
                             <Controller
                                 name="employee"
@@ -676,7 +671,7 @@ const Appointment_Edit = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col xxl={12} xl={12} lg={12} md={24} sm={24} xs={24}>
                         <Form.Item label="Ghi chú">
                             <Controller
                                 name="note"

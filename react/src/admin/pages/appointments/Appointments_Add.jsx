@@ -550,10 +550,10 @@ const Appointment_Add = () => {
                                                     }}
                                                 >
                                                     <Col
-                                                        xxl={8}
+                                                        xxl={24}
                                                         xl={8}
                                                         lg={8}
-                                                        md={8}
+                                                        md={24}
                                                         sm={24}
                                                         xs={24}
                                                     >
@@ -574,7 +574,7 @@ const Appointment_Add = () => {
                                                         xxl={8}
                                                         xl={8}
                                                         lg={8}
-                                                        md={8}
+                                                        md={24}
                                                         sm={24}
                                                         xs={24}
                                                     >
@@ -597,7 +597,7 @@ const Appointment_Add = () => {
                                                         xxl={8}
                                                         xl={8}
                                                         lg={8}
-                                                        md={8}
+                                                        md={24}
                                                         sm={24}
                                                         xs={24}
                                                     >
@@ -638,7 +638,7 @@ const Appointment_Add = () => {
                         </Form.Item>
                     </Col>
 
-                    <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
+                    <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
                         <Form.Item label="ngày hẹn" required>
                             <Controller
                                 name="appointment_date"
@@ -651,6 +651,44 @@ const Appointment_Add = () => {
                                         size="large"
                                         showTime={{ format: "HH:mm" }}
                                         {...field}
+                                        // locale={{
+                                        //     lang: {
+                                        //         locale: "vi",
+                                        //         placeholder: "Chọn ngày",
+                                        //         rangePlaceholder: [
+                                        //             "Ngày bắt đầu",
+                                        //             "Ngày kết thúc",
+                                        //         ],
+                                        //         today: "Hôm nay",
+                                        //         now: "Bây giờ",
+                                        //         backToToday: "Về hôm nay",
+                                        //         ok: "Đồng ý",
+                                        //         clear: "Xóa",
+                                        //         month: "Tháng",
+                                        //         year: "Năm",
+                                        //         timeSelect: "Chọn giờ",
+                                        //         dateSelect: "Chọn ngày",
+                                        //         monthSelect: "Chọn tháng",
+                                        //         yearSelect: "Chọn năm",
+                                        //         decadeSelect: "Chọn thập kỷ",
+                                        //         yearFormat: "YYYY",
+                                        //         dateFormat: "DD/MM/YYYY",
+                                        //         dayFormat: "DD",
+                                        //         dateTimeFormat: "DD/MM/YYYY HH:mm:ss",
+                                        //         monthBeforeYear: true,
+                                        //         previousMonth: "Tháng trước",
+                                        //         nextMonth: "Tháng sau",
+                                        //         previousYear: "Năm trước",
+                                        //         nextYear: "Năm sau",
+                                        //         previousDecade: "Thập kỷ trước",
+                                        //         nextDecade: "Thập kỷ sau",
+                                        //         previousCentury: "Thế kỷ trước",
+                                        //         nextCentury: "Thế kỷ sau",
+                                        //     },
+
+
+                                        // }}
+                                        needConfirm={false}
                                         className="w-100"
                                         onChange={(value) => {
                                             handleChangeDate(value);
@@ -665,42 +703,7 @@ const Appointment_Add = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
-                        <Form.Item label="Dịch vụ">
-                            <Controller
-                                name="service"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        mode="multiple"
-                                        allowClear
-                                        value={selectedServices.map(
-                                            (service) => service.key
-                                        )}
-                                        size="large"
-                                        style={{ width: "100%" }}
-                                        placeholder="Chọn dịch vụ"
-                                        options={serviceOptions}
-                                        onChange={handleServiceChange}
-                                        filterOption={(input, option) => {
-                                            const optionLabel =
-                                                option?.label?.toLowerCase() ||
-                                                "";
-                                            return optionLabel.includes(
-                                                input.toLowerCase()
-                                            );
-                                        }}
-                                        showSearch
-                                        onSearch={(value) => {
-                                            HandleServiceChange(value);
-                                        }}
-                                    />
-                                )}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                    <Col xxl={12} xl={12} lg={12} md={24} sm={24} xs={24}>
                         <Form.Item label="Ca làm việc" required>
                             <Controller
                                 name="shift"
@@ -741,6 +744,41 @@ const Appointment_Add = () => {
                                     {errors.shift.message}
                                 </p>
                             )}
+                        </Form.Item>
+                    </Col>
+                    <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
+                        <Form.Item label="Dịch vụ">
+                            <Controller
+                                name="service"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        mode="multiple"
+                                        allowClear
+                                        value={selectedServices.map(
+                                            (service) => service.key
+                                        )}
+                                        size="large"
+                                        style={{ width: "100%" }}
+                                        placeholder="Chọn dịch vụ"
+                                        options={serviceOptions}
+                                        onChange={handleServiceChange}
+                                        filterOption={(input, option) => {
+                                            const optionLabel =
+                                                option?.label?.toLowerCase() ||
+                                                "";
+                                            return optionLabel.includes(
+                                                input.toLowerCase()
+                                            );
+                                        }}
+                                        showSearch
+                                        onSearch={(value) => {
+                                            HandleServiceChange(value);
+                                        }}
+                                    />
+                                )}
+                            />
                         </Form.Item>
                     </Col>
 

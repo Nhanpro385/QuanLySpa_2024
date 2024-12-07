@@ -28,7 +28,7 @@ const Appbooking = () => {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const iddichvu = params.get("dichvu");
-    
+
         setIdService(iddichvu);
     }, [location.search]);
 
@@ -78,6 +78,7 @@ const Appbooking = () => {
                 0
             ), // Tính tổng giá
             time: time.start_time, // Thời gian
+            start_time: `${time.start_time}:00`, // Thời gian bắt đầu
             note: NoteData, // Chú thích
             date: time.date, // Ngày đặt lịch
         };
@@ -109,7 +110,6 @@ const Appbooking = () => {
                 cate.service.forEach((ser, index2) => {
                     // Nếu tìm thấy dịch vụ khớp với `idService`
                     if (ser.id === idService) {
-                       
                         // Cập nhật activeService với key của `ServicesCategories`
                         setActiveService(index);
 
@@ -187,7 +187,7 @@ const Appbooking = () => {
                     />
                 </Col>
             </Row>
-            
+
             <ListBookingServiceTable
                 service={service}
                 setService={setService}

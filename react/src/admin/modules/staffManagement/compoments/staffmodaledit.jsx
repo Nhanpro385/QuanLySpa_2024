@@ -222,7 +222,7 @@ const ModalEditStaff = ({
                         <p style={{ color: "red" }}>{errors.gender.message}</p>
                     )}
                 </Form.Item>
-                <Form.Item label="Chức vụ">
+                <Form.Item label="Vai trò">
                     <Controller
                         name="role"
                         control={control}
