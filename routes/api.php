@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\TreatmentHistoryController;
 use App\Http\Controllers\Admin\InboundInvoiceController;
 use App\Http\Controllers\Admin\OutboundInvoiceController;
-
+use App\Http\Controllers\Admin\InventoryController as InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupplierController;
@@ -72,6 +72,10 @@ Route::group([
     Route::get('/outbound-invoices/{id}', [OutboundInvoiceController::class, 'show']);
     Route::put('/outbound-invoices/{id}', [OutboundInvoiceController::class, 'update']);
     Route::delete('/outbound-invoices/{id}', [OutboundInvoiceController::class, 'destroy']);
+
+    Route::get('/inventory', [InventoryController::class, 'index']); // Lấy danh sách inventory
+    Route::get('/inventory/{id}', [InventoryController::class, 'show']); // Hiển thị chi tiết inventory
+    Route::get('/inventory/history/{productId}', [InventoryController::class, 'history']); // Hiển thị lịch sử inventory của sản phẩm
 
     
     Route::get('/contacts', [ContactsController::class, 'index']);
