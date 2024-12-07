@@ -49,25 +49,30 @@ const weekdays = [
 function getTimeSlots(shift) {
     const startTime = parseTime(shift.start_time);
     const endTime = parseTime(shift.end_time);
+    const dateShift = new Date(shift.shift_date); // Ngày của ca làm việc
     const slots = [];
+    const now = new Date();
 
     let currentTime = new Date(startTime);
 
     while (currentTime < endTime) {
         const nextTime = new Date(currentTime);
-        const now = new Date();
-        nextTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes to the current time
+        nextTime.setMinutes(currentTime.getMinutes() + 30); // Thêm 30 phút
+
+        // So sánh ngày hiện tại và ngày của ca làm việc
+        const isSameDay = now.toDateString() === dateShift.toDateString();
+
         slots.push({
-            start_time: currentTime.toTimeString().slice(0, 5), // Get hour and minute only
+            start_time: currentTime.toTimeString().slice(0, 5), // Giờ:Phút
             end_time: nextTime.toTimeString().slice(0, 5),
-            status: now > nextTime ? "disabled" : "active",
+            status: isSameDay && now > nextTime ? "disabled" : "active", // Chỉ dis nếu ngày và thời gian trùng
         });
+
         currentTime = nextTime;
     }
 
     return slots;
 }
-
 function parseTime(timeStr) {
     const [hours, minutes, seconds] = timeStr
         .split(":")
@@ -286,74 +291,65 @@ const BookingPickTime = ({
                             .map(Number);
                         const endTimeToday = new Date();
                         endTimeToday.setHours(endHour, endMinute, endSecond, 0);
-                        if (now > endTimeToday) {
-                            console.log("Thời gian đã trôi qua");
-                        } else {
-                            console.log(shift);
 
-                            return (
-                                <Col
-                                    xxl={24}
-                                    xl={24}
-                                    lg={24}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
-                                    key={index}
-                                    className={style.shift}
-                                >
-                                    <Divider orientation="left">
-                                        <h1 className={style.shiftTitle}>
-                                            Ca làm việc: {index + 1}
-                                        </h1>
-                                    </Divider>
+                        return (
+                            <Col
+                                xxl={24}
+                                xl={24}
+                                lg={24}
+                                md={24}
+                                sm={24}
+                                xs={24}
+                                key={index}
+                                className={style.shift}
+                            >
+                                <Divider orientation="left">
+                                    <h1 className={style.shiftTitle}>
+                                        Ca làm việc: {index + 1}
+                                    </h1>
+                                </Divider>
 
-                                    <Row gutter={[16, 16]} justify={"center"}>
-                                        {shift.timeSlots.map((slot, idx) => {
-                                            return (
-                                                <Col key={idx}>
-                                                    <Button
-                                                        // type="primary"
-                                                        block
-                                                        disabled={
-                                                            slot.status ===
-                                                            "disabled"
-                                                        }
-                                                        onClick={() =>
-                                                            handleClickTime({
-                                                                shift_id:
-                                                                    shift.id,
-                                                                start_time:
-                                                                    slot.start_time,
-                                                                index: idx,
-                                                                date: listShift[
-                                                                    activeDate
-                                                                ].date,
-                                                            })
-                                                        }
-                                                        className={`${
-                                                            style.slot
-                                                        } ${
-                                                            time?.index ===
-                                                                idx &&
-                                                            time?.shift_id ===
-                                                                shift.id &&
-                                                            time?.start_time ===
-                                                                slot?.start_time
-                                                                ? style.active
-                                                                : ""
-                                                        }`}
-                                                    >
-                                                        {slot.start_time} -{" "}
-                                                        {slot.end_time}
-                                                    </Button>
-                                                </Col>
-                                            );
-                                        })}
-                                    </Row>
-                                </Col>
-                            );
-                        }
+                                <Row gutter={[16, 16]} justify={"center"}>
+                                    {shift.timeSlots.map((slot, idx) => {
+                                        return (
+                                            <Col key={idx}>
+                                                <Button
+                                                    // type="primary"
+                                                    block
+                                                    disabled={
+                                                        slot.status ===
+                                                        "disabled"
+                                                    }
+                                                    onClick={() =>
+                                                        handleClickTime({
+                                                            shift_id: shift.id,
+                                                            start_time:
+                                                                slot.start_time,
+                                                            index: idx,
+                                                            date: listShift[
+                                                                activeDate
+                                                            ].date,
+                                                        })
+                                                    }
+                                                    className={`${style.slot} ${
+                                                        time?.index === idx &&
+                                                        time?.shift_id ===
+                                                            shift.id &&
+                                                        time?.start_time ===
+                                                            slot?.start_time
+                                                            ? style.active
+                                                            : ""
+                                                    }`}
+                                                >
+                                                    {slot.start_time} -{" "}
+                                                    {slot.end_time}
+                                                </Button>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            </Col>
+                        );
                     })}
                 </Row>
 

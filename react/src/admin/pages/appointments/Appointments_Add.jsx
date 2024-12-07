@@ -182,13 +182,6 @@ const Appointment_Add = () => {
                     duration: 5,
                 });
                 return;
-            } else if (selectedServices.length < data.employee.length) {
-                api.error({
-                    message: "Thêm lịch hẹn thất bại",
-                    description: "Số lượng nhân viên nhiều hơn số dịch vụ",
-                    duration: 5,
-                });
-                return;
             }
 
             const payload = {
@@ -685,7 +678,6 @@ const Appointment_Add = () => {
                                         //         previousCentury: "Thế kỷ trước",
                                         //         nextCentury: "Thế kỷ sau",
                                         //     },
-
 
                                         // }}
                                         needConfirm={false}
