@@ -75,7 +75,7 @@ Route::group([
 
     Route::get('/inventory', [InventoryController::class, 'index']); // Lấy danh sách inventory
     Route::get('/inventory/{id}', [InventoryController::class, 'show']); // Hiển thị chi tiết inventory
-    Route::get('/inventory/history/{productId}', [InventoryController::class, 'history']); // Hiển thị lịch sử inventory của sản phẩm
+    Route::get('/inventory/history/{productId}', [InventoryController::class, 'getInventoryHistory']); // Hiển thị lịch sử inventory của sản phẩm
 
     
     Route::get('/contacts', [ContactsController::class, 'index']);
