@@ -111,8 +111,8 @@ class AppointmentController extends Controller
             if ($today == $shift->shift_date) {
                 $shift = Shift::where('id', '=', $validateData['shift_id'])
                     ->whereDate('shift_date', Carbon::today())
-                    ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
-                    ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
+                    ->whereTime('start_time', '<=', $validateData['start_time'])
+                    ->whereTime('end_time', '>=', $validateData['start_time'])
                     ->first();
 
                 if (!$shift) {

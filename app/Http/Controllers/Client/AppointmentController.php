@@ -67,8 +67,8 @@ class AppointmentController extends Controller
             if ($today == $shift->shift_date) {
                 $shift = Shift::where('id', '=', $validateData['shift_id'])
                     ->whereDate('shift_date', Carbon::today())
-                    ->whereTime('start_time', '<=', Carbon::now()->toTimeString())
-                    ->whereTime('end_time', '>=', Carbon::now()->toTimeString())
+                    ->whereTime('start_time', '<=', $validateData['start_time'])
+                    ->whereTime('end_time', '>=', $validateData['start_time'])
                     ->first();
 
                 if (!$shift) {
@@ -119,7 +119,7 @@ class AppointmentController extends Controller
                     DB::rollBack();
                     return response()->json([
                         "status" => "error",
-                        "message" => "Hết hàng trong kho.",
+                        "message" => "Xin lỗi dịch vụ bạn cần thực hiện hiện tại chúng tôi không thể đáp ứng đủ sản phẩm.",
                         'error' => 'Số lượng sản phẩm: ' . $product['product_id'] . ' của dịch vụ bạn chọn trong kho không đáp ứng đc yêu cầu của quý khách.'
                     ], 400);
                 }
