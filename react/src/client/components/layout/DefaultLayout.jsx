@@ -1,5 +1,6 @@
 import React from "react";
 import HeaderComponents from "../Header/HeaderComponents";
+import FooterComponents from "../Footer/FooterComponents";
 import { Layout, ConfigProvider } from "antd";
 const { Content } = Layout;
 
@@ -30,6 +31,8 @@ const DefaultLayout = ({ children }) => {
             >
                 <HeaderComponents />
                 <Content>{children}</Content>
+                <FooterComponents />
+            
             </Layout>
         </ConfigProvider>
     );

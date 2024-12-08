@@ -1,0 +1,97 @@
+.container {
+    width: 100%;
+    background-color: rgba(255, 243, 243, 1);
+
+    .footerContent {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 50px;
+
+        .boxLeft {
+
+            .boxTitle {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+
+                img {
+                    width: 50px;
+                }
+
+            }
+
+            .boxContent {
+                h3 {
+                    width: 300px;
+                    margin-bottom: 20px;
+                }
+
+                .boxBusinessNumber {
+                    width: 300px;
+                    margin-bottom: 20px;
+                }
+
+                .boxContact {
+                    // font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 10px;
+
+                    img {
+                        width: 20px;
+                    }
+
+                    p {
+                        margin: 0;
+                        padding-left: 10px;
+                    }
+                }
+
+            }
+
+            .boxSocial {
+                display: flex;
+                align-items: center;
+                margin-top: 20px;
+
+                img {
+                    width: 45px;
+                    margin-right: 10px;
+                }
+            }
+
+        }
+
+        .boxMiddle {
+            .boxNameLocation {
+                margin-bottom: 30px;
+            }
+
+            .boxLocationItemName {
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 27px;
+                }
+            }
+
+        }
+
+        .boxRight {
+            .boxPolicyName {
+                margin-bottom: 30px;
+            }
+
+            .boxPolicyItem {
+
+                p {
+                    padding-bottom: 10px;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}
