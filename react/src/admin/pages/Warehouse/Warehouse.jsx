@@ -105,7 +105,11 @@ const Warehouse = () => {
                 handleEdit(record);
                 break;
             case "2":
-                navigate("/admin/warehouse/import/" + record.key);
+                if (selectedFunction == "import") {
+                    navigate("/admin/warehouse/import/detail/" + record.id);
+                }else{
+                    navigate("/admin/warehouse/export/detail/" + record.id);
+                }
                 break;
             case "3":
                 console.log("History");
@@ -126,14 +130,6 @@ const Warehouse = () => {
         {
             key: "2",
             label: <Button block> Chi tiết hàng nhập </Button>,
-        },
-        {
-            key: "4",
-            label: (
-                <Button block danger>
-                    Xóa
-                </Button>
-            ),
         },
     ];
 

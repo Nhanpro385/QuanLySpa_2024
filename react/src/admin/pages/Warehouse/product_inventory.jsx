@@ -8,6 +8,9 @@ import useModal from "../../modules/appointments/hooks/openmodal";
 import ModalDetailinventory from "../../modules/warehouse/compoments/modalDetailinventory";
 import ModalHistoryInventory from "../../modules/warehouse/compoments/ModalHistoryInventory";
 const ProductInventory = () => {
+    useEffect(() => {
+        document.title = "Quản lý tồn kho";
+    }, []);
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const {
         isModalOpen: isModalOpen2,
@@ -20,7 +23,7 @@ const ProductInventory = () => {
         getInventoryAction,
         searchInventoryAction,
         getInventoryDetailAction,
-        historyinventoryAction
+        historyinventoryAction,
     } = usewarehouseAction();
     const [dataSource, setDataSource] = useState([]);
     const [pagination, setPagination] = useState({});
@@ -147,7 +150,17 @@ const ProductInventory = () => {
     return (
         <div>
             <h1 className="text-center">Quản lý tồn kho sản phẩm </h1>
-            <Card>
+            <Card
+                extra={
+                    <Button
+                        type="primary"
+                        loading={warehouse?.inventory?.loading}
+                        onClick={() => getInventoryAction()}
+                    >
+                        Làm mới
+                    </Button>
+                }
+            >
                 <Row>
                     <Col span={12} style={{ marginBottom: 10 }}>
                         <Select defaultValue="all" style={{ width: 120 }}>

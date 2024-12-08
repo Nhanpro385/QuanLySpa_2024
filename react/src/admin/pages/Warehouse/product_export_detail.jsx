@@ -13,34 +13,31 @@ const formatCurrency = (value) => {
     }).format(value);
 };
 
-const ProductImportDetail = () => {
+const ProductExportDetail = () => {
     const { id } = useParams();
     const warehouse = useSelector((state) => state.warehouse);
-    const { getImportDetailAction } = usewarehouseAction();
+    const { getExportDetailAction } = usewarehouseAction();
     const [dataDetail, setDataDetail] = useState({});
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
         if (!id) {
-            
             return;
         }
-        getImportDetailAction(id);
-    }, []);
+        getExportDetailAction(id);
+    }, [id, getExportDetailAction]);
 
     useEffect(() => {
-        if (warehouse?.import?.detail?.data) {
-            const detailData = warehouse?.import?.detail?.data;
+        if (warehouse?.export?.detail?.data) {
+            const detailData = warehouse?.export?.detail?.data;
             setDataDetail(detailData);
             setDataSource(
                 detailData?.details?.map((item, index) => ({
                     key: index + 1,
                     name: item?.product?.name,
-                    sku: item?.product?.sku,
+                    bar_code: item?.product?.bar_code,
                     old_quantity: item?.quantity_olded,
-                    import_quantity: item?.quantity_import,
-                    old_import_price: formatCurrency(item?.cost_olded),
-                    new_import_price: formatCurrency(item?.cost_import),
+                    export_quantity: item?.quantity_export,
                     price: formatCurrency(item?.unit_price),
                 }))
             );
@@ -59,9 +56,9 @@ const ProductImportDetail = () => {
             key: "name",
         },
         {
-            title: "SKU",
-            dataIndex: "sku",
-            key: "sku",
+            title: "Mã vạch",
+            dataIndex: "bar_code",
+            key: "bar_code",
         },
         {
             title: "Số lượng tồn (cũ)",
@@ -69,19 +66,9 @@ const ProductImportDetail = () => {
             key: "old_quantity",
         },
         {
-            title: "Số lượng nhập (mới)",
-            dataIndex: "import_quantity",
-            key: "import_quantity",
-        },
-        {
-            title: "Giá nhập (cũ)",
-            dataIndex: "old_import_price",
-            key: "old_import_price",
-        },
-        {
-            title: "Giá nhập (mới)",
-            dataIndex: "new_import_price",
-            key: "new_import_price",
+            title: "Số lượng xuất",
+            dataIndex: "export_quantity",
+            key: "export_quantity",
         },
         {
             title: "Đơn giá",
@@ -91,27 +78,24 @@ const ProductImportDetail = () => {
     ];
 
     return (
-        <Card title={`Chi tiết nhập sản phẩm: #${id}`} bordered>
+        <Card title={`Chi tiết xuất sản phẩm: #${id}`} bordered>
             <Space direction="vertical" style={{ width: "100%" }}>
-                {/* Mô tả thông tin nhập */}
-                <Descriptions title="Thông tin nhập hàng" bordered column={2}>
-                    <Descriptions.Item label="Mã nhập">
+                {/* Mô tả thông tin xuất */}
+                <Descriptions title="Thông tin xuất hàng" bordered column={2}>
+                    <Descriptions.Item label="Mã xuất">
                         {dataDetail?.id || "N/A"}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng tiền">
                         {formatCurrency(dataDetail?.total_amount || 0)}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Nhà cung cấp">
-                        {dataDetail?.supplier?.name || "N/A"}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Liên hệ nhà cung cấp">
-                        {dataDetail?.supplier?.contact || "N/A"}
-                    </Descriptions.Item>
                     <Descriptions.Item label="Ghi chú">
                         {dataDetail?.note || "Không có"}
                     </Descriptions.Item>
                     <Descriptions.Item label="Trạng thái">
-                        {dataDetail?.status === 1 ? "Hoàn thành" : "Đang xử lý"}
+                        {dataDetail?.status ? "Hoàn thành" : "Đang xử lý"}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Người tạo">
+                        {dataDetail?.created_by?.name || "N/A"}
                     </Descriptions.Item>
                     <Descriptions.Item label="Ngày tạo">
                         {dayjs(dataDetail?.created_at).format(
@@ -127,7 +111,7 @@ const ProductImportDetail = () => {
 
                 {/* Bảng chi tiết sản phẩm */}
                 <Table
-                    title={() => "Danh sách sản phẩm nhập"}
+                    title={() => "Danh sách sản phẩm xuất"}
                     columns={columns}
                     dataSource={dataSource}
                     pagination={{
@@ -151,4 +135,4 @@ const ProductImportDetail = () => {
     );
 };
 
-export default ProductImportDetail;
+export default ProductExportDetail;

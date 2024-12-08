@@ -62,6 +62,8 @@ import Promotions_Edit from "../pages/Promotions/Promotions_Edit";
 import VideocallAdmin from "../pages/videocall";
 import Profile from "../pages/profile";
 import Product_import_Edit from "../pages/Warehouse/product_import_Edit";
+import ProductExportDetail from "../pages/Warehouse/product_export_detail";
+import Product_export_Edit from "../pages/Warehouse/product_export_Edit";
 
 const PublicRoutes = [
     // Dashboard
@@ -197,13 +199,23 @@ const PublicRoutes = [
         requiredRole: { requiredRole: "private", role: "Admin" },
     },
     {
+        path: "/warehouse/export/Edit/:id",
+        element: <Product_export_Edit />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
         path: "/warehouse/import",
         element: <WarehouseImport />,
         requiredRole: { requiredRole: "private", role: "Admin" },
     },
     {
-        path: "/warehouse/import/:id",
+        path: "/warehouse/import/detail/:id",
         element: <ProductImportDetail />,
+        requiredRole: { requiredRole: "private", role: "Admin" },
+    },
+    {
+        path: "/warehouse/export/detail/:id",
+        element: <ProductExportDetail />,
         requiredRole: { requiredRole: "private", role: "Admin" },
     },
     {

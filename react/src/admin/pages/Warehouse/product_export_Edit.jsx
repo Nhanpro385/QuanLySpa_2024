@@ -8,50 +8,75 @@ import {
     Row,
     Select,
     Table,
-    message,
     notification,
+    message,
 } from "antd";
 import React, { useState, useEffect } from "react";
 import "./../../modules/warehouse/styles/ProductImport.scss";
 import useproductActions from "../../modules/product/hooks/useProduct";
-import useSupplierActions from "../../modules/SuppliersManagement/hooks/useSupplierActions";
+
 import usewarehouseAction from "../../modules/warehouse/hooks/usewarehouseaction";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
-import { useNavigate } from "react-router-dom";
-const WarehouseImport = () => {
+import { useNavigate, useParams } from "react-router-dom";
+
+const Product_export_Edit = () => {
     useEffect(() => {
-        document.title = "Nhập hàng";
+        document.title = "Chỉnh sửa xuất hàng";
     }, []);
+    const { id } = useParams();
     const navigator = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
-    const [supplierData, setSupplierData] = useState([]);
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
+    const [Detail, setDetail] = useState({});
+    const [api, contextHolder] = notification.useNotification();
     const [note, setNote] = useState("");
     const product = useSelector((state) => state.products);
-    const supplier = useSelector((state) => state.supplier);
-    const [searchSupplierQuery, setsearchSupplierQuery] = useState({
-        page: 1,
-        per_page: 100,
-        search: "",
-    });
-    const [api, contextHolder] = notification.useNotification();
+    const warehouse = useSelector((state) => state.warehouse);
     const [searchProductQuery, setsearchProductQuery] = useState({
         page: 1,
         per_page: 100,
         search: "",
     });
-    const warehouse = useSelector((state) => state.warehouse);
+
     const { getproduct, searchproduct } = useproductActions();
-    const { getSupplier, searchSupplier } = useSupplierActions();
-    const { warehouseImportAction } = usewarehouseAction();
+
+    const { updateExportAction, getExportDetailAction } = usewarehouseAction();
 
     useEffect(() => {
         getproduct(100);
-        getSupplier(100);
     }, []);
+    useEffect(() => {
+        if (!id) {
+            return;
+        }
+        getExportDetailAction(id);
+    }, []);
+    useEffect(() => {
+        console.log(warehouse?.export?.detail?.data);
+        if (warehouse?.export?.detail?.data) {
+            const detailData = warehouse?.export?.detail?.data;
+            setDetail(detailData);
+        }
+    }, [warehouse]);
+    useEffect(() => {
+        if (Detail) {
+            console.log(Detail);
 
+            setProducts(
+                Detail?.details?.map((item, index) => ({
+                    key: index + 1,
+                    id_outbound: item?.id,
+                    id: item?.product?.id || "",
+                    name: item?.product?.name || "",
+                    quantity: item?.quantity_export,
+                    price: item?.unit_price,
+                    total: item?.quantity_export * item?.unit_price,
+                }))
+            );
+            setNote(Detail?.note);
+        }
+    }, [Detail]);
     useEffect(() => {
         if (product.products.data && product.products.data.length > 0) {
             const data = product.products.data.map((item, index) => ({
@@ -63,28 +88,15 @@ const WarehouseImport = () => {
         }
     }, [product]);
 
-    useEffect(() => {
-        if (supplier.Suppliers.data && supplier.Suppliers.data.length > 0) {
-            console.log(supplier);
-            const data = supplier.Suppliers.data.map((item, index) => ({
-                key: index + 1,
-                id: item.id,
-                name: item.name,
-            }));
-            setSupplierData(data);
-        }
-    }, [supplier]);
-
     const addProduct = () => {
         setProducts([
             ...products,
             {
                 key: products.length + 1,
                 id: "",
+                id_outbound: "",
                 name: "",
                 quantity: 1,
-                cost: 0,
-
                 price: 0,
                 total: 0,
             },
@@ -93,8 +105,9 @@ const WarehouseImport = () => {
 
     const updateProduct = (index, fieldValues) => {
         const updatedProducts = [...products];
-        const { id, name, quantity, cost } = fieldValues;
+        const { id, quantity, price } = fieldValues;
 
+        // Check if the product already exists in the list
         const existingProductIndex = products.findIndex(
             (product) => product.id === id
         );
@@ -104,19 +117,24 @@ const WarehouseImport = () => {
             existingProductIndex !== -1 &&
             existingProductIndex !== index
         ) {
+            // Merge quantities if the product already exists but on a different row
             updatedProducts[existingProductIndex].quantity += quantity || 1;
             updatedProducts[existingProductIndex].total =
                 updatedProducts[existingProductIndex].quantity *
-                (updatedProducts[existingProductIndex].cost || 0);
+                updatedProducts[existingProductIndex].price;
+
+            // Remove the duplicate row
             updatedProducts.splice(index, 1);
         } else {
+            // Update the current product
             updatedProducts[index] = {
                 ...updatedProducts[index],
                 ...fieldValues,
             };
+            // Calculate total for the product
             updatedProducts[index].total =
                 (updatedProducts[index].quantity || 1) *
-                (updatedProducts[index].cost || 0);
+                (updatedProducts[index].price || 0);
         }
         setProducts(updatedProducts);
     };
@@ -131,33 +149,25 @@ const WarehouseImport = () => {
     };
 
     const validateForm = () => {
-        if (!selectedSupplier) {
-            api.error({
-                message: "Vui lòng chọn nhà cung cấp",
-                duration: 3,
-            });
-            return false;
-        }
         if (products.length === 0) {
             api.error({
-                message: "Vui lòng thêm sản phẩm",
+                message: "Vui lòng thêm sản phẩm.",
                 duration: 3,
             });
-
             return false;
         }
         const invalidProducts = products.some(
             (product) =>
-                !product.id || product.quantity <= 0 || product.cost <= 0
+                !product.id || product.quantity <= 0 || product.price <= 0
         );
         if (invalidProducts) {
             api.error({
-                message: "Vui lòng nhập đúng thông tin sản phẩm",
+                message: "Vui lòng kiểm tra thông tin sản phẩm.",
                 duration: 3,
             });
-
             return false;
         }
+
         return true;
     };
 
@@ -166,37 +176,65 @@ const WarehouseImport = () => {
             if (!validateForm()) return;
 
             const payload = {
-                supplier_id: selectedSupplier,
                 total_amount: products.reduce(
                     (acc, curr) => acc + curr.total,
                     0
                 ),
-                note: note || "Nhập hàng",
+                note: note || "Xuất hàng",
                 details: products.map((product) => ({
                     product_id: product.id,
-                    quantity_import: product.quantity,
-                    cost_import: product.cost,
+                    quantity_export: product.quantity,
                     unit_price: product.price,
+                    id: product.id_outbound,
                 })),
             };
-            const response = await warehouseImportAction(payload);
-            if (response.payload.status === "success") {
-                api.success({
-                    message: "Nhập hàng thành công",
+
+            const response = await updateExportAction({
+                id: id,
+                data: payload,
+            });
+            console.log(response);
+
+            
+            if (response.payload.status != "success") {
+                api.error({
+                    message: "Đã xảy ra lỗi khi Cập nhật xuất hàng.",
+                    description:
+                        response?.payload?.message || "Vui lòng thử lại sau",
                     duration: 3,
                 });
-
-                setProducts([]);
-                setSelectedSupplier(null);
-                setNote("");
+                if (Object.keys(response.payload.errors).length > 0) {
+                    Object.keys(response.payload.errors).forEach((key) => {
+                        api.error({
+                            message: "Đã xảy ra lỗi khi Cập nhật xuất hàng.",
+                            description: response.payload.errors[key],
+                            duration: 3,
+                        });
+                    });
+    
+                    return;
+                }
+                return;
+            }
+            
+            if (response.payload.status == "success") {
+                api.success({
+                    message: "Cập nhật xuất hàng thành công.",
+                    duration: 3,
+                });
+                setTimeout(() => {
+                    navigator("/admin/warehouse");
+                }, 3000);
             }
         } catch (error) {
-            console.log(error);
+            api.error({
+                message: "Đã xảy ra lỗi khi Cập nhật xuất hàng.",
+                description: "Vui lòng thử lại sau",
+                duration: 3,
+            });
         }
     };
-    const searchSupplierDebounce = debounce((value) => {
-        setsearchSupplierQuery({ ...searchSupplierQuery, search: value });
-    }, 300);
+
     const searchProductDebounce = debounce((value) => {
         setsearchProductQuery({ ...searchProductQuery, search: value });
     }, 300);
@@ -208,16 +246,9 @@ const WarehouseImport = () => {
         }
     }, [searchProductQuery]);
 
-    useEffect(() => {
-        if (searchSupplierQuery.search !== "") {
-            searchSupplier(searchSupplierQuery);
-        } else {
-            getSupplier(100);
-        }
-    }, [searchSupplierQuery]);
-
     const columns = [
         { title: "STT", dataIndex: "key", key: "key" },
+        { title: "Mã Sản Phẩm", dataIndex: "id", key: "id" },
         {
             title: "Tên Sản Phẩm",
             dataIndex: "name",
@@ -229,6 +260,7 @@ const WarehouseImport = () => {
                     showSearch
                     placeholder="Nhập tên sản phẩm"
                     filterOption={false}
+                    value={product.id || null}
                     options={searchResults.map((item) => ({
                         value: item.id,
                         label: item.name,
@@ -256,24 +288,6 @@ const WarehouseImport = () => {
                     onChange={(value) =>
                         updateProduct(index, { quantity: value })
                     }
-                />
-            ),
-        },
-        {
-            title: "Giá nhập",
-            dataIndex: "cost",
-            key: "cost",
-            render: (_, product, index) => (
-                <InputNumber
-                    className="w-100"
-                    min={1}
-                    size="large"
-                    formatter={(value) =>
-                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                    }
-                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                    value={product.cost}
-                    onChange={(value) => updateProduct(index, { cost: value })}
                 />
             ),
         },
@@ -314,7 +328,7 @@ const WarehouseImport = () => {
 
     return (
         <div className="warehouse-import">
-            <h1 className="text-center">Nhập hàng</h1>
+            <h1 className="text-center">Xuất hàng</h1>
             <Card
                 title="Nhập sản phẩm : #123456789"
                 extra={
@@ -329,35 +343,9 @@ const WarehouseImport = () => {
                 {contextHolder}
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
-                        <Col xl={16} md={16} sm={24} xs={24}>
-                            <Card title="Thông tin nhập hàng">
-                                <Row gutter={[16, 16]}>
-                                    <Col xl={8} md={8} sm={24} xs={24}>
-                                        <Form.Item label="Nhà cung cấp">
-                                            <Select
-                                                size="large"
-                                                placeholder="Nhập tên nhà cung cấp"
-                                                options={supplierData.map(
-                                                    (item) => ({
-                                                        value: item.id,
-                                                        label: item.name,
-                                                    })
-                                                )}
-                                                showSearch
-                                                onChange={(value) => {
-                                                    setSelectedSupplier(value);
-                                                }}
-                                                filterOption={false}
-                                                onSearch={
-                                                    searchSupplierDebounce
-                                                }
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                            </Card>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card
-                                title="Danh sách nhập hàng"
+                                title="Danh sách xuất hàng"
                                 className="mt-3 bg-light"
                                 extra={
                                     <Button type="primary" onClick={addProduct}>
@@ -368,11 +356,13 @@ const WarehouseImport = () => {
                                 <Table
                                     columns={columns}
                                     dataSource={products}
-                                    pagination={false}
+                                    pagination={{
+                                        pageSize: 5,
+                                    }}
                                 />
                             </Card>
                         </Col>
-                        <Col xl={8} md={8} sm={24} xs={24}>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card className="bg-light">
                                 <Form.Item label="Mô tả">
                                     <Input.TextArea
@@ -385,7 +375,7 @@ const WarehouseImport = () => {
                                 <h3>
                                     Tổng tiền:{" "}
                                     {products
-                                        .reduce(
+                                        ?.reduce(
                                             (acc, curr) => acc + curr.total,
                                             0
                                         )
@@ -394,10 +384,10 @@ const WarehouseImport = () => {
                                 </h3>
                                 <Button
                                     type="primary"
-                                    className="w-100 mt-3"
+                                    className="mt-3"
                                     onClick={submitProduct}
                                 >
-                                    Nhập hàng
+                                    Câp nhật
                                 </Button>
                             </Card>
                         </Col>
@@ -408,4 +398,4 @@ const WarehouseImport = () => {
     );
 };
 
-export default WarehouseImport;
+export default Product_export_Edit;

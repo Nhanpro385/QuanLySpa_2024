@@ -21,6 +21,9 @@ import debounce from "lodash/debounce";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 const Product_import_Edit = () => {
+    useEffect(() => {
+        document.title = "Chỉnh sửa nhập hàng";
+    }, []);
     const { id } = useParams();
     const navigator = useNavigate();
     const [products, setProducts] = useState([]);
@@ -31,7 +34,6 @@ const Product_import_Edit = () => {
     const [api, contextHolder] = notification.useNotification();
     const product = useSelector((state) => state.products);
     const supplier = useSelector((state) => state.supplier);
-   
 
     const [searchSupplierQuery, setsearchSupplierQuery] = useState({
         page: 1,
@@ -71,6 +73,7 @@ const Product_import_Edit = () => {
                     cost: item.cost_import,
                     price: item.unit_price,
                     total: item.quantity_import * item.cost_import,
+                    cost_olded: item.cost_olded,
                 }))
             );
             setNote(warehouse?.import?.detail?.data?.note);
@@ -111,6 +114,7 @@ const Product_import_Edit = () => {
                 quantity: 1,
                 id_inbound: "",
                 cost: 0,
+                cost_olded: 0,
                 price: 0,
                 total: 0,
             },
@@ -205,7 +209,9 @@ const Product_import_Edit = () => {
                     quantity_import: product.quantity,
                     cost_import: product.cost,
                     unit_price: product.price,
+                    cost_olded: product.cost_olded,
                 })),
+                status: true,
             };
             const response = await updateImportAction({
                 id: id,
@@ -213,12 +219,27 @@ const Product_import_Edit = () => {
             });
             if (response.payload.status == "success") {
                 api.success({
-                    message: "Nhập hàng thành công",
+                    message: "Cập nhật thành công",
                     duration: 3,
                 });
                 setProducts([]);
                 setSelectedSupplier(null);
                 setNote("");
+            } else {
+                api.error({
+                    message: "Cập nhật thất bại",
+                    duration: 3,
+                    description: response.payload.message,
+                });
+                if (Object.keys(response.payload.errors).length > 0) {
+                    Object.keys(response.payload.errors).forEach((key) => {
+                        api.error({
+                            message: "Cập nhật thất bại",
+                            description: response.payload.errors[key][0],
+                            duration: 3,
+                        });
+                    });
+                }
             }
         } catch (error) {
             console.log(error);
@@ -446,7 +467,7 @@ const Product_import_Edit = () => {
                                     className="mt-3"
                                     onClick={submitProduct}
                                 >
-                                   Cập nhật
+                                    Cập nhật
                                 </Button>
                             </Card>
                         </Col>

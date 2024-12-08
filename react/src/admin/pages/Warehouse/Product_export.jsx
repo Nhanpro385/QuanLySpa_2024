@@ -20,6 +20,9 @@ import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import { useNavigate } from "react-router-dom";
 const WarehouseExport = () => {
+     useEffect(() => {
+        document.title = "Xuất hàng";
+    }, []);
     const navigator = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
