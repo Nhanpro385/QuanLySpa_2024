@@ -69,7 +69,7 @@ const Warehouse = () => {
         }
     }, [warehouse]);
     useEffect(() => {
-        if (selectedFunction === "import") {
+        if (selectedFunction == "import") {
             if (
                 searchquery.search !== "" ||
                 searchquery.page !== 1 ||
@@ -219,17 +219,17 @@ const Warehouse = () => {
         { label: "Xuất hàng", value: "export" },
     ];
     const importandexport = (selectedFunction) => {
-        if (selectedFunction === "import") {
+        if (selectedFunction == "import") {
             navigate("/admin/warehouse/import");
         } else {
             navigate("/admin/warehouse/export");
         }
     };
     const handleEdit = (record) => {
-        if (selectedFunction === "import") {
-            navigate("/admin/warehouse/import/Edit/" + record.key);
+        if (selectedFunction == "import") {
+            navigate("/admin/warehouse/import/Edit/" + record.id);
         } else {
-            navigate("/admin/warehouse/export/Edit/" + record.key);
+            navigate("/admin/warehouse/export/Edit/" + record.id);
         }
     };
     return (

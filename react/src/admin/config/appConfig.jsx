@@ -131,7 +131,7 @@ const endpoints = {
         export: `${API_BASE_URL}/outbound-invoices`,
         getExport: `${API_BASE_URL}/outbound-invoices`,
         inventory: `${API_BASE_URL}/inventory`,
-        getInventory: `${API_BASE_URL}/inventory`,
+        getInventoryDetail: (id) => `${API_BASE_URL}/inventory/${id}`,
         getImportDetail: (id) => `${API_BASE_URL}/inbound-invoices/${id}`,
         getExportDetail: (id) => `${API_BASE_URL}/outbound-invoices/${id}`,
         updateImport: (id) => `${API_BASE_URL}/inbound-invoices/${id}`,

@@ -31,6 +31,8 @@ const Product_import_Edit = () => {
     const [api, contextHolder] = notification.useNotification();
     const product = useSelector((state) => state.products);
     const supplier = useSelector((state) => state.supplier);
+   
+
     const [searchSupplierQuery, setsearchSupplierQuery] = useState({
         page: 1,
         per_page: 100,
@@ -56,7 +58,23 @@ const Product_import_Edit = () => {
         }
     }, [id]);
     useEffect(() => {
-        console.log(warehouse);
+        if (warehouse?.import?.detail?.data) {
+            console.log(warehouse.import.detail.data?.details);
+            setSelectedSupplier(warehouse?.import?.detail?.data?.supplier?.id);
+            setProducts(
+                warehouse?.import?.detail?.data?.details?.map((item) => ({
+                    key: item.product?.id,
+                    id: item.product?.id,
+                    id_inbound: item.id,
+                    name: item.product?.name,
+                    quantity: item.quantity_import,
+                    cost: item.cost_import,
+                    price: item.unit_price,
+                    total: item.quantity_import * item.cost_import,
+                }))
+            );
+            setNote(warehouse?.import?.detail?.data?.note);
+        }
     }, [warehouse]);
     useEffect(() => {
         if (product.products.data && product.products.data.length > 0) {
@@ -91,8 +109,8 @@ const Product_import_Edit = () => {
                 id: "",
                 name: "",
                 quantity: 1,
+                id_inbound: "",
                 cost: 0,
-
                 price: 0,
                 total: 0,
             },
@@ -182,14 +200,18 @@ const Product_import_Edit = () => {
                 ),
                 note: note || "Nhập hàng",
                 details: products.map((product) => ({
+                    id: product.id_inbound,
                     product_id: product.id,
                     quantity_import: product.quantity,
                     cost_import: product.cost,
                     unit_price: product.price,
                 })),
             };
-            const response = await updateImportAction(payload);
-            if (response.payload.status === "success") {
+            const response = await updateImportAction({
+                id: id,
+                data: payload,
+            });
+            if (response.payload.status == "success") {
                 api.success({
                     message: "Nhập hàng thành công",
                     duration: 3,
@@ -225,7 +247,17 @@ const Product_import_Edit = () => {
     }, [searchSupplierQuery]);
 
     const columns = [
-        { title: "STT", dataIndex: "key", key: "key" },
+        {
+            title: "#",
+            dataIndex: "key",
+            key: "key",
+            render: (text, record, index) => index + 1,
+        },
+        {
+            title: "mã sản phẩm",
+            dataIndex: "id",
+            key: "id",
+        },
         {
             title: "Tên Sản Phẩm",
             dataIndex: "name",
@@ -237,6 +269,10 @@ const Product_import_Edit = () => {
                     showSearch
                     placeholder="Nhập tên sản phẩm"
                     filterOption={false}
+                    value={{
+                        value: product.id,
+                        label: product.name,
+                    }}
                     options={searchResults.map((item) => ({
                         value: item.id,
                         label: item.name,
@@ -303,12 +339,12 @@ const Product_import_Edit = () => {
                 />
             ),
         },
-        {
-            title: "Thành tiền",
-            dataIndex: "total",
-            key: "total",
-            render: (_, product) => product.total.toLocaleString(),
-        },
+        // {
+        //     title: "Thành tiền",
+        //     dataIndex: "total",
+        //     key: "total",
+        //     render: (_, product) => product.total.toLocaleString(),
+        // },
         {
             title: "Hành động",
             key: "action",
@@ -337,12 +373,15 @@ const Product_import_Edit = () => {
                 {contextHolder}
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
-                        <Col xl={16} md={16} sm={24} xs={24}>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card title="Thông tin nhập hàng">
                                 <Row gutter={[16, 16]}>
-                                    <Col xl={8} md={8} sm={24} xs={24}>
+                                    <Col xl={24} md={24} sm={24} xs={24}>
                                         <Form.Item label="Nhà cung cấp">
                                             <Select
+                                                loading={
+                                                    warehouse.import.loading
+                                                }
                                                 size="large"
                                                 placeholder="Nhập tên nhà cung cấp"
                                                 options={supplierData.map(
@@ -351,6 +390,7 @@ const Product_import_Edit = () => {
                                                         label: item.name,
                                                     })
                                                 )}
+                                                value={selectedSupplier}
                                                 showSearch
                                                 onChange={(value) => {
                                                     setSelectedSupplier(value);
@@ -377,10 +417,11 @@ const Product_import_Edit = () => {
                                     columns={columns}
                                     dataSource={products}
                                     pagination={false}
+                                    loading={warehouse.import.loading}
                                 />
                             </Card>
                         </Col>
-                        <Col xl={8} md={8} sm={24} xs={24}>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card className="bg-light">
                                 <Form.Item label="Mô tả">
                                     <Input.TextArea
@@ -402,10 +443,10 @@ const Product_import_Edit = () => {
                                 </h3>
                                 <Button
                                     type="primary"
-                                    className="w-100 mt-3"
+                                    className="mt-3"
                                     onClick={submitProduct}
                                 >
-                                    Nhập hàng
+                                   Cập nhật
                                 </Button>
                             </Card>
                         </Col>

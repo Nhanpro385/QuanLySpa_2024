@@ -74,6 +74,45 @@ export const getInventory = createAsyncThunk(
         }
     }
 );
+export const searchInventory = createAsyncThunk(
+    "warehouse/searchinventory",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                `${endpoints.warehouse.inventory}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+export const getInventoryDetail = createAsyncThunk(
+    "warehouse/getinventorydetail",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.warehouse.getInventoryDetail(id)
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
+export const historyinventory = createAsyncThunk(
+    "warehouse/historyinventory",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.warehouse.getInventoryDetail(id)
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(handleError(error));
+        }
+    }
+);
 
 // Async thunk for retrieving warehouse import history
 export const getWarehouseImport = createAsyncThunk(
@@ -211,6 +250,8 @@ const initialState = {
         loading: false,
         error: null,
         data: [],
+        detail: null,
+        history: null,
     },
 };
 
@@ -360,6 +401,42 @@ const warehouseSlice = createSlice({
         builder.addCase(updateExport.rejected, (state, action) => {
             state.export.loading = false;
             state.export.error = action.payload;
+        });
+        builder.addCase(searchInventory.pending, (state) => {
+            state.inventory.loading = true;
+            state.inventory.error = null;
+        });
+        builder.addCase(searchInventory.fulfilled, (state, action) => {
+            state.inventory.loading = false;
+            state.inventory.data = action.payload;
+        });
+        builder.addCase(searchInventory.rejected, (state, action) => {
+            state.inventory.loading = false;
+            state.inventory.error = action.payload;
+        });
+        builder.addCase(getInventoryDetail.pending, (state) => {
+            state.inventory.loading = true;
+            state.inventory.error = null;
+        });
+        builder.addCase(getInventoryDetail.fulfilled, (state, action) => {
+            state.inventory.loading = false;
+            state.inventory.detail = action.payload;
+        });
+        builder.addCase(getInventoryDetail.rejected, (state, action) => {
+            state.inventory.loading = false;
+            state.inventory.error = action.payload;
+        });
+        builder.addCase(historyinventory.pending, (state) => {
+            state.inventory.loading = true;
+            state.inventory.error = null;
+        });
+        builder.addCase(historyinventory.fulfilled, (state, action) => {
+            state.inventory.loading = false;
+            state.inventory.history = action.payload;
+        });
+        builder.addCase(historyinventory.rejected, (state, action) => {
+            state.inventory.loading = false;
+            state.inventory.error = action.payload;
         });
     },
 });

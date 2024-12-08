@@ -1,7 +1,54 @@
 import { Button, Card, Col, Input, Row, Select, Space, Table, Tag } from "antd";
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import usewarehouseAction from "../../modules/warehouse/hooks/usewarehouseaction";
+import { useSelector } from "react-redux";
+import dayjs from "dayjs";
+import debounce from "lodash/debounce";
+import useModal from "../../modules/appointments/hooks/openmodal";
+import ModalDetailinventory from "../../modules/warehouse/compoments/modalDetailinventory";
+import ModalHistoryInventory from "../../modules/warehouse/compoments/ModalHistoryInventory";
 const ProductInventory = () => {
+    const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+    const {
+        isModalOpen: isModalOpen2,
+        showModal: showModal2,
+        handleOk: handleOk2,
+        handleCancel: handleCancel2,
+    } = useModal();
+    const warehouse = useSelector((state) => state.warehouse);
+    const {
+        getInventoryAction,
+        searchInventoryAction,
+        getInventoryDetailAction,
+        historyinventoryAction
+    } = usewarehouseAction();
+    const [dataSource, setDataSource] = useState([]);
+    const [pagination, setPagination] = useState({});
+    const [searchquery, setSearchquery] = useState({
+        page: 1,
+        per_page: 10,
+        search: "",
+    });
+
+    useEffect(() => {
+        getInventoryAction();
+    }, []);
+
+    useEffect(() => {
+        if (
+            warehouse?.inventory?.data?.data &&
+            warehouse?.inventory?.data?.data?.length > 0
+        ) {
+            setDataSource(
+                warehouse?.inventory?.data?.data?.map((item, index) => ({
+                    key: index + 1,
+                    ...item,
+                }))
+            );
+
+            setPagination(warehouse?.inventory?.data?.meta);
+        }
+    }, [warehouse.inventory]);
     const columns = [
         {
             title: "#",
@@ -10,7 +57,7 @@ const ProductInventory = () => {
         },
         {
             title: "Tên sản phẩm",
-            dataIndex: "name",
+            dataIndex: ["product", "name"],
             key: "name",
         },
         {
@@ -18,74 +65,85 @@ const ProductInventory = () => {
             dataIndex: "quantity",
             key: "quantity",
         },
-        {
-            title: "Giá (VNĐ)",
-            dataIndex: "price",
-            key: "price",
-            render: (text) => `${text.toLocaleString()} VNĐ`, // Format price with currency
-        },
+
         {
             title: "Ngày nhập",
             dataIndex: "date",
             key: "date",
+            render: (date) => dayjs(date).format("DD/MM/YYYY"),
         },
         {
             title: "hạn sử dụng",
-            dataIndex: "date",
-            key: "date",
+            dataIndex: ["product", "date"],
+            key: "date_expiration",
         },
-        {
-            title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-        },
+
         {
             title: "Thao tác",
             key: "actions",
-            render: () => (
+            render: (text, record) => (
                 <Space>
-                    <Button type="primary">Sửa</Button>
-                    <Button danger>Khuyến mãi</Button>
+                    <Button
+                        type="primary"
+                        loading={warehouse?.inventory?.loading}
+                        onClick={() => handleShowDetail(record.id)}
+                    >
+                        Chi tiết
+                    </Button>
+                    <Button
+                        type="primary"
+                        onClick={() => handleShowHistory(record.id)}
+                    >
+                        Lịch sử Nhập xuất
+                    </Button>
                 </Space>
             ),
         },
     ];
+    useEffect(() => {
+        if (
+            searchquery.search !== "" ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 10
+        ) {
+            searchInventoryAction(searchquery);
+        } else {
+            getInventoryAction();
+        }
+    }, [searchquery]);
+    const handelPageChange = (page, pageSize) => {
+        setSearchquery({
+            ...searchquery,
+            page,
+            per_page: pageSize,
+        });
+    };
+    const debouncedSearch = debounce((value) => {
+        setSearchquery({
+            ...searchquery,
+            search: value,
+        });
+    }, 500);
+    const handleShowDetail = async (id) => {
+        try {
+            const res = await getInventoryDetailAction(id);
+            console.log();
 
-    const data = [
-        {
-            key: "1",
-            name: "Mặt nạ giấy chiết xuất trà xanh",
-            quantity: 200,
-            price: 50000,
-            date: "2024-09-25",
-            status: <Tag color="green">Còn hàng</Tag>,
-        },
-        {
-            key: "2",
-            name: "Kem dưỡng ẩm ban đêm",
-            quantity: 150,
-            price: 120000,
-            date: "2024-09-20",
-            status: <Tag color="yellow">Sắp hết hàng</Tag>,
-        },
-        {
-            key: "3",
-            name: "Mặt nạ đất sét",
-            quantity: 75,
-            price: 300000,
-            date: "2024-09-15",
-            status: <Tag color="red">Hết hàng</Tag>,
-        },
-        {
-            key: "4",
-            name: "Kem chống nắng SPF 50",
-            quantity: 90,
-            price: 250000,
-            date: "2024-09-10",
-            status: <Tag color="green">Còn hàng</Tag>,
-        },
-    ];
+            showModal();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const handleShowHistory = async (id) => {
+        try {
+            const res = await historyinventoryAction(id);
+            console.log(res);
 
+            showModal2();
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div>
             <h1 className="text-center">Quản lý tồn kho sản phẩm </h1>
@@ -107,6 +165,7 @@ const ProductInventory = () => {
                         style={{ marginBottom: 10, textAlign: "right" }}
                     >
                         <Input.Search
+                            onChange={(e) => debouncedSearch(e.target.value)}
                             placeholder="Tìm kiếm sản phẩm"
                             style={{ width: 200 }}
                         />
@@ -114,10 +173,28 @@ const ProductInventory = () => {
                 </Row>
                 <Table
                     columns={columns}
-                    dataSource={data}
-                    pagination={{ pageSize: 5 }}
+                    dataSource={dataSource}
+                    pagination={{
+                        current: pagination.current_page,
+                        pageSize: pagination.per_page,
+                        total: pagination.total,
+                        showQuickJumper: true,
+                        // showSizeChanger: true,
+                        onChange: handelPageChange,
+                        showTotal: (total) => `Tổng ${total} sản phẩm`,
+                    }}
                 />
             </Card>
+            <ModalDetailinventory
+                isOpen={isModalOpen}
+                onClose={handleCancel}
+                data={warehouse?.inventory?.detail?.data}
+            />
+            <ModalHistoryInventory
+                isOpen={isModalOpen2}
+                onClose={handleCancel2}
+                data={warehouse?.inventory?.history?.data}
+            />
         </div>
     );
 };
