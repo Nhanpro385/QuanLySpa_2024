@@ -9,7 +9,7 @@ import {
     Card,
     Space,
 } from "antd";
-
+import { URL_IMAGE } from "../../../config/appConfig";
 const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
     useEffect(() => {
         if (servicedata) {
@@ -65,7 +65,7 @@ const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
             children: servicedata?.image_url ? (
                 <Image
                     src={
-                        "http://127.0.0.1:8000/storage/uploads/services/special/" +
+                        `${URL_IMAGE}/services/special/` +
                         servicedata?.image_url
                     }
                     width={200}
@@ -128,8 +128,7 @@ const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
                             <Image
                                 key={image.id}
                                 src={
-                                    "http://127.0.0.1:8000/storage/uploads/services/" +
-                                    image.image_url
+                                    `${URL_IMAGE}/services/${image.image_url}` || ""
                                 }
                                 alt={`Image for ${servicedata?.name}`}
                                 fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"

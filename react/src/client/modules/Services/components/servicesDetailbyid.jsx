@@ -29,7 +29,7 @@ import {
     PlusOutlined,
 } from "@ant-design/icons";
 import usecommentsActions from "../../../../admin/modules/Comment/hooks/usecomment";
-
+import { URL_IMAGE } from "../../../../admin/config/appConfig";
 const ServicesDetailById = () => {
     const navigate = useNavigate();
     const { id } = useParams();
@@ -293,7 +293,7 @@ const ServicesDetailById = () => {
                             }}
                         >
                             <Image
-                                src={`http://127.0.0.1:8000/storage/uploads/services/special/${service?.image_url}`}
+                                src={`${URL_IMAGE}/services/special/${service?.image_url}`}
                                 alt={service?.name || "Không có hình ảnh"}
                                 style={{
                                     width: "100%",
@@ -508,7 +508,7 @@ const ServicesDetailById = () => {
                                             <Image
                                                 width={100}
                                                 src={
-                                                    "http://127.0.0.1:8000/storage/uploads/comments/" +
+                                                    `${URL_IMAGE}/comments/` +
                                                     image.image_url
                                                 }
                                             />

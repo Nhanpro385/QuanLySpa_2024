@@ -28,11 +28,13 @@ const ModalHistoryInventory = ({ isOpen, onClose, data }) => {
             title: "Ngày tạo",
             dataIndex: "created_at",
             key: "created_at",
+            render: (text) => dayjs(text).format("DD/MM/YYYY HH:mm"),
         },
         {
             title: "Ngày cập nhật",
             dataIndex: "updated_at",
             key: "updated_at",
+            render: (text) => dayjs(text).format("DD/MM/YYYY HH:mm"),
         },
     ];
 
@@ -56,11 +58,15 @@ const ModalHistoryInventory = ({ isOpen, onClose, data }) => {
         },
         {
             label: "Ngày tạo",
-            value: dayjs(data?.created_at).format("DD/MM/YYYY HH:mm") || "Không tìm thấy",
+            value:
+                dayjs(data?.created_at).format("DD/MM/YYYY HH:mm") ||
+                "Không tìm thấy",
         },
         {
             label: "Ngày cập nhật",
-            value: dayjs(data?.updated_at).format("DD/MM/YYYY HH:mm") || "Không tìm thấy",
+            value:
+                dayjs(data?.updated_at).format("DD/MM/YYYY HH:mm") ||
+                "Không tìm thấy",
         },
     ];
 

@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { Card, Button, Row, Col, Image, List } from "antd";
 
 import style from "../styles/bookingListService.module.scss";
+import { URL_IMAGE } from "../../../../admin/config/appConfig";
 // Cấu hình cho Slider
 const BookingListService = ({
     activeService,
@@ -61,7 +62,7 @@ const BookingListService = ({
                                         <Image
                                             alt="example"
                                             src={
-                                                "http://127.0.0.1:8000/storage/uploads/services/special/" +
+                                                `${URL_IMAGE}/services/special/` +
                                                 item.image_url
                                             }
                                             onError={(e) =>

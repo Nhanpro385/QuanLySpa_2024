@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Button, Dropdown, Space, Popconfirm, Image } from "antd";
 
 import { DownOutlined } from "@ant-design/icons";
+import { URL_IMAGE } from "../../config/appConfig";
 const TableProduct = ({
     dataSource,
     handleEdit,
@@ -30,7 +31,7 @@ const TableProduct = ({
             render: (text, record) => (
                 <Image
                     width={50}
-                    src={`http://127.0.0.1:8000/storage/uploads/products/${record.image_url}`}
+                    src={`${URL_IMAGE}/products/${record.image_url}`}
                     alt={record.name}
                     fallback="https://via.placeholder.com/50"
                     preview={false}

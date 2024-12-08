@@ -3,7 +3,7 @@ import { Row, Col, List, Empty, Image, Button, Result, Divider } from "antd";
 import style from "../style/ServicesDetail.module.scss";
 import { useNavigate } from "react-router-dom";
 import { FrownOutlined } from "@ant-design/icons";
-
+import { URL_IMAGE } from "../../../../admin/config/appConfig";
 const ServicesDetail = ({ listservices }) => {
     const [cateService, setCateService] = useState([]);
     const navigate = useNavigate();
@@ -69,7 +69,7 @@ const ServicesDetail = ({ listservices }) => {
                                 <div className={style.boxServicesDetailItemTop}>
                                     <Image
                                         src={
-                                            "http://127.0.0.1:8000/storage/uploads/services/special/" +
+                                            `${URL_IMAGE}/services/special/` +
                                             item.image_url
                                         }
                                       

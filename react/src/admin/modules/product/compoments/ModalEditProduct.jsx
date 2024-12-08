@@ -90,16 +90,14 @@ const ModalEditProduct = ({
     }, [searchQuery]);
     useEffect(() => {
         getcategories(50);
+        console.log(productData);
 
         if (productData) {
             Object.keys(productData).forEach((key) => {
-                if (key === "date") {
+                if (key == "date") {
                     setValue(key, dayjs(productData[key]));
-                } else if (key === "category_id") {
-                    setValue(key, {
-                        label: productData[key]?.name, // Hiển thị label từ productData
-                        value: productData[key]?.id, // Lưu giá trị id
-                    });
+                } else if (key == "category_id") {
+                    setValue(key, productData[key]?.id);
                 } else {
                     setValue(key, productData[key]);
                 }
@@ -108,7 +106,9 @@ const ModalEditProduct = ({
     }, [productData, setValue]);
 
     const onSubmit = async (data) => {
-        if (fileList.length === 0) {
+        console.log(data.category_id);
+
+        if (fileList.length == 0) {
             const payload = {
                 id: productData.id,
                 name: data.name,
@@ -119,7 +119,7 @@ const ModalEditProduct = ({
                 date: dayjs(data.date).format("YYYY-MM-DD"),
 
                 description: data.description,
-                category_id: data.category_id.value ||"",
+                category_id: data.category_id || null,
                 priority: 1,
             };
             handleSubmitEdit(payload.id, payload).then((result) => {
@@ -130,8 +130,6 @@ const ModalEditProduct = ({
                 }
             });
         } else {
-            console.log("Có ảnh");
-
             const payload = {
                 id: productData.id,
                 name: data.name,
@@ -142,7 +140,7 @@ const ModalEditProduct = ({
                 date: dayjs(data.date).format("YYYY-MM-DD"),
                 image_url: fileList[0].originFileObj,
                 description: data.description,
-                category_id: data.category_id.value,
+                category_id: data.category_id || null,
                 priority: 1,
             };
 
@@ -245,7 +243,7 @@ const ModalEditProduct = ({
                                         {...field}
                                         placeholder="Chọn danh mục"
                                         options={CategoryData} // Dữ liệu danh mục đã chuẩn hóa
-                                        value={field.value}
+                                        value={field.value} // Giá trị đã chọn
                                         onChange={(value) =>
                                             field.onChange(value)
                                         } // Cập nhật giá trị khi chọn

@@ -6,6 +6,8 @@ const API_AUTH_URL = "http://127.0.0.1:8000/api/auth"; // Thay đổi theo URL A
 const API_AUTHCUSTOMER_URL = "http://127.0.0.1:8000/api/authCustomer"; // Thay đổi theo URL API của bạn
 const API_AUTH_URL2 = "http://127.0.0.1:8000/api";
 const API_AUTH_URL3 = "http://127.0.0.1:8000/api/v0.0.1/client";
+export const URL_IMAGE = "http://127.0.0.1:8000/storage/uploads";
+export const URL_IMAGE_2 = "http://127.0.0.1:8000/storage";
 const endpoints = {
     ServiceCategories: {
         list: `${API_BASE_URL}/serviceCategories`,
@@ -166,7 +168,7 @@ const endpoints = {
     consulations: {
         list: `${API_BASE_URL}/consulations`,
         detail: (id) => `${API_BASE_URL}/consulations/${id}`,
-        create: `http://127.0.0.1:8000/api/v0.0.1/client/consulations`,
+        create: `${API_AUTH_URL3}/consulations`,
         update: (id) => `${API_BASE_URL}/consulations/${id}`,
         delete: (id) => `${API_BASE_URL}/consulations/${id}`,
         search: `${API_BASE_URL}/consulations`,

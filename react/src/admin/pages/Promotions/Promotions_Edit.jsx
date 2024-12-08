@@ -22,6 +22,7 @@ import usePromotionActions from "../../modules/promotion/hooks/usepromotionActio
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import { URL_IMAGE } from "../../config/appConfig";
 const Promotions_Edit = () => {
     const { id: idpromotion } = useParams();
     const [api, contextHolder] = notification.useNotification();
@@ -69,12 +70,12 @@ const Promotions_Edit = () => {
             );
             setValue(
                 "min_order_amount",
-                promotions.promotion?.data.min_order_amount
+                promotions.promotion?.data?.min_order_amount
             );
-            setValue("min_quantity", promotions.promotion?.data.min_quantity);
+            setValue("min_quantity", promotions.promotion?.data?.min_quantity);
             setValue("startDateAndEndDate", [
-                dayjs(promotions.promotion?.data.start_date),
-                dayjs(promotions.promotion?.data.end_date),
+                dayjs(promotions.promotion?.data?.start_date),
+                dayjs(promotions.promotion?.data?.end_date),
             ]);
             setFileList([
                 {
@@ -83,11 +84,11 @@ const Promotions_Edit = () => {
                     status: "done",
                     tag: "old",
                     url:
-                        "http://127.0.0.1:8000/storage/uploads/promotions/" +
+                        `${URL_IMAGE}/promotions/` +
                         promotions.promotion?.data.image_url,
                 },
             ]);
-            setContent(promotions.promotion?.data.description);
+            setContent(promotions.promotion?.data?.description);
         } else {
             api.error({
                 message: "Không tìm thấy chương trình khuyến mãi",
@@ -110,7 +111,7 @@ const Promotions_Edit = () => {
                 status: true,
             };
 
-            if (fileList[0].tag === "old") {
+            if (fileList[0].tag == "old") {
                 console.log("Đây là ảnh cũ");
             } else {
                 payload.image_url = fileList[0].originFileObj;

@@ -23,7 +23,7 @@ const
                 <Input
                     className="w-100"
                     min={1}
-                    max={5}
+                    max={3}
                     type="number"
                     value={record.quantity}
                     onChange={(e) => {

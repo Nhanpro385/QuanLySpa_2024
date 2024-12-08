@@ -10,6 +10,7 @@ import anh4 from "../../../assets/images/image4.png";
 import styles from "../Styles/HomeService.module.scss";
 import useServicesActions from "../../../../admin/modules/services/hooks/useServices";
 import { useNavigate } from "react-router-dom";
+import { URL_IMAGE } from "../../../../admin/config/appConfig";
 const settings = {
     dots: false,
     infinite: true,
@@ -44,6 +45,7 @@ const settings = {
     ],
 };
 import { useSelector } from "react-redux";
+
 const Home_service = () => {
     const navigate = useNavigate();
     const { getServicesClient } = useServicesActions();
@@ -75,7 +77,7 @@ const Home_service = () => {
                                 <Image
                                     fallback={anh4}
                                     src={
-                                        "http://127.0.0.1:8000/storage/uploads/services/" +
+                                        `${URL_IMAGE}/services/` +
                                         item.image_url
                                     }
                                     className={styles.cardImage}

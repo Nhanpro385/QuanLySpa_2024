@@ -9,7 +9,7 @@ import {
     Card,
     Space,
 } from "antd";
-
+import { URL_IMAGE } from "../../../config/appConfig";
 const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
     useEffect(() => {
         if (ProductData) {
@@ -90,8 +90,7 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
             children: (
                 <Image
                     src={
-                        "http://127.0.0.1:8000/storage/uploads/products/" +
-                        ProductData?.image_url
+                        `${URL_IMAGE}/products/${ProductData?.image_url}` || ""
                     }
                     alt={`Image for ${ProductData?.name}`}
                     fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
@@ -174,8 +173,8 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
                                 <Image
                                     key={image.id}
                                     src={
-                                        "http://127.0.0.1:8000/storage/uploads/products/" +
-                                            image?.image_url || ""
+                                        `${URL_IMAGE}/products/${image.image_url}` ||
+                                        ""
                                     }
                                     alt={`Image for ${ProductData?.name}`}
                                     fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
