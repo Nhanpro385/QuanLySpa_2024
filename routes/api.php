@@ -305,6 +305,7 @@ Route::group([
 
     Route::get('/staffs', [ClientUserController::class, 'index']);
     Route::get('/staffs/{id}', [ClientUserController::class, 'show']);
+    Route::post('/contacts', [ClientContactsController::class, 'store']);
 
     Route::get('/services', [ClientServiceController::class, 'index']);
     Route::get('/services/{id}', [ClientServiceController::class, 'show']);
