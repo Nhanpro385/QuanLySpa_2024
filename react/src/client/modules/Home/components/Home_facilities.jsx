@@ -2,8 +2,15 @@ import React from "react";
 import { Button, Col, Row } from "antd";
 import Slider from "react-slick";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import anh4 from "../../../assets/images/image4.png";
 import "../Styles/Home_facilities.scss"; // Import SCSS
+
+import cosovatchat2 from "../../../assets/images/cosovatchat2.jpg";
+import cosovatchat3 from "../../../assets/images/cosovatchat3.jpg";
+import cosovatchat4 from "../../../assets/images/cosovatchat4.jpg";
+import cosovatchat5 from "../../../assets/images/cosovatchat5.jpg";
+import cosovatchat6 from "../../../assets/images/cosovatchat6.jpg";
+import cosovatchat7 from "../../../assets/images/cosovatchat7.jpg";
+
 
 const settings = {
     arrows: false,
@@ -40,6 +47,27 @@ const settings = {
     ],
 };
 
+const imgData = [
+    {
+        url: cosovatchat2
+    },
+    {
+        url: cosovatchat3
+    },
+    {
+        url: cosovatchat4
+    },
+    {
+        url: cosovatchat5
+    },
+    {
+        url: cosovatchat6
+    },
+    {
+        url: cosovatchat7
+    },
+]
+
 const sliderRef = React.createRef();
 
 const Home_facilities = () => {
@@ -50,12 +78,13 @@ const Home_facilities = () => {
             </h1>
             <div className="container">
                 <Slider ref={sliderRef} {...settings}>
-                    {[1, 2, 3, 4, 5, 6].map((item, index) => (
+                    {imgData.map((item, index) => (
                         <div key={index}>
                             <img
                                 className="facility-image"
-                                src={anh4}
-                                alt="tori"
+                                src={item.url}
+                                alt="img"
+                                height={'290px'}
                             />
                         </div>
                     ))}

@@ -76,7 +76,7 @@ const ProductInventory = () => {
             render: (date) => dayjs(date).format("DD/MM/YYYY"),
         },
         {
-            title: "hạn sử dụng",
+            title: "Hạn sử dụng",
             dataIndex: ["product", "date"],
             key: "date_expiration",
         },

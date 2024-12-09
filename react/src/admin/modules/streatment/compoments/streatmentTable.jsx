@@ -38,7 +38,7 @@ const StreatmentsTable = ({
                 record.payment_total.toLocaleString() + " VNĐ",
         },
         {
-            title: "ngày Điều trị",
+            title: "Ngày Điều trị",
             dataIndex: "appointment_date",
             key: "appointment_date",
             render: (text, record) =>
