@@ -3,8 +3,9 @@ import { Row, Col, Form, Input, Button, Divider, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import style from "../style/ForgotPasswordPage.module.scss";
 import useAuthActions from "../../../../admin/modules/authen/hooks/useAuth";
-
+import { useNavigate } from "react-router-dom";
 const ForgotPasswordPage = () => {
+    const navigate = useNavigate();
     const {
         control,
         handleSubmit,
@@ -15,10 +16,10 @@ const ForgotPasswordPage = () => {
     const { authForgotClient } = useAuthActions();
 
     const onSubmit = async (data) => {
-        setLoading(true);  // Set loading state to true when the request starts
+        setLoading(true); // Set loading state to true when the request starts
         try {
             const res = await authForgotClient(data);
-            setLoading(false);  // Set loading state to false when the request completes
+            setLoading(false); // Set loading state to false when the request completes
 
             if (res.payload.status === "error") {
                 api.error({
@@ -34,7 +35,7 @@ const ForgotPasswordPage = () => {
                 duration: 3,
             });
         } catch (error) {
-            setLoading(false);  // Ensure loading is stopped if there is an error
+            setLoading(false); // Ensure loading is stopped if there is an error
             api.error({
                 message: "Lỗi",
                 description: "Đã xảy ra lỗi trong quá trình gửi yêu cầu.",
@@ -46,7 +47,14 @@ const ForgotPasswordPage = () => {
     return (
         <Row justify="center" align="middle" className={style.container}>
             {contextHolder}
-            <Col xs={22} sm={16} md={12} lg={8} xl={6} className={style.boxForm}>
+            <Col
+                xs={22}
+                sm={16}
+                md={12}
+                lg={8}
+                xl={6}
+                className={style.boxForm}
+            >
                 <h2>Quên mật khẩu</h2>
                 <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                     {/* Email Input */}
@@ -102,13 +110,18 @@ const ForgotPasswordPage = () => {
                             type="primary"
                             htmlType="submit"
                             block
-                            loading={loading}  // Add loading state here
+                            loading={loading} // Add loading state here
                         >
                             GỬI YÊU CẦU
                         </Button>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="link" href="/dangnhap" block>
+                        <Button
+                            type="link"
+                            variant="outlined"
+                            onClick={() => navigate("/dangnhap")}
+                            block
+                        >
                             Quay lại đăng nhập
                         </Button>
                     </Form.Item>

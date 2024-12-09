@@ -46,8 +46,9 @@ const Register = () => {
                     duration: 3,
                 });
                 login(res.payload.access_token);
-
-                navigate("/"); // Redirect to the home page or another page
+                setTimeout(() => {
+                    navigate("/"); // Redirect to the home page or another page
+                }, 1500);
             } else {
                 // Handle other errors
                 api.error({
@@ -134,8 +135,8 @@ const Register = () => {
                             }}
                             render={({ field }) => (
                                 <Input
-                                maxLength={11}
-                                min={10}
+                                    maxLength={11}
+                                    min={10}
                                     type="number"
                                     {...field}
                                     placeholder="Số điện thoại"

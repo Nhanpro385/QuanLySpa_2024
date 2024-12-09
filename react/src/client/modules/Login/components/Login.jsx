@@ -44,7 +44,6 @@ const Login = () => {
 
                 setTimeout(() => {
                     login(response.payload.access_token);
-
                     navigate("/");
                 }, 1500);
             } else {

@@ -55,7 +55,7 @@ const ConsultingFrom = () => {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={clsx(styles.container,"container")}>
             {contextHolder}
             <Form
                 form={form}
