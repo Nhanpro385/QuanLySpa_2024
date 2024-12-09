@@ -146,16 +146,13 @@ const Appbooking = () => {
                         }}
                         items={[
                             {
-                                title: "Đặt lịch",
+                                title: "Đặt Lịch",
                             },
                             {
-                                title: "Thông tin Đăt lịch",
+                                title: "Thông Tin Đặt Lịch",
                             },
                             {
-                                title: "Thanh toán",
-                            },
-                            {
-                                title: "Hoàn tất",
+                                title: "Xác Nhận Đặt Lịch",
                             },
                         ]}
                     />
@@ -175,7 +172,7 @@ const Appbooking = () => {
             >
                 <Col>
                     <Divider orientation="left">
-                        <strong>3.Chọn dịch vụ</strong>
+                        <strong>1.Chọn dịch vụ</strong>
                     </Divider>
 
                     <BookingListService

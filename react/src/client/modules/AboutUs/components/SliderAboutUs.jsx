@@ -1,9 +1,13 @@
 import React from "react";
 import { Row, Col, Button } from "antd";
+import { useNavigate } from "react-router-dom";
+
 import style from "../style/SliderAboutUs.module.scss";
 import bannerDoctor from "../../../assets/images/anhbacsi1.jpg";
 
 const SliderAboutUs = () => {
+    const navigate = useNavigate();
+
     return (
         <div className={style.container}>
             <Row justify="center" align="middle" className={style.banner}>
@@ -33,7 +37,7 @@ const SliderAboutUs = () => {
                             Khách hàng được điều trị mụn thành công và tự tin hơn trong cuộc
                             sống.
                         </p>
-                        <Button className={style.ctaButton} type="primary" size="large">
+                        <Button className={style.ctaButton} type="primary" size="large" onClick={() => navigate("/datlichhen")}>
                             Đặt Lịch Ngay →
                         </Button>
                     </div>

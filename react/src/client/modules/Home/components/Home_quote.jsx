@@ -4,10 +4,10 @@ import anh5 from "../../../assets/images/anh5.png";
 import styles from "../styles/HomeQuote.module.scss";
 
 const statistics = [
-    { id: "1", number: "200+", description: "khách hàng mỗi ngày" },
+    { id: "1", number: "200+", description: "Khách hàng mỗi ngày" },
     { id: "2", number: "20+", description: "Bác sĩ da liễu, tay nghề cao" },
     { id: "3", number: "50+", description: "Chuyên viên xuất sắc" },
-    { id: "4", number: "500+", description: "liệu trình hoàn thành" },
+    { id: "4", number: "500+", description: "Liệu trình hoàn thành" },
 ];
 
 const Home_quote = () => {
@@ -17,11 +17,11 @@ const Home_quote = () => {
                 <Row justify={"center"} align={"middle"}>
                     <Col span={18}>
                         <p className={styles.quoteText}>
-                            " Thấu hiểu những lo lắng này, Sakura Spa đã ra đời
+                            "Thấu hiểu những lo lắng này, Sakura Spa đã ra đời
                             với dịch vụ điều trị mụn <br />
                             chuẩn y khoa, cung cấp những giải pháp thiết thực
                             giúp khách hàng vượt qua những khó khăn trong quá
-                            trình điều trị mụn "
+                            trình điều trị mụn"
                         </p>
                         <Row gutter={[16, 16]}>
                             {statistics.map((item) => (

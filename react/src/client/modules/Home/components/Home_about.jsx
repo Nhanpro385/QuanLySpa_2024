@@ -1,11 +1,16 @@
 import React from "react";
 import { Row, Col, Button, Divider } from "antd";
+import { useNavigate } from "react-router-dom";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import styles from "../styles/Home_about.module.scss"; // Import SCSS module
 import anh4 from "../../../assets/images/image4.png";
+import anh4_1 from "../../../assets/images/anh4_1.jpg";
+
 import icons from "../../../assets/images/iconlogo.png";
 
 const Home_about = () => {
+    const navigate = useNavigate();
+
     return (
         <section className="container p-5">
             <Divider orientation="left">
@@ -35,7 +40,7 @@ const Home_about = () => {
                             </p>
                         </Col>
                         <Col xs={24} md={12}>
-                            <img src={anh4} alt="tori" width="100%" />
+                            <img src={anh4_1} alt="tori" width="100%" />
                         </Col>
                     </Row>
                 </Col>
@@ -48,6 +53,7 @@ const Home_about = () => {
                         <Button
                             type="primary"
                             className={styles["button-container"]}
+                            onClick={() => navigate("/gioithieu")}
                         >
                             Tìm hiểu về Sakura Spa <ArrowRightOutlined />
                         </Button>
