@@ -42,7 +42,7 @@ const items = [
             className="text-decoration-none text-black fs-4"
             to="/admin/khachhang"
         >
-            Quản lý khách Hàng
+            Quản lý khách hàng
         </Link>,
         "2",
         <UserOutlined />,
@@ -295,7 +295,7 @@ const items = [
                     className="text-decoration-none text-black fs-4"
                     to="/admin/warehouse/inventory"
                 >
-                    Quản lý Tồn Kho
+                    Quản lý tồn kho
                 </Link>,
                 "28"
             ),
@@ -390,7 +390,7 @@ const items = [
             className="text-decoration-none text-black fs-4"
             to="/admin/nhacungcap"
         >
-            Quản lý Nhà Cung Cấp
+            Quản lý nhà cung cấp
         </Link>,
         "37",
         <FileOutlined />,
@@ -400,7 +400,7 @@ const items = [
                     className="text-decoration-none text-black fs-4"
                     to="/admin/nhacungcap"
                 >
-                    Quản lý Nhà Cung Cấp
+                    Quản lý nhà cung cấp
                 </Link>,
                 "38"
             ),

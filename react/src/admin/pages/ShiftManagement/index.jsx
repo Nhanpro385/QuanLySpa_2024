@@ -212,7 +212,7 @@ const ShiftManagement = () => {
             ),
         },
         {
-            title: "ngày tháng",
+            title: "Ngày tháng",
             dataIndex: "shift_date",
             key: "shift_date",
         },
@@ -227,7 +227,7 @@ const ShiftManagement = () => {
             key: "end_time",
         },
         {
-            title: "tối đa",
+            title: "Tối đa",
             dataIndex: "max_customers",
             key: "max_customers",
             render: (text) => <span>{text} Người</span>,
@@ -265,7 +265,7 @@ const ShiftManagement = () => {
                                         block
                                         onClick={() => handleaddstaff(record)}
                                     >
-                                        thêm nhân viên{" "}
+                                        Thêm nhân viên{" "}
                                     </Button>
                                 ),
                             },

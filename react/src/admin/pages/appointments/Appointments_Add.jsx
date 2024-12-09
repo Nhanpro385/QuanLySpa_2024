@@ -633,7 +633,7 @@ const Appointment_Add = () => {
                     </Col>
 
                     <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                        <Form.Item label="ngày hẹn" required>
+                        <Form.Item label="Ngày hẹn" required>
                             <Controller
                                 name="appointment_date"
                                 control={control}
