@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Dropdown, Space, Table, Tag } from "antd";
+import {
+    Button,
+    Col,
+    DatePicker,
+    Dropdown,
+    Row,
+    Space,
+    Table,
+    Tag,
+} from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 import StatisticsSection from "../../modules/home/compoment/StatisticsSection";
@@ -10,6 +19,7 @@ import useDate from "../../modules/home/hooks/useDate";
 import usepaymentActions from "../../modules/payments/hooks/usepaymentAction";
 import useconsulationsAction from "../../modules/consulations/hooks/useconsulationsAction";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 const Dashboard = () => {
     useEffect(() => {
         document.title = "Sakura Spa - Quản lý";
@@ -191,13 +201,52 @@ const Dashboard = () => {
             ),
         },
     ]);
+    const [staffConsulationsColumns, setStaffConsulationsColumns] = useState([
+        {
+            title: "#",
+            key: "index",
+            render: (_, __, index) => index + 1,
+        },
+        {
+            title: "Nhân viên",
+            dataIndex: "full_name",
+            key: "full_name",
+            render: (text) => text || "Không tìm thấy",
+        },
+        {
+            title: "Số lần tư vấn",
+            dataIndex: "total",
+            key: "total",
+            render: (text) => text || "Không tìm thấy",
+        },
+    ]);
+    const [staffAppoimentsColumns, setStaffAppoimentsColumns] = useState([
+        {
+            title: "#",
+            key: "index",
+            render: (_, __, index) => index + 1,
+        },
+        {
+            title: "Nhân viên",
+            dataIndex: "full_name",
+            key: "full_name",
+            render: (text) => text || "Không tìm thấy",
+        },
+        {
+            title: "Số lần Dịch vụ",
+            dataIndex: "total",
+            key: "total",
+            render: (text) => text || "Không tìm thấy",
+        },
+    ]);
 
     const [monthlyRevenues, setMonthlyRevenues] = useState({});
     const [weeklyRevenues, setWeeklyRevenues] = useState({});
     const [dailyRevenues, setDailyRevenues] = useState({});
     const [revenueAppointment, setRevenueAppointment] = useState({});
     const [revenueConsulation, setRevenueConsulation] = useState({});
-
+    const [staffConsulations, setStaffConsulations] = useState([]);
+    const [staffAppoiments, setStaffAppoiments] = useState([]);
     const {
         formattedDate,
         day,
@@ -216,6 +265,8 @@ const Dashboard = () => {
         getDailyRevenues,
         getRevenueConsulation,
         getRevenueAppointment,
+        getStaffConsulations,
+        getStaffAppoiments,
     } = useStatisticsAction();
     const { getconsulations } = useconsulationsAction();
     const { getpayment } = usepaymentActions();
@@ -243,7 +294,13 @@ const Dashboard = () => {
         });
         getpayment(100);
         getconsulations(100);
-    }, []);
+        getStaffConsulations({
+            day: formatDate2,
+        });
+        getStaffAppoiments({
+            day: formatDate2,
+        });
+    }, [day, month, year, isoWeek, formatDate2]);
 
     useEffect(() => {
         if (statistical.monthlyRevenues) {
@@ -265,6 +322,14 @@ const Dashboard = () => {
         } else {
             setRevenueConsulation([]);
         }
+        if (statistical.staffConsulations) {
+            setStaffConsulations(statistical.staffConsulations.data);
+        }
+        if (statistical.staffAppoiments) {
+            setStaffAppoiments(statistical.staffAppoiments.data);
+        }
+
+        console.log(statistical);
     }, [statistical]);
 
     useEffect(() => {
@@ -296,7 +361,22 @@ const Dashboard = () => {
 
     return (
         <div style={{ padding: 20 }}>
+            <Row className="mb-3">
+                <Col xxl={4} xl={4} lg={4} md={4} sm={4} xs={4}>
+                    <DatePicker
+                        value={dayjs(formattedDate, "DD/MM/YYYY")}
+                        className="w-100"
+                        format="DD/MM/YYYY"
+                        onChange={(date, dateString) => {
+                            if (date) {
+                                setDate(new Date(date.toDate())); // Chuyển đổi từ dayjs sang Date object
+                            }
+                        }}
+                    />
+                </Col>
+            </Row>
             <StatisticsSection
+                date={formattedDate}
                 monthlyRevenues={monthlyRevenues}
                 weeklyRevenues={weeklyRevenues}
                 dailyRevenues={dailyRevenues}
@@ -304,10 +384,14 @@ const Dashboard = () => {
                 revenueConsulation={revenueConsulation}
             />
             <TableSection
+                staffConsulations={staffConsulations}
+                staffAppoiments={staffAppoiments}
                 transactionData={transactionData}
                 appointmentData={appointmentData} // Ensure data is set
                 transactionColumns={transactionColumns} // Fixed here
                 appointmentColumns={appointmentColumns} // Add your appointment columns
+                staffConsulationsColumns={staffConsulationsColumns}
+                staffAppoimentsColumns={staffAppoimentsColumns}
             />
         </div>
     );

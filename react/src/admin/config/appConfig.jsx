@@ -196,6 +196,11 @@ const endpoints = {
             `${API_BASE_URL}/statistical/appointments?day=${data.day}`,
         revenueConsulation: (data) =>
             `${API_BASE_URL}/statistical/consulations?day=${data.day}`,
+        staffConsulations: (data) =>
+            `${API_BASE_URL}/statistical/staffConsulations?day=${data.day}`,
+        staffAppoiments: (data) =>
+            `${API_BASE_URL}/statistical/staffAppoiments?day=${data.day}`,
+        
     },
     contacts: {
         list: `${API_BASE_URL}/contacts`,

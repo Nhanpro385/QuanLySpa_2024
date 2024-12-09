@@ -522,6 +522,7 @@ const Appointment_Add = () => {
                                     <Select
                                         size="large"
                                         {...field}
+                                        loading={customer.loading}
                                         allowClear
                                         showSearch
                                         placeholder="Chọn khách hàng"
@@ -644,42 +645,7 @@ const Appointment_Add = () => {
                                         size="large"
                                         showTime={{ format: "HH:mm" }}
                                         {...field}
-                                        // locale={{
-                                        //     lang: {
-                                        //         locale: "vi",
-                                        //         placeholder: "Chọn ngày",
-                                        //         rangePlaceholder: [
-                                        //             "Ngày bắt đầu",
-                                        //             "Ngày kết thúc",
-                                        //         ],
-                                        //         today: "Hôm nay",
-                                        //         now: "Bây giờ",
-                                        //         backToToday: "Về hôm nay",
-                                        //         ok: "Đồng ý",
-                                        //         clear: "Xóa",
-                                        //         month: "Tháng",
-                                        //         year: "Năm",
-                                        //         timeSelect: "Chọn giờ",
-                                        //         dateSelect: "Chọn ngày",
-                                        //         monthSelect: "Chọn tháng",
-                                        //         yearSelect: "Chọn năm",
-                                        //         decadeSelect: "Chọn thập kỷ",
-                                        //         yearFormat: "YYYY",
-                                        //         dateFormat: "DD/MM/YYYY",
-                                        //         dayFormat: "DD",
-                                        //         dateTimeFormat: "DD/MM/YYYY HH:mm:ss",
-                                        //         monthBeforeYear: true,
-                                        //         previousMonth: "Tháng trước",
-                                        //         nextMonth: "Tháng sau",
-                                        //         previousYear: "Năm trước",
-                                        //         nextYear: "Năm sau",
-                                        //         previousDecade: "Thập kỷ trước",
-                                        //         nextDecade: "Thập kỷ sau",
-                                        //         previousCentury: "Thế kỷ trước",
-                                        //         nextCentury: "Thế kỷ sau",
-                                        //     },
-
-                                        // }}
+                                        
                                         needConfirm={false}
                                         className="w-100"
                                         onChange={(value) => {
@@ -705,6 +671,7 @@ const Appointment_Add = () => {
                                 }}
                                 render={({ field }) => (
                                     <Select
+                                    loading={shifts.loading}
                                         size="large"
                                         {...field}
                                         allowClear
@@ -747,6 +714,7 @@ const Appointment_Add = () => {
                                     <Select
                                         {...field}
                                         mode="multiple"
+                                        loading={service.loading}
                                         allowClear
                                         value={selectedServices.map(
                                             (service) => service.key

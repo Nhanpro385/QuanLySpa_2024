@@ -271,14 +271,6 @@ const Appointment_Edit = () => {
 
     const onSubmit = async (data) => {
         try {
-            if (selectedServices.length > data.employee.length) {
-                api.error({
-                    message: "Thêm lịch hẹn thất bại",
-                    description: "Số lượng dịch vụ nhiều hơn số nhân viên",
-                    duration: 5,
-                });
-                return;
-            } 
             const payload = {
                 id: idAppointment,
                 services: selectedServices.map((service) => ({

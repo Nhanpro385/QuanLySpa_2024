@@ -4,6 +4,8 @@ import {
     dailyRevenuesGet,
     revenueAppointmentGet,
     revenueConsulationGet,
+    staffConsulationsGet,
+    staffAppoimentsGet,
 } from "@admin/redux/slices/statisticalSlice";
 import { useDispatch } from "react-redux";
 
@@ -43,12 +45,27 @@ const useStatisticsAction = () => {
         }
         return await dispatch(revenueConsulationGet());
     };
+    const getStaffConsulations = async (config) => {
+        if (config) {
+            return await dispatch(staffConsulationsGet(config));
+        }
+        return await dispatch(staffConsulationsGet());
+    };
+    const getStaffAppoiments = async (config) => {
+        if (config) {
+            return await dispatch(staffAppoimentsGet(config));
+        }
+        return await dispatch(staffAppoimentsGet());
+    };
+
     return {
         getMonthlyRevenues,
         getWeeklyRevenues,
         getDailyRevenues,
         getRevenueAppointment,
         getRevenueConsulation,
+        getStaffConsulations,
+        getStaffAppoiments,
     };
 };
 export default useStatisticsAction;

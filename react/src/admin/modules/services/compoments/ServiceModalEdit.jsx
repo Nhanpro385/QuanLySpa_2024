@@ -71,7 +71,7 @@ function ServiceModalEdit({
     }, [service]);
     useEffect(() => {
         if (error) {
-            console.log(error);
+         
 
             Object.keys(error).forEach((key) => {
                 if (

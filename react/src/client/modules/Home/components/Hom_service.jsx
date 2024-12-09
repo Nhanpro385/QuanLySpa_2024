@@ -73,16 +73,23 @@ const Home_service = () => {
                                 key={index}
                                 title={item.name}
                                 className={styles.card}
+                                cover={
+                                    <Image
+                                        fallback={anh4}
+                                        src={
+                                            `${URL_IMAGE}/services/special/` +
+                                            item.image_url
+                                        }
+                                        style={{
+                                            // padding: "10px",
+                                            width: "100%",
+                                            height: "200px",
+                                            overflow: "hidden",
+                                        }}
+                                        alt="service"
+                                    />
+                                }
                             >
-                                <Image
-                                    fallback={anh4}
-                                    src={
-                                        `${URL_IMAGE}/services/` +
-                                        item.image_url
-                                    }
-                                    className={styles.cardImage}
-                                    alt="service"
-                                />
                                 <p className={styles.cardContent}>
                                     {item.description}
                                 </p>
@@ -106,9 +113,12 @@ const Home_service = () => {
                                         <strong>Chi phí dự kiến</strong>
                                     </Button>
                                 </Tooltip>
-                                <Button className={styles.tooltipButton}
+                                <Button
+                                    className={styles.tooltipButton}
                                     onClick={() => {
-                                        navigate(`/datlichhen?dichvu=${item.id}`);
+                                        navigate(
+                                            `/datlichhen?dichvu=${item.id}`
+                                        );
                                     }}
                                 >
                                     <CarryOutFilled />

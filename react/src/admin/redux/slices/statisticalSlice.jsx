@@ -119,6 +119,48 @@ export const revenueConsulationGet = createAsyncThunk(
         }
     }
 );
+export const staffConsulationsGet = createAsyncThunk(
+    "statistical/getstaffConsulations",
+    async (data, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.statistical.staffConsulations(data)
+            );
+
+            return response.data;
+        } catch (error) {
+            // Trả về lỗi với rejectWithValue
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi lấy danh sách doanh thu",
+                errors: error.response?.data?.errors || [],
+            });
+        }
+    }
+);
+export const staffAppoimentsGet = createAsyncThunk(
+    "statistical/getstaffAppoiments",
+    async (data, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await axiosInstance.get(
+                endpoints.statistical.staffAppoiments(data)
+            );
+
+            return response.data;
+        } catch (error) {
+            // Trả về lỗi với rejectWithValue
+            return rejectWithValue({
+                status: error.response?.status || 500,
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi lấy danh sách doanh thu",
+                errors: error.response?.data?.errors || [],
+            });
+        }
+    }
+);
 
 const initialState = {
     monthlyRevenues: [],
@@ -126,6 +168,8 @@ const initialState = {
     dailyRevenues: [],
     revenueAppointment: [],
     revenueConsulation: [],
+    staffConsulations: [],
+    staffAppoiments: [],
 
     status: "idle",
     error: null,
@@ -208,7 +252,36 @@ const statisticalSlice = createSlice({
                 state.status = "failed";
                 state.error = action.payload;
                 state.loading = false;
-            });
+            })
+            .addCase(staffConsulationsGet.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+            })
+            .addCase(staffConsulationsGet.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.staffConsulations = action.payload;
+                state.loading = false;
+            })
+            .addCase(staffConsulationsGet.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+                state.loading = false;
+            })
+            .addCase(staffAppoimentsGet.pending, (state) => {
+                state.status = "loading";
+                state.loading = true;
+            })
+            .addCase(staffAppoimentsGet.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.staffAppoiments = action.payload;
+                state.loading = false;
+            })
+            .addCase(staffAppoimentsGet.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+                state.loading = false;
+            })
+            
     },
 });
 export default statisticalSlice.reducer;

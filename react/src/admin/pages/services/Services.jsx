@@ -155,6 +155,8 @@ function Services() {
                 });
             }
             const res = await updateservices({ data: formData, id: data.id });
+           
+            
             if (res.payload.status === "success") {
                 getservices();
                 api.success({
@@ -164,7 +166,7 @@ function Services() {
             } else {
                 setErrorEdit((prev) => res.payload.errors);
                 api.error({
-                    message: "Cập nhật dịch vụ thất bại",
+                    message: res.payload.message  || "Cập nhật dịch vụ thất bại",
                 });
             }
         } catch (err) {
