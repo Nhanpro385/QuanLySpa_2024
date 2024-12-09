@@ -60,7 +60,9 @@ const BookingInfo = () => {
             } else {
                 api.error({
                     message: "Đặt lịch thất bại",
-                    description: res.payload.message || "Đặt lịch thất bại",
+                    description:
+                        res.payload.message ||
+                        "Đặt lịch thất bại vui lòng đặt lịch lại",
                 });
             }
         } catch (error) {
@@ -71,7 +73,7 @@ const BookingInfo = () => {
     useEffect(() => {
         if (data) {
             setDataSource(
-                data.services.map((item, index) => ({
+                data?.services?.map((item, index) => ({
                     key: index + 1,
                     ...item,
                 }))
@@ -134,13 +136,13 @@ const BookingInfo = () => {
                         }}
                         items={[
                             {
-                                title: "Đặt lịch",
+                                title: "Đặt Lịch",
                             },
                             {
-                                title: "Thông tin Đăt lịch",
+                                title: "Thông Tin Đặt Lịch",
                             },
                             {
-                                title: "xác nhận Đặt lịch",
+                                title: "Xác Nhận Đặt Lịch",
                             },
                         ]}
                     />
@@ -198,11 +200,12 @@ const BookingInfo = () => {
                                 <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                                     <ul style={{ listStyleType: "none" }}>
                                         <li>
-                                            Thời gian: {data.date}- {data.time}
+                                            Thời gian: {data?.date}-{" "}
+                                            {data?.time}
                                         </li>
                                         <li>
                                             Tổng tiền:{" "}
-                                            {data.totalprice.toLocaleString(
+                                            {data?.totalprice?.toLocaleString(
                                                 "vi-VN",
                                                 {
                                                     style: "currency",
@@ -213,7 +216,7 @@ const BookingInfo = () => {
                                         {/* <li>
                                             Chi nhánh: 14b1 Trương vĩnh nguyên
                                         </li> */}
-                                        <li>thời gian hẹn: {data.time}</li>
+                                        <li>thời gian hẹn: {data?.time}</li>
                                     </ul>
                                 </Col>
                                 <Col xl={6} lg={6} md={6} sm={24} xs={24}>
@@ -247,6 +250,10 @@ const BookingInfo = () => {
                                 pagination={false}
                                 dataSource={dataSource}
                                 columns={columns}
+                                locale={{
+                                    emptyText:
+                                        "Không có dữ liệu Vui lòng đặt lịch",
+                                }}
                             />
                             <Col
                                 className="mt-4"
@@ -281,7 +288,7 @@ const BookingInfo = () => {
                                                     }}
                                                 >
                                                     <strong>
-                                                        {data.totalprice.toLocaleString(
+                                                        {data?.totalprice?.toLocaleString(
                                                             "vi-VN",
                                                             {
                                                                 style: "currency",
@@ -320,7 +327,7 @@ const BookingInfo = () => {
                                                     }}
                                                 >
                                                     <strong>
-                                                        {data.totalprice.toLocaleString(
+                                                        {data?.totalprice?.toLocaleString(
                                                             "vi-VN",
                                                             {
                                                                 style: "currency",

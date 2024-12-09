@@ -38,12 +38,11 @@ const ContactManagement = () => {
         fetchContacts();
     }, []);
     useEffect(() => {
-        if (
-            contact?.contacts?.data?.data &&
-            contact?.contacts?.data?.data.length > 0
-        ) {
+        if (contact?.contacts?.data && contact?.contacts?.data.length > 0) {
+            console.log(contact?.contacts?.data);
+
             setContactData(
-                contact?.contacts?.data?.data?.map((item, index) => {
+                contact?.contacts?.data?.map((item, index) => {
                     return {
                         key: index + 1,
                         ...item,
@@ -283,7 +282,7 @@ const ContactManagement = () => {
                             { required: true, message: "Vui lòng nhập tên" },
                         ]}
                     >
-                        <Input />
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item
                         label="Số điện thoại"
@@ -295,23 +294,23 @@ const ContactManagement = () => {
                             },
                         ]}
                     >
-                        <Input />
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item label="Email" name="email">
-                        <Input />
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item label="Đánh giá" name="evaluete">
-                        <Input />
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
-                        <Input />
+                        <Input disabled />
                     </Form.Item>{" "}
-                    {/* <Form.Item label="Trạng thái" name="status">
-                        <Select>
-                            <Option value="Chưa liên hệ">Chưa liên hệ</Option>
-                            <Option value="Đã liên hệ">Đã liên hệ</Option>
+                    <Form.Item label="Trạng thái" name="status">
+                        <Select >
+                            <Option value="false">Chưa liên hệ</Option>
+                            <Option value="true">Đã liên hệ</Option>
                         </Select>
-                    </Form.Item> */}
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>
