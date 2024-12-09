@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Contact;
 use App\Http\Requests\Admin\Contacts\StoreContactRequest;
 use App\Http\Requests\Admin\Contacts\UpdateContactRequest;
+use App\Http\Resources\Admin\Contacts\ContactCollection;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class ContactsController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('perPage', 10);
-
+    
         $contacts = Contact::query()
             ->when($request->input('search'), function ($query, $search) {
                 $query->where('name', 'like', "%$search%")
@@ -23,12 +24,8 @@ class ContactsController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Danh sách liên hệ',
-            'data' => $contacts,
-        ]);
+    
+        return new ContactCollection($contacts);
     }
 
     public function store(StoreContactRequest $request)
@@ -51,16 +48,28 @@ class ContactsController extends Controller
         ]);
     }
 
-    public function update(UpdateContactRequest $request, Contact $contact)
+    public function update(UpdateContactRequest $request, $id)
     {
-        $contact->update($request->validated());
-
+        // Tìm kiếm bản ghi contact
+        $contact = Contact::find($id);
+    
+        if (!$contact) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Liên hệ không tồn tại.',
+            ], 404);
+        }
+    
+        // Cập nhật chỉ cột 'status'
+        $contact->update($request->only('status'));
+    
         return response()->json([
             'status' => 'success',
-            'message' => 'Liên hệ được cập nhật thành công.',
+            'message' => 'Trạng thái liên hệ được cập nhật thành công.',
             'data' => $contact,
         ]);
     }
+    
 
     public function destroy(Contact $contact)
     {
