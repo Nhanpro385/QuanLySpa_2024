@@ -27,7 +27,7 @@ class PaymentRequest extends FormRequest
             'id' => 'required|numeric|min:1000000000|max:9999999999999999999|unique:payments,id',
             'promotion_name' => 'nullable|exists:promotions,name',
             'payment_type' => 'required|numeric',
-            'products' => 'nullable|array',
+            'products' => 'required|array',
             'products.*.product_id' => 'required|numeric|exists:products,id',
             'products.*.quantity' => 'required|numeric|min:1',
         ];
@@ -51,6 +51,7 @@ class PaymentRequest extends FormRequest
             'products.*.quantity.required' => 'Số lượng là bắt buộc.',
             'products.*.quantity.numeric' => 'Số lượng phải là số.',
             'products.*.quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1.',
+            'products.required' => 'Vui lòng thêm sản phẩm.'
         ];
     }
 
