@@ -107,7 +107,7 @@ const Warehouse = () => {
             case "2":
                 if (selectedFunction == "import") {
                     navigate("/admin/warehouse/import/detail/" + record.id);
-                }else{
+                } else {
                     navigate("/admin/warehouse/export/detail/" + record.id);
                 }
                 break;
@@ -229,7 +229,18 @@ const Warehouse = () => {
         }
     };
     return (
-        <Card title="Quản lý Kho hàng">
+        <Card
+            title="Quản lý Kho hàng"
+            extra={
+                <Button
+                    type="primary"
+                    onClick={() => selectedFunction === "import" ? warehouseGetImport() : warehouseGetExport()}
+                    loading={warehouse.import.loading || warehouse.export.loading}
+                >
+                    Làm mới
+                </Button>
+            }
+        >
             <Row gutter={[16, 16]} className="mb-3" align="middle">
                 <Col xl={3} md={6} xs={24}>
                     <h4>Chọn chức năng: </h4>

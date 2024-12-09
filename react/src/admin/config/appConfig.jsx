@@ -197,6 +197,17 @@ const endpoints = {
         revenueConsulation: (data) =>
             `${API_BASE_URL}/statistical/consulations?day=${data.day}`,
     },
+    contacts: {
+        list: `${API_BASE_URL}/contacts`,
+        detail: (id) => `${API_BASE_URL}/contacts/${id}`,
+        create: `${API_BASE_URL}/contacts`,
+        update: (id) => `${API_BASE_URL}/contacts/${id}`,
+        delete: (id) => `${API_BASE_URL}/contacts/${id}`,
+        search: `${API_BASE_URL}/contacts`,
+        listClient: `${API_AUTH_URL3}/contacts`,
+        createClient: `${API_AUTH_URL3}/contacts`,
+        
+    },
 };
 
 export default endpoints;

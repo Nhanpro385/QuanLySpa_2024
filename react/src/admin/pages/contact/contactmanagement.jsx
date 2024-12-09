@@ -1,14 +1,57 @@
-import { Button, Modal, Table, Input, Form, Select, Col, Row } from "antd";
-import React, { useState } from "react";
-import useModal from "../modules/appointments/hooks/openmodal";
-
+import {
+    Button,
+    Modal,
+    Table,
+    Input,
+    Form,
+    Select,
+    Col,
+    Row,
+    notification,
+    Card,
+} from "antd";
+import React, { useState, useEffect } from "react";
+import useModal from "../../modules/appointments/hooks/openmodal";
+import useContactActions from "../../modules/contact/hooks/usecontact";
+import { useSelector } from "react-redux";
+import debounce from "lodash/debounce";
 const { Option } = Select;
 
 const ContactManagement = () => {
+    const { fetchContacts, searchContacts, updateAdminContact } =
+        useContactActions();
+    const [api, contextHolder] = notification.useNotification();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const [selectedContact, setSelectedContact] = useState(null); // State to hold selected contact
     const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
+    const [contactData, setContactData] = useState([]); // State to hold contact data
     const [editForm] = Form.useForm(); // Form instance for editing
+    const contact = useSelector((state) => state.contact);
+    const pagination = contact?.contacts?.data || {};
+    const [searchquery, setSearchQuery] = useState({
+        search: "",
+        per_page: 10,
+        page: 1,
+    });
+    useEffect(() => {
+        document.title = "Quản lý liên hệ";
+        fetchContacts();
+    }, []);
+    useEffect(() => {
+        if (
+            contact?.contacts?.data?.data &&
+            contact?.contacts?.data?.data.length > 0
+        ) {
+            setContactData(
+                contact?.contacts?.data?.data?.map((item, index) => {
+                    return {
+                        key: index + 1,
+                        ...item,
+                    };
+                })
+            );
+        }
+    }, [contact]);
 
     const columns = [
         {
@@ -20,21 +63,38 @@ const ContactManagement = () => {
             title: "Tên",
             dataIndex: "name",
             key: "name",
+            width: "10%",
         },
         {
             title: "Số điện thoại",
             dataIndex: "phone",
             key: "phone",
+            width: "10%",
         },
         {
             title: "Email",
             dataIndex: "email",
             key: "email",
+            width: "10%",
         },
         {
             title: "Ghi chú",
             dataIndex: "note",
             key: "note",
+            width: "20%",
+            render: (text) => (
+                <span
+                    style={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 2,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                    }}
+                >
+                    {text || "Không có ghi chú"}
+                </span>
+            ),
         },
         {
             title: "Trạng thái",
@@ -59,7 +119,6 @@ const ContactManagement = () => {
                         <Button
                             type="default"
                             onClick={() => handleEditContact(record)}
-                           
                             block
                         >
                             Sửa
@@ -70,48 +129,63 @@ const ContactManagement = () => {
         },
     ];
 
-    const data = [
-        {
-            key: "1",
-            name: "Nguyễn Văn A",
-            phone: "0123456789",
-            email: "ngueyn@gmail.com",
-            note: "Gọi lại sau",
-            status: "Chưa liên hệ",
-        },
-        {
-            key: "2",
-            name: "Trần Thị B",
-            phone: "0987654321",
-            email: "",
-            note: "Hỏi thông tin sản phẩm",
-            status: "Đã liên hệ",
-        },
-    ];
-
     const handleViewDetail = (contact) => {
-        setSelectedContact(contact); // Set the selected contact details
+        setSelectedContact(() => contact); // Set selected contact
         showModal(); // Show modal
     };
 
     const handleEditContact = (contact) => {
-        setSelectedContact(contact); // Set the selected contact
+        setSelectedContact(() => contact); // Set selected contact
         editForm.setFieldsValue(contact); // Set form values with contact details
         setIsEditModalOpen(true); // Open edit modal
     };
+    const handleChangePage = (page, pageSize) => {
+        setSearchQuery({
+            ...searchquery,
+            page: page,
+            per_page: pageSize,
+        });
+    };
+    useEffect(() => {
+        if (
+            searchquery.search !== "" ||
+            searchquery.page !== 1 ||
+            searchquery.per_page !== 10
+        ) {
+            searchContacts(searchquery);
+        } else {
+            fetchContacts();
+        }
+    }, [searchquery]);
+    const handleEditOk = async () => {
+        try {
+            const values = await editForm.validateFields(); // Wait for form validation
 
-    const handleEditOk = () => {
-        // Save the edited values
-        editForm
-            .validateFields()
-            .then((values) => {
-                // Update the data (you can replace this with API call or state update logic)
-                console.log("Updated values:", values);
-                setIsEditModalOpen(false); // Close modal
-            })
-            .catch((info) => {
-                console.log("Validate Failed:", info);
+            const res = await updateAdminContact({
+                id: selectedContact.id,
+                data: values,
             });
+            if (res.payload.status == "success") {
+                api.success({
+                    message:
+                        res?.payload?.message || "Cập nhật liên hệ thành công",
+                });
+                fetchContacts();
+            } else {
+                api.error({
+                    message:
+                        res?.payload?.message || "Cập nhật liên hệ thất bại",
+                });
+            }
+
+            setIsEditModalOpen(false); // Close modal after successful update
+        } catch (error) {
+            if (error.name === "ValidationError") {
+                console.log("Validate Failed:", error);
+            } else {
+                console.log("Update Failed:", error);
+            }
+        }
     };
 
     const handleEditCancel = () => {
@@ -120,8 +194,37 @@ const ContactManagement = () => {
 
     return (
         <div>
+            {contextHolder}
             <h1 className="text-center">Quản lý liên hệ</h1>
-            <Table columns={columns} dataSource={data} />
+            <Card
+                extra={
+                    <Button
+                        type="primary"
+                        onClick={() => fetchContacts()}
+                        loading={contact.loading}
+                    >
+                        Làm mới
+                    </Button>
+                }
+            >
+                <Table
+                    loading={contact.loading}
+                    scroll={{ x: 768 }}
+                    columns={columns}
+                    dataSource={contactData}
+                    pagination={{
+                        current: pagination.current_page,
+                        pageSize: pagination.per_page,
+                        total: pagination.total,
+
+                        showQuickJumper: true,
+                        showTotal: (total) => `Tổng ${total} mục`,
+                        pageSizeOptions: ["5", "10", "20", "50"],
+                        responsive: true,
+                        onChange: handleChangePage,
+                    }}
+                />
+            </Card>
 
             {/* Modal for viewing contact details */}
             <Modal
@@ -197,15 +300,18 @@ const ContactManagement = () => {
                     <Form.Item label="Email" name="email">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Ghi chú" name="note">
+                    <Form.Item label="Đánh giá" name="evaluete">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Trạng thái" name="status">
+                    <Form.Item label="Ghi chú" name="note">
+                        <Input />
+                    </Form.Item>{" "}
+                    {/* <Form.Item label="Trạng thái" name="status">
                         <Select>
                             <Option value="Chưa liên hệ">Chưa liên hệ</Option>
                             <Option value="Đã liên hệ">Đã liên hệ</Option>
                         </Select>
-                    </Form.Item>
+                    </Form.Item> */}
                 </Form>
             </Modal>
         </div>

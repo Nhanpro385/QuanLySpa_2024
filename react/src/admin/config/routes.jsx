@@ -47,7 +47,7 @@ import CommentManagement from "@admin/pages/comment";
 import ShiftManagement from "@admin/pages/ShiftManagement";
 // Contact Management
 
-import ContactManagement from "@admin/pages/contactmanagement";
+import ContactManagement from "@admin/pages/contact/contactmanagement";
 //patment
 import PaymentManagement from "@admin/pages/paymentManagenment";
 // supplierManagement

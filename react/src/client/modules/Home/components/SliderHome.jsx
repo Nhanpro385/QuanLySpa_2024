@@ -13,7 +13,7 @@ const SliderHome = () => (
                 <img style={{ width: "100%" }} src={baner1} alt="baner1" />
             </div>
         </Carousel>
-        {/* <ConsultingFrom /> */}
+        <ConsultingFrom />
     </div>
 );
 export default SliderHome;

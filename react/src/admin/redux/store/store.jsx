@@ -19,6 +19,7 @@ import {
     notificationSlice,
     paymentsSlice,
     statisticalSlice,
+    contactSlice,
 } from "../slices";
 
 const store = configureStore({
@@ -42,6 +43,7 @@ const store = configureStore({
         notification: notificationSlice,
         payments: paymentsSlice,
         statistical: statisticalSlice,
+        contact: contactSlice,
     },
 });
 
