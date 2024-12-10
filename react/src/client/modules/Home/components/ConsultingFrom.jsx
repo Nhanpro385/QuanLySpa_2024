@@ -9,10 +9,11 @@ import {
 import clsx from "clsx"; // Import clsx
 import styles from "../styles/ConsultingFrom.module.scss";
 import useContactActions from "../../../../admin/modules/contact/hooks/usecontact";
-
+import { useSelector } from "react-redux";
 const ConsultingFrom = () => {
     const [form] = Form.useForm();
     const { createClientContact } = useContactActions();
+    const contact = useSelector((state) => state.contact);
     const [api, contextHolder] = notification.useNotification();
     const [size, setSize] = React.useState(() => {
         if (window.innerWidth < 768) return "horizontal";
@@ -207,7 +208,10 @@ const ConsultingFrom = () => {
                     </Form.Item>
                 </Col>
                 <Form.Item className={clsx(styles.button)} colon={false}>
-                    <Button type="primary" size="large" htmlType="submit">
+                    <Button
+                    
+                            loading={contact.loading}   
+                    type="primary" size="large" htmlType="submit">
                         Gửi tư vấn cho chúng tôi
                         <ArrowRightOutlined />
                     </Button>

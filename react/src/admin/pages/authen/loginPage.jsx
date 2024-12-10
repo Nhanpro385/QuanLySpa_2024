@@ -8,11 +8,7 @@ import Wellcome from "../../assets/images/loginimg.jpg";
 import clsx from "clsx";
 import axios from "axios";
 const LoginPage = () => {
-    // useEffect(() => {
-    //     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    //     console.log("đây là token", csrfToken);
-    //     axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
-    // }, []);
+    document.title = "Đăng nhập";
     const { authLogin, authGetmeAdmin } = useAuthActions();
     const [loading, setLoading] = React.useState(false);
     const {

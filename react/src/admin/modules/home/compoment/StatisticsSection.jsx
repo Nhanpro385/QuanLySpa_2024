@@ -30,8 +30,8 @@ const StatisticsSection = ({
 
     // Điều chỉnh kích thước Progress theo breakpoint
     const getProgressSize = () => {
-        if (screens.xxl) return 250;
-        if (screens.xl) return 250;
+        if (screens.xxl) return 200;
+        if (screens.xl) return 200;
         if (screens.lg) return 200;
         if (screens.md) return 150;
         return 120;
@@ -42,8 +42,17 @@ const StatisticsSection = ({
             <Row gutter={[16, 16]}>
                 {/* Tổng quan doanh thu */}
                 <Col xxl={6} xl={6} md={24} sm={24} xs={24}>
-                    <Card title={`Doanh thu ngày ${date}`}
-                     className={style.card}>
+                    <Card
+                        title={<div className="text-center">
+                            <div>
+                                <Text strong>Tổng doanh thu</Text>
+                            </div>
+                            <div>
+                                {date}
+                            </div>
+                        </div>}
+                        className={style.card}
+                    >
                         <Row gutter={[16, 16]} justify="center" align="middle">
                             <Progress
                                 size={getProgressSize()}

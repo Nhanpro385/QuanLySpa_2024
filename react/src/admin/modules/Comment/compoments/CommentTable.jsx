@@ -39,8 +39,8 @@ const CommentTable = ({
                     <Avatar size="small" icon={<UserOutlined />} />
                     <Text>
                         {record.type == 0
-                            ? `Admin: ${record.created_by.full_name}`
-                            : record.customer_id}
+                            ? `Admin: ${record?.created_by?.full_name}`
+                            : record?.customer_id}
                     </Text>
                 </Space>
             ),

@@ -111,7 +111,7 @@ const TableSection = ({
             </Col>
             <Col xl={24} md={24} sm={24} xs={24}>
                 <Card
-                    title="Lịch hẹn tư vấn và hẹn dịch vụ"
+                    title="Lịch hẹn tư vấn "
                     // extra={
                     //     <Row gutter={[16, 16]}>
                     //         <Select

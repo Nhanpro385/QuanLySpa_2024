@@ -144,7 +144,7 @@ const Warehouse = () => {
             title: "Người chịu trách nhiệm",
             dataIndex: ["created_by", "name"],
             key: "created_by",
-            render: (text) => <span>{text || "Không có"}</span>,
+            render: (text) => <span>{text || "Sử dụng trong hệ thống"}</span>,
         },
         {
             title: "Số lượng",

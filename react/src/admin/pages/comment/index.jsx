@@ -64,16 +64,16 @@ const CommentManagement = () => {
     const handleDelete = async (key) => {
         try {
             const response = await deletecomments(key.id);
-            if (response.payload.status === "success") {
+            if (response?.payload?.status == "success") {
                 api.success({
-                    message: response.payload.message,
+                    message: response?.payload?.message,
                     description: "Bình luận đã được xóa.",
                     duration: 2,
                 });
                 getcomments();
             } else {
                 api.error({
-                    message: response.payload.message,
+                    message: response?.payload?.message,
                     description: "Vui lòng thử lại sau.",
                     duration: 2,
                 });
@@ -86,7 +86,7 @@ const CommentManagement = () => {
     const handleReplySubmit = async (replyContent) => {
         try {
             const response = await replycomments(replyContent);
-            if (response.payload.status === "success") {
+            if (response.payload.status == "success") {
                 api.success({
                     message: "Trả lời bình luận thành công",
                     placement: "topRight",
@@ -111,7 +111,7 @@ const CommentManagement = () => {
                 id: replyContent.id,
                 data: replyContent,
             });
-            if (response.payload.status === "success") {
+            if (response.payload.status == "success") {
                 api.success({
                     message: response.payload.message,
                     description: "Bình luận đã Cập nhật",
@@ -174,7 +174,7 @@ const CommentManagement = () => {
                 />
             </Card>
 
-            {activeModal === "detail" && selectedComment && (
+            {activeModal == "detail" && selectedComment && (
                 <CommentDetailModal
                     visible={true}
                     onOk={() => setActiveModal(null)}
@@ -186,7 +186,7 @@ const CommentManagement = () => {
                 />
             )}
 
-            {activeModal === "reply" && selectedComment && (
+            {activeModal == "reply" && selectedComment && (
                 <ReplyComment
                     visible={true}
                     onClose={() => setActiveModal(null)}
@@ -195,7 +195,7 @@ const CommentManagement = () => {
                 />
             )}
 
-            {activeModal === "edit" && selectedComment && (
+            {activeModal == "edit" && selectedComment && (
                 <ReplyCommentEdit
                     visible={true}
                     onClose={() => {

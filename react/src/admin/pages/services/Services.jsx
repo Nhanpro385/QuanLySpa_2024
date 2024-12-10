@@ -220,7 +220,7 @@ function Services() {
                 </Col>
             </Row>
             <Row>
-                <Col xl={4} md={6} sm={24} xs={24}>
+                <Col xl={6} md={6} sm={24} xs={24}>
                     <Input.Search
                         className="mb-3 w-100"
                         placeholder="Tìm dịch vụ theo tên..."

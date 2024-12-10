@@ -142,7 +142,7 @@ export const Paymentsearch = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                `${endpoints.Payments.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}`
+                `${endpoints.Payments.search}?search=${data.search}&page=${data.page}&per_page=${data.per_page}&sort_order=${data.sort}`
             );
 
             return response.data;
