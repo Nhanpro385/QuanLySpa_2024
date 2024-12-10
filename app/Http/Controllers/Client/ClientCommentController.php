@@ -93,7 +93,9 @@ class ClientCommentController extends Controller
 
             ]);
             if ($request->hasFile('image_url')) {
+
                 $images = $request->file('image_url');
+
                 if (is_array($images)) {
                     foreach ($images as $index => $file) {
 
@@ -112,7 +114,7 @@ class ClientCommentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thêm bình luận thành công.',
-                'data' => $comment,
+                'data' => $comment,$imageName
             ]);
         } catch (\Throwable $th) {
             return response()->json([
