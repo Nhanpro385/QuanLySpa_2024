@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('outbound_invoice_id', 20)->nullable();
             $table->integer('quantity_export');
             $table->integer('quantity_olded')->nullable();
-            $table->decimal('unit_price', 20, 2);
+            $table->decimal('unit_price', 10, 2);
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
             $table->timestamps();
