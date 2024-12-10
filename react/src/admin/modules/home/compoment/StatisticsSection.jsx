@@ -62,7 +62,7 @@ const StatisticsSection = ({
                                         dailyRevenues?.total_revenue || 0
                                     ) /
                                         2000000) *
-                                        100,
+                                    100,
                                     100
                                 )}
                                 format={() =>

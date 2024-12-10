@@ -10,6 +10,7 @@ import icons from "../../../assets/images/iconlogo.png";
 import { useNavigate } from "react-router-dom";
 const Home_about = () => {
     const navigate = useNavigate();
+
     return (
         <section className="container p-5">
             <Divider orientation="left">
