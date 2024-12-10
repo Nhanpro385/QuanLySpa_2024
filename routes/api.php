@@ -261,7 +261,7 @@ Route::group([
     //Promotion
     Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
 
-    Route::get('/promotion', [PromotionPromotionController::class, 'index']);
+  
 
 
     
