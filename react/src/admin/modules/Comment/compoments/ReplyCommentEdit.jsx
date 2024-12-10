@@ -16,7 +16,7 @@ import {
 } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { generateSnowflakeId } from "../../../utils";
-
+import { URL_IMAGE } from "../../../config/appConfig";
 const { Text } = Typography;
 
 const ReplyCommentEdit = ({ visible, onClose, onSubmit, comment }) => {
@@ -110,7 +110,8 @@ const ReplyCommentEdit = ({ visible, onClose, onSubmit, comment }) => {
                     dataSource={comment?.image_url}
                     renderItem={(item) => (
                         <List.Item>
-                            <Image src={item} alt="comment attachment" />
+                            <Image src={`${URL_IMAGE}/comment/${item}`}
+                             alt="comment attachment" />
                         </List.Item>
                     )}
                 />

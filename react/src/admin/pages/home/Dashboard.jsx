@@ -38,13 +38,13 @@ const Dashboard = () => {
             dataIndex: "id",
             key: "id",
         },
+
         {
-            title: "Họ tên",
-            dataIndex: "name",
-            key: "name",
-            render: (text) => text || "Chưa có",
+            title: "Tổng tiền",
+            dataIndex: "total_amount",
+            key: "total_amount",
+            render: (text) => parseInt(text).toLocaleString() + " VNĐ",
         },
-        { title: "Tổng tiền", dataIndex: "total_amount", key: "total_amount" },
         {
             title: "Phương thức thanh toán",
             dataIndex: "payment_type",
@@ -117,30 +117,7 @@ const Dashboard = () => {
             ellipsis: true,
             render: (text) => text?.full_name || "Không tìm thấy",
         },
-        {
-            title: "Nhân viên",
-            dataIndex: "staff_id",
-            key: "staff_id",
-            width: 200,
-            ellipsis: true,
-            render: (text) => text?.fullname || "Không tìm thấy",
-        },
-        {
-            title: "Số điện thoại",
-            dataIndex: "customer",
-            key: "phone",
-            width: 150,
-            align: "center",
-            render: (text) => text?.phone || "Không tìm thấy",
-        },
-        {
-            title: "Kế hoạch tư vấn",
-            dataIndex: "treatment_plan",
-            key: "treatment_plan",
-            width: 250,
-            ellipsis: true,
-            render: (plan) => plan || "Không tìm thấy",
-        },
+
         {
             title: "Tình trạng da",
             dataIndex: "skin_condition",
@@ -361,8 +338,8 @@ const Dashboard = () => {
 
     return (
         <div style={{ padding: 20 }}>
-            <Row className="mb-3">
-                <Col xxl={4} xl={4} lg={4} md={4} sm={4} xs={4}>
+            <Row className="mb-3" gutter={16}>
+                <Col xxl={6} xl={6} lg={6} md={6} sm={24} xs={24}>
                     <DatePicker
                         value={dayjs(formattedDate, "DD/MM/YYYY")}
                         className="w-100"

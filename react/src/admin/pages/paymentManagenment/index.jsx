@@ -40,6 +40,7 @@ const PaymentManagement = () => {
         search: "",
         page: 1,
         per_page: 5,
+        sort: "desc",
     });
     const OnchangePage = (page, pagination) => {
         setSearchQuery((prev) => ({
@@ -84,7 +85,8 @@ const PaymentManagement = () => {
         if (
             searchquery.search !== "" ||
             searchquery.page !== 1 ||
-            searchquery.per_page !== 5
+            searchquery.per_page !== 5 ||
+            searchquery.sort !== "desc"
         ) {
             searchpayment(searchquery);
         } else {
@@ -186,17 +188,23 @@ const PaymentManagement = () => {
                                 <Select
                                     placeholder="Sắp xếp"
                                     className="w-100"
-                                    defaultValue="newest"
+                                    defaultValue="desc"
+                                    onChange={(value) =>
+                                        setSearchQuery((prev) => ({
+                                            ...prev,
+                                            sort: value,
+                                        }))
+                                    }
                                 >
-                                    <Select.Option value="newest">
+                                    <Select.Option value="desc">
                                         Mới nhất
                                     </Select.Option>
-                                    <Select.Option value="oldest">
+                                    <Select.Option value="asc">
                                         Cũ nhất
                                     </Select.Option>
                                 </Select>
                             </Col>
-                            <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={6}>
+                            {/* <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={6}>
                                 <Select
                                     placeholder="Lọc theo"
                                     className="w-100"
@@ -212,7 +220,7 @@ const PaymentManagement = () => {
                                         Chưa thanh toán
                                     </Select.Option>
                                 </Select>
-                            </Col>
+                            </Col> */}
                             <Col xxl={6} xl={8} lg={12} md={12} sm={12} xs={12}>
                                 <Input.Search
                                     onChange={(e) => OnsearchPayment(e.target.value)}
