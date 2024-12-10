@@ -173,7 +173,7 @@ const Profile = () => {
                 <Col xxl={10} xl={10} lg={10} md={10} sm={24} xs={24}>
                     <Card className={style.card} bordered={true}>
                         <Avatar
-                            size={300}
+                            size={"100%"}
                             className={style.avatar}
                             shape={"circle"}
                             src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
@@ -218,7 +218,7 @@ const Profile = () => {
                 <Col xxl={14} xl={14} lg={14} md={14} sm={24} xs={24}>
                     <Card title="Thống kê công việc" bordered={true}>
                         <Row gutter={[16, 16]}>
-                            <Col span={12}>
+                            <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                                 <Statistic
                                     title="Tư vấn khách hàng"
                                     value={
@@ -244,7 +244,7 @@ const Profile = () => {
                                     {UserData.countConsulation_today || 0}
                                 </Text>
                             </Col>
-                            <Col span={12}>
+                            <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                                 <Statistic
                                     title="Lịch hẹn Dịch vụ"
                                     value={

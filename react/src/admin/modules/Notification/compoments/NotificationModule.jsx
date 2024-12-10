@@ -73,12 +73,12 @@ const NotificationModule = () => {
                                 align="middle"
                                 className={clsx(
                                     styles.notification,
-                                    notification.notifiable_type === "App\\Models\\Consulation"
+                                    notification.notifiable_type ===
+                                        "App\\Models\\Consulation"
                                         ? styles.noti_Consulation
                                         : styles.noti_appointment,
                                     styles.notificationItem
                                 )}
-                                
                                 style={{
                                     animationDelay: `${index * 0.1}s`,
                                     marginBottom: 10,
@@ -176,9 +176,16 @@ const NotificationModule = () => {
             className={styles.notificationPopover}
             onOpenChange={handleOpenChange}
         >
-            <Badge count={notiData.filter((item) => !item.read).length}>
-                <NotificationOutlined style={{ fontSize: 18 }} /> Thông báo
-            </Badge>
+            <NotificationOutlined style={{ fontSize: 18 }} /> Thông báo
+            <Tag
+                style={{
+                    borderRadius: "50%",
+                }}
+                color="red"
+                className={styles.notificationBadge}
+            >
+                {notiData.filter((item) => !item.read).length}
+            </Tag>
         </Popover>
     );
 };

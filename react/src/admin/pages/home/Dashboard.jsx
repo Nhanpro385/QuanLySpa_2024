@@ -306,7 +306,7 @@ const Dashboard = () => {
             setStaffAppoiments(statistical.staffAppoiments.data);
         }
 
-        console.log(statistical);
+        
     }, [statistical]);
 
     useEffect(() => {
@@ -323,7 +323,7 @@ const Dashboard = () => {
     }, [payment]);
 
     useEffect(() => {
-        console.log(consulations);
+       
         if (consulations.consulations && consulations.consulations.data) {
             setAppointmentData(
                 consulations.consulations?.data.map((item) => ({

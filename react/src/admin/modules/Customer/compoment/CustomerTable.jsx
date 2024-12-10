@@ -114,7 +114,7 @@ const CustomerTable = ({
 
     return (
         <Table
-            style={{ overflowX: "auto" }}
+            scroll={{ x: 768 }}
             dataSource={customers}
             columns={columns}
             loading={loading}
@@ -125,7 +125,7 @@ const CustomerTable = ({
                 showQuickJumper: true,
                 showSizeChanger: true,
                 onChange: handelPageChange,
-                showTotal: (total) => `Tổng ${total} khách hàng`,
+                showTotal: (total) => `${total} Mục`,
             }}
         />
     );

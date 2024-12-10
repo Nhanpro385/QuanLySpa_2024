@@ -1,21 +1,25 @@
 import React, { useState } from "react";
 import {
-    DesktopOutlined,
-    FileOutlined,
-    TeamOutlined,
+    MenuOutlined,
+    HomeFilled,
     UserOutlined,
-    SolutionOutlined,
     CalendarOutlined,
+    TeamOutlined,
+    SolutionOutlined,
     ShoppingOutlined,
     TagsOutlined,
     ShopOutlined,
     SettingOutlined,
     CommentOutlined,
     PhoneOutlined,
-    HomeFilled,
+    DesktopOutlined,
+    FileOutlined,
+    HomeOutlined,
+    MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Drawer, Button } from "antd";
 import { Link } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 const { Sider } = Layout;
 
@@ -432,8 +436,40 @@ const items = [
 
 const Sidebar = () => {
     const [collapsed, setCollapsed] = useState(false);
+    const [drawerVisible, setDrawerVisible] = useState(false);
+    const isMobile = useMediaQuery({ maxWidth: 768 }); // Xác định màn hình nhỏ hơn 768px
 
-    return (
+    const toggleDrawer = () => setDrawerVisible(!drawerVisible);
+
+    const SidebarContent = (
+        <Menu
+            theme="light"
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            items={items}
+        />
+    );
+
+    return isMobile ? (
+        <>
+            <Button
+                icon={<MenuOutlined />}
+                type="primary"
+                onClick={toggleDrawer}
+                style={{ margin: "16px" }}
+            />
+            <Drawer
+                title="Menu"
+                placement="left"
+                closable
+                onClose={toggleDrawer}
+                visible={drawerVisible}
+                width={250}
+            >
+                {SidebarContent}
+            </Drawer>
+        </>
+    ) : (
         <Sider
             collapsible
             collapsed={collapsed}
@@ -442,12 +478,7 @@ const Sidebar = () => {
             theme="light"
         >
             <div className="demo-logo-vertical" />
-            <Menu
-                theme="light"
-                defaultSelectedKeys={["1"]}
-                mode="inline"
-                items={items}
-            />
+            {SidebarContent}
         </Sider>
     );
 };
