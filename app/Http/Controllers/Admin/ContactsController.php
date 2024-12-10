@@ -50,7 +50,6 @@ class ContactsController extends Controller
 
     public function update(UpdateContactRequest $request, $id)
     {
-        // Tìm kiếm bản ghi contact
         $contact = Contact::find($id);
     
         if (!$contact) {
@@ -60,8 +59,8 @@ class ContactsController extends Controller
             ], 404);
         }
     
-        // Cập nhật chỉ cột 'status'
-        $contact->update($request->only('status'));
+        // Cập nhật status với forceFill
+        $contact->forceFill($request->only('status'))->save();
     
         return response()->json([
             'status' => 'success',
@@ -69,6 +68,8 @@ class ContactsController extends Controller
             'data' => $contact,
         ]);
     }
+    
+
     
 
     public function destroy(Contact $contact)
