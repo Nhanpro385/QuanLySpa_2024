@@ -7,7 +7,7 @@ import anh4 from "../../../assets/images/image4.png";
 import anh4_1 from "../../../assets/images/anh4_1.jpg";
 
 import icons from "../../../assets/images/iconlogo.png";
-import { useNavigate } from "react-router-dom";
+
 const Home_about = () => {
     const navigate = useNavigate();
 

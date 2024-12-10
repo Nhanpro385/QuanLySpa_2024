@@ -159,7 +159,7 @@ const ServicesDetailById = () => {
                 id: generateSnowflakeId(),
                 service_id: service.id,
                 rate: 1,
-                customer_id: JSON.parse(localStorage.getItem("user")).id,
+                customer_id: JSON.parse(localStorage.getItem("user"))?.id,
                 comment: comment,
             };
             const result = await replycommentsClient({

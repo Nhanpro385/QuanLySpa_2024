@@ -30,6 +30,8 @@ const ModalEditCustomer = ({
     const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         if (formErrors) {
+            console.log(formErrors);
+            
             Object.keys(formErrors).forEach((key) => {
                 if (
                     [
