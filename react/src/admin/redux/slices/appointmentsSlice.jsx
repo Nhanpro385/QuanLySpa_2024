@@ -20,7 +20,7 @@ export const appointmentsGet = createAsyncThunk(
         return response.data;
     }
 );
-
+// check role
 export const appointmentsAdd = createAsyncThunk(
     "appointments/add",
     async (data, { dispatch, rejectWithValue }) => {
@@ -49,6 +49,7 @@ export const appointmentsAdd = createAsyncThunk(
         }
     }
 );
+// check role
 
 export const appointmentsDelete = createAsyncThunk(
     "appointments/delete",
@@ -77,6 +78,7 @@ export const appointmentsDelete = createAsyncThunk(
         }
     }
 );
+// check role
 
 export const appointmentsUpdate = createAsyncThunk(
     "appointments/update",

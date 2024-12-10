@@ -2,7 +2,15 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 import axios from "axios";
+const checkRoleAndLogout = (dispatch) => {
+    const userRole = localStorage.getItem("role");
 
+    if (!userRole) {
+        dispatch(logout());
+    }
+
+    return userRole;
+};
 export const getContactAdmin = createAsyncThunk(
     "contact/getContactAdmin",
     async (data, { rejectWithValue }) => {
@@ -103,6 +111,14 @@ export const createContactClient = createAsyncThunk(
 export const updateContactAdmin = createAsyncThunk(
     "contact/updateContactAdmin",
     async (data, { rejectWithValue }) => {
+        const roleError = checkRoleAndLogout(dispatch);
+        if (roleError !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật liên hệ",
+            });
+        }
+
         try {
             const response = await axiosInstance.put(
                 endpoints.contacts.update(data.id),

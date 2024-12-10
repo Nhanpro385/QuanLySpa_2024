@@ -18,7 +18,7 @@ const roleValidation = (dispatch, roleRequired) => {
     if (userRole !== roleRequired) {
         return {
             status: 403,
-            message: `You do not have permission to perform this action. Required role: ${roleRequired}`,
+            message: `Bạn Không có quyền ${roleRequired}`,
         };
     }
     return null;
@@ -63,7 +63,7 @@ export const consulationsAdd = createAsyncThunk(
         }
     }
 );
-
+// check role
 export const consulationsDelete = createAsyncThunk(
     "consulations/delete",
     async (id, { dispatch, rejectWithValue }) => {
@@ -85,7 +85,7 @@ export const consulationsDelete = createAsyncThunk(
         }
     }
 );
-
+// check role
 export const consulationsUpdate = createAsyncThunk(
     "consulations/update",
     async (data, { dispatch, rejectWithValue }) => {

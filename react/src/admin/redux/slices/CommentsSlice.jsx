@@ -17,7 +17,7 @@ export const commentsGet = createAsyncThunk("comments/get", async () => {
 
     return response.data;
 });
-
+// check role
 export const commentsAdd = createAsyncThunk(
     "comments/add",
     async (data, { dispatch, rejectWithValue }) => {
@@ -44,7 +44,7 @@ export const commentsAdd = createAsyncThunk(
         }
     }
 );
-
+// check role
 export const commentsDelete = createAsyncThunk(
     "comments/delete",
     async (id, { dispatch, rejectWithValue }) => {
@@ -70,7 +70,7 @@ export const commentsDelete = createAsyncThunk(
         }
     }
 );
-
+// check role
 export const commentsUpdate = createAsyncThunk(
     "comments/update",
     async (data, { dispatch, rejectWithValue }) => {

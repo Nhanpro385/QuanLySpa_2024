@@ -175,15 +175,6 @@ const Appointment_Add = () => {
 
     const onSubmit = async (data) => {
         try {
-            if (selectedServices.length > data.employee.length) {
-                api.error({
-                    message: "Thêm lịch hẹn thất bại",
-                    description: "Số lượng dịch vụ nhiều hơn số nhân viên",
-                    duration: 5,
-                });
-                return;
-            }
-
             const payload = {
                 id: generateSnowflakeId(),
                 shift_id: data.shift,
@@ -642,11 +633,9 @@ const Appointment_Add = () => {
                                 }}
                                 render={({ field }) => (
                                     <DatePicker
-                                   
                                         size="large"
                                         showTime={{ format: "HH:mm" }}
                                         {...field}
-                                        
                                         needConfirm={false}
                                         className="w-100"
                                         onChange={(value) => {
@@ -672,7 +661,7 @@ const Appointment_Add = () => {
                                 }}
                                 render={({ field }) => (
                                     <Select
-                                    loading={shifts.loading}
+                                        loading={shifts.loading}
                                         size="large"
                                         {...field}
                                         allowClear

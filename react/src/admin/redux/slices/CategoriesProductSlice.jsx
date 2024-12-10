@@ -38,6 +38,7 @@ export const categoriesGet = createAsyncThunk(
     }
 );
 
+// check role
 export const categoriesAdd = createAsyncThunk(
     "categories/add",
     async (data, { dispatch, rejectWithValue }) => {
@@ -64,7 +65,7 @@ export const categoriesAdd = createAsyncThunk(
         }
     }
 );
-
+// check role
 export const categoriesDelete = createAsyncThunk(
     "categories/delete",
     async (id, { dispatch, rejectWithValue }) => {
@@ -88,7 +89,7 @@ export const categoriesDelete = createAsyncThunk(
         }
     }
 );
-
+// check role
 export const categoriesUpdate = createAsyncThunk(
     "categories/update",
     async (data, { dispatch, rejectWithValue }) => {

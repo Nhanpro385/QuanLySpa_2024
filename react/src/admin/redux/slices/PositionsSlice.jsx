@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
-import { message } from "antd";
+
 
 const checkRoleAndLogout = (dispatch) => {
     const userRole = localStorage.getItem("role");
@@ -80,6 +80,14 @@ export const PositionsDelete = createAsyncThunk(
 export const PositionsUpdate = createAsyncThunk(
     "Positions/update",
     async (data, { rejectWithValue }) => {
+        const userRole = checkRoleAndLogout(dispatch);
+        if (userRole !== "Quản trị viên") {
+            return rejectWithValue({
+                status: 403,
+                message: "Bạn không có quyền cập nhật vị trí",
+            });
+        }
+        
         try {
             const response = await axiosInstance.put(
                 endpoints.Positions.update(data.id),
