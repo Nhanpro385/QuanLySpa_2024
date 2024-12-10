@@ -30,13 +30,13 @@ const ThanksBooking = () => {
                         }}
                         items={[
                             {
-                                title: "Đặt lịch",
+                                title: "Đặt Lịch",
                             },
                             {
-                                title: "Thông tin Đăt lịch",
+                                title: "Thông Tin Đặt Lịch",
                             },
                             {
-                                title: "xác nhận Đặt lịch",
+                                title: "Xác Nhận Đặt Lịch",
                             },
                         ]}
                     />
@@ -46,7 +46,7 @@ const ThanksBooking = () => {
             <section className="container">
                 <Result
                     status="success"
-                    title="Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi"
+                    title="CẢM ƠN BẠN ĐÃ SỬ DỤNG DỊCH VỤ CỦA CHÚNG TÔI"
                     subTitle="Lịch hẹn của bạn đã được gửi đi, hãy đến đúng giờ để được phục vụ tốt nhất"
                     extra={[
                         <Button
