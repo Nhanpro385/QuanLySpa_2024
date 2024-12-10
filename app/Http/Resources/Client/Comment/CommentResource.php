@@ -15,7 +15,7 @@ class CommentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $customer = Customer::find($this->customer_id);
+      
         $images = $this->images->map(function ($image) {
             return [
                 'id' =>(string) $image->id,
@@ -28,18 +28,15 @@ class CommentResource extends JsonResource
             'id' =>(string) $this->id,
             'service_id' => (string)$this->service_id,
             'service' => $this->service,
-           
-            'customer' => $customer ? [
-                'id' => (string) $customer->id,
-                'full_name' => $customer->full_name,
-
-            ] : null,
+            'customer_id' =>(string) $this->customer_id,
+            'customer' => $this->customer,
             'comment' => $this->comment,
             'rate' => $this->rate,
             'status' => $this->status,
             'type' => $this->type,
             'image_url' => $images,
             'replies' => $this->replies,
+
 
 
 
