@@ -298,7 +298,7 @@ const Profile = () => {
                                             }}
                                             render={({ field }) => (
                                                 <Input 
-                                                    minLength={10}
+                                                    minLength={6}
                                                 {...field} />
                                             )}
                                         />

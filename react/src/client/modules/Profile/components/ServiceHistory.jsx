@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Button, Select, Table, Tag, Card } from "antd";
+import { Row, Col, Button, Select, Table, Tag, Card, Result } from "antd";
 import style from "../style/ServiceHistory.module.scss";
 import { useSelector } from "react-redux";
 const { Option } = Select;
 import MenuProfile from "./MenuProfile";
 import ServiceHistoryModalDetail from "./ServiceHistoryModalDetail";
 import useModal from "../../../../admin/modules/appointments/hooks/openmodal";
+import { FrownOutlined } from "@ant-design/icons";
 
 const ServiceHistory = () => {
     const auth = useSelector((state) => state.auth);
@@ -117,7 +118,11 @@ const ServiceHistory = () => {
             title: "Thao tác",
             key: "action",
             render: (e, record) => (
-                <Button type="primary" danger onClick={() => handleDetail(record)}>
+                <Button
+                    type="primary"
+                    danger
+                    onClick={() => handleDetail(record)}
+                >
                     Chi Tiết
                 </Button>
             ),
@@ -126,14 +131,15 @@ const ServiceHistory = () => {
 
     return (
         <Row className={style.container} gutter={[16, 16]}>
-        
-
-            <Col    xxl={24}
+            <Col
+                xxl={24}
                 xl={24}
                 lg={24}
                 md={24}
                 sm={24}
-                xs={24} className={style.profileContent}>
+                xs={24}
+                className={style.profileContent}
+            >
                 {/* Banner Header */}
                 <Row justify="center" align="middle" className={style.header}>
                     <Col xs={18} className={style.boxTitleProfile}>
@@ -143,22 +149,44 @@ const ServiceHistory = () => {
 
                 {/* Dropdown Filters */}
                 <Col span={24} className={style.filters}>
-                    <Row justify="space-between" align="middle">
-                        <Col className={style.status}>
+                    <Row
+                        justify="space-around"
+                        align="middle"
+                        gutter={[16, 16]}
+                    >
+                        <Col
+                            className={style.status}
+                            xxl={5}
+                            xl={5}
+                            lg={5}
+                            md={5}
+                            sm={24}
+                            xs={24}
+                        >
                             <Select
+                                className="w-100"
                                 placeholder="Chọn Trạng Thái"
                                 style={{ width: 150 }}
                                 onChange={handleStatusChange}
                             >
                                 <Option value="all">Tất cả</Option>
-                                <Option value="Đã đặt lịch hẹn.">Đã đặt lịch hẹn.</Option>
-                                <Option value="Đã hủy lịch hẹn.">Đã hủy lịch hẹn.</Option>
-                                <Option value="Đang thực hiện.">Đang thực hiện.</Option>
-                                <Option value="Đã hoàn thành.">Đã hoàn thành.</Option>
+                                <Option value="Đã đặt lịch hẹn.">
+                                    Đã đặt lịch hẹn.
+                                </Option>
+                                <Option value="Đã hủy lịch hẹn.">
+                                    Đã hủy lịch hẹn.
+                                </Option>
+                                <Option value="Đang thực hiện.">
+                                    Đang thực hiện.
+                                </Option>
+                                <Option value="Đã hoàn thành.">
+                                    Đã hoàn thành.
+                                </Option>
                             </Select>
                         </Col>
-                        <Col>
+                        <Col xxl={5} xl={5} lg={5} md={5} sm={24} xs={24}>
                             <Select
+                                className="w-100"
                                 placeholder="Sắp Xếp"
                                 style={{ width: 150 }}
                                 onChange={handleSortChange}
@@ -173,19 +201,28 @@ const ServiceHistory = () => {
                 {/* Table */}
                 <Col span={24} className={style.table}>
                     <Card>
-                        <Table
-                        locale={{
-                            emptyText: "Không có dữ liệu nào",
-                        }}
-                            id="myTable"
-                            dataSource={sortedAppointments}
-                            columns={columns}
-                            rowKey={"key"}
-                            pagination={{
-                                pageSize: 5,
-                                showSizeChanger: false,
-                            }}
-                        />
+                        {sortedAppointments?.length > 0 ? (
+                            <Table
+                                locale={{
+                                    emptyText: "Không có dữ liệu nào",
+                                }}
+                                id="myTable"
+                                dataSource={sortedAppointments}
+                                columns={columns}
+                                rowKey={"key"}
+                                pagination={{
+                                    pageSize: 5,
+                                    showSizeChanger: false,
+                                }}
+                            />
+                        ) : (
+                            <div className={style.noData}>
+                                <Result
+                                    icon={<FrownOutlined />}
+                                    title="Chưa có lịch hẹn nào  hãy đặt lịch hẹn ngay"
+                                />
+                            </div>
+                        )}
                     </Card>
                 </Col>
                 <ServiceHistoryModalDetail

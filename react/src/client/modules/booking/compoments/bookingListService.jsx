@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from "react";
-import { Card, Button, Row, Col, Image, List } from "antd";
+import { Card, Button, Row, Col, Image, List, Result } from "antd";
 
 import style from "../styles/bookingListService.module.scss";
 import { URL_IMAGE } from "../../../../admin/config/appConfig";
+import { FrownOutlined, SmileOutlined } from "@ant-design/icons";
 // Cấu hình cho Slider
 const BookingListService = ({
     activeService,
@@ -18,6 +19,15 @@ const BookingListService = ({
         return (
             <div className="container">
                 <List
+                    locale={{
+                        emptyText: (
+                            <Result
+                                icon={<FrownOutlined />}
+                                title="Không có dịch vụ"
+                            
+                            />
+                        ),
+                    }}
                     grid={{
                         gutter: 16,
                         xs: 2,
@@ -141,6 +151,15 @@ const BookingListService = ({
                         lg: 4,
                         xl: 4,
                         xxl: 4,
+                    }}
+                    locale={{
+                        emptyText: (
+                            <Result
+                                icon={<FrownOutlined />}
+                                title="Không có loại dịch vụ"
+                            
+                            />
+                        ),
                     }}
                     pagination={{
                         pageSize: 6,

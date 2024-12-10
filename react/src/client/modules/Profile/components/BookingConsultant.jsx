@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Row, Col, Button, Select, Table, Tag, Card } from "antd";
+import { Row, Col, Button, Select, Table, Tag, Card, Result } from "antd";
 import style from "../style/BookingConsultant.module.scss";
 
 const { Option } = Select;
@@ -8,6 +8,7 @@ import MenuProfile from "./MenuProfile";
 import useAuthActions from "../../../../admin/modules/authen/hooks/useAuth";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FrownOutlined } from "@ant-design/icons";
 const BookingConsultant = () => {
     const navigate = useNavigate();
     const { authGetmeClient } = useAuthActions();
@@ -18,7 +19,6 @@ const BookingConsultant = () => {
     }, []);
 
     useEffect(() => {
-        console.log(authCustomer);
         if (authCustomer?.user?.data) {
             setconsdata(
                 authCustomer?.user?.data?.consulations?.map((e) => ({
@@ -118,56 +118,32 @@ const BookingConsultant = () => {
                     </Col>
                 </Row>
 
-                {/* Dropdown Filters */}
-                {/* <Col span={24} className={style.filters}>
-                    <Row justify="space-between" align="middle">
-                        <Col className={style.status}>
-                            <Select
-                                placeholder="Chọn Trạng Thái"
-                                style={{ width: 150 }}
-                            >
-                                <Option value="all">Tất cả</Option>
-                                <Option value="pending">
-                                    Đang chờ thực hiện
-                                </Option>
-                                <Option value="inProgress">
-                                    Đang thực hiện
-                                </Option>
-                                <Option value="completed">Hoàn thành</Option>
-                                <Option value="cancelled">Đã hủy</Option>
-                            </Select>
-                        </Col>
-                        <Col>
-                            <Select
-                                placeholder="Sắp Xếp"
-                                style={{ width: 150 }}
-                            >
-                                <Option value="dateAsc">Ngày tăng dần</Option>
-                                <Option value="dateDesc">Ngày giảm dần</Option>
-                            </Select>
-                        </Col>
-                    </Row>
-                </Col> */}
-
                 {/* Table */}
                 <Col span={24} className={style.table}>
-                    <Card title="Danh sách lịch hẹn tư vấn">
-                        <Table
-                        scroll={{ x: 768 }}
-                            locale={{
-                                emptyText: "Không có dữ liệu",
-                            }}
-                            id="myTable"
-                            loading={authCustomer.loading}
-                            dataSource={consdata}
-                            columns={columns}
-                            rowKey={"key"}
-                            pagination={{
-                                pageSize: 5,
-                                showQuickJumper: true,
-                            }}
+                    {consdata?.length > 0 ? (
+                        <Card title="Danh sách lịch hẹn tư vấn">
+                            <Table
+                                scroll={{ x: 768 }}
+                                locale={{
+                                    emptyText: "Không có dữ liệu",
+                                }}
+                                id="myTable"
+                                loading={authCustomer.loading}
+                                dataSource={consdata}
+                                columns={columns}
+                                rowKey={"key"}
+                                pagination={{
+                                    pageSize: 5,
+                                    showQuickJumper: true,
+                                }}
+                            />
+                        </Card>
+                    ) : (
+                        <Result
+                            icon={<FrownOutlined />}
+                            title="Chưa có lịch hẹn nào  hãy đặt lịch hẹn ngay"
                         />
-                    </Card>
+                    )}
                 </Col>
             </Col>
         </Row>

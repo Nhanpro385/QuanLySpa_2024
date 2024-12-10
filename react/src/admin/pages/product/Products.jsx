@@ -65,7 +65,7 @@ function Products() {
     useEffect(() => {
         if (!product.loading && product.products) {
             setProductData(
-                product.products.data.map((item) => ({
+                product?.products?.data?.map((item) => ({
                     key: item.id,
                     name: item.name,
                     image_url: item.image_url,

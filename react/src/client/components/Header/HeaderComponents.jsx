@@ -129,7 +129,7 @@ const HeaderComponents = () => {
                         }}
                         to="/thongtincanhan/tuvandatlich"
                     >
-                        Tư Vấn Đặt Lịch
+                        Lịch sử tư vấn
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="serviceHistory">
@@ -170,7 +170,8 @@ const HeaderComponents = () => {
                             }}
                             onClick={(e) => e.preventDefault()}
                         >
-                            <UserOutlined style={{ marginRight: "8px" }} /> {/* Add icon here */}
+                            <UserOutlined style={{ marginRight: "8px" }} />{" "}
+                            {/* Add icon here */}
                             Xin chào,{" "}
                             <strong style={{ color: "#E05265" }}>
                                 {user?.name}
@@ -227,7 +228,10 @@ const HeaderComponents = () => {
                             <img
                                 src={logo}
                                 alt="logo"
-                                style={{ width: "3.5rem" }}
+                                style={{ width: "3.5rem" ,
+                                cursor: "pointer",
+                                }}
+                                onClick={() => navigate("/")}
                             />
                         </Col>
                         <Col xs={21} sm={21} md={22} lg={22} xl={21} xxl={20}>
@@ -238,7 +242,10 @@ const HeaderComponents = () => {
                                     fontWeight: 500,
                                     margin: "0",
                                     textAlign: "center",
+                                    cursor: "pointer",
                                 }}
+                                onClick={() => navigate("/")}
+
                             >
                                 Sakura Spa
                             </h1>

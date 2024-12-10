@@ -180,7 +180,7 @@ const PricingContent = () => {
                     ) : (
                         <Result
                             icon={<FrownOutlined />}
-                            title="Không có Danh mục dịch ?vụ nào"
+                            title="Không có Danh mục dịch vụ nào"
                         />
                     )}
                 </Col>
