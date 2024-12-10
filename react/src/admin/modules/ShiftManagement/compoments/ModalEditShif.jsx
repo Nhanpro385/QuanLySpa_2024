@@ -57,26 +57,22 @@ function ModalAddShiftEdit({
         }
     }, [data, setValue]);
     useEffect(() => {
-        if (error) {
-            if (
-                [
-                    "shift_date",
-                    "start_time",
-                    "end_time",
-                    "max_customers",
-                ].includes(key)
-            ) {
-                setError(key, {
-                    type: "manual",
-                    message: error[key][0],
-                });
-            } else {
-                api.error({
-                    message: "Có lỗi xảy ra",
-                    description: error[key][0],
-                    duration: 3,
-                });
-            }
+        if (error && typeof error === "object") {
+            Object.keys(error).forEach((key) => {
+                if (
+                    [
+                        "shift_date",
+                        "start_time",
+                        "end_time",
+                        "max_customers",
+                    ].includes(key)
+                ) {
+                    setError(key, {
+                        type: "manual",
+                        message: error[key][0], // Assumes error[key] is an array with messages
+                    });
+                }
+            });
         }
     }, [error]);
 
@@ -88,7 +84,7 @@ function ModalAddShiftEdit({
             end_time: values.end_time.format("HH:mm:ss"),
             max_customers: values.max_customers,
             note: "Cập nhật ca sáng",
-            status: values.status
+            status: values.status,
         };
 
         handleEditSubmit(payload);

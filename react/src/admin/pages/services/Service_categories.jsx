@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Alert, message, Input, Select, Button } from "antd";
-import { useSelector } from "react-redux";
 import {
-    ServiceCategoriesAdd,
-    ServiceCategoriesDelete,
-    ServiceCategoriesGet,
-    ServiceCategoriesGetById,
-} from "../../redux/slices/servicesCategoriesSlice";
+    Card,
+    Col,
+    Row,
+    Alert,
+    message,
+    Input,
+    Select,
+    Button,
+    notification,
+} from "antd";
+import { useSelector } from "react-redux";
+
 import { Snowflake } from "@theinternetfolks/snowflake";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import ServiceCategoryForm from "../../modules/services/compoments/ServiceCategoryForm";
@@ -21,6 +26,8 @@ const ServiceCategories = () => {
     useEffect(() => {
         document.title = "Danh mục Loại Dịch Vụ";
     }, []);
+
+    const [api, contextHolder] = notification.useNotification();
     const {
         addServiceCategories,
         getServiceCategories,
@@ -30,7 +37,6 @@ const ServiceCategories = () => {
         searchServiceCategories,
     } = useServiceCategoriesActions();
 
-    const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     // const { ServiceCategories, loading, error, category } = useSelector(
     //     (state) => state.ServiceCategories
@@ -58,17 +64,6 @@ const ServiceCategories = () => {
         getServiceCategories();
     }, []);
 
-    useEffect(() => {
-        if (submissionStatus === "success") {
-            messageApi.success("Thêm mới thành công");
-            reset();
-            setSubmissionStatus(null);
-        } else if (submissionStatus === "error") {
-            messageApi.error("Thêm mới thất bại");
-            setSubmissionStatus(null);
-        }
-    }, [submissionStatus, messageApi, reset]);
-
     const onSubmit = handleSubmit(async (data) => {
         const payload = {
             id: Snowflake.generate(),
@@ -79,10 +74,28 @@ const ServiceCategories = () => {
         };
 
         const resultAction = await addServiceCategories(payload);
-        if (resultAction.meta.requestStatus === "fulfilled") {
-            setSubmissionStatus("success");
+
+        if (resultAction.payload.status == "success") {
+            api.success({
+                message: "Thêm thành công",
+                description: resultAction.payload.message || "Thêm thành công",
+            });
+            reset();
         } else {
-            setSubmissionStatus("error");
+            if (Object.keys(resultAction.payload.errors).length > 0) {
+                Object.keys(resultAction.payload.errors).map((key) => {
+                    setError(key, {
+                        type: "manual",
+                        message: resultAction.payload.errors[key][0],
+                    });
+                });
+                return;
+            }
+
+            api.error({
+                message: "Thêm thất bại",
+                description: resultAction.payload.message || "Thêm thất bại",
+            });
         }
     });
 
@@ -93,11 +106,19 @@ const ServiceCategories = () => {
 
     const deleteCate = async (record) => {
         const resultAction = await deleteServiceCategories(record.key);
-        if (resultAction.meta.requestStatus === "fulfilled") {
-            messageApi.success("Xóa thành công");
+        console.log(resultAction);
+
+        if (resultAction.payload.status == "success") {
+            api.success({
+                message: "Xóa thành công",
+                description: resultAction.payload.message || "Xóa thành công",
+            });
             getServiceCategories();
         } else {
-            messageApi.error("Xóa thất bại");
+            api.error({
+                message: "Xóa thất bại",
+                description: resultAction.payload.message || "Xóa thất bại",
+            });
         }
     };
 
@@ -128,23 +149,7 @@ const ServiceCategories = () => {
             per_page: pagination,
         }));
     };
-    useEffect(() => {
-        if (ServiceCategories.error) {
-            Object.keys(ServiceCategories.error.errors).forEach((key) => {
-                if (["name", "description"].includes(key)) {
-                    setError(key, {
-                        type: "manual",
-                        message: ServiceCategories.error.errors[key][0],
-                    });
-                } else {
-                    messageApi.error({
-                        message: "Có lỗi xảy ra",
-                        description: ServiceCategories.error.errors[key][0],
-                    });
-                }
-            });
-        }
-    }, [ServiceCategories.error]);
+
     useEffect(() => {
         if (
             ServiceCategories.ServiceCategories.data &&
@@ -165,6 +170,7 @@ const ServiceCategories = () => {
         <div>
             <h1 className="text-center">Danh mục Loại Dịch Vụ</h1>
             {contextHolder}
+
             <Row gutter={[16, 16]}>
                 <Col span={24}>
                     <Card title="Danh mục Loại Dịch Vụ">

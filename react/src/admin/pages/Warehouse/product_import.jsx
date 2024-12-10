@@ -180,7 +180,8 @@ const WarehouseImport = () => {
                 })),
             };
             const response = await warehouseImportAction(payload);
-            if (response.payload.status === "success") {
+            console.log(response);
+            if (response.payload.status == "success") {
                 api.success({
                     message: "Nhập hàng thành công",
                     duration: 3,
@@ -189,6 +190,11 @@ const WarehouseImport = () => {
                 setProducts([]);
                 setSelectedSupplier(null);
                 setNote("");
+            } else {
+                api.error({
+                    message: response.payload.message || "Nhập hàng thất bại",
+                    duration: 3,
+                });
             }
         } catch (error) {
             console.log(error);

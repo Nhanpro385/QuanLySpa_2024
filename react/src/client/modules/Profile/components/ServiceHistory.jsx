@@ -148,25 +148,20 @@ const ServiceHistory = () => {
                 </Row>
 
                 {/* Dropdown Filters */}
-                <Col span={24} className={style.filters}>
-                    <Row
-                        justify="space-around"
-                        align="middle"
-                        gutter={[16, 16]}
-                    >
+                <Col span={24}>
+                    <Row gutter={[16, 16]} className="mb-2">
                         <Col
                             className={style.status}
-                            xxl={5}
-                            xl={5}
-                            lg={5}
-                            md={5}
+                            xxl={4}
+                            xl={4}
+                            lg={4}
+                            md={4}
                             sm={24}
                             xs={24}
                         >
                             <Select
                                 className="w-100"
                                 placeholder="Chọn Trạng Thái"
-                                style={{ width: 150 }}
                                 onChange={handleStatusChange}
                             >
                                 <Option value="all">Tất cả</Option>
@@ -184,11 +179,10 @@ const ServiceHistory = () => {
                                 </Option>
                             </Select>
                         </Col>
-                        <Col xxl={5} xl={5} lg={5} md={5} sm={24} xs={24}>
+                        <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
                             <Select
                                 className="w-100"
                                 placeholder="Sắp Xếp"
-                                style={{ width: 150 }}
                                 onChange={handleSortChange}
                             >
                                 <Option value="dateAsc">Ngày tăng dần</Option>

@@ -19,6 +19,8 @@ const ProductInventory = () => {
         handleCancel: handleCancel2,
     } = useModal();
     const warehouse = useSelector((state) => state.warehouse);
+    console.log(warehouse);
+
     const {
         getInventoryAction,
         searchInventoryAction,
@@ -95,7 +97,7 @@ const ProductInventory = () => {
                     </Button>
                     <Button
                         type="primary"
-                        onClick={() => handleShowHistory(record.id)}
+                        onClick={() => handleShowHistory(record)}
                     >
                         Lịch sử Nhập xuất
                     </Button>
@@ -137,10 +139,9 @@ const ProductInventory = () => {
             console.log(error);
         }
     };
-    const handleShowHistory = async (id) => {
+    const handleShowHistory = async (record) => {
         try {
-            const res = await historyinventoryAction(id);
-            console.log(res);
+            const res = await historyinventoryAction(record?.product?.id);
 
             showModal2();
         } catch (error) {
@@ -161,7 +162,7 @@ const ProductInventory = () => {
                     </Button>
                 }
             >
-                <Row>
+                {/* <Row>
                     <Col span={12} style={{ marginBottom: 10 }}>
                         <Select defaultValue="all" style={{ width: 120 }}>
                             <Select.Option value="all">Tất cả</Select.Option>
@@ -183,7 +184,7 @@ const ProductInventory = () => {
                             style={{ width: 200 }}
                         />
                     </Col>
-                </Row>
+                </Row> */}
                 <Table
                     columns={columns}
                     dataSource={dataSource}

@@ -107,7 +107,6 @@ export const servicesUpdate = createAsyncThunk(
         if (userRole !== "Quản trị viên") {
             return rejectWithValue({
                 status: 403,
-
                 message: "Bạn không có quyền cập nhật dịch vụ",
             });
         }
@@ -130,6 +129,7 @@ export const servicesUpdate = createAsyncThunk(
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
                 errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }

@@ -71,8 +71,8 @@ export const ServiceCategoriesDelete = createAsyncThunk(
         }
 
         try {
-            await axiosInstance.delete(endpoints.ServiceCategories.delete(id));
-            return id;
+          const res =  await axiosInstance.delete(endpoints.ServiceCategories.delete(id));
+            return  res.data;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
@@ -106,6 +106,8 @@ export const ServiceCategoriesUpdate = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
+                    errors: error.response?.data?.errors || [],
+                    error: error.response?.data?.error || [],
             });
         }
     }

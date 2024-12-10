@@ -105,7 +105,7 @@ export const historyinventory = createAsyncThunk(
     async (id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
-                endpoints.warehouse.getInventoryDetail(id)
+                endpoints.warehouse.historyinventory(id)
             );
             return response.data;
         } catch (error) {

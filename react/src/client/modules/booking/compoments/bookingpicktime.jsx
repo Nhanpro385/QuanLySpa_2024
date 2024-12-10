@@ -314,7 +314,7 @@ const BookingPickTime = ({
                                     {shift.timeSlots.map((slot, idx) => {
                                         return (
                                             <Col 
-                                            xs={12}
+                                            xxl={4} xl={4} lg={4} md={12} sm={12} xs={12}
                                             key={idx}>
                                                 <Button
                                                     // type="primary"

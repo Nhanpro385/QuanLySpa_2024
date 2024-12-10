@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import { Modal, Form, Input, Button, Switch, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { EditFilled } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
-import { ServiceCategoriesUpdate } from "@admin/redux/slices/servicesCategoriesSlice";
+import useServiceCategoriesActions from "../hooks/useServiceCategories";
 
 const ModalEditServiceCategory = ({
     isModalOpen,
@@ -11,15 +10,14 @@ const ModalEditServiceCategory = ({
     handleCancel,
     category,
 }) => {
-   
-
     const [api, contextHolder] = notification.useNotification();
-    const dispatch = useDispatch();
+    const { updateServiceCategories } = useServiceCategoriesActions();
     const {
         control,
         handleSubmit,
         reset,
         setValue,
+        setError,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -37,7 +35,8 @@ const ModalEditServiceCategory = ({
             setValue("status", category.data.status === 1);
         }
     }, [category, setValue]);
-
+    console.log(errors);
+    
     const onSubmit = async (data) => {
         // Convert the boolean status value to 1 or 0 before submitting
         const formattedData = {
@@ -46,15 +45,27 @@ const ModalEditServiceCategory = ({
             parent_id: "",
             status: data.status ? 1 : 0,
         };
-      
 
         try {
             // Dispatch the update action
-            const response = await dispatch(
-                ServiceCategoriesUpdate(formattedData)
-            );
-           
-            if (response.error) {
+            const response = await updateServiceCategories(formattedData);
+
+            
+
+            if (response.payload.status !== "success") {
+                if (Object.keys(response.payload.errors).length > 0) {
+                    Object.keys(response.payload.errors).map((key) => {
+                        console.log(key);
+                        console.log(response.payload.errors[key][0]);
+                        
+                        
+                        setError(key, {
+                            type: "manual",
+                            message: response.payload.errors[key][0],
+                        });
+                    });
+                    return;
+                }
                 api.error({
                     message: "Cập nhật thất bại",
                     description: response.payload.message,
@@ -70,7 +81,6 @@ const ModalEditServiceCategory = ({
             }
         } catch (error) {
             // Show error notification
-          
 
             api.error({
                 message: "Cập nhật thất bại",
@@ -137,9 +147,7 @@ const ModalEditServiceCategory = ({
 
                     <Form.Item
                         label="Mô tả"
-                        validateStatus={
-                            errors.description ? "error" : ""
-                        }
+                        validateStatus={errors.description ? "error" : ""}
                         help={
                             errors.description ? errors.description.message : ""
                         }
@@ -187,4 +195,3 @@ const ModalEditServiceCategory = ({
 };
 
 export default ModalEditServiceCategory;
-

@@ -138,6 +138,7 @@ const endpoints = {
         getExportDetail: (id) => `${API_BASE_URL}/outbound-invoices/${id}`,
         updateImport: (id) => `${API_BASE_URL}/inbound-invoices/${id}`,
         updateExport: (id) => `${API_BASE_URL}/outbound-invoices/${id}`,
+        historyinventory: (id) => `${API_BASE_URL}/inventory/history/${id}`,
     },
     appointments: {
         list: `${API_BASE_URL}/appointments`,
