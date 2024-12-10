@@ -36,82 +36,69 @@ class OutboundInvoiceController extends Controller
      * Tạo hóa đơn xuất hàng.
      */
     public function store(StoreOutboundInvoiceRequest $request)
-{
-    $validated = $request->validated();
-    $userId = auth()->id(); // Lấy ID người dùng đang đăng nhập
-
-    DB::beginTransaction();
-    try {
-        // Tạo hóa đơn xuất với staff_id là ID người đăng nhập
-        $invoice = OutboundInvoice::create([
-            'staff_id' => $userId, // Gán staff_id từ user đang đăng nhập
-            'note' => $validated['note'] ?? null,
-            'total_amount' => $validated['total_amount'],
-            'status' => true,
-            'created_by' => $userId,
-        ]);
-
-        // Lặp qua từng chi tiết hóa đơn
-        foreach ($validated['details'] as $detail) {
-            $productId = $detail['product_id'];
-            $quantityExport = $detail['quantity_export'];
-        
-            // Lấy danh sách tồn kho của sản phẩm theo thứ tự LIFO (mới nhất trước)
-            $inventories = Inventory::where('product_id', $productId)
-                ->orderBy('created_at', 'desc') // Ưu tiên tồn kho mới nhất
-                ->lockForUpdate() // Khóa dữ liệu trong transaction
-                ->get();
-        
-            foreach ($inventories as $inventory) {
-                if ($quantityExport <= 0) {
-                    break; // Đã xuất đủ số lượng
-                }
-        
-                if ($inventory->quantity >= $quantityExport) {
-                    // Giảm tồn kho và thoát vòng lặp nếu đủ
-                    $inventory->quantity -= $quantityExport;
-                    $inventory->save();
-                    $quantityExport = 0;
-                } else {
-                    // Sử dụng toàn bộ tồn kho của dòng này
-                    $quantityExport -= $inventory->quantity;
-                    $inventory->quantity = 0;
-                    $inventory->save();
-                }
-            }
-        
-            // Nếu vẫn còn số lượng cần xuất nhưng không đủ tồn kho
-            if ($quantityExport > 0) {
-                throw new \Exception("Sản phẩm ID $productId không đủ số lượng tồn kho để xuất.");
-            }
-        
-            // Tạo chi tiết hóa đơn xuất
-            OutboundInvoiceDetail::create([
-                'outbound_invoice_id' => $invoice->id,
-                'product_id' => $productId,
-                'quantity_export' => $detail['quantity_export'],
-                'quantity_olded' => $inventory->quantity ?? 0, // Lưu số lượng tồn kho ban đầu của dòng cuối cùng
-                'unit_price' => $detail['unit_price'],
+    {
+        $validated = $request->validated();
+        $userId = auth()->id(); // Lấy ID người dùng đang đăng nhập
+    
+        DB::beginTransaction();
+        try {
+            // Tạo hóa đơn xuất với staff_id là ID người đăng nhập
+            $invoice = OutboundInvoice::create([
+                'staff_id' => $userId, // Gán staff_id từ user đang đăng nhập
+                'note' => $validated['note'] ?? null,
+                'total_amount' => $validated['total_amount'],
+                'status' => true,
                 'created_by' => $userId,
             ]);
+    
+            // Lặp qua từng chi tiết hóa đơn
+            foreach ($validated['details'] as $detail) {
+                $productId = $detail['product_id'];
+                $quantityExport = $detail['quantity_export'];
+    
+                // Lấy dòng tồn kho mới nhất cho sản phẩm (LIFO - Last In First Out)
+                $inventory = Inventory::where('product_id', $productId)
+                    ->orderBy('created_at', 'desc') // Lấy tồn kho mới nhất
+                    ->lockForUpdate() // Khóa dữ liệu trong transaction
+                    ->first();
+    
+                // Kiểm tra tồn kho có đủ số lượng để xuất không
+                if (!$inventory || $inventory->quantity < $quantityExport) {
+                    throw new \Exception("Sản phẩm ID $productId không đủ số lượng tồn kho để xuất.");
+                }
+    
+                // Giảm tồn kho (chỉ sử dụng dòng mới nhất)
+                $quantityOlded = $inventory->quantity; // Lưu lại số lượng ban đầu của dòng tồn kho
+                $inventory->quantity -= $quantityExport;
+                $inventory->save();
+    
+                // Tạo chi tiết hóa đơn xuất
+                OutboundInvoiceDetail::create([
+                    'outbound_invoice_id' => $invoice->id,
+                    'product_id' => $productId,
+                    'quantity_export' => $quantityExport,
+                    'quantity_olded' => $quantityOlded, // Số lượng tồn kho ban đầu
+                    'unit_price' => $detail['unit_price'],
+                    'created_by' => $userId,
+                ]);
+            }
+    
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Hóa đơn xuất được tạo thành công.',
+                'data' => new OutboundInvoiceResource($invoice->load('details.product', 'createdBy', 'updatedBy', 'staff')),
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi trong quá trình tạo hóa đơn xuất.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        
-
-        DB::commit();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Hóa đơn xuất được tạo thành công.',
-            'data' => new OutboundInvoiceResource($invoice->load('details.product', 'createdBy', 'updatedBy', 'staff')),
-        ], 201);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Đã xảy ra lỗi trong quá trình tạo hóa đơn xuất.',
-            'error' => $e->getMessage(),
-        ], 500);
     }
-}
+    
 
     public function show($id)
 {
