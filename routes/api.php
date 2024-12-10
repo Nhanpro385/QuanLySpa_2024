@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ContactsController;
 use App\Http\Controllers\Client\ContactController as ClientContactsController;
 use App\Http\Controllers\Admin\ShiftsController;
-use App\Http\Controllers\Client\ClientTreatmentHistoryController;
+use App\Http\Controllers\Client\ClientTreatmentHistoryController; 
 use App\Http\Controllers\Client\ShiftsController as ClientShiftsController;
 use App\Http\Controllers\Admin\StaffShiftController;
 use App\Http\Controllers\Admin\TreatmentHistoryController;
@@ -68,7 +68,7 @@ Route::group([
     Route::put('/inbound-invoices/{id}', [InboundInvoiceController::class, 'update']);
     Route::delete('/inbound-invoices/{id}', [InboundInvoiceController::class, 'destroy']);
 
-
+    
     Route::get('/outbound-invoices', [OutboundInvoiceController::class, 'index']);
     Route::post('/outbound-invoices', [OutboundInvoiceController::class, 'store']);
     Route::get('/outbound-invoices/{id}', [OutboundInvoiceController::class, 'show']);
@@ -79,11 +79,7 @@ Route::group([
     Route::get('/inventory/{id}', [InventoryController::class, 'show']); // Hiển thị chi tiết inventory
     Route::get('/inventory/history/{productId}', [InventoryController::class, 'getInventoryHistory']); // Hiển thị lịch sử inventory của sản phẩm
 
-    Route::get('/inventory', [InventoryController::class, 'index']); // Lấy danh sách inventory
-    Route::get('/inventory/{id}', [InventoryController::class, 'show']); // Hiển thị chi tiết inventory
-    Route::get('/inventory/history/{productId}', [InventoryController::class, 'history']); // Hiển thị lịch sử inventory của sản phẩm
-
-
+    
     Route::get('/contacts', [ContactsController::class, 'index']);
     Route::post('/contacts', [ContactsController::class, 'store']);
     Route::get('/contacts/{id}', [ContactsController::class, 'show']);
@@ -265,17 +261,17 @@ Route::group([
     //Promotion
     Route::get('/treatment-history/{id}', [TreatmentHistoryController::class, 'show']);
 
-    Route::get('/promotion', [ClientPromotionController::class, 'index']);
+    Route::get('/promotion', [PromotionPromotionController::class, 'index']);
 
 
-
+    
     Route::get('/shifts', [ClientShiftsController::class, 'index']);
 
     Route::get('/shifts/{id}', [ClientShiftsController::class, 'show']);
-
+ 
     Route::get('/customers/{customer_id}/treatment-history', [ClientTreatmentHistoryController::class, 'getByCustomerId']);
 
-
+    
     Route::get('/contacts', [ClientContactsController::class, 'index']);
 
     Route::get('/contacts/{id}', [ClientContactsController::class, 'show']);
