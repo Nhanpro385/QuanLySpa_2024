@@ -172,7 +172,8 @@ const ContactManagement = () => {
                 id: selectedContact.id,
                 data: values,
             });
-            if (res.payload.status == "success") {
+
+            if (res.payload?.status == "success") {
                 api.success({
                     message:
                         res?.payload?.message || "Cập nhật liên hệ thành công",

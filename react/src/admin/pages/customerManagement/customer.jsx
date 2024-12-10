@@ -127,29 +127,27 @@ function Customer() {
             console.log(payload);
 
             const resultAction = await updateCustomer(payload);
-            console.log(resultAction);
+            console.log(resultAction.payload.message);
 
-            if (resultAction.payload.status === "success") {
+            if (resultAction.payload.status == "success") {
                 api.success({
                     message: "Cập nhật khách hàng thành công",
                     duration: 3,
                 });
                 handleCancel();
             } else {
-                setFormErrors(resultAction.payload.errors);
                 api.error({
                     message: "Cập nhật khách hàng không thành công",
                     description:
                         resultAction.payload.message || "Vui lòng thử lại sau",
                     duration: 3,
                 });
+                if (resultAction.payload.errors) {
+                    setFormErrors(() => resultAction.payload.errors);
+                }
             }
         } catch (error) {
-            api.error({
-                message: "Cập nhật khách hàng không thành công",
-                description: error.message || "Vui lòng thử lại sau",
-                duration: 3,
-            });
+            console.log(error);
         }
     };
 
@@ -243,7 +241,7 @@ function Customer() {
                 handleOk={handleEditSubmit}
                 customer={currentCustomer}
                 handleCancel={handleCancel}
-                formErrors={customers.error}
+                formErrors={formErrors}
             />
             <CustomerDetail
                 isOpen={isModalOpen2}

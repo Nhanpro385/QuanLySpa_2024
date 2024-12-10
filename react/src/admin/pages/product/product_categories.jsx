@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Input, Row, message } from "antd";
+import { Button, Card, Col, Input, Row, notification } from "antd";
 import { useSelector } from "react-redux";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CategoriesForm from "../../modules/product/compoments/CategoriesForm";
@@ -21,7 +21,7 @@ const ProductCategories = () => {
         getcategoriesById,
         searchcategories,
     } = usecategoriesActions();
-    const [messageApi, contextHolder] = message.useMessage();
+    const [api, contextHolder] = notification.useNotification();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const [apiError, setApiError] = useState(null);
     const categories = useSelector((state) => state.categories);
@@ -77,10 +77,15 @@ const ProductCategories = () => {
         const resultAction = await addcategories(payload);
 
         if (resultAction.meta.requestStatus === "fulfilled") {
-            messageApi.success("Thêm danh mục thành công!");
+            api.success({
+                message: "Thêm danh mục thành công!",
+            });
         } else {
             setApiError(resultAction.payload.errors);
-            messageApi.error(resultAction.payload.message || "Có lỗi xảy ra!");
+            api.error({
+                message: "Thêm danh mục thất bại!",
+                description: resultAction.payload.message || "",
+            });
         }
     };
 
@@ -91,10 +96,16 @@ const ProductCategories = () => {
             if (result.meta.requestStatus === "fulfilled") {
                 showModal();
             } else {
-                messageApi.error("Có lỗi xảy ra khi lấy danh mục.");
+                api.error({
+                    message: "Có lỗi xảy ra khi lấy danh mục.",
+                    description: result.payload.message || "",
+                });
             }
         } catch (error) {
-            messageApi.error("Có lỗi xảy ra khi lấy danh mục.");
+            api.error({
+                message: "Có lỗi xảy ra khi lấy danh mục.",
+                description: "Không thể lấy danh mục.",
+            });
         }
     };
 
@@ -102,10 +113,16 @@ const ProductCategories = () => {
         const result = await deletecategories(id);
 
         if (result.meta.requestStatus === "fulfilled") {
-            messageApi.success("Danh mục đã được xóa!");
+            api.success({
+                message: "Xóa danh mục thành công!",
+                description: result.payload.message || "",
+            });
             getcategories();
         } else {
-            messageApi.error("Có lỗi xảy ra khi xóa danh mục.");
+            api.error({
+                message: "Xóa danh mục thất bại!",
+                description: result.payload.message || "",
+            });
         }
     };
 
@@ -123,18 +140,18 @@ const ProductCategories = () => {
                     </Card>
                 </Col>
                 <Col span={24}>
-                    <Card title="Danh sách danh mục sản phẩm"
-                   
-                    extra={
-                        <Button
-                            icon={<Loading3QuartersOutlined />}
-                            type="primary"
-                            onClick={() => getcategories()}
-                            loading={categories.loading}
-                        >
-                            Làm mới
-                        </Button>
-                    }
+                    <Card
+                        title="Danh sách danh mục sản phẩm"
+                        extra={
+                            <Button
+                                icon={<Loading3QuartersOutlined />}
+                                type="primary"
+                                onClick={() => getcategories()}
+                                loading={categories.loading}
+                            >
+                                Làm mới
+                            </Button>
+                        }
                     >
                         <Row className="m-2" justify={"space-between"}>
                             <Col

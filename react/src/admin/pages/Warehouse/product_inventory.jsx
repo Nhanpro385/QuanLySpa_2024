@@ -141,8 +141,10 @@ const ProductInventory = () => {
     };
     const handleShowHistory = async (record) => {
         try {
+            
+            
             const res = await historyinventoryAction(record?.product?.id);
-
+            console.log(res);
             showModal2();
         } catch (error) {
             console.log(error);

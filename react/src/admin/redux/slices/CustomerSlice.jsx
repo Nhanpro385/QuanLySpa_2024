@@ -117,6 +117,7 @@ export const CustomerUpdate = createAsyncThunk(
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật khách hàng",
                 errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -233,7 +234,7 @@ const CustomerSlice = createSlice({
                 state.error = null;
             })
             .addCase(CustomerUpdate.fulfilled, (state, action) => {
-                console.log(action.payload.data.id);
+                
 
                 state.customers.data = state.customers.data.map((customer) =>
                     customer.id === action.payload.data.id
@@ -244,8 +245,7 @@ const CustomerSlice = createSlice({
             })
             .addCase(CustomerUpdate.rejected, (state, action) => {
                 state.loading = false;
-                state.error =
-                    action.payload?.errors || "Failed to update customer";
+                state.error = action.payload?.message || "Failed to update customer";
             })
             // Customer Get by ID
             .addCase(CustomerGetbyId.pending, (state) => {

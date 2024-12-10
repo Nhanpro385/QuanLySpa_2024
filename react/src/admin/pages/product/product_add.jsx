@@ -87,39 +87,34 @@ const Product_add = () => {
                 setFile([]);
                 setContent("");
             } else {
-                Object.keys(res.payload.errors).map((key) => {
-                    if (
-                        [
-                            "name",
-                            "category_id",
-                            "capacity",
-                            "bar_code",
-                            "date",
-                            "priority",
-                            "cost",
-                            "price",
-                            "image_url",
-                            "description",
-                        ].includes(key)
-                    ) {
-                        setError(key, {
-                            type: "manual",
-                            message: res.payload.errors[key][0],
-                        });
-                    } else {
-                        api.error({
-                            message: "Có lỗi xảy ra",
-                            description: res.payload.errors[key][0],
-                            duration: 3,
-                        });
-                    }
-                });
-
                 api.error({
                     message: "Thêm sản phẩm không thành công!",
-                    description: "Vui lòng kiểm tra lại thông tin.",
-                    duration: 3, 
+                    description: res.payload.message || "Có lỗi xảy ra!",
+                    duration: 3,
                 });
+                if (Object.keys(res.payload?.errors)?.length > 0) {
+                    Object.keys(res.payload?.errors)?.map((key) => {
+                        if (
+                            [
+                                "name",
+                                "category_id",
+                                "capacity",
+                                "bar_code",
+                                "date",
+                                "priority",
+                                "cost",
+                                "price",
+                                "image_url",
+                                "description",
+                            ].includes(key)
+                        ) {
+                            setError(key, {
+                                type: "manual",
+                                message: res.payload.errors[key][0],
+                            });
+                        }
+                    });
+                }
             }
         } catch (error) {
             console.log("error", error);
@@ -213,10 +208,7 @@ const Product_add = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col xl={6} md={6} sm={12} xs={24}>
-                                    <Form.Item
-                                        label="Dung tích"
-                                        required
-                                    >
+                                    <Form.Item label="Dung tích" required>
                                         <Controller
                                             name="capacity"
                                             control={control}
@@ -240,10 +232,7 @@ const Product_add = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col xl={6} md={6} sm={12} xs={24}>
-                                    <Form.Item
-                                        label="Mã code"
-                                        required
-                                    >
+                                    <Form.Item label="Mã code" required>
                                         <Controller
                                             name="bar_code"
                                             control={control}

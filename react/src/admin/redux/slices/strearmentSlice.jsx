@@ -73,12 +73,16 @@ export const StreatmentDelete = createAsyncThunk(
             });
         }
         try {
-            await axiosInstance.delete(endpoints.streatments.delete(id));
-            return id;
+            const res = await axiosInstance.delete(
+                endpoints.streatments.delete(id)
+            );
+            return res.data;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message: error.response?.data?.message || "Có lỗi xảy ra",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -146,9 +150,9 @@ export const StreatmentGetById = createAsyncThunk(
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
-                message:
-                    error.response?.data?.message ||
-                    "Có lỗi xảy ra khi lấy thông tin lịch sử trị liệu",
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -165,9 +169,9 @@ export const StreatmentGetByCustomer = createAsyncThunk(
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
-                message:
-                    error.response?.data?.message ||
-                    "Có lỗi xảy ra khi lấy thông tin lịch sử trị liệu",
+                message: error.response?.data?.message || "Có lỗi xảy ra",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -243,7 +247,7 @@ const streatmentSlice = createSlice({
             .addCase(StreatmentSearch.fulfilled, (state, action) => {
                 state.loading = false;
                 console.log("action.payload", action.payload);
-                
+
                 state.streatments = action.payload;
             })
             .addCase(StreatmentSearch.rejected, (state, action) => {

@@ -54,15 +54,15 @@ const StreatmentsEdit = () => {
     }, [id]);
 
     useEffect(() => {
+        console.log(streatments);
         if (!streatments.loading && streatments.streament) {
-            console.log(strreatmentData);
             setStrreatmentData(streatments?.streament?.data);
 
             setValue("feedback", streatments?.streament?.data?.feedback);
             setValue("note", streatments?.streament?.data?.note);
             setValue("status", streatments?.streament?.data?.status);
         }
-    }, [streatments.streament]);
+    }, [streatments]);
 
     const onSubmit = async (data) => {
         try {
@@ -93,14 +93,12 @@ const StreatmentsEdit = () => {
                 id: id,
                 data: formData,
             });
-            if (response.meta.requestStatus === "rejected") {
+            if (response.meta.requestStatus == "rejected") {
                 api.error({
                     message: "Cập nhật trị liệu thất bại",
                     description: response.payload.message,
                 });
-
-                // Gán lỗi vào các trường cụ thể
-                Object.keys(response.payload.errors).forEach((key) => {
+                Object.keys(response?.payload?.errors).forEach((key) => {
                     if (
                         [
                             "feedback",
@@ -209,7 +207,6 @@ const StreatmentsEdit = () => {
                                     )}
                                 </Form.Item>
                             </Col>
-                           
                             <Col xxl={6} xl={8} lg={12} md={12} sm={24} xs={24}>
                                 <Form.Item
                                     label="Trạng thái"

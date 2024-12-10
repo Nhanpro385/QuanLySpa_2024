@@ -233,6 +233,8 @@ const contactSlice = createSlice({
                 state.loading = true;
             })
             .addCase(updateContactAdmin.fulfilled, (state, action) => {
+                console.log(action.payload);
+                
                 state.contactDetail = action.payload;
                 state.loading = false;
             })

@@ -15,7 +15,7 @@ const StreatmentsTable = ({
         ...item,
         key: index,
     }));
-    console.log(dataSource);
+
 
     const columns = [
         {
@@ -28,7 +28,7 @@ const StreatmentsTable = ({
             title: "Tên khách hàng",
             dataIndex: "name",
             key: "name",
-            render: (text, record) => record.customer.name || "Không có",
+            render: (text, record) => record?.customer?.name || "Không có",
         },
         {
             title: "Tổng số tiền",
@@ -42,7 +42,7 @@ const StreatmentsTable = ({
             dataIndex: "appointment_date",
             key: "appointment_date",
             render: (text, record) =>
-                record.appointment.appointment_date || "Không có",
+                record?.appointment?.appointment_date || "Không có",
         },
         {
             title: "Phản hồi ",
@@ -54,7 +54,7 @@ const StreatmentsTable = ({
             dataIndex: "status",
             key: "status",
             render: (text, record) => {
-                if (record.status === 1) {
+                if (record?.status === 1) {
                     return <Tag color="green">Đã hoàn thành</Tag>;
                 } else {
                     return <Tag color="red">Chưa hoàn thành</Tag>;
@@ -75,7 +75,7 @@ const StreatmentsTable = ({
                                         block
                                         onClick={() =>
                                             navigate(
-                                                `/admin/khachhang/lichsutrilieu/chinhsua/${record.id}`
+                                                `/admin/khachhang/lichsutrilieu/chinhsua/${record?.id}`
                                             )
                                         }
                                     >

@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import endpoints from "../../config/appConfig";
 
-
 const checkRoleAndLogout = (dispatch) => {
     const userRole = localStorage.getItem("role");
 
@@ -45,8 +44,11 @@ export const PositionsAdd = createAsyncThunk(
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
-                message: error.response?.data?.message || "Có lỗi xảy ra",
+                message:
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm",
                 errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -71,7 +73,10 @@ export const PositionsDelete = createAsyncThunk(
             return rejectWithValue({
                 status: error.response?.status || 500,
                 message:
-                    error.response?.data?.message || "Có lỗi xảy ra khi xóa",
+                    error.response?.data?.message ||
+                    "Có lỗi xảy ra khi tìm kiếm",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -87,7 +92,6 @@ export const PositionsUpdate = createAsyncThunk(
                 message: "Bạn không có quyền cập nhật vị trí",
             });
         }
-        
         try {
             const response = await axiosInstance.put(
                 endpoints.Positions.update(data.id),
@@ -99,7 +103,9 @@ export const PositionsUpdate = createAsyncThunk(
                 status: error.response?.status || 500,
                 message:
                     error.response?.data?.message ||
-                    "Có lỗi xảy ra khi cập nhật",
+                    "Có lỗi xảy ra khi tìm kiếm",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -129,6 +135,8 @@ export const PositionsSearch = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi tìm kiếm",
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || {},
             });
         }
     }
@@ -201,7 +209,7 @@ const PositionsSlice = createSlice({
             })
             .addCase(PositionsUpdate.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message; // Nhận thông báo lỗi
+                state.error = action.payload?.message || "Có lỗi xảy ra";
             })
             .addCase(PositionsGetById.pending, (state) => {
                 state.loading = true;

@@ -96,10 +96,12 @@ function Appointments() {
     };
     const handledelete = async (record) => {
         try {
-            console.log(record);
+          
 
             const res = await deleteappointments(record.id);
-            if (res.payload?.status === 500) {
+            console.log(res);
+            
+            if (res.payload?.status === 500 || res.payload?.status === 403) {
                 api.error({
                     message: "Có lỗi xảy ra",
                     description: res.payload.message,

@@ -30,14 +30,12 @@ const ModalEditCustomer = ({
     const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         if (formErrors) {
-            console.log(formErrors);
-            
             Object.keys(formErrors).forEach((key) => {
                 if (
                     [
                         "full_name",
                         "email",
-                        " phone",
+                        "phone",
                         "address",
                         "date_of_birth",
                         "gender",
@@ -46,12 +44,6 @@ const ModalEditCustomer = ({
                     setError(key, {
                         type: "manual",
                         message: formErrors[key][0],
-                    });
-                } else {
-                    api.error({
-                        message: "Có lỗi xảy ra",
-                        description: formErrors[key][0],
-                        duration: 3,
                     });
                 }
             });

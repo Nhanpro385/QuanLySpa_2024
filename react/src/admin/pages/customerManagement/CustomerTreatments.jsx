@@ -87,7 +87,9 @@ const StreatMents = () => {
     const handleDelete = async (id) => {
         try {
             const resultAction = await deleteStreatment(id);
-            if (resultAction.payload.status == "success") {
+            console.log(resultAction);
+
+            if (resultAction?.meta?.requestStatus === "fulfilled") {
                 getStreatments();
                 api.success({
                     message: "Xóa lịch sử trị liệu thành công",

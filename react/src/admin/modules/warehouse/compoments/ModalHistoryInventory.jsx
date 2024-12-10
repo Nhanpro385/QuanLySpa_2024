@@ -1,74 +1,95 @@
 import React from "react";
-import { Modal, Table, Card, Space, Button } from "antd";
-import dayjs from "dayjs";
+import { Modal, Table, Descriptions, Tag } from "antd";
+import style from "../styles/odalHistoryInventory.module.scss";
 
-const ModalHistoryInventory = ({ isOpen, onClose, data }) => {
-    // Cấu hình cột cho bảng lịch sử nhập/xuất hàng
-    const historyColumns = [
+const ProductHistoryModal = ({ isOpen, onClose, data }) => {
+    const columns = [
         {
-            title: "ID",
-            dataIndex: "id",
-            key: "id",
+            title: "Loại giao dịch",
+            dataIndex: "type",
+            key: "type",
+            render: (type) => (type === "outbound" ? "Xuất kho" : "Nhập kho"),
         },
         {
-            title: "Tên sản phẩm",
-            dataIndex: ["product", "name"],
-            key: "product_name",
+            title: "Mã hóa đơn",
+            dataIndex: "invoice_id",
+            key: "invoice_id",
         },
         {
             title: "Số lượng",
             dataIndex: "quantity",
             key: "quantity",
+            render: (quantity, record) =>
+                record?.type === "outbound" ? (
+                    <Tag color="red">{quantity}</Tag>
+                ) : (
+                    <Tag color="green">{quantity}</Tag>
+                ),
         },
         {
-            title: "Người thực hiện",
-            dataIndex: ["created_by", "name"],
-            key: "created_by_name",
+            title: "Giá (VNĐ)",
+            dataIndex: "cost",
+            key: "cost",
         },
         {
-            title: "Ngày tạo",
-            dataIndex: "created_at",
-            key: "created_at",
-            render: (text) => dayjs(text).format("DD/MM/YYYY HH:mm"),
+            title: "Giá cũ (VNĐ)",
+            dataIndex: "old_cost",
+            key: "old_cost",
         },
         {
-            title: "Ngày cập nhật",
-            dataIndex: "updated_at",
-            key: "updated_at",
-            render: (text) => (text ? dayjs(text).format("DD/MM/YYYY HH:mm") : "Chưa cập nhật"),
+            title: "Ngày",
+            dataIndex: "date",
+            key: "date",
+        },
+        {
+            title: "Ghi chú",
+            dataIndex: "note",
+            key: "note",
+        },
+        {
+            title: "Người tạo",
+            dataIndex: "created_by",
+            key: "created_by",
+            render: (created_by) => created_by?.name || "Không xác định",
         },
     ];
 
     return (
         <Modal
-            title="Lịch sử nhập/xuất hàng"
+            title="Chi tiết sản phẩm"
             open={isOpen}
-            width={1200}
             onCancel={onClose}
-            footer={[
-                <Button key="close" onClick={onClose}>
-                    Đóng
-                </Button>,
-            ]}
+            footer={null}
+            width={1200}
         >
-            <Space direction="vertical" style={{ width: "100%" }}>
-                {/* Bảng lịch sử */}
-                <Card>
-                    <Table
-                        title={() => "Lịch sử nhập/xuất hàng"}
-                        columns={historyColumns}
-                        dataSource={data} // Sử dụng trực tiếp danh sách lịch sử
-                        rowKey="id"
-                        pagination={{
-                            pageSize: 5,
-                            showSizeChanger: true,
-                        }}
-                        bordered
-                    />
-                </Card>
-            </Space>
+            <Descriptions bordered column={1}>
+                <Descriptions.Item label="Mã sản phẩm">
+                    {data?.product?.id}
+                </Descriptions.Item>
+                <Descriptions.Item label="Tên sản phẩm">
+                    {data?.product?.name}
+                </Descriptions.Item>
+                <Descriptions.Item label="Mã vạch">
+                    {data?.product?.barcode}
+                </Descriptions.Item>
+            </Descriptions>
+            <Table
+                dataSource={data?.history?.map((item, index) => ({
+                    ...item,
+                    key: index,
+                }))}
+                columns={columns}
+                pagination={false}
+                scroll={{ y: 400 }}
+                style={{ marginTop: 20 }}
+                rowClassName={(record) =>
+                    record.type === "outbound"
+                        ? style.outboundrow
+                        : style.inboundrow
+                } // Thêm class theo điều kiện
+            />
         </Modal>
     );
 };
 
-export default ModalHistoryInventory;
+export default ProductHistoryModal;

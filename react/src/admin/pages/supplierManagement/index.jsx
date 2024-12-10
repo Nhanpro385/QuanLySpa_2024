@@ -8,6 +8,7 @@ import {
     Table,
     message,
     Dropdown,
+    notification,
     Space,
 } from "antd";
 import React, { useEffect, useState } from "react";
@@ -42,6 +43,7 @@ const SupplierManagement = () => {
         page: 1,
         per_page: 5,
     });
+    const [api, contextHolder] = notification.useNotification();
     const [SupplierData, setSupplierData] = useState([]);
     const [editSupplier, setEditSupplier] = useState(null);
     const [errorEdit, setErrorEdit] = useState(null);
@@ -99,7 +101,10 @@ const SupplierManagement = () => {
                 showModal();
             }
         } catch {
-            messageApi.error("Có lỗi xảy ra khi tải nhà cung cấp.");
+            api.error({
+                message: "Có lỗi xảy ra",
+                description: "Không thể lấy thông tin nhà cung cấp",
+            });
         }
     };
 
@@ -108,13 +113,20 @@ const SupplierManagement = () => {
         try {
             const response = await deleteSupplier(id);
             if (response.meta.requestStatus === "fulfilled") {
-                messageApi.success("Xóa nhà cung cấp thành công!");
+                api.success({
+                    message: "Xóa nhà cung cấp thành công",
+                    description: response.payload.message || "",
+                });
+
                 getSupplier();
             } else {
                 console.log(response.payload);
             }
         } catch {
-            messageApi.error("Có lỗi xảy ra khi xóa nhà cung cấp.");
+            api.error({
+                message: "Có lỗi xảy ra",
+                description: "Không thể xóa nhà cung cấp",
+            });
         }
     };
 
@@ -130,13 +142,23 @@ const SupplierManagement = () => {
 
         try {
             const response = await addSupplier(payload);
+            console.log(response);
 
             if (response.meta.requestStatus === "fulfilled") {
-                messageApi.success("Thêm nhà cung cấp thành công!");
+                api.success({
+                    message: "Thêm nhà cung cấp thành công",
+                    description: response.payload.message || "",
+                });
                 reset();
             } else {
+                api.error({
+                    message: "Có lỗi xảy ra",
+                    description: response.payload.message || "",
+
+                    duration: 3,
+                });
                 // Hiện thông báo lỗi từ server
-                const errors = response.payload.errors;
+                const errors = response?.payload?.errors;
                 Object.keys(errors).forEach((key) => {
                     if (
                         ["name", "country", "contact_email", "code"].includes(
@@ -147,23 +169,16 @@ const SupplierManagement = () => {
                             type: "manual",
                             message: errors[key][0],
                         });
-                    } else {
-                        messageApi.error({
-                            message: "Có lỗi xảy ra",
-                            description: errors[key][0],
-                            duration: 3,
-                        });
                     }
                 });
-                messageApi.error("Thêm nhà cung cấp thất bại.");
             }
         } catch (error) {
-            messageApi.error("Có lỗi xảy ra khi thêm nhà cung cấp.");
+           console.log(error);
+           
         }
     };
 
     // Modal handling
-    const [messageApi, contextHolder] = message.useMessage();
 
     // Handle form submission for editing supplier
     const handleSubmitEdit = async (data) => {
@@ -171,14 +186,21 @@ const SupplierManagement = () => {
             const resultAction = await updateSupplier(data);
 
             if (resultAction.meta.requestStatus === "fulfilled") {
-                messageApi.success("Cập nhật nhà cung cấp thành công!");
+                api.success({
+                    message: "Cập nhật nhà cung cấp thành công",
+                    description: resultAction.payload.message || "",
+                });
+
                 handleCancel();
             } else {
                 setErrorEdit(resultAction.payload);
                 console.log(resultAction.payload);
             }
         } catch {
-            messageApi.error("Có lỗi xảy ra khi cập nhật nhà cung cấp.");
+            api.error({
+                message: "Có lỗi xảy ra",
+                description: "Không thể cập nhật nhà cung cấp",
+            });
         }
     };
 

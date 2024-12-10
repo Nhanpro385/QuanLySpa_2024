@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Input, Row, message } from "antd";
+import { Button, Card, Col, Input, Row, notification } from "antd";
 import { useForm } from "react-hook-form";
 import { Snowflake } from "@theinternetfolks/snowflake";
 import useModal from "../../../modules/appointments/hooks/openmodal";
@@ -15,6 +15,7 @@ const Positions = () => {
     useEffect(() => {
         document.title = "Quản lý chức vụ";
     }, []);
+    const [api, contextHolder] = notification.useNotification();
     const {
         addPositions,
         getPositions,
@@ -24,7 +25,6 @@ const Positions = () => {
         searchPositions,
     } = usePositionsActions();
 
-    const [messageApi, contextHolder] = message.useMessage();
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const Positions = useSelector((state) => state.positions);
     const [PositionData, setPositionData] = useState([]);
@@ -73,10 +73,13 @@ const Positions = () => {
 
         try {
             const resultAction = await addPositions(payload);
-            console.log(resultAction);
 
             if (resultAction.meta.requestStatus === "fulfilled") {
-                messageApi.success("Thêm vị trí thành công!");
+                api.success({
+                    message: "Thêm mới vị trí thành công!",
+                    duration: 3,
+                });
+
                 reset();
                 getPositions(); // Cập nhật danh sách sau khi thêm
             } else if (resultAction.meta.requestStatus === "rejected") {
@@ -90,7 +93,7 @@ const Positions = () => {
                                 message: errorPayload.errors[key][0],
                             });
                         } else {
-                            messageApi.error({
+                            api.error({
                                 message: "Có lỗi xảy ra",
                                 description: errorPayload.errors[key][0],
                                 duration: 3,
@@ -99,21 +102,29 @@ const Positions = () => {
                     });
                 } else {
                     // General error message
-                    messageApi.error(
-                        resultAction.payload.message ||
-                            "Có lỗi xảy ra khi thêm mới vị trí."
-                    );
+                    api.error({
+                        message: "Có lỗi xảy ra",
+                        description:
+                            resultAction.payload.message ||
+                            "Thêm mới vị trí không thành công",
+                    });
                 }
             }
         } catch (err) {
             console.error("Unexpected error:", err);
-            messageApi.error("Có lỗi xảy ra khi thêm mới vị trí.");
+            api.error({
+                message: "Có lỗi xảy ra",
+                description: "Thêm mới vị trí không thành công",
+            });
         }
     };
 
     const editCate = async (record) => {
         if (!record.key) {
-            messageApi.error("ID không hợp lệ.");
+            api.error({
+                message: "ID không hợp lệ.",
+                duration: 3,
+            });
             return;
         }
 
@@ -127,17 +138,26 @@ const Positions = () => {
             ) {
                 showModal();
             } else {
-                messageApi.error("Không thể lấy thông tin vị trí.");
+                api.error({
+                    message: "Có lỗi xảy ra khi lấy thông tin.",
+                    duration: 3,
+                });
             }
         } catch (err) {
             console.error("Unexpected error:", err);
-            messageApi.error("Có lỗi xảy ra khi lấy thông tin.");
+            api.error({
+                message: "Có lỗi xảy ra khi lấy thông tin.",
+                duration: 3,
+            });
         }
     };
 
     const deleteCate = async (record) => {
         if (!record.key) {
-            messageApi.error("ID không hợp lệ.");
+            api.error({
+                message: "ID không hợp lệ.",
+                duration: 3,
+            });
             return;
         }
 
@@ -148,34 +168,51 @@ const Positions = () => {
                 resultAction?.meta?.requestStatus === "fulfilled" &&
                 resultAction.payload
             ) {
-                messageApi.success("Xoá vị trí thành công!");
+                api.success({
+                    message: "Xoá vị trí thành công!",
+                    duration: 3,
+                });
+
                 getPositions(); // Cập nhật danh sách sau khi xóa
             } else {
-                messageApi.error("Có lỗi xảy ra khi xoá vị trí.");
+                api.error({
+                    message: "Có lỗi xảy ra khi xoá vị trí.",
+                    description: resultAction.payload.message || "",
+                    duration: 3,
+                });
             }
         } catch (err) {
             console.error("Unexpected error:", err);
-            messageApi.error("Có lỗi xảy ra khi xoá vị trí.");
+            api.error({
+                message: "Có lỗi xảy ra khi xoá vị trí.",
+                duration: 3,
+            });
         }
     };
 
     const handleEditSubmit = async (data) => {
         if (!data || !data.id) {
-            messageApi.error("Dữ liệu hoặc ID không hợp lệ.");
+            api.error({
+                message: "ID không hợp lệ.",
+                duration: 3,
+            });
             return;
         }
 
         try {
-            console.log(data);
-
             const resultAction = await updatePositions(data);
-
+                console.log(resultAction);
+                
             // Check if the request was successful and the payload is valid
             if (
                 resultAction?.meta?.requestStatus === "fulfilled" &&
                 resultAction.payload
             ) {
-                messageApi.success("Cập nhật vị trí thành công!");
+                api.success({
+                    message: "Cập nhật vị trí thành công!",
+                    duration: 3,
+                });
+
                 handleCancel(); // Close the modal after successful update
                 getPositions(); // Refresh the positions list after updating
             } else if (resultAction?.payload?.errors) {
@@ -186,18 +223,24 @@ const Positions = () => {
                             message: resultAction.payload.errors[key][0],
                         });
                     } else {
-                        messageApi.error({
+                        api.error({
                             message: "Có lỗi xảy ra",
                             description: resultAction.payload.errors[key][0],
                         });
                     }
                 });
             } else {
-                messageApi.error("Có lỗi xảy ra khi cập nhật.");
+                api.error({
+                    message: "Có lỗi xảy ra khi cập nhật vị trí.",
+                    description: resultAction.payload?.message || "",
+                });
             }
         } catch (err) {
             console.error("Unexpected error:", err);
-            messageApi.error("Có lỗi xảy ra khi cập nhật vị trí.");
+            api.error({
+                message: "Có lỗi xảy ra khi cập nhật vị trí.",
+                description: "Cập nhật vị trí không thành công",
+            });
         }
     };
 

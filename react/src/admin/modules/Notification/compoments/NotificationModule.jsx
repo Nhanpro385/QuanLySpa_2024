@@ -162,7 +162,7 @@ const NotificationModule = () => {
         ) : (
             <Row align="middle">
                 <Col span={24}>
-                    <Skeleton active />
+                    Không có thông báo mới
                 </Col>
             </Row>
         );
