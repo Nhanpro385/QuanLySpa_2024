@@ -41,7 +41,7 @@ const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {
         const payload = {
             id: generateSnowflakeId(),
             service_id: comment.service_id,
-            customer_id: comment.customer_id,
+            customer_id: comment.customer?.id,
             parent_comment_id: comment.id,
             comment: replyContent,
             rate: comment.rate,

@@ -23,6 +23,7 @@ function ParticipantView({ participantId, nameuser }) {
                 <Row>
                     <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                         <ReactPlayer
+                        width={"100%"}
                             playsinline
                             pip={false}
                             light={false}
@@ -57,7 +58,7 @@ function ParticipantView({ participantId, nameuser }) {
                     className="bg-dark"
                 >
                     <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-                        <img src={user} alt="user" style={{ width: "400px" }} />
+                        <img src={user} alt="user" style={{ width: "100%" }} />
                     </Col>{" "}
                     <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                         <p style={{ color: "white" }}>Không có video</p>

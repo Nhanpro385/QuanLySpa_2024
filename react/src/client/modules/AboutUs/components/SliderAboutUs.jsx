@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import style from "../style/SliderAboutUs.module.scss";
 import bannerDoctor from "../../../assets/images/anhbacsi1.jpg";
-
+import clsx from "clsx";
 const SliderAboutUs = () => {
     const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ const SliderAboutUs = () => {
                     md={14}
                     lg={12}
                     xl={12}
-                    className={style.contentCol}
+                    className={clsx(style.contentCol, "container")}
                 >
                     <div className={style.textContent}>
                         <p className={style.breadcrumb}>Trang chủ » Về chúng tôi</p>
@@ -49,7 +49,7 @@ const SliderAboutUs = () => {
                     md={10}
                     lg={12}
                     xl={12}
-                    className={style.imageCol}
+                    className={clsx(style.imageCol, "mt-4", "p-4")}
                 >
                     <div className={style.imageWrapper}>
                         <img

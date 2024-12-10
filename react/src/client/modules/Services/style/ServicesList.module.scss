@@ -66,11 +66,10 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis; // Thêm dấu "..."
-
+    transition: all 0.3s ease;
     font-weight: 500;
 }
-.cardServices:hover {
-}
+
 .cardServices.active {
     color: rgb(255, 255, 255);
     background-color: rgb(224, 82, 101);
@@ -82,9 +81,13 @@
     font-weight: 500;
     margin-top: 20px;
 }
-.cardServicesTitle{
+.cardServicesTitle {
     min-height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.cardServices:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }

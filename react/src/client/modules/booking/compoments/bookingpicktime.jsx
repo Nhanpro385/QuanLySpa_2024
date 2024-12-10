@@ -11,6 +11,7 @@ const settingstimedate = {
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 5,
+    dots: true,
     responsive: [
         {
             breakpoint: 1024,
@@ -312,7 +313,9 @@ const BookingPickTime = ({
                                 <Row gutter={[16, 16]} justify={"center"}>
                                     {shift.timeSlots.map((slot, idx) => {
                                         return (
-                                            <Col key={idx}>
+                                            <Col 
+                                            xs={12}
+                                            key={idx}>
                                                 <Button
                                                     // type="primary"
                                                     block

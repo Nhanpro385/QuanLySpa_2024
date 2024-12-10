@@ -21,7 +21,7 @@ export const HomeContent = () => {
             <Home_consultation_reception id="#consultation_reception" />
 
             <Home_service />
-            <section style={{ marginTop: "36px" }}>
+            <section style={{ marginTop: "36px" }} className="container">
                 <h1 className="text-center">
                     Sakura Spa Tiên Phong “Trị Mụn Chuẩn Y Khoa” <br />
                     Từ Năm 2024

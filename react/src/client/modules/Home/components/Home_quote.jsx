@@ -32,6 +32,7 @@ const Home_quote = () => {
                                     sm={12}
                                     xs={12}
                                     key={item.id}
+                                    className={styles.statisticItemContainer}
                                 >
                                     <div className={styles.statisticItem}>
                                         <h1>{item.number}</h1>

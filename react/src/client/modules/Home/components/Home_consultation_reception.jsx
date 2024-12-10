@@ -8,6 +8,7 @@ import {
     Checkbox,
     notification,
     Image,
+    Divider,
 } from "antd";
 
 import { useForm, Controller } from "react-hook-form";
@@ -161,6 +162,7 @@ const Home_consultation_reception = () => {
                             ))}
                         </Row>
                     </Col>
+                  
                     <Col
                         xs={24}
                         lg={12}

@@ -57,7 +57,9 @@ const AboutUs = () => {
                     xl={18}>
                     <div className={style.boxContentLeft}>
                         <div className={style.boxImg}>
-                            <img src={bannerDoctor} alt="" />
+                            <img
+                            
+                            src={bannerDoctor} alt="" />
                         </div>
                     </div>
                     <div className={style.boxContentRight}>

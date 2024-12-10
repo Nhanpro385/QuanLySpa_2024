@@ -76,7 +76,7 @@ const VideoCall_Content = () => {
     };
 
     return (
-        <div className="container">
+        <div className="container mt-5 mb-5">
             {contextHolder}
             <Divider orientation="left">Cuộc gọi video</Divider>
             <Spin spinning={loading} tip="Đang tải, vui lòng chờ...">

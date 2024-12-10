@@ -133,6 +133,7 @@ const PricingContent = () => {
                                                       <Tag color="#e05265">Mới</Tag>
 
                                                     )}
+                                                    
                                                 </Space>
                                             )}
                                         />

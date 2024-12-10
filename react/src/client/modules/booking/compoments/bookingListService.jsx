@@ -12,17 +12,9 @@ const BookingListService = ({
     ServicesCategories,
 }) => {
     const serviceButtonsRefs = useRef([]); // Mảng lưu refs của các nút dịch vụ
+console.log(activeService);
 
-    // Đảm bảo có thể tham chiếu tới từng nút dịch vụ
-    // useEffect(() => {
-    //     if (serviceButtonsRefs.current[activeService]) {
-    //         // Cuộn đến phần tử dịch vụ được chọn
-    //         serviceButtonsRefs.current[activeService].scrollIntoView({
-    //             behavior: "smooth",
-    //             block: "center", // Cuộn đến vị trí ở giữa phần tử
-    //         });
-    //     }
-    // }, [activeService]); // Mỗi khi activeService thay đổi, sẽ cuộn đến dịch vụ đó
+
 
     const Apptab = () => {
         return (
@@ -153,7 +145,7 @@ const BookingListService = ({
                         xxl: 4,
                     }}
                     pagination={{
-                        pageSize: 4,
+                        pageSize: 6,
                         responsive: true,
                         showSizeChanger: false,
                         hideOnSinglePage: true,

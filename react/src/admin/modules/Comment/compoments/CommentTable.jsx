@@ -31,7 +31,7 @@ const CommentTable = ({
             render: (text, record, index) => index + 1,
         },
         {
-            title: "Tên người dùng",
+            title: "Tên người bình luận",
             dataIndex: "user",
             key: "user",
             render: (user, record) => (
@@ -40,7 +40,7 @@ const CommentTable = ({
                     <Text>
                         {record.type == 0
                             ? `Admin: ${record?.created_by?.full_name}`
-                            : record?.customer_id}
+                            : record.customer?.full_name}
                     </Text>
                 </Space>
             ),

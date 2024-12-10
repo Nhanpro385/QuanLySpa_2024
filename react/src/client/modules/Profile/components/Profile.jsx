@@ -239,8 +239,8 @@ const Profile = () => {
                 </Row>
 
                 {/* Form and Details */}
-                <Row gutter={[16, 16]}>
-                    <Col xxl={16} xl={16} lg={16} md={16} sm={24} xs={24}>
+                <Row gutter={[16, 16]} className="container">
+                    <Col xxl={16} xl={16} lg={16} md={24} sm={24} xs={24}>
                         <form
                             onSubmit={handleSubmit(onSubmit)}
                             className={style.profileForm}
@@ -411,10 +411,10 @@ const Profile = () => {
                             </Row>
                         </form>
                     </Col>
-                    <Col xxl={8} xl={8} lg={8} md={8} sm={24} xs={24}>
+                    <Col xxl={8} xl={8} lg={8} md={24} sm={24} xs={24}>
                         <Card title="Đổi Mật Khẩu" className={style.card}>
                             <Row gutter={[16, 16]}>
-                                <Col span={24}>
+                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                                     <Input.Password
                                         value={oldPassword}
                                         onChange={(e) =>
@@ -424,7 +424,7 @@ const Profile = () => {
                                         className={style.inputPassword}
                                     />
                                 </Col>
-                                <Col span={24}>
+                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                                     <Input.Password
                                         value={newPassword}
                                         onChange={(e) =>
@@ -434,7 +434,7 @@ const Profile = () => {
                                         className={style.inputPassword}
                                     />
                                 </Col>
-                                <Col span={24}>
+                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                                     <Input.Password
                                         value={confirmPassword}
                                         onChange={(e) =>
@@ -444,7 +444,7 @@ const Profile = () => {
                                         className={style.inputPassword}
                                     />
                                 </Col>
-                                <Col span={24}>
+                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                                     <Button
                                         type="primary"
                                         onClick={handlePasswordChange}

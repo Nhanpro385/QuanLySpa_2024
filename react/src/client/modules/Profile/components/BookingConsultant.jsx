@@ -153,6 +153,7 @@ const BookingConsultant = () => {
                 <Col span={24} className={style.table}>
                     <Card title="Danh sách lịch hẹn tư vấn">
                         <Table
+                        scroll={{ x: 768 }}
                             locale={{
                                 emptyText: "Không có dữ liệu",
                             }}
