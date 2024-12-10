@@ -56,7 +56,7 @@ const ConsultingFrom = () => {
     };
 
     return (
-        <div className={clsx(styles.container,"container")}>
+        <div className={clsx(styles.container, "container")}>
             {contextHolder}
             <Form
                 form={form}
@@ -77,6 +77,8 @@ const ConsultingFrom = () => {
                         ]} // Validation
                     >
                         <Input
+                            size="middle"
+
                             prefix={<UserOutlined />}
                             className={styles.input}
                         />
@@ -92,6 +94,8 @@ const ConsultingFrom = () => {
                         ]}
                     >
                         <Input
+                            size="middle"
+
                             type="email"
                             prefix={<MailOutlined />}
                             className={styles.input}
@@ -117,6 +121,8 @@ const ConsultingFrom = () => {
                         <Input
                             type="text"
                             prefix={<PhoneOutlined />}
+                            size="middle"
+
                             className={styles.input}
                         />
                     </Form.Item>
@@ -136,6 +142,7 @@ const ConsultingFrom = () => {
                             showSearch
                             placeholder="Chọn dịch vụ cần tư vấn"
                             optionFilterProp="label"
+                            size="middle"
                             className={styles.input}
                             options={[
                                 {
@@ -209,9 +216,11 @@ const ConsultingFrom = () => {
                 </Col>
                 <Form.Item className={clsx(styles.button)} colon={false}>
                     <Button
-                    
-                            loading={contact.loading}   
-                    type="primary" size="large" htmlType="submit">
+                        loading={contact.loading}
+                        type="primary"
+                        size="middle"
+                        htmlType="submit"
+                    >
                         Gửi tư vấn cho chúng tôi
                         <ArrowRightOutlined />
                     </Button>

@@ -12,9 +12,7 @@ const BookingListService = ({
     ServicesCategories,
 }) => {
     const serviceButtonsRefs = useRef([]); // Mảng lưu refs của các nút dịch vụ
-console.log(activeService);
-
-
+    console.log(activeService);
 
     const Apptab = () => {
         return (
@@ -44,19 +42,19 @@ console.log(activeService);
                                         "0px 4px 4px rgba(0, 0, 0, 0.25)",
                                 }}
                                 cover={
-                                    <div
-                                        style={{
-                                            width: "100%",
-                                            height: "250px",
-                                            overflow: "hidden",
-                                        }}
-                                    >
+                                    <div>
                                         <Image
                                             alt="example"
                                             src={
                                                 `${URL_IMAGE}/services/special/` +
                                                 item.image_url
                                             }
+                                            style={{
+                                                width: "100%",
+                                                height: "200px",
+                                                objectFit: "cover",
+                                                overflow: "hidden",
+                                            }}
                                             onError={(e) =>
                                                 (e.target.src =
                                                     "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")

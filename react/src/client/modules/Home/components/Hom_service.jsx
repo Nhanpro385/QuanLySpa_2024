@@ -55,8 +55,8 @@ const Home_service = () => {
         getServicesClient(10);
     }, []);
     useEffect(() => {
-        if (services.services.data.length > 0 && !services.loading) {
-            setServicesClient(services.services.data);
+        if (services?.services?.data?.length > 0 && !services?.loading) {
+            setServicesClient(services?.services?.data);
         }
     }, [services]);
 
