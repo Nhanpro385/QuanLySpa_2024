@@ -4,6 +4,7 @@ namespace App\Http\Resources\Client\Comment;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Customer;
 
 class CommentResource extends JsonResource
 {
@@ -14,6 +15,7 @@ class CommentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $customer = Customer::find($this->customer_id);
         $images = $this->images->map(function ($image) {
             return [
                 'id' =>(string) $image->id,
@@ -26,8 +28,12 @@ class CommentResource extends JsonResource
             'id' =>(string) $this->id,
             'service_id' => (string)$this->service_id,
             'service' => $this->service,
-            'customer_id' =>(string) $this->customer_id,
-            'customer' => $this->customer,
+           
+            'customer' => $customer ? [
+                'id' => (string) $customer->id,
+                'full_name' => $customer->full_name,
+
+            ] : null,
             'comment' => $this->comment,
             'rate' => $this->rate,
             'status' => $this->status,

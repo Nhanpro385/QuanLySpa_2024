@@ -71,8 +71,8 @@ class CustomerController extends Controller
                     'address' => $customer->address,
                     'appointments' => AppointmentResource::collection($customer->appointments),
                     'consulations' => ConsulationResource::collection($customer->consultations),
-                    'created_by' => $this->formatUserRole($customer->createdBy),
-                    'updated_by' => $customer->updatedBy ? $this->formatUserRole($customer->updatedBy) : null,
+                    'created_by' => $customer->created_by ? $this->formatUserRole($customer->createdBy) : null,
+                    'updated_by' => $customer->updated_by ? $this->formatUserRole($customer->updatedBy) : null,
                     'created_at' => $customer->created_at->format('d-m-Y H:i'),
                     'updated_at' => $customer->updated_at->format('d-m-Y H:i'),
                 ],
@@ -184,7 +184,7 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         try {
-          
+
             $customer = Customer::withTrashed()->findOrFail($id);
 
 

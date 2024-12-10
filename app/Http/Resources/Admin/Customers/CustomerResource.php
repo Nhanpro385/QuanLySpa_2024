@@ -17,12 +17,12 @@ class CustomerResource extends JsonResource
             'email' => $this->email ,
             'phone' => $this->phone ,
             'address' => $this->address,
-            'created_by' => $this->createdBy ? [
+            'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
                 'full_name' => $this->createdBy->full_name,
                 'role' => $this->getRoleName($this->createdBy->role),
             ] : null,
-            'updated_by' => $this->updatedBy ? [
+            'updated_by' => $this->updated_by ? [
                 'id' => (string) $this->updatedBy->id,
                 'full_name' => $this->updatedBy->full_name,
                 'role' => $this->getRoleName($this->updatedBy->role),
