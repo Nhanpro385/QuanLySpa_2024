@@ -30,11 +30,13 @@ const ProductHistoryModal = ({ isOpen, onClose, data }) => {
             title: "Giá (VNĐ)",
             dataIndex: "cost",
             key: "cost",
+            render: (cost) => parseInt(cost || 0).toLocaleString() + " VNĐ" || 0,
         },
         {
             title: "Giá cũ (VNĐ)",
             dataIndex: "old_cost",
             key: "old_cost",
+            render: (old_cost) => parseInt(old_cost || 0).toLocaleString() || 0,
         },
         {
             title: "Ngày",

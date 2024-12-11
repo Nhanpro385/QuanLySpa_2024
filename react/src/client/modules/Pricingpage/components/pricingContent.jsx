@@ -125,17 +125,31 @@ const PricingContent = () => {
                                             dataIndex="name"
                                             key="name"
                                             render={(name, record) => (
-                                                <Space>
-                                                    <Text strong>{name}</Text>
+                                                <Row>
+                                                    <Col
+                                                        xxl={24}
+                                                        xl={24}
+                                                        lg={24}
+                                                        md={24}
+                                                        sm={24}
+                                                        xs={24}
+                                                    >
+                                                        <Text strong>
+                                                            {name}
+                                                        </Text>
+                                                    </Col>
+                                                 <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                                                     {isServiceNew(
                                                         record.created_at
                                                     ) && (
-                                                      <Tag color="#e05265">Mới</Tag>
-
+                                                        <Tag color="#e05265">
+                                                            Mới
+                                                        </Tag>
                                                     )}
-                                                    
-                                                </Space>
+                                                    </Col>
+                                                </Row>
                                             )}
+                                            width="20%"
                                         />
                                         <ColumnGroup
                                             style={{

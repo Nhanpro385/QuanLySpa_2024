@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Typography, notification } from "antd";
+import { Button, Card, Col, Input, Row, Typography, notification } from "antd";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CommentDetailModal from "../../modules/Comment/compoments/CommentDetailModal";
 import CommentTable from "../../modules/Comment/compoments/CommentTable";
@@ -153,6 +153,20 @@ const CommentManagement = () => {
                     </Button>
                 }
             >
+                <Row>
+                    <Col xxl={4} xl={4} lg={4} md={4} sm={24} xs={24}>
+                        <Input.Search
+                            placeholder="Tìm kiếm bình luận"
+                            onChange={(e) =>
+                                setSearchQuery({
+                                    ...searchquery,
+                                    search: e.target.value,
+                                })
+                            }
+                            style={{ marginBottom: "10px" }}
+                        />
+                    </Col>
+                </Row>
                 <CommentTable
                     loading={commentSlice.loading}
                     dataSource={dataSource}

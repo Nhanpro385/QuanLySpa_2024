@@ -90,11 +90,11 @@ const Promotions_Edit = () => {
             ]);
             setContent(promotions.promotion?.data?.description);
         } else {
-            api.error({
-                message: "Không tìm thấy chương trình khuyến mãi",
-                description: "Vui lòng  thử lại",
-                duration: 3,
-            });
+            // api.error({
+            //     message: "Không tìm thấy chương trình khuyến mãi",
+            //     description: "Vui lòng  thử lại",
+            //     duration: 3,
+            // });
         }
     }, [promotions.promotion]);
     const onFinish = async (values) => {

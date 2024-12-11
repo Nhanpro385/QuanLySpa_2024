@@ -69,6 +69,12 @@ const ProductInventory = () => {
             title: "Số lượng",
             dataIndex: "quantity",
             key: "quantity",
+            render: (quantity) =>
+                quantity > 0 ? (
+                    <Tag color="green">{quantity}</Tag>
+                ) : (
+                    <Tag color="red">{quantity}</Tag>
+                ),
         },
 
         {
@@ -141,8 +147,6 @@ const ProductInventory = () => {
     };
     const handleShowHistory = async (record) => {
         try {
-            
-            
             const res = await historyinventoryAction(record?.product?.id);
             console.log(res);
             showModal2();

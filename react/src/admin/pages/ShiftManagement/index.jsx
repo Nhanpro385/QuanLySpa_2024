@@ -388,7 +388,6 @@ const ShiftManagement = () => {
                 <ShiftTable
                     dataSource={dataSource}
                     columns={columns}
-                  
                     pagination={pagnation}
                     onChangePage={handlechangePage}
                     loading={loading}
@@ -417,7 +416,7 @@ const ShiftManagement = () => {
                 setValue={setValue}
                 Controller={Controller}
             />
-            <ShiftCalendar />
+            <ShiftCalendar data={shifts?.data || []} />
         </div>
     );
 };

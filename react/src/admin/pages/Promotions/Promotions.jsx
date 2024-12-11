@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Col, Card, Progress, Input } from "antd";
+import { Button, Row, Col, Card, Progress, Input, notification } from "antd";
 import {
     EllipsisOutlined,
     ClockCircleOutlined,
@@ -12,11 +12,13 @@ import usePromotionActions from "../../modules/promotion/hooks/usepromotionActio
 import { useSelector } from "react-redux";
 
 function Promotions() {
+    const [api, contextHolder] = notification.useNotification();
     useEffect(() => {
         document.title = "Quản lý chương trình khuyến mãi";
     }, []);
     const navigate = useNavigate();
-    const { getPromotions, deletePromotions, searchPromotions } = usePromotionActions();
+    const { getPromotions, deletePromotions, searchPromotions } =
+        usePromotionActions();
     const [PromotionsData, setPromotionsData] = useState([]);
     const promotions = useSelector((state) => state.promotions);
 
@@ -65,7 +67,16 @@ function Promotions() {
         try {
             const res = await deletePromotions(key);
             if (res.meta.requestStatus === "fulfilled") {
+                api.success({
+                    message: "Xóa chương trình khuyến mãi thành công",
+                    description: res.payload.message || "",
+                });
                 getPromotions();
+            } else {
+                api.error({
+                    message: "Xóa chương trình khuyến mãi thất bại",
+                    description: res.payload.message || "",
+                });
             }
         } catch (e) {
             console.log(e);
@@ -86,6 +97,7 @@ function Promotions() {
 
     return (
         <div>
+            {contextHolder}
             <h1 className="text-center">Quản lý chương trình khuyến mãi</h1>
             <div
                 style={{
@@ -100,9 +112,8 @@ function Promotions() {
                     <FireOutlined />
                     Thêm mới chương trình
                 </Button>
-
             </div>
-            <div style={{ width: '600px' }}>
+            <div style={{ width: "600px" }} className="mb-3">
                 <Input.Search
                     placeholder="Tìm kiếm khuyến mãi theo tên"
                     allowClear
@@ -154,8 +165,8 @@ function Promotions() {
                                     {promotion.promotion_type === "Cash"
                                         ? `hóa đơn từ
                                                  ${parseInt(
-                                            promotion.min_order_amount
-                                        ).toLocaleString()} VNĐ trở lên sẽ được giảm giá`
+                                                     promotion.min_order_amount
+                                                 ).toLocaleString()} VNĐ trở lên sẽ được giảm giá`
                                         : `Giảm ${promotion.discount_percent}%`}
                                     <Progress
                                         percent={progressPercent} // Sử dụng progress tính từ ngày
@@ -188,8 +199,8 @@ function Promotions() {
                                         >
                                             {promotion.promotion_type === "Cash"
                                                 ? `Giảm ${parseInt(
-                                                    promotion.discount_percent
-                                                ).toLocaleString()} VNĐ`
+                                                      promotion.discount_percent
+                                                  ).toLocaleString()} VNĐ`
                                                 : `Giảm ${promotion.discount_percent}%`}
                                         </span>
                                     </div>

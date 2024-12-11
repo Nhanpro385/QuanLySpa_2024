@@ -7,9 +7,8 @@ const PromotionTable = ({
     handleDelete,
     pagination,
     loading,
-    handlePageChange
+    handlePageChange,
 }) => {
-
     const columns = [
         {
             title: "STT",
@@ -75,7 +74,9 @@ const PromotionTable = ({
                         okText="Có"
                         cancelText="Không"
                     >
-                        <Button type="danger">Xóa</Button>
+                        <Button variant="outlined"  danger>
+                            Xóa
+                        </Button>
                     </Popconfirm>
                 </span>
             ),
@@ -97,7 +98,7 @@ const PromotionTable = ({
                 showTotal: (total) => `Tổng ${total} khuyến mãi`,
             }}
         />
-    )
+    );
 };
 
 export default PromotionTable;

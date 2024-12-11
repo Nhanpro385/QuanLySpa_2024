@@ -108,12 +108,14 @@ const ServicesDetailById = () => {
             <Button onClick={"onLoadMore"}>Xem thêm</Button>
         </div>
     );
-    console.log(keyreply);
+    
 
     const handleFinish = async (values) => {
         try {
             const { rate, comment } = values;
             const images = fileList.map((file) => file.originFileObj); // Lấy file gốc
+            
+            
             const payload = {
                 id: generateSnowflakeId(),
                 service_id: service.id,

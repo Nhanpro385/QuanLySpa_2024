@@ -8,6 +8,7 @@ import {
     Dropdown,
     Typography,
     Popconfirm,
+    Tag,
 } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 
@@ -39,8 +40,8 @@ const CommentTable = ({
                     <Avatar size="small" icon={<UserOutlined />} />
                     <Text>
                         {record.type == 0
-                            ? `Admin: ${record?.created_by?.full_name}`
-                            : record.customer?.full_name}
+                            ? <Tag color="green">Quản trị viên : {record?.created_by?.full_name || "Không có"}</Tag>
+                            : <Tag color="blue">Người dùng : {record?.customer?.full_name || "Không có"}</Tag>}
                     </Text>
                 </Space>
             ),

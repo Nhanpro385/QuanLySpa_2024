@@ -113,6 +113,7 @@ const HeaderComponents = () => {
         const userMenu = (
             <Menu>
                 <Menu.Item key="profile">
+                    <Button variant="outlined" block>
                     <Link
                         style={{
                             textDecoration: "none",
@@ -121,8 +122,10 @@ const HeaderComponents = () => {
                     >
                         Thông Tin Cá Nhân
                     </Link>
+                    </Button>
                 </Menu.Item>
                 <Menu.Item key="booking">
+                    <Button variant="outlined" block>
                     <Link
                         style={{
                             textDecoration: "none",
@@ -131,8 +134,10 @@ const HeaderComponents = () => {
                     >
                         Lịch sử tư vấn
                     </Link>
+                    </Button>
                 </Menu.Item>
                 <Menu.Item key="serviceHistory">
+                    <Button variant="outlined" block>
                     <Link
                         style={{
                             textDecoration: "none",
@@ -141,8 +146,9 @@ const HeaderComponents = () => {
                     >
                         Lịch Sử Dịch Vụ
                     </Link>
+                    </Button>
                 </Menu.Item>
-                <Menu.Item key="treatmentHistory">
+                {/* <Menu.Item key="treatmentHistory">
                     <Link
                         style={{
                             textDecoration: "none",
@@ -151,9 +157,11 @@ const HeaderComponents = () => {
                     >
                         Lịch Sử Điều Trị
                     </Link>
-                </Menu.Item>
+                </Menu.Item> */}
                 <Menu.Item key="logout" onClick={logout}>
-                    Đăng Xuất
+                    <Button variant="outlined" danger block>
+                        Đăng Xuất
+                    </Button>
                 </Menu.Item>
             </Menu>
         );
@@ -228,9 +236,7 @@ const HeaderComponents = () => {
                             <img
                                 src={logo}
                                 alt="logo"
-                                style={{ width: "3.5rem" ,
-                                cursor: "pointer",
-                                }}
+                                style={{ width: "3.5rem", cursor: "pointer" }}
                                 onClick={() => navigate("/")}
                             />
                         </Col>
@@ -245,7 +251,6 @@ const HeaderComponents = () => {
                                     cursor: "pointer",
                                 }}
                                 onClick={() => navigate("/")}
-
                             >
                                 Sakura Spa
                             </h1>

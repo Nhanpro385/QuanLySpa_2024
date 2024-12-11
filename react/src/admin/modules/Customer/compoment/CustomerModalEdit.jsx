@@ -67,7 +67,7 @@ const ModalEditCustomer = ({
                     ? "0"
                     : "1"
             );
-            setValue("note", customer.note);
+          
             setValue("role", customer.role);
         }
     }, [customer]);
@@ -187,13 +187,7 @@ const ModalEditCustomer = ({
                     )}
                 </Form.Item>
 
-                <Form.Item label="Ghi chú">
-                    <Controller
-                        name="note"
-                        control={control}
-                        render={({ field }) => <Input.TextArea {...field} />}
-                    />
-                </Form.Item>
+                
 
                 <Form.Item>
                     <Space>

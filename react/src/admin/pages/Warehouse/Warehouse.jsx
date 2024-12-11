@@ -1,4 +1,4 @@
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { DownOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import {
     Button,
     Card,
@@ -234,6 +234,7 @@ const Warehouse = () => {
             extra={
                 <Button
                     type="primary"
+                    icon={<LoadingOutlined />}
                     onClick={() => selectedFunction === "import" ? warehouseGetImport() : warehouseGetExport()}
                     loading={warehouse.import.loading || warehouse.export.loading}
                 >
@@ -254,9 +255,9 @@ const Warehouse = () => {
                         optionType="button"
                     />
                 </Col>
-                <Col xl={4} md={6} xs={24}>
+                {/* <Col xl={4} md={6} xs={24}>
                     <Input.Search placeholder="Tìm kiếm" enterButton />
-                </Col>
+                </Col> */}
                 <Col xl={3} md={6} xs={24}>
                     <Button
                         block

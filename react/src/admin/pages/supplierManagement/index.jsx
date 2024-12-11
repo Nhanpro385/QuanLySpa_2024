@@ -19,7 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ModalEditSupplier from "../../modules/SuppliersManagement/compoment/SuppliersModalEdit";
 import useModal from "../../modules/appointments/hooks/openmodal";
-import { DownOutlined } from "@ant-design/icons";
+import { DownOutlined, LoadingOutlined } from "@ant-design/icons";
 import SupplierForm from "../../modules/SuppliersManagement/compoment/SupplierForm";
 import SupplierTable from "../../modules/SuppliersManagement/compoment/SupplierTable";
 import useSupplierActions from "../../modules/SuppliersManagement/hooks/useSupplierActions";
@@ -250,7 +250,19 @@ const SupplierManagement = () => {
                     </Card>
                 </Col>
                 <Col span={24}>
-                    <Card title="Danh sách Nhà cung cấp">
+                    <Card
+                        title="Danh sách Nhà cung cấp"
+                        extra={
+                            <Button
+                            loading={Suppliers.loading}
+                                icon={<LoadingOutlined />}
+                                type="primary"
+                                onClick={() => getSupplier()}
+                            >
+                                Làm mới
+                            </Button>
+                        }
+                    >
                         <Row className="mb-2">
                             <Col
                                 xxl={12}

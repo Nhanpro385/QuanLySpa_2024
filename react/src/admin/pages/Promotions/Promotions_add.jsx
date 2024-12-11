@@ -39,69 +39,134 @@ const PromotionsAdd = () => {
     const editor = useRef(null);
     const [content, setContent] = useState("");
     const { addPromotions } = usePromotionActions();
-  console.log(errors);
-  
+    console.log(errors);
+
     const onFinish = async (values) => {
         try {
-            const payload = {
-                id: generateSnowflakeId(),
-                name: values.name,
-                description: values.description,
-                start_date: values.startDateAndEndDate[0].format("YYYY-MM-DD"),
-                end_date: values.startDateAndEndDate[1].format("YYYY-MM-DD"),
-                promotion_type: values.promotion_type,
-                discount_percent: values.discount_percent,
-                min_order_amount: values.min_order_amount,
-                min_quantity: values.min_quantity,
-                status: true,
-                image_url: fileList[0].originFileObj,
-            };
-            const formData = new FormData();
-            Object.keys(payload).map((key) => {
-                formData.append(key, payload[key]);
-            });
+            // nếu  không anh và có ảnh
+            if (fileList.length < 1) {
+                const payload = {
+                    id: generateSnowflakeId(),
+                    name: values.name,
+                    description: values.description,
+                    start_date:
+                        values.startDateAndEndDate[0].format("YYYY-MM-DD"),
+                    end_date:
+                        values.startDateAndEndDate[1].format("YYYY-MM-DD"),
+                    promotion_type: values.promotion_type,
+                    discount_percent: values.discount_percent,
+                    min_order_amount: values.min_order_amount,
+                    min_quantity: values.min_quantity,
+                    status: true,
+                };
+                const formData = new FormData();
+                Object.keys(payload).map((key) => {
+                    formData.append(key, payload[key]);
+                });
 
-            const response = await addPromotions(formData);
-            
-            
-            if (response.payload.status === "success") {
-                console.log(response);
-                api.success({
-                    message: "Thêm chương trình khuyến mãi thành công",
-                    description: response.payload.message,
-                    duration: 3,
-                });
-                reset();
-                setFileList([]);
-                setContent("");
+                const response = await addPromotions(formData);
+
+                if (response.payload.status === "success") {
+                    console.log(response);
+                    api.success({
+                        message: "Thêm chương trình khuyến mãi thành công",
+                        description: response.payload.message,
+                        duration: 3,
+                    });
+                    reset();
+                    setFileList([]);
+                    setContent("");
+                } else {
+                    Object.keys(response.payload.errors).map((key) => {
+                        if (
+                            [
+                                "name",
+                                "description",
+                                "start_date",
+                                "end_date",
+                                "promotion_type",
+                                "discount_percent",
+                                "min_order_amount",
+                                "min_quantity",
+                                "status",
+                                "image_url",
+                            ].includes(key)
+                        ) {
+                            setError(key, {
+                                type: "manual",
+                                message: response.payload.errors[key][0],
+                            });
+                        } else {
+                            api.error({
+                                message: "Có lỗi xảy ra",
+                                description: response.payload.errors[key][0],
+                                duration: 3,
+                            });
+                        }
+                    });
+                }
             } else {
-                Object.keys(response.payload.errors).map((key) => {
-                    if (
-                        [
-                            "name",
-                            "description",
-                            "start_date",
-                            "end_date",
-                            "promotion_type",
-                            "discount_percent",
-                            "min_order_amount",
-                            "min_quantity",
-                            "status",
-                            "image_url",
-                        ].includes(key)
-                    ) {
-                        setError(key, {
-                            type: "manual",
-                            message: response.payload.errors[key][0],
-                        });
-                    } else {
-                        api.error({
-                            message: "Có lỗi xảy ra",
-                            description: response.payload.errors[key][0],
-                            duration: 3,
-                        });
-                    }
+                const payload = {
+                    id: generateSnowflakeId(),
+                    name: values.name,
+                    description: values.description,
+                    start_date:
+                        values.startDateAndEndDate[0].format("YYYY-MM-DD"),
+                    end_date:
+                        values.startDateAndEndDate[1].format("YYYY-MM-DD"),
+                    promotion_type: values.promotion_type,
+                    discount_percent: values.discount_percent,
+                    min_order_amount: values.min_order_amount,
+                    min_quantity: values.min_quantity,
+                    status: true,
+                    image_url: fileList[0].originFileObj,
+                };
+                const formData = new FormData();
+                Object.keys(payload).map((key) => {
+                    formData.append(key, payload[key]);
                 });
+
+                const response = await addPromotions(formData);
+
+                if (response.payload.status === "success") {
+                    console.log(response);
+                    api.success({
+                        message: "Thêm chương trình khuyến mãi thành công",
+                        description: response.payload.message,
+                        duration: 3,
+                    });
+                    reset();
+                    setFileList([]);
+                    setContent("");
+                } else {
+                    Object.keys(response.payload.errors).map((key) => {
+                        if (
+                            [
+                                "name",
+                                "description",
+                                "start_date",
+                                "end_date",
+                                "promotion_type",
+                                "discount_percent",
+                                "min_order_amount",
+                                "min_quantity",
+                                "status",
+                                "image_url",
+                            ].includes(key)
+                        ) {
+                            setError(key, {
+                                type: "manual",
+                                message: response.payload.errors[key][0],
+                            });
+                        } else {
+                            api.error({
+                                message: "Có lỗi xảy ra",
+                                description: response.payload.errors[key][0],
+                                duration: 3,
+                            });
+                        }
+                    });
+                }
             }
         } catch (error) {
             console.log(error);
@@ -192,9 +257,12 @@ const PromotionsAdd = () => {
                                 name="discount_percent"
                                 label="Giảm giá %"
                                 help={
-                                    errors.discount_percent && errors.discount_percent.message
+                                    errors.discount_percent &&
+                                    errors.discount_percent.message
                                 }
-                                validateStatus={errors.discount_percent && "error"}
+                                validateStatus={
+                                    errors.discount_percent && "error"
+                                }
                             >
                                 <Controller
                                     name="discount_percent"

@@ -8,7 +8,7 @@ import MenuProfile from "./MenuProfile";
 import useAuthActions from "../../../../admin/modules/authen/hooks/useAuth";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { FrownOutlined } from "@ant-design/icons";
+import { FrownOutlined, LoadingOutlined } from "@ant-design/icons";
 const BookingConsultant = () => {
     const navigate = useNavigate();
     const { authGetmeClient } = useAuthActions();
@@ -83,17 +83,10 @@ const BookingConsultant = () => {
                         </Button>
                     ) : record.status === 0 ? (
                         <>
-                            <span>Đang chờ duyệt</span>
-                            {/* <Button
-                                type="default"
-                                disabled
-                                style={{ marginLeft: 8 }}
-                            >
-                                Hủy
-                            </Button> */}
+                            <Tag color="warning">Đang chờ duyệt</Tag>
                         </>
                     ) : (
-                        <span>Đã hoàn thành</span>
+                        <Tag color="green">Cảm ơn bạn đã tư vấn</Tag>
                     )}
                 </>
             ),
@@ -121,7 +114,18 @@ const BookingConsultant = () => {
                 {/* Table */}
                 <Col span={24} className={style.table}>
                     {consdata?.length > 0 ? (
-                        <Card title="Danh sách lịch hẹn tư vấn">
+                        <Card
+                            title="Danh sách lịch hẹn tư vấn"
+                            extra={
+                                <Button
+                                    icon={<LoadingOutlined />}
+                                    type="primary"
+                                    onClick={() => authGetmeClient()}
+                                >
+                                    Làm mới
+                                </Button>
+                            }
+                        >
                             <Table
                                 scroll={{ x: 768 }}
                                 locale={{

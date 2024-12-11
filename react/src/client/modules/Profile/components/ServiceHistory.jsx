@@ -1,21 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Button, Select, Table, Tag, Card, Result } from "antd";
+import {
+    Row,
+    Col,
+    Button,
+    Select,
+    Table,
+    Tag,
+    Card,
+    Result,
+    Space,
+    Dropdown,
+} from "antd";
 import style from "../style/ServiceHistory.module.scss";
 import { useSelector } from "react-redux";
 const { Option } = Select;
 import MenuProfile from "./MenuProfile";
 import ServiceHistoryModalDetail from "./ServiceHistoryModalDetail";
 import useModal from "../../../../admin/modules/appointments/hooks/openmodal";
-import { FrownOutlined } from "@ant-design/icons";
-
+import {
+    DownOutlined,
+    FrownOutlined,
+    LoadingOutlined,
+    SmileOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import useAuthActions from "../../../../admin/modules/authen/hooks/useAuth";
 const ServiceHistory = () => {
+    const { authGetmeClient } = useAuthActions();
+    const navigate = useNavigate();
     const auth = useSelector((state) => state.auth);
     const [ListAppointment, setListAppointment] = useState([]);
     const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
     const [appSelected, setAppSelected] = useState(null);
     const [filterStatus, setFilterStatus] = useState("all");
     const [sortOrder, setSortOrder] = useState("dateAsc");
-
+    useEffect(() => {
+        authGetmeClient();
+    }, []);
     // Set the appointments when the auth data changes
     useEffect(() => {
         if (auth.user?.data?.appointments?.length > 0) {
@@ -40,7 +61,20 @@ const ServiceHistory = () => {
     const handleStatusChange = (value) => {
         setFilterStatus(value);
     };
-
+    const items = [
+        {
+            key: "1",
+            label: (
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://www.antgroup.com"
+                >
+                    1st menu item
+                </a>
+            ),
+        },
+    ];
     // Handle the sort order change
     const handleSortChange = (value) => {
         setSortOrder(value);
@@ -118,13 +152,47 @@ const ServiceHistory = () => {
             title: "Thao tác",
             key: "action",
             render: (e, record) => (
-                <Button
-                    type="primary"
-                    danger
-                    onClick={() => handleDetail(record)}
-                >
-                    Chi Tiết
-                </Button>
+                <Space>
+                    <Button
+                        type="primary"
+                      
+                        onClick={() => handleDetail(record)}
+                    >
+                        Chi Tiết
+                    </Button>{" "}
+                    {record.status === "Đã hoàn thành." ? (
+                        <Dropdown
+                            menu={{
+                                items: record?.services?.map(
+                                    (service, idx) => ({
+                                        key: idx,
+                                        label: (
+                                            <span
+                                                block
+                                                onClick={() => {
+                                                    navigate(
+                                                        `/dichvu/${service?.id}`
+                                                    );
+                                                }}
+                                            >
+                                                Đánh giá {service?.name}
+                                            </span>
+                                        ),
+                                    })
+                                ),
+                            }}
+                            trigger={["click"]}
+                        >
+                            <a onClick={(e) => e.preventDefault()}>
+                                <Space>
+                                    <Button danger icon={<DownOutlined />}>
+                                        Đánh giá
+                                    </Button>
+                                </Space>
+                            </a>
+                        </Dropdown>
+                    ) : null}
+                </Space>
             ),
         },
     ];
@@ -194,12 +262,24 @@ const ServiceHistory = () => {
 
                 {/* Table */}
                 <Col span={24} className={style.table}>
-                    <Card>
+                    <Card
+                        extra={
+                            <Button
+                               type="primary"
+                                icon={<LoadingOutlined />}
+                                onClick={() => authGetmeClient()}
+                            >
+                                Làm mới
+                            </Button>
+                        }
+                    >
                         {sortedAppointments?.length > 0 ? (
                             <Table
+                                loading={auth.loading}
                                 locale={{
                                     emptyText: "Không có dữ liệu nào",
                                 }}
+                                scroll={{ x: 768 }}
                                 id="myTable"
                                 dataSource={sortedAppointments}
                                 columns={columns}

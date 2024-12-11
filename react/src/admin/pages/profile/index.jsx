@@ -105,7 +105,7 @@ const Profile = () => {
             } else {
                 if (Object.keys(res.payload.errors).length > 0) {
                     console.log(res.payload.errors);
-                    
+
                     Object.keys(res.payload.errors).map((key) => {
                         setError(key, {
                             type: "manual",
@@ -184,7 +184,10 @@ const Profile = () => {
                             <strong>Tên:</strong> {UserData?.full_name}
                         </p>
                         <p>
-                            <strong>Chức vụ:</strong> {UserData?.position?.name}
+                            <strong>Chức vụ:</strong> {UserData?.position?.name || "Không có"}
+                        </p>{" "}
+                        <p>
+                            <strong>Vai trò:</strong> {UserData?.role}
                         </p>
                         <p>
                             <strong>Mức lương theo giờ:</strong>{" "}
@@ -218,7 +221,14 @@ const Profile = () => {
                 <Col xxl={14} xl={14} lg={14} md={14} sm={24} xs={24}>
                     <Card title="Thống kê công việc" bordered={true}>
                         <Row gutter={[16, 16]}>
-                            <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                            <Col
+                                xxl={12}
+                                xl={12}
+                                lg={12}
+                                md={12}
+                                sm={24}
+                                xs={24}
+                            >
                                 <Statistic
                                     title="Tư vấn khách hàng"
                                     value={
@@ -244,7 +254,14 @@ const Profile = () => {
                                     {UserData.countConsulation_today || 0}
                                 </Text>
                             </Col>
-                            <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                            <Col
+                                xxl={12}
+                                xl={12}
+                                lg={12}
+                                md={12}
+                                sm={24}
+                                xs={24}
+                            >
                                 <Statistic
                                     title="Lịch hẹn Dịch vụ"
                                     value={
@@ -297,9 +314,10 @@ const Profile = () => {
                                                     "Vui lòng nhập tên đầy đủ",
                                             }}
                                             render={({ field }) => (
-                                                <Input 
+                                                <Input
                                                     minLength={6}
-                                                {...field} />
+                                                    {...field}
+                                                />
                                             )}
                                         />
                                         {errors.full_name && (
