@@ -261,7 +261,7 @@ const Dashboard = () => {
             year: year,
         });
         getDailyRevenues({
-            day: day,
+            day: formatDate2,
         });
         getRevenueAppointment({
             day: formatDate2,

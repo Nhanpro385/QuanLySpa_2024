@@ -196,7 +196,7 @@ const SupplierSlice = createSlice({
                 state.error = null;
             })
             .addCase(SupplierAdd.fulfilled, (state, action) => {
-                state.Suppliers.push(action.payload);
+                state.Suppliers.data.push(action.payload);
                 state.loading = false;
             })
             .addCase(SupplierAdd.rejected, (state, action) => {
@@ -209,7 +209,7 @@ const SupplierSlice = createSlice({
                 state.error = null;
             })
             .addCase(SupplierDelete.fulfilled, (state, action) => {
-                console.log(action.payload);
+                
 
                 state.Suppliers.data = state.Suppliers.data.filter(
                     (Supplier) => Supplier.id !== action.payload

@@ -97,7 +97,7 @@ const SupplierManagement = () => {
         try {
             const response = await getSupplierById(record.id);
             if (response.meta.requestStatus === "fulfilled") {
-                setEditSupplier(response.payload.data);
+                setEditSupplier(() => response.payload.data);
                 showModal();
             }
         } catch {
@@ -173,8 +173,7 @@ const SupplierManagement = () => {
                 });
             }
         } catch (error) {
-           console.log(error);
-           
+            console.log(error);
         }
     };
 
@@ -194,7 +193,10 @@ const SupplierManagement = () => {
                 handleCancel();
             } else {
                 setErrorEdit(resultAction.payload);
-                console.log(resultAction.payload);
+                api.error({
+                    message: "Có lỗi xảy ra",
+                    description: resultAction.payload.message || "",
+                });
             }
         } catch {
             api.error({
