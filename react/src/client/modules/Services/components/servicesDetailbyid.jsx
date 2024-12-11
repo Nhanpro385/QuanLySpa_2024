@@ -108,14 +108,12 @@ const ServicesDetailById = () => {
             <Button onClick={"onLoadMore"}>Xem thêm</Button>
         </div>
     );
-    
 
     const handleFinish = async (values) => {
         try {
             const { rate, comment } = values;
             const images = fileList.map((file) => file.originFileObj); // Lấy file gốc
-            
-            
+
             const payload = {
                 id: generateSnowflakeId(),
                 service_id: service.id,
@@ -474,7 +472,7 @@ const ServicesDetailById = () => {
                                 <Rate value={item?.rating} disabled />,
                                 <IconText
                                     icon={MessageOutlined}
-                                    text={item?.replies?.length}
+                                    text={item?.clientReplies?.length || 0}
                                     key="list-vertical-message"
                                 />,
                                 <Button
@@ -506,7 +504,15 @@ const ServicesDetailById = () => {
                             {item.images.length > 0 && (
                                 <Row gutter={[16, 16]}>
                                     {item.images.map((image, index) => (
-                                        <Col span={6} key={index}>
+                                        <Col
+                                            xxl={3}
+                                            xl={3}
+                                            lg={3}
+                                            md={3}
+                                            sm={3}
+                                            xs={3}
+                                            key={index}
+                                        >
                                             <Image
                                                 width={100}
                                                 src={
@@ -519,7 +525,9 @@ const ServicesDetailById = () => {
                                 </Row>
                             )}
                             {expandedKeys[item.key] && (
-                                <div>{renderReplies(item.clientReplies)}</div>
+                                <div className="mt-3">
+                                    {renderReplies(item.clientReplies)}
+                                </div>
                             )}
                         </List.Item>
                     )}

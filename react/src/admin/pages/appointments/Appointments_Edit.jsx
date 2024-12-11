@@ -479,7 +479,7 @@ const Appointment_Edit = () => {
         }
     };
     return (
-        <Card title="Thêm lịch hẹn">
+        <Card title="Chỉnh sửa lịch hẹn">
             {contextHolder}
             <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                 <Row gutter={16}>

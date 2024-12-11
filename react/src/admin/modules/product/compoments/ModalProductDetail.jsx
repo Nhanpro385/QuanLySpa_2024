@@ -117,6 +117,7 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
             title: "Mã sản phẩm",
             dataIndex: "id",
             key: "id",
+            render: (text)=> ProductData?.id || "Chưa có thông tin",
         },
         {
             title: "Số lượng",
