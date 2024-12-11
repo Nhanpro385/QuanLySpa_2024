@@ -14,7 +14,6 @@ const AboutUs = () => {
     return (
         <div className={style.container}>
             <Row justify="center" style={{ width: '100%' }}>
-
                 <Col className={style.aboutContent}
                     xs={24}
                     sm={24}
@@ -48,7 +47,7 @@ const AboutUs = () => {
                     <h1>Giá Trị Cốt Lõi </h1>
                 </Col>
             </Row>
-            <Row justify="center" style={{ width: '100%' }}>
+            {/* <Row justify="center" style={{ width: '100%' }}>
                 <Col className={style.aboutContentMiddle}
                     xs={24}
                     sm={24}
@@ -58,10 +57,11 @@ const AboutUs = () => {
                     <div className={style.boxContentLeft}>
                         <div className={style.boxImg}>
                             <img
-                            
-                            src={bannerDoctor} alt="" />
+
+                                src={bannerDoctor} alt="" />
                         </div>
                     </div>
+
                     <div className={style.boxContentRight}>
                         <div className={style.boxContentTop}>
                             <img src={healthcare} alt="" width={'40px'} /><h2 className={style.title}>Luôn Trung Thực</h2>
@@ -81,7 +81,73 @@ const AboutUs = () => {
                         <p className={style.textContent}>Góp ý từ khách hàng là những điều Sakura Spa thật sự trân trọng. Đây là động lực để phòng khám không ngừng cập nhật, đổi mới phương pháp điều trị mụn tiên tiến, chuẩn y khoa nhằm nâng cao chất lượng dịch vụ ngày một tốt hơn.</p>
                     </div>
                 </Col>
+            </Row> */}
+            <Row justify="center" align="middle" style={{ width: '100%' }} className={style.aboutContentMiddle}>
+                {/* Bên trái */}
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={10}
+                    xl={8}
+                    className={style.aboutContentLeft}
+                    flex="1"
+                >
+                    <div className={style.boxContentLeft}>
+                        <div className={style.boxImg}>
+                            <img src={bannerDoctor} alt="" />
+                        </div>
+                    </div>
+                </Col>
+
+                {/* Bên phải */}
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={16}
+                    lg={12}
+                    xl={10}
+                    className={style.aboutContentRight}
+                    flex='1'
+                >
+                    <div className={style.boxContentRight}>
+                        <div className={style.boxContentTop}>
+                            <img src={healthcare} alt="" width="40px" />
+                            <h2 className={style.title}>Luôn Trung Thực</h2>
+                        </div>
+                        <p className={style.textContent}>
+                            Giá trị cốt lõi hàng đầu của Sakura Spa là trung thực với khách hàng.
+                            Phòng khám cam kết tư vấn trung thực về hiệu quả điều trị, đồng thời chỉ
+                            tư vấn phương pháp và sản phẩm thực sự cần thiết cho khách hàng.
+                        </p>
+                    </div>
+                    <div className={style.boxContentRight}>
+                        <div className={style.boxContentTop}>
+                            <img src={doctor} alt="" width="40px" />
+                            <h2 className={style.title}>Chuẩn Y Khoa</h2>
+                        </div>
+                        <p className={style.textContent}>
+                            Sakura Spa theo đuổi phương châm điều trị dựa trên căn cứ y học và bằng
+                            chứng lâm sàng. Vì thế, tất cả các phương pháp và sản phẩm trị mụn được
+                            chọn lựa sử dụng tại Sakura Spa đều đảm bảo chuẩn y khoa, an toàn và
+                            hiệu quả cho khách hàng.
+                        </p>
+                    </div>
+                    <div className={style.boxContentRight}>
+                        <div className={style.boxContentTop}>
+                            <img src={health} alt="" width="40px" />
+                            <h2 className={style.title}>Liên Tục Cải Tiến</h2>
+                        </div>
+                        <p className={style.textContent}>
+                            Góp ý từ khách hàng là những điều Sakura Spa thật sự trân trọng. Đây là
+                            động lực để phòng khám không ngừng cập nhật, đổi mới phương pháp điều
+                            trị mụn tiên tiến, chuẩn y khoa nhằm nâng cao chất lượng dịch vụ ngày
+                            một tốt hơn.
+                        </p>
+                    </div>
+                </Col>
             </Row>
+
 
         </div>
     )
