@@ -16,6 +16,7 @@ import ServicesDetailById from "../modules/Services/components/servicesDetailbyi
 import AboutUs from "../pages/AboutUs/AboutUs";
 import ThanksBooking from "../pages/thanksBooking";
 import StreatmentsHistory from "../modules/Profile/components/streatmentsHistory";
+import Promotion from "../pages/Promotion/Promotion";
 
 const PublicRoutes = [
     {
@@ -107,6 +108,11 @@ const PublicRoutes = [
         path: "/datlich/thanhcong",
         element: <ThanksBooking />,
         requiredRole: { requiredRole: "private", role: "Client" },
+    },
+    {
+        path: "/khuyenmai",
+        element: <Promotion />,
+        requiredRole: { requiredRole: "public", role: "Client" },
     },
 ];
 

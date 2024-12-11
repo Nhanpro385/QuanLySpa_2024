@@ -6,6 +6,7 @@ import {
     promotionsUpdate,
     promotionsGetById,
     promotionsearch,
+    promptionGetClient
 } from "@admin/redux/slices/promotionSlice";
 const usePromotionActions = () => {
     const dispatch = useDispatch();
@@ -30,6 +31,10 @@ const usePromotionActions = () => {
     const searchPromotions = async (config) => {
         return await dispatch(promotionsearch(config));
     };
+    const getClientPromotions = async (config) => {
+        return await dispatch(promptionGetClient(config));
+    };
+
     return {
         getPromotions,
         addPromotions,
@@ -37,6 +42,7 @@ const usePromotionActions = () => {
         updatePromotions,
         getPromotionsById,
         searchPromotions,
+        getClientPromotions,
     };
 };
 

@@ -165,6 +165,8 @@ const endpoints = {
         update: (id) => `${API_BASE_URL}/promotion/${id}`,
         delete: (id) => `${API_BASE_URL}/promotion/${id}`,
         search: `${API_BASE_URL}/promotion`,
+        listClient: `${API_AUTH_URL3}/promotion`,
+
     },
     consulations: {
         list: `${API_BASE_URL}/consulations`,

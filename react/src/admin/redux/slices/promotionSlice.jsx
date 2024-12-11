@@ -167,6 +167,17 @@ export const promotionsearch = createAsyncThunk(
         }
     }
 );
+export const promptionGetClient = createAsyncThunk(
+    "promotions/getpromotionsClient",
+    async (per_page) => {
+        const queryParams = per_page ? `?per_page=${per_page}` : "";
+        const response = await axiosInstance.get(
+            `${endpoints.promotions.listClient}${queryParams}`
+        );
+
+        return response.data;
+    }
+);
 
 // Initial state
 const initialState = {
@@ -277,6 +288,18 @@ const promotionslice = createSlice({
             .addCase(promotionsearch.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload?.message || action.error.message;
+            })
+            .addCase(promptionGetClient.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(promptionGetClient.fulfilled, (state, action) => {
+                state.promotions = action.payload;
+                state.loading = false;
+            })
+            .addCase(promptionGetClient.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
     },
 });

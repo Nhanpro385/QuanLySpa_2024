@@ -74,7 +74,7 @@ const HeaderComponents = () => {
                         style={{
                             textDecoration: "none",
                         }}
-                        to="/promotion"
+                        to="/khuyenmai"
                     >
                         Khuyến Mãi
                     </Link>
