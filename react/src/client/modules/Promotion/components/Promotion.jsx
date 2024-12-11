@@ -13,7 +13,9 @@ import {
     List,
     Result,
     Space,
-    Image
+    Image,
+    Modal,
+
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -23,6 +25,7 @@ import { URL_IMAGE } from "../../../../admin/config/appConfig";
 import style from "../../Promotion/style/Promotion.module.scss";
 import dayjs from "dayjs";
 dayjs.locale("vi");
+const { Text, Title } = Typography;
 
 const Promotion = () => {
     const navigate = useNavigate();
@@ -32,12 +35,14 @@ const Promotion = () => {
 
     const promotions = useSelector((state) => state.promotions);
 
+    const [selectedPromotion, setSelectedPromotion] = useState(null); // State để lưu khuyến mãi được chọn
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     useEffect(() => {
         getClientPromotions(50);
     }, []);
 
     useEffect(() => {
-
         if (promotions.promotions?.data) {
             const data = promotions.promotions.data || [];
 
@@ -51,8 +56,6 @@ const Promotion = () => {
         setLoading(false);
     }, [promotions]);
 
-    console.log(promotion);
-
     const formatDate = (dateString) => {
         if (!dateString) return "Không xác định";
         try {
@@ -61,6 +64,16 @@ const Promotion = () => {
             console.error("Định dạng ngày thất bại:", error);
             return "Không hợp lệ";
         }
+    };
+
+    const handleClickPromotion = (item) => {
+        setSelectedPromotion(item); // Lưu thông tin khuyến mãi được chọn
+        setIsModalOpen(true); // Hiển thị modal
+    };
+
+    const handleCloseModal = () => {
+        setSelectedPromotion(null); // Xóa thông tin khuyến mãi
+        setIsModalOpen(false); // Ẩn modal
     };
 
     return (
@@ -107,54 +120,102 @@ const Promotion = () => {
                                 ),
                             }}
                             renderItem={(item) => (
-                                <List.Item>
-                                    <div className={style.boxServicesItemDetail}>
-                                        <div className={style.boxServicesDetailItemTop}>
-                                            <Image
-                                                src={
-                                                    `${URL_IMAGE}/promotions/` +
-                                                    item.image_url
-                                                }
+                                <List.Item style={{ height: "100%" }}>
+                                    <Row justify={"center"} gutter={[24, 24]}>
+                                        <Col xl={24} xs={24}>
+                                            <div
+                                                onClick={() => handleClickPromotion(item)}>
+                                                <div className={style.boxServicesItemDetail}>
+                                                    <div className={style.boxServicesDetailItemTop}>
+                                                        <Image
+                                                            src={
+                                                                `${URL_IMAGE}/promotions/` +
+                                                                item.image_url
+                                                            }
 
-                                                alt={item.name || "Dịch vụ"}
-                                                preview={false}
-                                                className={style.image}
-                                                onError={(e) =>
-                                                (e.target.src =
-                                                    "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
-                                                } // Thay thế hình ảnh khi lỗi
-                                            />
-                                        </div>
-                                        <div className={style.boxServicesItemMiddle}>
-                                            <p>Mã: {item.name}</p>
-                                        </div>
-                                        <div className={style.boxServicesItemBottom}>
-                                            <p>{item.description}</p>
-                                        </div>
-                                        <div className={style.boxServicesItemPrice}>
-                                            <p>
-                                                Giá giảm:{" "}
-                                                {item.discount_percent
-                                                    ? `${parseInt(item.discount_percent).toLocaleString()}
-                                            ${item.promotion_type === "Percent" ? "%" : "VNĐ"}`
-                                                    : "Liên hệ"}
-                                            </p>
-                                        </div>
-                                        <div className={style.boxDate}>
-                                            <p>
-                                                Ngày bắt đầu: {formatDate(item.start_date)}
-                                            </p>
-                                            <p>
-                                                Ngày kết thúc: {formatDate(item.end_date)}
-                                            </p>
-                                        </div>
-                                    </div>
+                                                            alt={item.name || "Dịch vụ"}
+                                                            preview={false}
+                                                            className={style.image}
+                                                            onError={(e) =>
+                                                            (e.target.src =
+                                                                "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
+                                                            } // Thay thế hình ảnh khi lỗi
+                                                        />
+                                                    </div>
+                                                    <div className={style.boxServicesItemMiddle}>
+                                                        <p>Mã: {item.name}</p>
+                                                    </div>
+                                                    <div className={style.boxServicesItemBottom}>
+                                                        <p>{item.description}</p>
+                                                    </div>
+                                                    <div className={style.boxServicesItemPrice}>
+                                                        <p>
+                                                            Giảm Giá:{" "}
+                                                            {item.discount_percent
+                                                                ? `${parseInt(item.discount_percent).toLocaleString()}
+                                                        ${item.promotion_type === "Percent" ? " %" : "VNĐ"}`
+                                                                : "Liên hệ"}
+                                                        </p>
+                                                    </div>
+                                                    <div className={style.boxDate}>
+                                                        <p>
+                                                            Ngày bắt đầu: {formatDate(item.start_date)}
+                                                        </p>
+                                                        <p>
+                                                            Ngày kết thúc: {formatDate(item.end_date)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </Col>
+                                    </Row>
                                 </List.Item>
                             )}
                         />
                     </Col>
                 </Row>
             </div>
+
+            {/* Modal hiển thị chi tiết khuyến mãi */}
+            <Modal
+                title="Chi Tiết Khuyến Mãi"
+                visible={isModalOpen}
+                onCancel={handleCloseModal}
+                footer={[
+                    <Button key="close" type="primary" onClick={handleCloseModal}>
+                        Đóng
+                    </Button>,
+                ]}
+                width={'1000px'}
+            >
+                {selectedPromotion && (
+                    <div>   
+                        <Image
+                            src={`${URL_IMAGE}/promotions/${selectedPromotion.image_url}`}
+                            alt={selectedPromotion.name}
+                            style={{ marginBottom: "16px", width: "100%" }}
+                        />
+                        <Title level={3} style={{marginTop: '20px'}}>Mã: {selectedPromotion.name}</Title>
+                        <Text style={{ fontWeight: '400', fontSize: '20px' }}>{selectedPromotion.description}</Text>
+                        <div style={{ marginTop: "16px" }}>
+                            <p style={{ fontSize: '18px', color: 'red', fontWeight: '500' }}>
+                                Giảm giá:{" "}
+                                {selectedPromotion.discount_percent
+                                    ? `${parseInt(selectedPromotion.discount_percent).toLocaleString()} ${selectedPromotion.promotion_type === "Percent" ? "%" : "VNĐ"
+                                    }`
+                                    : "Liên hệ"}
+                            </p>
+                            <p style={{ fontSize: '16px' }}>
+                                <b>Ngày bắt đầu:</b> {formatDate(selectedPromotion.start_date)}
+                            </p>
+                            <p style={{ fontSize: '16px' }}>
+                                <b>Ngày kết thúc:</b> {formatDate(selectedPromotion.end_date)}
+                            </p>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     )
 }

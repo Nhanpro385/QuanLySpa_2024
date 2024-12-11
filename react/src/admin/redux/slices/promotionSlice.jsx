@@ -167,7 +167,7 @@ export const promotionsearch = createAsyncThunk(
         }
     }
 );
-export const promptionGetClient = createAsyncThunk(
+export const promotionGetClient = createAsyncThunk(
     "promotions/getpromotionsClient",
     async (per_page) => {
         const queryParams = per_page ? `?per_page=${per_page}` : "";
@@ -289,15 +289,15 @@ const promotionslice = createSlice({
                 state.loading = false;
                 state.error = action.payload?.message || action.error.message;
             })
-            .addCase(promptionGetClient.pending, (state) => {
+            .addCase(promotionGetClient.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(promptionGetClient.fulfilled, (state, action) => {
+            .addCase(promotionGetClient.fulfilled, (state, action) => {
                 state.promotions = action.payload;
                 state.loading = false;
             })
-            .addCase(promptionGetClient.rejected, (state, action) => {
+            .addCase(promotionGetClient.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });
