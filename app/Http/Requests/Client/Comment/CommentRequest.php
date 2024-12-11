@@ -35,8 +35,8 @@ class CommentRequest extends FormRequest
             ],
 
             // 'status' => 'required|boolean',
-            'image_urls' => 'nullable|array',
-            'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_url' => 'nullable|array',
+            'image_url.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 
@@ -62,9 +62,9 @@ class CommentRequest extends FormRequest
             'rate.max' => 'Đánh giá tối đa là 5.',
             'status.required' => 'Trạng thái không được bỏ trống!',
             'status.boolean' => 'Trạng thái phải là true hoặc false.',
-            'image.image' => 'Trường này phải là hình ảnh.',
-            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif, svg.',
-            'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
+            'image_url.*.image' => 'Trường này phải là hình ảnh.',
+            'image_url.*.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif, svg.',
+            'image_url.*.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
         ];
     }
 

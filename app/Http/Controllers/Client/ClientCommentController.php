@@ -53,6 +53,7 @@ class ClientCommentController extends Controller
 
             $validatedData = $request->validated();
 
+
             $hasUsedService = DB::table('appointments')
                 ->join('appointment_services', 'appointments.id', '=', 'appointment_services.appointment_id')
                 ->join('services', 'services.id', '=', 'appointment_services.service_id')
@@ -93,7 +94,7 @@ class ClientCommentController extends Controller
 
             ]);
             if ($request->hasFile('image_url')) {
-
+              
                 $images = $request->file('image_url');
 
                 if (is_array($images)) {
@@ -111,10 +112,11 @@ class ClientCommentController extends Controller
                     }
                 }
             }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thêm bình luận thành công.',
-                'data' => $comment,$imageName
+                'data' => $comment
             ]);
         } catch (\Throwable $th) {
             return response()->json([
