@@ -115,7 +115,7 @@ function Staffs() {
     const handleDelete = async (key) => {
         try {
             const res = await deleteusers(key);
-            console.log(res);
+
             if (res.payload.status == 403) {
                 api.error({
                     message: "Lỗi",
@@ -129,6 +129,12 @@ function Staffs() {
                 getusers();
                 api.success({
                     message: "Xóa thành công",
+                    duration: 3,
+                });
+            } else {
+                api.error({
+                    message: "Lỗi",
+                    description: res.payload.message || "Có lỗi xảy ra",
                     duration: 3,
                 });
             }

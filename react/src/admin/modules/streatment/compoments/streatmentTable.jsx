@@ -144,7 +144,7 @@ const StreatmentsTable = ({
 
     return (
         <Table
-            style={{ overflowX: "auto" }}
+        scroll={{ x: 768 }}
             dataSource={dataSource}
             columns={columns}
             loading={loading}

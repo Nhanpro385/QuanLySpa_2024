@@ -18,6 +18,7 @@ const { Option } = Select;
 import useconsulationsAction from "../../modules/consulations/hooks/useconsulationsAction";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
+import { LoadingOutlined } from "@ant-design/icons";
 const Consultant = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
@@ -178,6 +179,8 @@ const Consultant = () => {
         <Card extra={
             <Button
                 type="primary"
+                icon={<LoadingOutlined />}
+                loading={consulations.loading}
                 onClick={() => {
                     getconsulations();
                 }}

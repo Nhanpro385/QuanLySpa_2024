@@ -46,8 +46,6 @@ const StaffTable = ({
 }) => {
     const navigate = useNavigate(); // Ensure `useNavigate` is called correctly
 
-   
-
     const columns = [
         {
             title: "STT",
@@ -109,15 +107,7 @@ const StaffTable = ({
                                     </Button>
                                 ),
                             },
-                            {
-                                key: "3",
-                                label: (
-                                    <Button block disabled>
-                                        {" "}
-                                        Lịch sử làm việc (Chưa hoàn thành){" "}
-                                    </Button>
-                                ),
-                            },
+
                             {
                                 key: "4",
                                 label: (
@@ -152,7 +142,7 @@ const StaffTable = ({
     return (
         <Table
             loading={loading}
-            style={{ overflowX: "auto" }}
+            scroll={{ x: 768 }}
             dataSource={dataSource}
             columns={columns}
             rowKey={(record) => record.key} // Use rowKey to ensure unique keys for each row

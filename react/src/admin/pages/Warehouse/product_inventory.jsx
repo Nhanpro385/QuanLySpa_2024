@@ -7,6 +7,7 @@ import debounce from "lodash/debounce";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import ModalDetailinventory from "../../modules/warehouse/compoments/modalDetailinventory";
 import ModalHistoryInventory from "../../modules/warehouse/compoments/ModalHistoryInventory";
+import { LoadingOutlined } from "@ant-design/icons";
 const ProductInventory = () => {
     useEffect(() => {
         document.title = "Quản lý tồn kho";
@@ -160,6 +161,7 @@ const ProductInventory = () => {
             <Card
                 extra={
                     <Button
+                        icon={<LoadingOutlined />}
                         type="primary"
                         loading={warehouse?.inventory?.loading}
                         onClick={() => getInventoryAction()}

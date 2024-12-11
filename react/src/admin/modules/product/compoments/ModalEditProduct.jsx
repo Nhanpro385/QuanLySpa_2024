@@ -1,5 +1,5 @@
 // src/admin/components/ModalEditProduct.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     Modal,
     Button,
@@ -18,6 +18,7 @@ import usecategoriesActions from "@admin/modules/product/hooks/useCategoriesProd
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
+import JoditEditor from "jodit-react";
 const ModalEditProduct = ({
     //desktop.postman.com/?desktopVersion=11.21.0&userId=33123400&teamId=6563168&region=us
     https: visible,
@@ -40,6 +41,8 @@ const ModalEditProduct = ({
     } = useForm({
         shouldFocusError: false, // Không tự động focus trường lỗi
     });
+    const editor = useRef(null);
+    const [content, setContent] = useState("");
     const { getcategories, searchcategories } = usecategoriesActions();
     const categories = useSelector((state) => state.categories);
     const [CategoryData, setCategoryData] = useState([]);
@@ -98,6 +101,8 @@ const ModalEditProduct = ({
                     setValue(key, dayjs(productData[key]));
                 } else if (key == "category_id") {
                     setValue(key, productData[key]?.id);
+                } else if (key == "description") {
+                    setContent(productData[key]);
                 } else {
                     setValue(key, productData[key]);
                 }
@@ -393,9 +398,18 @@ const ModalEditProduct = ({
                             control={control}
                             render={({ field }) => (
                                 <Form.Item label="Mô tả">
-                                    <Input.TextArea
+                                    {/* <Input.TextArea
                                         {...field}
                                         placeholder="Mô tả sản phẩm"
+                                    /> */}
+                                    <JoditEditor
+                                        ref={editor}
+                                        value={content}
+                                        tabIndex={1}
+                                        onBlur={(newContent) => {
+                                            setContent(newContent);
+                                            field.onChange(newContent); // Update the form state
+                                        }}
                                     />
                                 </Form.Item>
                             )}

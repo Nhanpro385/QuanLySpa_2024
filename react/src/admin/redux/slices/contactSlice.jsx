@@ -110,7 +110,7 @@ export const createContactClient = createAsyncThunk(
 );
 export const updateContactAdmin = createAsyncThunk(
     "contact/updateContactAdmin",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
         const roleError = checkRoleAndLogout(dispatch);
         if (roleError !== "Quản trị viên") {
             return rejectWithValue({
@@ -234,7 +234,7 @@ const contactSlice = createSlice({
             })
             .addCase(updateContactAdmin.fulfilled, (state, action) => {
                 console.log(action.payload);
-                
+
                 state.contactDetail = action.payload;
                 state.loading = false;
             })

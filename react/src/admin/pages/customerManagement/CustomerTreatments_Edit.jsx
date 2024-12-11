@@ -14,6 +14,7 @@ import {
     Tag,
     Skeleton,
     Image,
+    Space,
 } from "antd";
 import {
     CarryOutOutlined,
@@ -28,9 +29,10 @@ import { generateSnowflakeId } from "../../utils";
 import useappointmentsActions from "../../modules/appointments/hooks/useappointments";
 import useStreatmentsAction from "../../modules/streatment/hooks/useStreatmentsAction";
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const StreatmentsEdit = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const [fileList, setFileList] = useState([]);
 
@@ -145,7 +147,7 @@ const StreatmentsEdit = () => {
     return (
         <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
             {contextHolder}
-            <h1>Thêm lịch sử trị liệu</h1>
+            <h1 className="text-center">Chỉnh sửa lịch sử trị liệu</h1>
             <Row gutter={16}>
                 <Col span={15}>
                     <Card title="Thông tin chi tiết">
@@ -341,9 +343,16 @@ const StreatmentsEdit = () => {
                             </Col>
                         </Row>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Thêm mới
-                            </Button>
+                            <Space>
+                                <Button type="primary" htmlType="submit">
+                                    Cập nhật
+                                </Button>{" "}
+                                <Button danger variant="outlined"
+                                onClick={() => navigate("/admin/khachhang/lichsutrilieu")}
+                                >
+                                    Quay lại
+                                </Button>
+                            </Space>
                         </Form.Item>
                     </Card>
                 </Col>
@@ -394,7 +403,13 @@ const StreatmentsEdit = () => {
                             </Col>
                             <Col span={24}>
                                 <Row gutter={[16, 16]} justify="space-around">
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={12}
+                                        sm={12}
+                                    >
                                         <Form.Item label="Ảnh trước">
                                             <Image
                                                 src={
@@ -403,11 +418,17 @@ const StreatmentsEdit = () => {
                                                     "https://via.placeholder.com/300"
                                                 }
                                                 alt="Ảnh trước"
-                                                width={200}
+                                                width={100}
                                             />
                                         </Form.Item>
                                     </Col>{" "}
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={12}
+                                        sm={12}
+                                    >
                                         <Form.Item label="Ảnh trước">
                                             <Image
                                                 src={
@@ -416,7 +437,7 @@ const StreatmentsEdit = () => {
                                                     "https://via.placeholder.com/300"
                                                 }
                                                 alt="Ảnh trước"
-                                                width={200}
+                                                width={100}
                                             />
                                         </Form.Item>
                                     </Col>

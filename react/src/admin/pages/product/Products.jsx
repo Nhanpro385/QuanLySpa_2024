@@ -214,11 +214,8 @@ function Products() {
         >
             {contextHolder}
             <h1 className="text-center">Quản Lý Sản Phẩm</h1>
-            <Row gutter={[16, 16]} className="mb-2">
-                <Col xl={18} md={12} xs={24}>
-                    <h2>Danh Sách Sản Phẩm</h2>
-                </Col>
-                <Col xl={6} md={12} xs={24}>
+            <Row gutter={[16, 16]} className="mb-2" justify="end">
+                <Col xxl={4} xl={6} md={8} xs={24}>
                     <Button type="primary" onClick={handleAdd} block>
                         <PlusOutlined />
                         Thêm sản phẩm mới

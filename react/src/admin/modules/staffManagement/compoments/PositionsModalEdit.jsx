@@ -28,7 +28,7 @@ const PositionsModalEdit = ({
 
     const onSubmit = (data) => {
         // Check if wage is a string before trying to replace characters
-        console.log(data.wage);
+   
 
         handleEditSubmit({ ...data, id: Position.data.id });
     };

@@ -73,6 +73,12 @@ const AppointmentsDetail = ({ isOpen, onClose, selectedAppointment }) => {
 
     const productColumns = [
         {
+            title: "#",
+            dataIndex: "id",
+            key: "id",
+            render: (text, record, index) => index + 1,
+        },
+        {
             title: "Tên Dịch Vụ",
             dataIndex: "name",
             key: "name",
@@ -87,10 +93,7 @@ const AppointmentsDetail = ({ isOpen, onClose, selectedAppointment }) => {
             dataIndex: "price",
             key: "price",
             render: (price) =>
-                `${parseFloat(price).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                })}`,
+                `${parseFloat(price).toLocaleString()} VNĐ`,
         },
         {
             title: "Thành tiền",
@@ -98,10 +101,7 @@ const AppointmentsDetail = ({ isOpen, onClose, selectedAppointment }) => {
             key: "total_price",
             render: (text, record) => {
                 const totalPrice = record.quantity * parseFloat(record.price);
-                return `${totalPrice.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                })}`;
+                return `${totalPrice.toLocaleString()} VNĐ`;
             },
         },
     ];

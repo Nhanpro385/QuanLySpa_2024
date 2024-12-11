@@ -44,10 +44,8 @@ const TableProduct = ({
             key: "price",
             render: (text, record) => (
                 <span>
-                    {parseInt(record?.price).toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                    }) || "Dữ liệu không có"}
+                    {parseInt(record?.price).toLocaleString() + " VND" ||
+                        "Dữ liệu không có"}
                 </span>
             ),
         },
@@ -135,7 +133,7 @@ const TableProduct = ({
     ];
     return (
         <Table
-            style={{ overflowX: "auto" }}
+            scroll={{ x: 768 }}
             dataSource={dataSource}
             columns={columns}
             pagination={{

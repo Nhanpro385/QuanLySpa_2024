@@ -64,8 +64,7 @@ const Appointment_Edit = () => {
 
     useEffect(() => {
         getservices(50);
-        console.log(idAppointment);
-
+       
         getappointmentsById(idAppointment);
     }, []);
 

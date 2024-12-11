@@ -54,7 +54,7 @@ const PositionsTable = ({
     return (
         <Table
             loading={loading}
-            style={{ overflowX: "auto" }}
+            scroll={{ x: 768 }}
             dataSource={dataSource}
             columns={columns}
             rowKey="key"

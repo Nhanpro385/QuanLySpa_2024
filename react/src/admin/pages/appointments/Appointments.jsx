@@ -1,6 +1,6 @@
 // src/pages/Appointments.js
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Row, Input, notification } from "antd";
+import { Button, Card, Col, Row, Input, notification, Divider } from "antd";
 
 import AppointmentsTable from "../../modules/appointments/compoments/AppointmentsTable";
 import AppointmentsCalendar from "../../modules/appointments/compoments/AppointmentsCalendar";
@@ -10,6 +10,7 @@ import useappointmentsActions from "../../modules/appointments/hooks/useappointm
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import AppointmentsDetail from "../../modules/appointments/compoments/AppointmentsDetail";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 function Appointments() {
     useEffect(() => {
         document.title = "Lịch hẹn";
@@ -96,11 +97,9 @@ function Appointments() {
     };
     const handledelete = async (record) => {
         try {
-          
-
             const res = await deleteappointments(record.id);
             console.log(res);
-            
+
             if (res.payload?.status === 500 || res.payload?.status === 403) {
                 api.error({
                     message: "Có lỗi xảy ra",
@@ -136,29 +135,33 @@ function Appointments() {
                 {contextHolder}
                 <Col span={24}>
                     <Card
-                     extra={
-                        <Button
-                            type="primary"
-                            onClick={() => getappointments()}
-                            loading={loading}
-                        >
-                            Làm mới
-                        </Button>
-                    }
+                        extra={
+                            <Button
+                                icon={<LoadingOutlined />}
+                                type="primary"
+                                onClick={() => getappointments()}
+                                loading={loading}
+                            >
+                                Làm mới
+                            </Button>
+                        }
                     >
-                        <Row className="m-2" justify={"space-between"}>
+                        <Divider orientation="left">
                             <h2>Danh Sách Đặt Lịch</h2>
+                        </Divider>
+                        <Row className="m-2" justify={"end"}>
                             <Button
                                 type="primary"
                                 onClick={() => {
                                     navigate("/admin/lichhen/them");
                                 }}
+                                icon={<PlusOutlined />}
                             >
                                 Thêm lịch hẹn
                             </Button>
                         </Row>
 
-                        <Row gutter={[16, 16]} className="mb-3">
+                        <Row gutter={[16, 16]} className="mb-5">
                             <Col
                                 xxl={12}
                                 xl={12}
@@ -203,6 +206,9 @@ function Appointments() {
                         />
                     </Card>
                 </Col>
+                <Divider orientation="left">
+                            <h2>Lịch hẹn theo ngày</h2>
+                        </Divider>
                 <Col span={24}>
                     {dataAppointments.length > 0 && (
                         <AppointmentsCalendar data={appointments.data} />

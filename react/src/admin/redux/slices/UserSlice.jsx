@@ -78,8 +78,8 @@ export const usersDelete = createAsyncThunk(
         }
 
         try {
-            await axiosInstance.delete(endpoints.Users.delete(id));
-            return id;
+            const res = await axiosInstance.delete(endpoints.Users.delete(id));
+            return res.data;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,

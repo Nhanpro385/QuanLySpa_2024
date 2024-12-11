@@ -172,7 +172,8 @@ const ContactManagement = () => {
                 id: selectedContact.id,
                 data: values,
             });
-
+            console.log(res);
+            
             if (res.payload?.status == "success") {
                 api.success({
                     message:

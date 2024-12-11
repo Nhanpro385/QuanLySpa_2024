@@ -63,7 +63,7 @@ const ServiceHistory = () => {
         <div style={{ padding: "24px" }}>
             <h1 className="text-center">Lịch sử trị liệu của khách hàng</h1>
 
-            <Card className="mb-3">
+            {/* <Card className="mb-3">
                 <Row gutter={[16, 16]}>
                     <Col xl={4} md={6} sm={12} xs={24}>
                         <Select
@@ -81,7 +81,7 @@ const ServiceHistory = () => {
                         <RangePicker style={{ width: 250 }} />
                     </Col>
                 </Row>
-            </Card>
+            </Card> */}
             {/* Service Cards Section */}
 
             <List

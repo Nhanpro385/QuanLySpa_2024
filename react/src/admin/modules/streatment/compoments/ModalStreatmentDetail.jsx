@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Row, Col, Image, Descriptions, Tag } from "antd";
-
+import { URL_IMAGE_2 } from "../../../config/appConfig";
 function ModalStreatmentDetail({ open, onOk, onCancel, selectStreatment }) {
     const [payload, setPayload] = useState({});
-    console.log(selectStreatment);
 
     useEffect(() => {
         if (selectStreatment) {
@@ -18,7 +17,7 @@ function ModalStreatmentDetail({ open, onOk, onCancel, selectStreatment }) {
                     <h3 className="text-center">Ảnh trước</h3>
                     <Image
                         src={
-                            `http://127.0.0.1:8000/storage/${payload.image_before}` ||
+                            `${URL_IMAGE_2}/${payload.image_before}` ||
                             "https://via.placeholder.com/300x200"
                         }
                         alt="Before"
@@ -31,7 +30,7 @@ function ModalStreatmentDetail({ open, onOk, onCancel, selectStreatment }) {
                     <h3 className="text-center">Ảnh sau</h3>
                     <Image
                         src={
-                            `http://127.0.0.1:8000/storage/${payload.image_after}` ||
+                            `${URL_IMAGE_2}/${payload.image_after}` ||
                             "https://via.placeholder.com/300x200"
                         }
                         alt="After"

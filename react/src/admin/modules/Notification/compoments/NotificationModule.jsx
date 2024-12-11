@@ -161,9 +161,7 @@ const NotificationModule = () => {
             </>
         ) : (
             <Row align="middle">
-                <Col span={24}>
-                    Không có thông báo mới
-                </Col>
+                <Col span={24}>Không có thông báo mới</Col>
             </Row>
         );
 
@@ -180,8 +178,9 @@ const NotificationModule = () => {
             <Tag
                 style={{
                     borderRadius: "50%",
+                   
                 }}
-                color="red"
+                color="#e05265"
                 className={styles.notificationBadge}
             >
                 {notiData.filter((item) => !item.read).length}

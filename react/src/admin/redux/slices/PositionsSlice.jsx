@@ -84,7 +84,7 @@ export const PositionsDelete = createAsyncThunk(
 
 export const PositionsUpdate = createAsyncThunk(
     "Positions/update",
-    async (data, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
         const userRole = checkRoleAndLogout(dispatch);
         if (userRole !== "Quản trị viên") {
             return rejectWithValue({

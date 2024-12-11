@@ -52,7 +52,7 @@ const TableSection = ({
                     }
                 >
                     <Table
-                        style={{ overflowX: "auto" }}
+                        scroll={{ x: 768 }}
                         columns={staffConsulationsColumns}
                         dataSource={filteredStaffConsultations}
                         pagination={{ pageSize: 5 }}
@@ -77,7 +77,7 @@ const TableSection = ({
                     }
                 >
                     <Table
-                        style={{ overflowX: "auto" }}
+                       scroll={{ x: 768 }}
                         columns={staffAppoimentsColumns}
                         dataSource={filteredStaffAppoiments}
                         pagination={{ pageSize: 5 }}
@@ -87,7 +87,7 @@ const TableSection = ({
             <Col xl={24} md={24} sm={24} xs={24}>
                 <Card title="Giao dịch gần đây">
                     <Table
-                        style={{ overflowX: "auto" }}
+                       scroll={{ x: 768 }}
                         columns={transactionColumns}
                         dataSource={transactionData}
                         pagination={{ pageSize: 5 }}
@@ -97,7 +97,7 @@ const TableSection = ({
             <Col xl={24} md={24} sm={24} xs={24}>
                 <Card title="Lịch hẹn tư vấn ">
                     <Table
-                        style={{ overflowX: "auto" }}
+                        scroll={{ x: 768 }}
                         columns={appointmentColumns}
                         dataSource={appointmentData}
                         pagination={{ pageSize: 5 }}

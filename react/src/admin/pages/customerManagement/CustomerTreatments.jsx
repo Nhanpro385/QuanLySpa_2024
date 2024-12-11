@@ -60,12 +60,12 @@ const StreatMents = () => {
     const handelDetail = async (record) => {
         try {
             const res = await getStreatmentById(record.id);
-            if (
-                streatments.streament &&
-                streatments.loading === false &&
-                res.payload.status == "success"
-            ) {
-                setStreatmentsDetail(streatments.streament.data);
+            console.log(res);
+
+            if (streatments.streament && streatments.loading === false) {
+               
+
+                setStreatmentsDetail((prev) => res.payload.data);
             }
             showModal();
         } catch (error) {

@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 import "dayjs/locale/vi";
 import debounce from "lodash/debounce";
 
-import { PlusOutlined } from "@ant-design/icons";
+import { PhoneFilled, PhoneOutlined, PlusOutlined } from "@ant-design/icons";
 
 import useappointmentsActions from "../../modules/appointments/hooks/useappointments";
 import useUsersActions from "../../modules/staffManagement/hooks/useUserAction";
@@ -120,7 +120,16 @@ const Appointment_Add = () => {
             setCustomerOptions(
                 customer.customers.data.map((customer) => ({
                     value: customer.id,
-                    label: customer.full_name,
+                    label: (
+                        <>
+                            <Tag color="blue">
+                                <UserOutlined /> {customer.full_name}
+                            </Tag>
+                            <Tag color="green">
+                                <PhoneOutlined /> {customer.phone}
+                            </Tag>
+                        </>
+                    ),
                 }))
             );
         }
@@ -623,7 +632,7 @@ const Appointment_Add = () => {
                         </Form.Item>
                     </Col>
 
-                    <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Ngày hẹn" required>
                             <Controller
                                 name="appointment_date"
@@ -695,8 +704,8 @@ const Appointment_Add = () => {
                             )}
                         </Form.Item>
                     </Col>
-                    <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                        <Form.Item label="Dịch vụ">
+                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                        <Form.Item label="Dịch vụ" required>
                             <Controller
                                 name="service"
                                 control={control}
@@ -732,7 +741,7 @@ const Appointment_Add = () => {
                         </Form.Item>
                     </Col>
 
-                    <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
+                    <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Form.Item label="Chọn nhân viên" required>
                             <Controller
                                 name="employee"

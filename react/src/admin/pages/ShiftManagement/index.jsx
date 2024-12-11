@@ -9,6 +9,7 @@ import {
     Space,
     Popconfirm,
     Dropdown,
+    Tag,
 } from "antd";
 import { Loading3QuartersOutlined, DownOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -28,6 +29,7 @@ import useShiftAction from "../../modules/ShiftManagement/hooks/useShiftAction";
 
 import debounce from "lodash/debounce";
 import ModalAddstaff from "../../modules/ShiftManagement/compoments/Modal_add_staff";
+import Modal_shitf_detail from "../../modules/ShiftManagement/compoments/Modal_shitf_detail";
 const ShiftManagement = () => {
     const [api, contextHolder] = notification.useNotification();
     const [shiftselected, setShiftSelected] = React.useState(null);
@@ -68,7 +70,12 @@ const ShiftManagement = () => {
         handleCancel: handleCancel3,
         showModal: showModal3,
     } = useModal();
-
+    const {
+        isModalOpen: isModalOpen4,
+        handleOk: handleOk4,
+        handleCancel: handleCancel4,
+        showModal: showModal4,
+    } = useModal();
     const [searchquery, setSearchQuery] = React.useState({
         search: "",
         page: 1,
@@ -182,6 +189,19 @@ const ShiftManagement = () => {
         }
     };
 
+    const handleDetail = async (record) => {
+        try {
+            const res = await getshiftsById(record.key);
+
+            if (res.meta.requestStatus === "fulfilled") {
+                setShiftSelected(() => res.payload.data);
+                showModal4();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const dataSource =
         shifts.data.map((shift) => ({
             key: shift.id,
@@ -189,6 +209,7 @@ const ShiftManagement = () => {
             start_time: shift.start_time,
             end_time: shift.end_time,
             max_customers: shift.max_customers,
+            status: shift.status,
         })) || [];
 
     const columns = [
@@ -197,20 +218,7 @@ const ShiftManagement = () => {
             key: "index",
             render: (text, record, index) => index + 1,
         },
-        {
-            title: "Tên Ca",
-            dataIndex: "start_time",
-            key: "name_shift",
-            render: (text) => (
-                <span>
-                    {text === "08:00:00"
-                        ? "Ca Sáng"
-                        : text === "14:00:00"
-                        ? "Ca Chiều"
-                        : "Ca Tối"}
-                </span>
-            ),
-        },
+
         {
             title: "Ngày tháng",
             dataIndex: "shift_date",
@@ -233,6 +241,17 @@ const ShiftManagement = () => {
             render: (text) => <span>{text} Người</span>,
         },
         {
+            title: "Trạng thái",
+            key: "status",
+            dataIndex: "status",
+            render: (text) =>
+                text == 1 ? (
+                    <Tag color="green">Đang hoạt động</Tag>
+                ) : (
+                    <Tag color="red" >Đã kết thúc</Tag>
+                ),
+        },
+        {
             title: "Hành Động",
             key: "action",
             render: (text, record) => (
@@ -253,8 +272,11 @@ const ShiftManagement = () => {
                             {
                                 key: "2",
                                 label: (
-                                    <Button block disabled>
-                                        Chi tiết Ca (Chưa có)
+                                    <Button
+                                        block
+                                        onClick={() => handleDetail(record)}
+                                    >
+                                        Chi tiết Ca
                                     </Button>
                                 ),
                             },
@@ -342,10 +364,10 @@ const ShiftManagement = () => {
                 style={{ marginBottom: 16 }}
                 gutter={[16, 16]}
             >
-                <Col xl={20} md={20} sm={24} xs={24}>
+                <Col xl={20} md={18} sm={24} xs={24}>
                     <h2>Danh Sách Ca Làm Việc</h2>
                 </Col>
-                <Col xl={4} md={4} sm={24} xs={24}>
+                <Col xl={4} md={6} sm={24} xs={24}>
                     <Button type="primary" onClick={showModal} block>
                         <PlusOutlined /> Thêm Ca Mới
                     </Button>
@@ -360,12 +382,9 @@ const ShiftManagement = () => {
                 </Col>
             </Row>
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-                <Col xl={2} md={2} xs={24}>
-                    <h3 className="text-center">Tìm kiếm</h3>
-                </Col>
-                <Col xl={6} md={6} xs={24}>
+                <Col xxl={6} xl={6} md={12} sm={24} xs={24}>
                     <DatePicker
-                        style={{ width: "100%" }}
+                        className="w-100"
                         format={"DD/MM/YYYY"}
                         onChange={(date) =>
                             handleSearch(dayjs(date).format("YYYY-MM-DD"))
@@ -415,6 +434,11 @@ const ShiftManagement = () => {
                 errors={errors}
                 setValue={setValue}
                 Controller={Controller}
+            />
+            <Modal_shitf_detail
+                isOpen={isModalOpen4}
+                onClose={handleCancel4}
+                selectedShif={shiftselected}
             />
             <ShiftCalendar data={shifts?.data || []} />
         </div>

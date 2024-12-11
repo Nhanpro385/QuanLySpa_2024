@@ -37,14 +37,19 @@ const ListBookingServiceTable = ({ service, setService }) => {
             width: "10%",
             render: (text, record, index) => (
                 <Input
-                    className="w-100"
-                    min={1}
-                    type="number"
-                    value={record.quantity}
-                    onChange={(e) =>
-                        handleQuantityChange(parseInt(e.target.value) || 1, index)
-                    }
-                />
+                className="w-100"
+                min={1}
+                max={3}
+                type="number"
+                value={record.quantity}
+                onChange={(e) => {
+                    const value = parseInt(e.target.value) || 1;
+                    // Giới hạn giá trị trong khoảng từ 1 đến 3
+                    const clampedValue = Math.max(1, Math.min(3, value));
+                    handleQuantityChange(clampedValue, index);
+                }}
+            />
+            
             ),
         },
         {

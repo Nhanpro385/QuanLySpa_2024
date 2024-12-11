@@ -81,8 +81,15 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
             key: "Mô tả",
             label: "Mô tả",
             span: 2,
-            children: ProductData?.description || "Không có mô tả",
+            children: (
+                <div
+                    dangerouslySetInnerHTML={{
+                        __html: ProductData?.description || "Không có mô tả",
+                    }}
+                />
+            ),
         },
+
         {
             key: "Ảnh đại diện",
             label: "Ảnh đại diện",
@@ -117,7 +124,7 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
             title: "Mã sản phẩm",
             dataIndex: "id",
             key: "id",
-            render: (text)=> ProductData?.id || "Chưa có thông tin",
+            render: (text) => ProductData?.id || "Chưa có thông tin",
         },
         {
             title: "Số lượng",

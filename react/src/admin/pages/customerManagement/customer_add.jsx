@@ -97,7 +97,7 @@ const CustomersAdd = () => {
                 <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
                     <Row gutter={16}>
                         <Col xl={6} lg={6} md={6} sm={24} xs={24}>
-                            <Form.Item label="Họ và tên">
+                            <Form.Item label="Họ và tên" required>
                                 <Controller
                                     name="full_name"
                                     control={control}
@@ -124,7 +124,7 @@ const CustomersAdd = () => {
                             </Form.Item>
                         </Col>
                         <Col xl={6} lg={6} md={6} sm={24} xs={24}>
-                            <Form.Item label="Email">
+                            <Form.Item label="Email" required>
                                 <Controller
                                     name="email"
                                     control={control}
@@ -146,7 +146,7 @@ const CustomersAdd = () => {
                         </Col>
 
                         <Col xl={6} lg={6} md={6} sm={24} xs={24}>
-                            <Form.Item label="Số điện thoại">
+                            <Form.Item label="Số điện thoại" required>
                                 <Controller
                                     name="phone"
                                     control={control}
@@ -168,7 +168,7 @@ const CustomersAdd = () => {
                             </Form.Item>
                         </Col>
                         <Col xl={6} lg={6} md={6} sm={24} xs={24}>
-                            <Form.Item label="Giới tính">
+                            <Form.Item label="Giới tính" required>
                                 <Controller
                                     name="gender"
                                     control={control}
@@ -209,7 +209,7 @@ const CustomersAdd = () => {
                         </Col>
 
                         <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                            <Form.Item label="Ngày sinh">
+                            <Form.Item label="Ngày sinh" required>
                                 <Controller
                                     name="date_of_birth"
                                     control={control}

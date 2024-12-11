@@ -13,40 +13,6 @@ const AppointmentsTable = ({
 }) => {
     console.log(dataSource);
 
-    // const items = [
-    //     {
-    //         key: "1",
-    //         label: (
-    //             <Button block onClick={(e) => e.preventDefault()}>
-    //                 Sửa
-    //             </Button>
-    //         ),
-    //     },
-    //     {
-    //         key: "2",
-    //         label: (
-    //             <Button block onClick={(e) => e.preventDefault()}>
-    //                 Chi tiết
-    //             </Button>
-    //         ),
-    //     },
-    //     {
-    //         key: "3",
-    //         label: (
-    //             <Button
-    //                 block
-    //                 danger
-    //                 onClick={(e) => {
-    //                     e.preventDefault(); // Prevent event propagation
-    //                     handleDelete(); // Pass the appropriate delete logic here
-    //                 }}
-    //             >
-    //                 Xóa
-    //             </Button>
-    //         ),
-    //     },
-    // ];
-
     const columns = [
         {
             title: "STT",
@@ -58,20 +24,23 @@ const AppointmentsTable = ({
             dataIndex: "service_name",
             key: "service_name",
             render: (text, record) => {
-                return <span>{record.service_name || "Không có"}</span>;
+                return <span>{record?.service_name || "Không có"}</span>;
             },
         },
         {
             title: "Tên Khách Hàng",
             dataIndex: "customer_id",
             key: "customer_id",
+            render: (text, record) => {
+                return <span>{record?.customer_id || "Không tìm thấy"}</span>;
+            }
         },
         {
             title: "Tên Nhân Viên",
             dataIndex: "employee_name",
             key: "employee_name",
             render: (text, record) => {
-                return <span>{record.employee_name || "Không có"}</span>;
+                return <span>{record?.employee_name || "Không tìm thấy"}</span>;
             },
         },
         {
@@ -109,7 +78,7 @@ const AppointmentsTable = ({
             },
         },
         {
-            title: "Chi Tiết",
+            title: "Hành Động",
             key: "action",
             render: (text, record) => (
                 <span>
@@ -182,7 +151,7 @@ const AppointmentsTable = ({
 
     return (
         <Table
-            style={{ overflowX: "auto" }}
+           scroll={{ x: 768 }}
             dataSource={dataSource}
             columns={columns}
             loading={loading}

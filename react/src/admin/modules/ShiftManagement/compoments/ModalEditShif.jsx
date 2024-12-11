@@ -131,6 +131,7 @@ function ModalAddShiftEdit({
                                         onChange={(date) =>
                                             field.onChange(date)
                                         }
+                                        needConfirm={false}
                                     />
                                 )}
                             />
@@ -156,6 +157,8 @@ function ModalAddShiftEdit({
                                         onChange={(time) =>
                                             field.onChange(time)
                                         }
+                                        needConfirm={false}
+
                                     />
                                 )}
                             />
@@ -182,6 +185,8 @@ function ModalAddShiftEdit({
                                         onChange={(time) =>
                                             field.onChange(time)
                                         }
+                                        needConfirm={false}
+
                                     />
                                 )}
                             />

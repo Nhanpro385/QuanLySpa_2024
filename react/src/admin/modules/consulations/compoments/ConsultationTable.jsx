@@ -14,14 +14,14 @@ const ConsultationTable = ({
             title: "#",
             key: "index",
             align: "center",
-            width: 50,
+            width: "5%",
             render: (text, record, index) => index + 1,
         },
         {
             title: "Khách hàng",
             dataIndex: "customer",
             key: "customer",
-            width: 200,
+            width: "10%",
             ellipsis: true,
             render: (text) => text?.full_name || "Không tìm thấy",
         },
@@ -29,7 +29,7 @@ const ConsultationTable = ({
             title: "Nhân viên",
             dataIndex: "staff_id",
             key: "staff_id",
-            width: 200,
+            width: "10%",
             ellipsis: true,
             render: (text) => text?.fullname || "Không tìm thấy",
         },
@@ -37,15 +37,15 @@ const ConsultationTable = ({
             title: "Số điện thoại",
             dataIndex: "customer",
             key: "phone",
-            width: 150,
+            width: "10%",
             align: "center",
             render: (text) => text?.phone || "Không tìm thấy",
         },
         {
-            title: "nội dung tư vấn",
+            title: "Nội dung tư vấn",
             dataIndex: "treatment_plan",
             key: "treatment_plan",
-            width: 250,
+            width: "15%",
             ellipsis: true,
             render: (plan) => plan || "Không tìm thấy",
         },
@@ -53,7 +53,7 @@ const ConsultationTable = ({
             title: "Tình trạng da",
             dataIndex: "skin_condition",
             key: "skin_condition",
-            width: 250,
+            width: "15%",
             ellipsis: true,
             render: (condition) => condition || "Không tìm thấy",
         },
@@ -61,7 +61,7 @@ const ConsultationTable = ({
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            width: 150,
+            width: "20%",
             align: "center",
             render: (status) =>
                 status === 0 ? (
@@ -76,7 +76,7 @@ const ConsultationTable = ({
             title: "Hành động",
             key: "action",
             align: "center",
-            width: 200,
+            width: "15%",
             render: (text, record) => (
                 <Dropdown
                     menu={{
@@ -117,7 +117,7 @@ const ConsultationTable = ({
             ),
         },
     ];
-
+    
     return (
         <Table
             columns={columns}

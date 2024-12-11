@@ -61,7 +61,6 @@ const Positions = () => {
 
     const pagination = Positions.Positions.meta || {};
 
-    const Position = {};
     const onSubmit = async (data) => {
         const payload = {
             id: Snowflake.generate(),
@@ -201,8 +200,8 @@ const Positions = () => {
 
         try {
             const resultAction = await updatePositions(data);
-                console.log(resultAction);
-                
+            console.log(resultAction);
+
             // Check if the request was successful and the payload is valid
             if (
                 resultAction?.meta?.requestStatus === "fulfilled" &&
