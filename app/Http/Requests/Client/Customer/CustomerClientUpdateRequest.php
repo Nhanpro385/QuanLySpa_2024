@@ -54,7 +54,7 @@ class CustomerClientUpdateRequest extends FormRequest
             'gender.integer' => 'Giới tính phải là số nguyên.',
             'gender.in' => 'Giới tính không hợp lệ. Chọn 0 (Nam), 1 (Nữ) hoặc 2 (Khác).',
             'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
-            'date_of_birth.before_or_equal' => 'Ngày sinh không được nằm trong tương lai.',
+            'date_of_birth.before_or_equal' => 'Ngày sinh phải trước ngày hôm nay.',
             'date_of_birth.date' => 'Định dạng ngày sinh không hợp lệ.',
             'date_of_birth.required' => 'Ngày sinh không được để trống.',
             'status.required' => 'Trạng thái không được bỏ trống!',
