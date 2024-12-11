@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Input, Row, Select, notification } from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    Input,
+    Row,
+    Select,
+    Space,
+    notification,
+} from "antd";
 import useModal from "../../modules/appointments/hooks/openmodal";
 import InvoiceTable from "../../modules/payments/compoments/InvoiceTable";
 import PaymentModal from "../../modules/payments/compoments/PaymentModal";
@@ -10,6 +19,7 @@ import { set } from "react-hook-form";
 import PaymentModalAddnew from "../../modules/payments/compoments/PaymentModalAddnew";
 import { generateSnowflakeId } from "../../utils";
 import debounce from "lodash/debounce";
+import { LoadingOutlined } from "@ant-design/icons";
 const PaymentManagement = () => {
     const [api, contextHolder] = notification.useNotification();
     const { isModalOpen, showModal, handleCancel } = useModal();
@@ -31,8 +41,13 @@ const PaymentManagement = () => {
     } = useModal();
     const [paymendata, setPaymentData] = useState([]);
     const payments = useSelector((state) => state.payments);
-    const { getpayment, addpayment, updatepayment, getpaymentById,searchpayment } =
-        usepaymentActions();
+    const {
+        getpayment,
+        addpayment,
+        updatepayment,
+        getpaymentById,
+        searchpayment,
+    } = usepaymentActions();
     useEffect(() => {
         getpayment();
     }, []);
@@ -123,7 +138,10 @@ const PaymentManagement = () => {
                 api.error({
                     message: res.payload.message || "Có lỗi xảy ra",
                     duration: 3,
-                    description: res.payload.message || res.payload.error || "vui lòng thử lại",
+                    description:
+                        res.payload.message ||
+                        res.payload.error ||
+                        "vui lòng thử lại",
                 });
                 setErrorpayment((prev) => res.payload.errors || {});
             }
@@ -164,8 +182,7 @@ const PaymentManagement = () => {
             ...prev,
             search: value,
         }));
-    }
-    , 500);
+    }, 500);
     return (
         <>
             <h1 className="text-center">Quản lý thanh toán</h1>
@@ -175,12 +192,23 @@ const PaymentManagement = () => {
                     <Card
                         title="Lịch sử thanh toán"
                         extra={
-                            <Button
-                                type="primary"
-                                onClick={() => showPaymentModal3()}
-                            >
-                                Thêm thanh toán
-                            </Button>
+                            <Space>
+                                <Button
+                                    type="primary"
+                                    onClick={() => showPaymentModal3()}
+                                >
+                                    Thêm thanh toán
+                                </Button>{" "}
+                                <Button
+                                    icon={<LoadingOutlined />}
+                                    loading={payments.loading}
+                                    danger
+                                    variant="outlined"
+                                    onClick={() => getpayment()}
+                                >
+                                    Làm mới
+                                </Button>
+                            </Space>
                         }
                     >
                         <Row gutter={[16, 16]} className="mb-3">
@@ -223,9 +251,12 @@ const PaymentManagement = () => {
                             </Col> */}
                             <Col xxl={6} xl={8} lg={12} md={12} sm={12} xs={12}>
                                 <Input.Search
-                                    onChange={(e) => OnsearchPayment(e.target.value)}
+                                    onChange={(e) =>
+                                        OnsearchPayment(e.target.value)
+                                    }
                                     onSearch={(value) => OnsearchPayment(value)}
-                                placeholder="Tìm kiếm theo mã hóa đơn hoặc tên khách hàng" />
+                                    placeholder="Tìm kiếm theo mã hóa đơn hoặc tên khách hàng"
+                                />
                             </Col>
                         </Row>
                         <InvoiceTable

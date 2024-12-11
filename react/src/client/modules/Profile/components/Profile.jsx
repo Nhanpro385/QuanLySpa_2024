@@ -260,7 +260,7 @@ const Profile = () => {
                                         )}
                                     />
                                     {errors.full_name && (
-                                        <p classfull_name={style.error}>
+                                        <p className={style.error}>
                                             {errors.full_name.message}
                                         </p>
                                     )}
