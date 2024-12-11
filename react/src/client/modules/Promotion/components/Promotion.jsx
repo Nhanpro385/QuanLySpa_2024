@@ -146,7 +146,10 @@ const Promotion = () => {
                                                         <p>Mã: {item.name}</p>
                                                     </div>
                                                     <div className={style.boxServicesItemBottom}>
-                                                        <p>{item.description}</p>
+                                                        <p dangerouslySetInnerHTML={{
+                                                            __html: item.description || "Không có mô tả",
+                                                        }}>
+                                                        </p>
                                                     </div>
                                                     <div className={style.boxServicesItemPrice}>
                                                         <p>
@@ -190,14 +193,19 @@ const Promotion = () => {
                 width={'1000px'}
             >
                 {selectedPromotion && (
-                    <div>   
+                    <div>
                         <Image
                             src={`${URL_IMAGE}/promotions/${selectedPromotion.image_url}`}
                             alt={selectedPromotion.name}
                             style={{ marginBottom: "16px", width: "100%" }}
                         />
-                        <Title level={3} style={{marginTop: '20px'}}>Mã: {selectedPromotion.name}</Title>
-                        <Text style={{ fontWeight: '400', fontSize: '20px' }}>{selectedPromotion.description}</Text>
+                        <Title level={3} style={{ marginTop: '20px' }}>Mã: {selectedPromotion.name}</Title>
+                        <Text style={{ fontWeight: '400', fontSize: '20px' }} >
+                            <div dangerouslySetInnerHTML={{
+                                __html: selectedPromotion.description || "Không có mô tả",
+                            }}></div>
+                        </Text>
+
                         <div style={{ marginTop: "16px" }}>
                             <p style={{ fontSize: '18px', color: 'red', fontWeight: '500' }}>
                                 Giảm giá:{" "}
