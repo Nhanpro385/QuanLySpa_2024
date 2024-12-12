@@ -106,7 +106,7 @@ const Appointment_Add = () => {
                         <Space>
                             <Tag color="blue">{service.name}</Tag>
                             <Tag color="green">
-                                {parseInt(service.price).toLocaleString()}đ
+                                {parseInt(service.price).toLocaleString()} VNĐ
                             </Tag>
                         </Space>
                     ),
@@ -484,7 +484,16 @@ const Appointment_Add = () => {
                     ...customerOptions,
                     {
                         value: res.payload.data.id,
-                        label: res.payload.data.full_name,
+                        label: (
+                            <>
+                                <Tag color="blue">
+                                    <UserOutlined /> {res.payload?.data?.full_name}
+                                </Tag>
+                                <Tag color="green">
+                                    <PhoneOutlined /> {res.payload?.data?.phone}
+                                </Tag>
+                            </>
+                        ),
                     },
                 ]);
             } else {

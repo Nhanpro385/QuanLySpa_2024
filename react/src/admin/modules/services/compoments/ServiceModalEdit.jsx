@@ -54,6 +54,7 @@ function ServiceModalEdit({
 
     useEffect(() => {
         if (service) {
+            fileList.length = 0;
             setValue("name", service?.name || "");
             setValue("price", service?.price || "");
             setValue("description", service?.description || "");

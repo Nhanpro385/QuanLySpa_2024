@@ -297,7 +297,8 @@ const ServicesDetailById = () => {
                                 alt={service?.name || "Không có hình ảnh"}
                                 style={{
                                     width: "100%",
-                                    height: "auto",
+                                    minHeight: "300px",
+                                    maxHeight: "300px",
                                     borderRadius: "8px",
                                 }}
                             />
@@ -355,6 +356,66 @@ const ServicesDetailById = () => {
                     </Col>
                 </Row>
             </Card>
+            {service?.products && service?.products.length > 0 && (
+                <div style={{ marginTop: "40px" }}>
+                    <Divider orientation="left">
+                        Sản phẩm được sử dụng trong dịch vụ
+                    </Divider>
+                    <Row gutter={[16, 16]}>
+                        {service?.products.map((product, index) => (
+                            <Col
+                                key={index}
+                                xxl={8}
+                                xl={8}
+                                lg={8}
+                                md={12}
+                                sm={24}
+                            >
+                                <Card
+                                    title={
+                                        product?.name ||
+                                        "Sản phẩm không xác định"
+                                    }
+                                    bordered={true}
+                                    className={style.cardProduct}
+                                >
+                                    <Row gutter={[16, 16]} align="middle">
+                                        <Col
+                                            xxl={5}
+                                            xl={5}
+                                            lg={5}
+                                            md={5}
+                                            sm={5}
+                                        >
+                                            <Image
+                                                src={`${URL_IMAGE}/products/${product?.image_url}`}
+                                                alt={
+                                                    product?.name ||
+                                                    "Không có ảnh"
+                                                }
+                                                height={50}
+                                            />
+                                        </Col>
+                                        <Col
+                                            xxl={19}
+                                            xl={19}
+                                            lg={19}
+                                            md={19}
+                                            sm={19}
+                                        >
+                                            <span>
+                                                Số lượng sử dụng:{" "}
+                                                {product?.quantity_used ||
+                                                    "Chưa xác định"}
+                                            </span>
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                </div>
+            )}
             <Card className="mt-4" title="Danh sách bình luận và đánh giá">
                 <List
                     locale={{ emptyText: "Chưa có bình luận nào" }}

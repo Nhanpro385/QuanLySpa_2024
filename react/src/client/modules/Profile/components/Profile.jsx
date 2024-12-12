@@ -68,7 +68,7 @@ const Profile = () => {
             setValue("address", authCustomer?.user?.data?.address || "");
             setValue("gender", authCustomer?.user?.data?.gender || 0);
             setValue("address", authCustomer?.user?.data?.address || "");
-            setValue("status", authCustomer?.user?.data?.status || true);
+            // setValue("status", authCustomer?.user?.data?.status || true);
             setValue(
                 "date_of_birth",
                 dayjs(authCustomer?.user?.data?.date_of_birth) || ""
@@ -86,7 +86,7 @@ const Profile = () => {
                     dayjs(data.date_of_birth).format("YYYY-MM-DD") ||
                     "1999-01-01",
                 address: data.address || "Chưa cập nhật",
-                status: data.status || true,
+                status: true,
             };
             const res = await authEditProfileClient({
                 id: authCustomer?.user?.data?.id,
@@ -380,7 +380,7 @@ const Profile = () => {
                                         )}
                                     />
                                 </Col>{" "}
-                                <Col span={24}>
+                                {/* <Col span={24}>
                                     <label htmlFor="status">Trạng Thái</label>
                                     <Controller
                                         name="status"
@@ -394,7 +394,7 @@ const Profile = () => {
                                             />
                                         )}
                                     />
-                                </Col>
+                                </Col> */}
                             </Row>
 
                             <Row
@@ -414,7 +414,14 @@ const Profile = () => {
                     <Col xxl={8} xl={8} lg={8} md={24} sm={24} xs={24}>
                         <Card title="Đổi Mật Khẩu" className={style.card}>
                             <Row gutter={[16, 16]}>
-                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Input.Password
                                         value={oldPassword}
                                         onChange={(e) =>
@@ -424,7 +431,14 @@ const Profile = () => {
                                         className={style.inputPassword}
                                     />
                                 </Col>
-                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Input.Password
                                         value={newPassword}
                                         onChange={(e) =>
@@ -434,7 +448,14 @@ const Profile = () => {
                                         className={style.inputPassword}
                                     />
                                 </Col>
-                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Input.Password
                                         value={confirmPassword}
                                         onChange={(e) =>
@@ -444,7 +465,14 @@ const Profile = () => {
                                         className={style.inputPassword}
                                     />
                                 </Col>
-                                <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
                                     <Button
                                         type="primary"
                                         onClick={handlePasswordChange}
