@@ -8,6 +8,10 @@ use App\Http\Resources\Admin\InboundInvoice\InboundInvoiceResource;
 use App\Http\Requests\Admin\InboundInvoices\UpdateInboundInvoiceRequest;
 use App\Http\Resources\Admin\InboundInvoice\InboundInvoiceCollection;
 use App\Models\InboundInvoice;
+use App\Models\OutboundInvoice;
+use App\Models\OutboundInvoiceDetail;
+
+
 use App\Models\Product;
 use App\Models\InboundInvoiceDetail;
 use App\Http\Controllers\Controller;
@@ -15,7 +19,8 @@ use Illuminate\Validation\ValidationException;
 use App\Filters\Admin\InboundInvoiceFilter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Models\Inventory;
+use App\Models\Inventory;use Exception;
+
 
 use Illuminate\Support\Facades\Validator;
 
@@ -168,117 +173,68 @@ class InboundInvoiceController extends Controller
     /**
      * Cập nhật một hóa đơn nhập.
      */
-    public function update(UpdateInboundInvoiceRequest $request, $id)
+
+    public function update(UpdateInboundInvoiceRequest $request, $inboundInvoiceId)
     {
+        $data = $request->validated();
+    
         DB::beginTransaction();
+    
         try {
-            // Tìm hóa đơn nhập hàng
-            $invoice = InboundInvoice::findOrFail($id);
+            // Retrieve and update the invoice
+            $inboundInvoice = InboundInvoice::findOrFail($inboundInvoiceId);
+            $inboundInvoice->update([
+                'supplier_id' => $data['supplier_id'] ?? $inboundInvoice->supplier_id,
+                'invoice_date' => $data['invoice_date'] ?? $inboundInvoice->invoice_date,
+                'total_amount' => $data['total_amount'] ?? $inboundInvoice->total_amount,
+                'updated_by' => auth()->id(),
+            ]);
     
-            // Lấy ID người dùng hiện tại
-            $updatedBy = auth()->id();
+            // Update invoice details and inventories
+            foreach ($data['details'] as $detail) {
+                // Find the invoice detail
+                $inboundDetail = InboundInvoiceDetail::findOrFail($detail['id']);
     
-            // Cập nhật thông tin hóa đơn (trừ các chi tiết liên quan đến tồn kho)
-            $invoice->update(array_merge(
-                $request->only([
-                    'supplier_id',
-                    'note',
-                    'total_amount',
-                    'status',
-                ]),
-                [
-                    'updated_by' => $updatedBy,
-                    'staff_id' => $updatedBy, // Ghi nhận người cập nhật
-                ]
-            ));
+                // Calculate quantity change
+                $quantityChange = $detail['quantity_import'] - $inboundDetail->quantity_import;
     
-            // Xử lý từng chi tiết hóa đơn
-            foreach ($request->details as $detail) {
-                // Tìm chi tiết hóa đơn
-                $inboundDetail = InboundInvoiceDetail::find($detail['id']);
+                // Update the inbound detail
+                $inboundDetail->update([
+                    'quantity_import' => $detail['quantity_import'],
+                    'unit_price' => $detail['unit_price'] ?? $inboundDetail->unit_price,
+                    'total_price' => ($detail['unit_price'] ?? $inboundDetail->unit_price) * $detail['quantity_import'],
+                ]);
     
-                if ($inboundDetail) {
-                    // Lấy dòng tồn kho mới nhất của sản phẩm
-                    $inventory = Inventory::where('product_id', $inboundDetail->product_id)
-                        ->latest('created_at')
-                        ->first();
+                // Update the latest inventory for the product
+                $latestInventory = Inventory::where('product_id', $detail['product_id'])
+                    ->orderByDesc('created_at')
+                    ->firstOrFail();
     
-                    if ($inventory) {
-                        // Khôi phục tồn kho trước khi cập nhật
-                        $inventory->quantity -= $inboundDetail->quantity_import; // Trừ số lượng cũ khỏi tồn kho
-                        $inventory->save();
-                    }
-    
-                    // Ngăn cập nhật các giá trị olded
-                    unset($detail['quantity_olded'], $detail['cost_olded']);
-    
-                    // Cập nhật chi tiết hóa đơn
-                    $inboundDetail->update($detail);
-    
-                    // Lấy dòng tồn kho mới nhất sau khi cập nhật
-                    $inventory = Inventory::where('product_id', $detail['product_id'])
-                        ->latest('created_at')
-                        ->first();
-    
-                    if ($inventory) {
-                        $inventory->quantity += $detail['quantity_import']; // Cộng số lượng nhập mới vào tồn kho
-                        $inventory->save();
-                    }
-                } else {
-                    // Nếu chi tiết không tồn tại, tạo mới
-                    $newDetail = InboundInvoiceDetail::create([
-                        'inbound_invoice_id' => $invoice->id,
-                        'product_id' => $detail['product_id'],
-                        'quantity_import' => $detail['quantity_import'],
-                        'cost_import' => $detail['cost_import'],
-                        'cost_olded' => $detail['cost_olded'],
-                        'unit_price' => $detail['unit_price'],
-                    ]);
-    
-                    // Cập nhật tồn kho cho sản phẩm mới
-                    $inventory = Inventory::where('product_id', $detail['product_id'])
-                        ->latest('created_at')
-                        ->first();
-    
-                    if ($inventory) {
-                        $inventory->quantity += $detail['quantity_import'];
-                        $inventory->save();
-                    } else {
-                        // Nếu tồn kho không tồn tại, tạo mới
-                        Inventory::create([
-                            'product_id' => $detail['product_id'],
-                            'quantity' => $detail['quantity_import'],
-                            'created_by' => $updatedBy,
-                            'updated_by' => $updatedBy,
-                        ]);
-                    }
-                }
+                // Ensure inventory quantity is consistent
+                $latestInventory->update([
+                    'quantity' => $latestInventory->quantity + $quantityChange,
+                    'updated_by' => auth()->id(),
+                ]);
             }
     
-            // Commit transaction
             DB::commit();
     
             return response()->json([
                 'status' => 'success',
-                'message' => 'Hóa đơn nhập hàng và tồn kho đã được cập nhật thành công',
-                'data' => $invoice->fresh(),
+                'message' => 'Hóa đơn nhập đã được cập nhật thành công.',
+                'data' => new InboundInvoiceResource($inboundInvoice->load('details.product', 'supplier', 'staff')),
             ]);
-        } catch (\Exception $e) {
-            // Rollback transaction khi có lỗi
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Đã xảy ra lỗi trong quá trình cập nhật',
+                'message' => 'Đã xảy ra lỗi khi cập nhật hóa đơn nhập.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
     
     
-    
-    /**
-     * Xóa một hóa đơn nhập (soft delete).
-     */
     public function destroy(InboundInvoice $inboundInvoice)
     {
         try {

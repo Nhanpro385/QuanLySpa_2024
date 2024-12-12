@@ -65,7 +65,7 @@ Route::group([
     Route::get('/inbound-invoices', [InboundInvoiceController::class, 'index']);
     Route::post('/inbound-invoices', [InboundInvoiceController::class, 'store']);
     Route::get('/inbound-invoices/{id}', [InboundInvoiceController::class, 'show']);
-    Route::put('/inbound-invoices/{id}', [InboundInvoiceController::class, 'update']);
+    Route::put('/inbound-invoices/{inboundInvoiceId}', [InboundInvoiceController::class, 'update']);
     Route::delete('/inbound-invoices/{id}', [InboundInvoiceController::class, 'destroy']);
 
     
