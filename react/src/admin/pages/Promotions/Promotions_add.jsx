@@ -193,6 +193,7 @@ const PromotionsAdd = () => {
                                 label="Tên khuyến mãi"
                                 help={errors.name && errors.name.message}
                                 validateStatus={errors.name && "error"}
+                                required
                             >
                                 <Controller
                                     name="name"
@@ -225,6 +226,7 @@ const PromotionsAdd = () => {
                                 validateStatus={
                                     errors.promotion_type && "error"
                                 }
+                                required
                             >
                                 <Controller
                                     name="promotion_type"
@@ -255,7 +257,7 @@ const PromotionsAdd = () => {
                         <Col xl={4} md={4} sm={24} xs={24}>
                             <Form.Item
                                 name="discount_percent"
-                                label="Giảm giá %"
+                                label="Giảm giá (%)"
                                 help={
                                     errors.discount_percent &&
                                     errors.discount_percent.message
@@ -331,6 +333,7 @@ const PromotionsAdd = () => {
                                     errors.min_quantity.message
                                 }
                                 validateStatus={errors.min_quantity && "error"}
+                                required
                             >
                                 <Controller
                                     name="min_quantity"
@@ -363,6 +366,7 @@ const PromotionsAdd = () => {
                                 validateStatus={
                                     errors.startDateAndEndDate && "error"
                                 }
+                                required
                             >
                                 <Controller
                                     name="startDateAndEndDate"
