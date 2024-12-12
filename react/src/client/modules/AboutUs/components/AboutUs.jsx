@@ -25,13 +25,13 @@ const AboutUs = () => {
                             <img src={binocular} alt="" width={'55px'} /><h2 className={style.title}>Tầm Nhìn</h2>
                         </div>
 
-                        <p className={style.textContent}>Đến năm 2030, O2SKIN trở thành hệ thống phòng khám da liễu chuyên trị mụn hàng đầu Việt Nam, mỗi ngày tiếp nhận và giúp đỡ cho hơn 10.000 bạn trẻ được trị mụn chuẩn Y khoa.</p>
+                        <p className={style.textContent}>Đến năm 2030, Sakura Spa trở thành hệ thống phòng khám da liễu chuyên trị mụn hàng đầu Việt Nam, mỗi ngày tiếp nhận và giúp đỡ cho hơn 10.000 bạn trẻ được trị mụn chuẩn Y khoa.</p>
                     </div>
                     <div className={style.boxContentRight}>
                         <div className={style.boxContentTop}>
                             <img src={iconTarget} alt="" width={'45px'} /><h2 className={style.title}>Sứ mệnh</h2>
                         </div>
-                        <p className={style.textContent}>Đến năm 2030, O2SKIN trở thành hệ thống phòng khám da liễu chuyên trị mụn hàng đầu Việt Nam, mỗi ngày tiếp nhận và giúp đỡ cho hơn 10.000 bạn trẻ được trị mụn chuẩn Y khoa.</p>
+                        <p className={style.textContent}>Giúp các bạn trẻ được trị mụn chuẩn y khoa và chủ động phòng ngừa tái phát để tự tin trong giao tiếp, thăng tiến, từ đó thành công và hạnh phúc hơn.</p>
                     </div>
                 </Col>
             </Row>
