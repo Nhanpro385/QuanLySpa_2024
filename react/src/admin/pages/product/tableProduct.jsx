@@ -33,7 +33,6 @@ const TableProduct = ({
                     width={50}
                     src={`${URL_IMAGE}/products/${record.image_url}`}
                     alt={record.name}
-                    fallback="https://via.placeholder.com/50"
                     preview={false}
                 />
             ),

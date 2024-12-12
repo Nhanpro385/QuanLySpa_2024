@@ -5,7 +5,7 @@ import PromotionPage from "../../modules/Promotion/components/Promotion";
 const Promotion = () => {
     
     return (
-        <div className="container">
+        <div className="container mb-4">
             <PromotionPage />
         </div>
     );

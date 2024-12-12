@@ -82,7 +82,7 @@ const ReplyComment = ({ visible, onClose, onSubmit, comment }) => {
                 <Row gutter={16}>
                     <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                         <Form.Item label="Người bình luận">
-                            <Text strong>{comment.customer_id}</Text>
+                            <Text strong>{comment?.customer?.full_name}</Text>
                         </Form.Item>
                     </Col>
                     <Col xl={12} lg={12} md={12} sm={24} xs={24}>
