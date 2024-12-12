@@ -61,11 +61,7 @@ const ModalEditCustomer = ({
             setValue("date_of_birth", dayjs(customer.date_of_birth));
             setValue(
                 "gender",
-                customer.gender === "Không xác định"
-                    ? "2"
-                    : customer === "Nam"
-                    ? "0"
-                    : "1"
+                customer.gender == "Nam" ? 1 : customer.gender == "Nữ" ? 2 : 3
             );
           
             setValue("role", customer.role);
@@ -160,9 +156,10 @@ const ModalEditCustomer = ({
                         rules={{ required: "Giới tính là bắt buộc" }}
                         render={({ field }) => (
                             <Select {...field}>
-                                <Option value="0">Nam</Option>z
-                                <Option value="1">Nữ</Option>
-                                <Option value="2">Khác</Option>
+                                <Option value={1}>Nam</Option>
+                                <Option value={2}>Nữ</Option>
+                                <Option value={3}>Khác</Option>
+
                             </Select>
                         )}
                     />

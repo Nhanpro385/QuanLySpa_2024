@@ -177,9 +177,9 @@ const CustomersAdd = () => {
                                     }}
                                     render={({ field }) => (
                                         <Select {...field}>
-                                            <Option value={0}>Nam</Option>
-                                            <Option value={1}>Nữ</Option>
-                                            <Option value={2}>Khác</Option>
+                                            <Option value={1}>Nam</Option>
+                                            <Option value={2}>Nữ</Option>
+                                            <Option value={3}>Khác</Option>
                                         </Select>
                                     )}
                                 />
