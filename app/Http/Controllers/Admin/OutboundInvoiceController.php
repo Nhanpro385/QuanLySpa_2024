@@ -129,17 +129,21 @@ class OutboundInvoiceController extends Controller
             // Cập nhật thông tin hóa đơn chính
             $invoice->update(array_merge(
                 $request->only(['note', 'total_amount', 'status']),
-                ['updated_by' => $updatedBy,
-                'staff_id'=> $updatedBy]
+                [
+                    'updated_by' => $updatedBy,
+                    'staff_id' => $updatedBy,
+                ]
             ));
     
-            // Duyệt qua từng chi tiết hóa đơn để xử lý
             foreach ($request->details as $detail) {
                 $outboundDetail = OutboundInvoiceDetail::find($detail['id']);
     
                 if ($outboundDetail) {
-                    // Lấy thông tin tồn kho sản phẩm
-                    $inventory = Inventory::where('product_id', $outboundDetail->product_id)->first();
+                    // Lấy dòng tồn kho mới nhất
+                    $inventory = Inventory::where('product_id', $outboundDetail->product_id)
+                        ->orderBy('created_at', 'desc') // Sắp xếp để lấy dòng mới nhất
+                        ->first();
+    
                     if (!$inventory) {
                         throw new \Exception("Sản phẩm ID {$outboundDetail->product_id} không tồn tại trong kho.");
                     }
@@ -147,15 +151,15 @@ class OutboundInvoiceController extends Controller
                     // Hoàn lại số lượng tồn kho trước khi cập nhật
                     $inventory->quantity += $outboundDetail->quantity_export;
     
-                    // Kiểm tra tồn kho mới
+                    // Kiểm tra tồn kho có đủ số lượng để xuất
                     if ($inventory->quantity < $detail['quantity_export']) {
-                        throw new \Exception("Sản phẩm ID {$outboundDetail->product_id} không đủ số lượng trong kho.");
+                        throw new \Exception("Sản phẩm ID {$outboundDetail->product_id} không đủ số lượng trong kho. Số lượng tồn hiện tại: {$inventory->quantity}.");
                     }
     
-                    // Cập nhật chi tiết hóa đơn
+                    // Cập nhật chi tiết hóa đơn xuất
                     $outboundDetail->update([
                         'quantity_export' => $detail['quantity_export'],
-                        'quantity_olded' => $inventory->quantity, // Lưu số lượng trước khi giảm
+                        'quantity_olded' => $inventory->quantity, // Lưu số lượng tồn kho trước khi xuất
                         'unit_price' => $detail['unit_price'],
                         'updated_by' => $updatedBy,
                     ]);
@@ -167,10 +171,13 @@ class OutboundInvoiceController extends Controller
                     // Xử lý thêm chi tiết mới nếu cần
                     $productId = $detail['product_id'];
     
-                    // Lấy tồn kho sản phẩm
-                    $inventory = Inventory::where('product_id', $productId)->first();
+                    // Lấy dòng tồn kho mới nhất
+                    $inventory = Inventory::where('product_id', $productId)
+                        ->orderBy('created_at', 'desc') // Sắp xếp để lấy dòng mới nhất
+                        ->first();
+    
                     if (!$inventory || $inventory->quantity < $detail['quantity_export']) {
-                        throw new \Exception("Sản phẩm ID $productId không đủ số lượng trong kho.");
+                        throw new \Exception("Sản phẩm ID $productId không đủ số lượng trong kho. Số lượng tồn hiện tại: {$inventory->quantity}.");
                     }
     
                     // Tạo chi tiết hóa đơn mới
@@ -205,8 +212,6 @@ class OutboundInvoiceController extends Controller
         }
     }
     
-
-
     /**
      * Xóa một hóa đơn xuất (soft delete).
      */

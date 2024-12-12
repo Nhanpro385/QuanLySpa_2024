@@ -27,8 +27,8 @@ class UpdateInboundInvoiceRequest extends FormRequest
             'details.*.id' => 'required|exists:inbound_invoice_details,id',
             'details.*.product_id' => 'required|exists:products,id',
             'details.*.quantity_import' => 'required|integer|min:0',
-            'details.*.cost_import' => 'required|numeric|min:0',
-            'details.*.cost_olded' => 'required|numeric|min:0',
+            
+           
             'details.*.unit_price' => 'required|numeric|min:0',
         ];
     }
@@ -78,34 +78,41 @@ class UpdateInboundInvoiceRequest extends FormRequest
 }
 
 
-    public function withValidator(Validator $validator)
-    {
-        $validator->after(function ($validator) {
-            $details = $this->input('details', []);
-            
-            foreach ($details as $detail) {
-                $inboundDetail = InboundInvoiceDetail::find($detail['id']);
+public function withValidator(Validator $validator)
+{
+    $details = $this->input('details', []);
 
-                if ($inboundDetail) {
-                    $inventory = Inventory::where('product_id', $inboundDetail->product_id)->first();
+    // Tập hợp tất cả các `id` chi tiết cần kiểm tra
+    $detailIds = array_column($details, 'id');
 
-                    if ($inventory) {
-                        $currentStock = $inventory->quantity; // Số lượng hiện tại trong kho
-                        $quantityImportedBefore = $inboundDetail->quantity_import; // Số lượng đã nhập trước đây
-                        $quantityExported = $quantityImportedBefore - $currentStock; // Số lượng đã xuất
-                        
-                        // Kiểm tra nếu số lượng mới nhỏ hơn số lượng đã xuất
-                        if ($detail['quantity_import'] < $quantityExported) {
-                            $validator->errors()->add(
-                                "details.{$detail['id']}.quantity_import",
-                                "Số lượng nhập mới không được nhỏ hơn số lượng đã xuất ($quantityExported sản phẩm đã xuất)."
-                            );
-                        }
+    // Lấy danh sách các inbound detail và inventory tương ứng
+    $inboundDetails = InboundInvoiceDetail::whereIn('id', $detailIds)->get()->keyBy('id');
+    $inventories = Inventory::whereIn('product_id', $inboundDetails->pluck('product_id'))->get()->keyBy('product_id');
+
+    $validator->after(function ($validator) use ($details, $inboundDetails, $inventories) {
+        foreach ($details as $detail) {
+            $inboundDetail = $inboundDetails->get($detail['id']);
+
+            if ($inboundDetail) {
+                $inventory = $inventories->get($inboundDetail->product_id);
+
+                if ($inventory) {
+                    $currentStock = $inventory->quantity; // Số lượng hiện tại trong kho
+                    $quantityImportedBefore = $inboundDetail->quantity_import; // Số lượng đã nhập trước đây
+                    $quantityExported = $quantityImportedBefore - $currentStock; // Số lượng đã xuất
+
+                    if ($detail['quantity_import'] < $quantityExported) {
+                        $validator->errors()->add(
+                            "details.{$detail['id']}.quantity_import",
+                            "Số lượng nhập mới không được nhỏ hơn số lượng đã xuất ($quantityExported sản phẩm đã xuất)."
+                        );
                     }
                 }
             }
-        });
-    }
+        }
+    });
+}
+
 
 
 
