@@ -32,9 +32,9 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
 
     const handleFinish = (values) => {
         console.log(values);
-        
+
         addpayment({
-            payment_type: values.paymentMethod ,
+            payment_type: values.paymentMethod,
             promotion_name: values.promotion_name || null,
             status: 1,
             products: selectedProducts.map((item) => ({
@@ -63,6 +63,14 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
             setDataProduct(
                 products?.products?.data.map((item) => ({
                     ...item,
+                    name: (
+                        <Space>
+                            <Tag color="blue">{item.name}</Tag>
+                            <Tag color="green">
+                                {parseInt(item.price).toLocaleString() + " VND"}
+                            </Tag>
+                        </Space>
+                    ),
                     key: item.id,
                 }))
             );
@@ -234,10 +242,10 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
                                 ]}
                             >
                                 <Select placeholder="Chọn phương thức">
-                                    <Select.Option value={1}>
+                                    <Select.Option value={0}>
                                         Tiền mặt
                                     </Select.Option>
-                                    <Select.Option value={0}>
+                                    <Select.Option value={1}>
                                         Chuyển khoản
                                     </Select.Option>
                                 </Select>

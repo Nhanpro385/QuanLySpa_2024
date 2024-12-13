@@ -275,7 +275,7 @@ const Product_import_Edit = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: "mã sản phẩm",
+            title: "Mã sản phẩm",
             dataIndex: "id",
             key: "id",
         },
@@ -286,6 +286,7 @@ const Product_import_Edit = () => {
             render: (_, product, index) => (
                 <Select
                     className="w-100"
+                    disabled
                     size="large"
                     showSearch
                     placeholder="Nhập tên sản phẩm"
@@ -330,8 +331,9 @@ const Product_import_Edit = () => {
             key: "cost",
             render: (_, product, index) => (
                 <InputNumber
+                disabled
                     className="w-100"
-                    min={1}
+                    min={1000}
                     size="large"
                     formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -349,7 +351,7 @@ const Product_import_Edit = () => {
             render: (_, product, index) => (
                 <InputNumber
                     className="w-100"
-                    min={1}
+                    min={1000}
                     size="large"
                     formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -366,15 +368,15 @@ const Product_import_Edit = () => {
         //     key: "total",
         //     render: (_, product) => product.total.toLocaleString(),
         // },
-        {
-            title: "Hành động",
-            key: "action",
-            render: (_, product, index) => (
-                <Button danger onClick={() => removeProduct(index)}>
-                    Xóa
-                </Button>
-            ),
-        },
+        // {
+        //     title: "Hành động",
+        //     key: "action",
+        //     render: (_, product, index) => (
+        //         <Button danger onClick={() => removeProduct(index)}>
+        //             Xóa
+        //         </Button>
+        //     ),
+        // },
     ];
 
     return (
@@ -428,11 +430,11 @@ const Product_import_Edit = () => {
                             <Card
                                 title="Danh sách nhập hàng"
                                 className="mt-3 bg-light"
-                                extra={
-                                    <Button type="primary" onClick={addProduct}>
-                                        Thêm sản phẩm
-                                    </Button>
-                                }
+                                // extra={
+                                //     <Button type="primary" onClick={addProduct}>
+                                //         Thêm sản phẩm
+                                //     </Button>
+                                // }
                             >
                                 <Table
                                     columns={columns}

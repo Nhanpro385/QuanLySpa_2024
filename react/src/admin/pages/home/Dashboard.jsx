@@ -49,7 +49,7 @@ const Dashboard = () => {
             title: "Phương thức thanh toán",
             dataIndex: "payment_type",
             key: "payment_type",
-            render: (text) => (text == 1 ? "Tiền mặt" : "Chuyển khoản"),
+            render: (text) => (text == 0 ? "Tiền mặt" : "Chuyển khoản"),
         },
         {
             title: "Ngày thanh toán",

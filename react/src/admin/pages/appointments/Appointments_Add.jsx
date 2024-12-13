@@ -36,10 +36,9 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { get } from "lodash";
+
 
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 const Appointment_Add = () => {
     useEffect(() => {
@@ -48,12 +47,12 @@ const Appointment_Add = () => {
     const inputRef = useRef(null);
     const [api, contextHolder] = notification.useNotification();
     const { getservices, searchservices } = useServicesActions();
-    const { getusers } = useUsersActions();
+
     const { getshifts, getshiftsById, searchshifts } = useShiftAction();
     const { addappointments } = useappointmentsActions();
     const { getCustomer, searchCustomer, addCustomer } = useCustomerActions();
     const service = useSelector((state) => state.services);
-    const users = useSelector((state) => state.user);
+
     const shifts = useSelector((state) => state.shifts);
     const customer = useSelector((state) => state.customers);
     const [serviceOptions, setServiceOptions] = useState([]);
@@ -91,7 +90,7 @@ const Appointment_Add = () => {
 
     useEffect(() => {
         getservices(50);
-        getusers(50);
+
         getshifts(50);
         getCustomer(50);
     }, []);
@@ -136,29 +135,30 @@ const Appointment_Add = () => {
     }, [customer.customers]);
 
     useEffect(() => {
-        if (!shifts.loading && shifts.shifts.data) {
+        if (!shifts?.loading && shifts?.shifts?.data) {
             setShiftsOptions(
-                shifts.shifts.data.map((shift) => ({
+                shifts?.shifts?.data.map((shift) => ({
                     value: shift.id,
                     label: (
                         <>
                             <Tag color="blue">
-                                <ContactsOutlined /> {shift.shift_date}
+                                <ContactsOutlined /> {shift?.shift_date}
                             </Tag>
 
                             <Tag color="green">
-                                <ClockCircleOutlined /> {shift.start_time}
+                                <ClockCircleOutlined /> {shift?.start_time}
                             </Tag>
 
                             <Tag color="red">
-                                <ClockCircleOutlined /> {shift.end_time}
+                                <ClockCircleOutlined /> {shift?.end_time}
                             </Tag>
                             <Tag
                                 color={
-                                    shift.staffs?.length > 0 ? "green" : "red"
+                                    shift?.staffs?.length > 0 ? "green" : "red"
                                 }
                             >
-                                <UserOutlined /> {shift.staffs.length} nhân viên
+                                <UserOutlined /> {shift?.staffs?.length} nhân
+                                viên
                             </Tag>
                         </>
                     ),
@@ -191,8 +191,8 @@ const Appointment_Add = () => {
                 start_time: formatTime(data.appointment_date),
                 appointment_date: formatDate(data.appointment_date),
                 note: data.note || "đã note",
-                users: data.employee.map((employee) => ({
-                    staff_id: employee,
+                users: data.users.map((users) => ({
+                    staff_id: users,
                 })),
                 services: selectedServices.map((service) => ({
                     service_id: service.key,
@@ -213,7 +213,7 @@ const Appointment_Add = () => {
                 setValue("appointment_date", null);
                 setValue("service", null);
                 setValue("shift", null);
-                setValue("employee", null);
+                setValue("users", null);
                 setValue("note", null);
             } else {
                 if (res.payload?.errors && res.payload.errors.length > 0) {
@@ -224,7 +224,7 @@ const Appointment_Add = () => {
                                 "customer_id",
                                 "appointment_date",
                                 "shift",
-                                "employee",
+                                "users",
                                 "services",
                             ].includes(key)
                         ) {
@@ -292,7 +292,7 @@ const Appointment_Add = () => {
                 const shift = res.payload.data;
                 const { shift_date } = shift;
                 setValue("appointment_date", dayjs(shift_date));
-                setValue("employee", []);
+                setValue("users", []);
                 // Ánh xạ vai trò
                 const roleMap = {
                     0: "Quản lý",
@@ -302,20 +302,20 @@ const Appointment_Add = () => {
                 };
 
                 // Chuẩn bị dữ liệu nhân viên
-                const employees = shift.staffs.map((employee) => ({
-                    value: employee.id,
+                const users = shift.staffs.map((users) => ({
+                    value: users.id,
                     label: (
                         <>
                             <Tag color="blue">
-                                <UserOutlined /> {employee.name}
+                                <UserOutlined /> {users.name}
                             </Tag>
                             <Tag color="green">
-                                {roleMap[employee.role] || roleMap.default}
+                                {roleMap[users.role] || roleMap.default}
                             </Tag>
                         </>
                     ),
                 }));
-                setUserOptions(employees);
+                setUserOptions(users);
                 setValue("shift", value);
                 console.log(res.payload.data.staffs);
             } else {
@@ -487,7 +487,8 @@ const Appointment_Add = () => {
                         label: (
                             <>
                                 <Tag color="blue">
-                                    <UserOutlined /> {res.payload?.data?.full_name}
+                                    <UserOutlined />{" "}
+                                    {res.payload?.data?.full_name}
                                 </Tag>
                                 <Tag color="green">
                                     <PhoneOutlined /> {res.payload?.data?.phone}
@@ -633,9 +634,9 @@ const Appointment_Add = () => {
                                     />
                                 )}
                             />
-                            {errors.fullname && (
+                            {errors.customer_id && (
                                 <p style={{ color: "red" }}>
-                                    {errors.fullname.message}
+                                    {errors.customer_id.message}
                                 </p>
                             )}
                         </Form.Item>
@@ -696,7 +697,7 @@ const Appointment_Add = () => {
                                         onClear={() => {
                                             field.onChange(null); // Xóa giá trị của field
                                             setValue("shift", null); // Xóa giá trị trong React Hook Form
-                                            setValue("employee", []); // Reset các trường khác nếu cần
+                                            setValue("users", []); // Reset các trường khác nếu cần
                                             setValue("appointment_date", null);
                                             setSearchShift({
                                                 ...searchShift,
@@ -753,8 +754,11 @@ const Appointment_Add = () => {
                     <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Form.Item label="Chọn nhân viên" required>
                             <Controller
-                                name="employee"
+                                name="users"
                                 control={control}
+                                rules={{
+                                    required: "Vui lòng chọn nhân viên",
+                                }}
                                 render={({ field }) => (
                                     <Select
                                         size="large"
@@ -773,9 +777,9 @@ const Appointment_Add = () => {
                                     />
                                 )}
                             />
-                            {errors.employee && (
+                            {errors.users && (
                                 <p style={{ color: "red" }}>
-                                    {errors.employee.message}
+                                    {errors.users.message}
                                 </p>
                             )}
                         </Form.Item>

@@ -167,7 +167,7 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
                         bordered
                     />
                 </Card>
-                <Card>
+                {/* <Card>
                     <h3 className="mb-5 mt-4">Hình ảnh sản phẩm</h3>
                     <div
                         style={{
@@ -200,7 +200,7 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
                             <p>Không có hình ảnh</p>
                         )}
                     </div>
-                </Card>
+                </Card> */}
             </Space>
         </Modal>
     );

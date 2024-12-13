@@ -43,14 +43,14 @@ const StatisticsSection = ({
                 {/* Tổng quan doanh thu */}
                 <Col xxl={6} xl={6} md={24} sm={24} xs={24}>
                     <Card
-                        title={<div className="text-center">
-                            <div>
-                                <Text strong>Tổng doanh thu</Text>
+                        title={
+                            <div className="text-center">
+                                <div>
+                                    <Text strong>Tổng doanh thu</Text>
+                                </div>
+                                <div>{date}</div>
                             </div>
-                            <div>
-                                {date}
-                            </div>
-                        </div>}
+                        }
                         className={style.card}
                     >
                         <Row gutter={[16, 16]} justify="center" align="middle">
@@ -62,7 +62,7 @@ const StatisticsSection = ({
                                         dailyRevenues?.total_revenue || 0
                                     ) /
                                         2000000) *
-                                    100,
+                                        100,
                                     100
                                 )}
                                 format={() =>
@@ -90,7 +90,7 @@ const StatisticsSection = ({
                                                 0
                                             }
                                             precision={0}
-                                            valueStyle={{ color: "#85A98F" }}
+                                            valueStyle={{ color: "#e05265" }}
                                             suffix="VND"
                                             formatter={formatter}
                                         />
@@ -127,7 +127,7 @@ const StatisticsSection = ({
                                             }
                                             style={{ display: "block" }}
                                             precision={0}
-                                            valueStyle={{ color: "#5A6C57" }}
+                                            valueStyle={{ color: "#e05265" }}
                                             suffix="VND"
                                             formatter={formatter}
                                         />
@@ -163,7 +163,7 @@ const StatisticsSection = ({
                                                 0
                                             }
                                             precision={0}
-                                            valueStyle={{ color: "#525B44" }}
+                                            valueStyle={{ color: "#e05265" }}
                                             suffix="VND"
                                             formatter={formatter}
                                         />
@@ -192,51 +192,12 @@ const StatisticsSection = ({
                                 </Col>
                             </Row>
                         </Col>
-
-                        {/* Lượt đặt lịch hôm nay */}
-                        <Col xl={12} md={12} sm={24} xs={24}>
+                        <Col xl={6} md={6} sm={24} xs={24}>
                             <Card className={style.card}>
                                 <Statistic
-                                    title={`Số lượt đặt lịch Ngày: ${date}`}
+                                    title={`Tổng tiền mặt`}
                                     value={
-                                        revenueAppointment.today_appointment ||
-                                        0
-                                    }
-                                    style={{ display: "block" }}
-                                    precision={0}
-                                    valueStyle={{ color: "#1890ff" }}
-                                    suffix="lượt"
-                                    formatter={formatter}
-                                />
-                                <Text
-                                    type="secondary"
-                                    style={{ display: "block" }}
-                                >
-                                    Đang chờ:{" "}
-                                    {revenueAppointment.progress_appointment ||
-                                        0}{" "}
-                                    lượt
-                                </Text>
-
-                                <Text
-                                    type="success"
-                                    style={{ display: "block" }}
-                                >
-                                    Đã hoàn thành:{" "}
-                                    {revenueAppointment.completed_appointment ||
-                                        0}{" "}
-                                    lượt
-                                </Text>
-                            </Card>
-                        </Col>
-
-                        {/* Lịch hẹn tư vấn hôm nay */}
-                        <Col xl={12} md={12} sm={24} xs={24}>
-                            <Card className={style.card}>
-                                <Statistic
-                                    title={`Số lượt tư vấn Ngày: ${date}`}
-                                    value={
-                                        revenueConsulation.today_consulation ||
+                                        dailyRevenues?.cash_revenue ||
                                         0
                                     }
                                     style={{ display: "block" }}
@@ -245,7 +206,57 @@ const StatisticsSection = ({
                                     Sao
                                     chép
                                     mã
-                                    valueStyle={{ color: "#722ed1" }}
+                                    valueStyle={{ color: "#e05265" }}
+                                    suffix="VNĐ"
+                                    formatter={formatter}
+                                />
+                                <Text
+                                    type="secondary"
+                                    style={{ display: "block" }}
+                                >
+                                    Số lượt :{dailyRevenues?.cash_count || 0}{" "}
+                                    lượt
+                                </Text>
+
+                               
+                            </Card>
+                        </Col>
+                        <Col xl={6} md={6} sm={24} xs={24}>
+                            <Card className={style.card}>
+                                <Statistic
+                                    title={`Tổng tiền chuyển khoản`}
+                                    value={dailyRevenues?.transfer_revenue || 0}
+                                    style={{ display: "block" }}
+                                    precision={0}
+                                    jsx
+                                    Sao
+                                    chép
+                                    mã
+                                    valueStyle={{ color: "#e05265" }}
+                                    suffix="VNĐ"
+                                    formatter={formatter}
+                                />
+                                <Text
+                                    type="secondary"
+                                    style={{ display: "block" }}
+                                >
+                                    Số lượt :{dailyRevenues?.transfer_count || 0}{" "}
+                                    lượt
+                                </Text>
+                            </Card>
+                        </Col>
+                        {/* Lượt đặt lịch hôm nay */}
+                        <Col xl={6} md={6} sm={24} xs={24}>
+                            <Card className={style.card}>
+                                <Statistic
+                                    title={`Số lượt đặt lịch Ngày: ${date}`}
+                                    value={
+                                        revenueAppointment?.today_appointment ||
+                                        0
+                                    }
+                                    style={{ display: "block" }}
+                                    precision={0}
+                                    valueStyle={{ color: "#e05265" }}
                                     suffix="lượt"
                                     formatter={formatter}
                                 />
@@ -253,8 +264,8 @@ const StatisticsSection = ({
                                     type="secondary"
                                     style={{ display: "block" }}
                                 >
-                                    Đang chờ:{" "}
-                                    {revenueConsulation.progress_consulation ||
+                                    Đang thực hiện:{" "}
+                                    {revenueAppointment?.progress_appointment ||
                                         0}{" "}
                                     lượt
                                 </Text>
@@ -264,7 +275,48 @@ const StatisticsSection = ({
                                     style={{ display: "block" }}
                                 >
                                     Đã hoàn thành:{" "}
-                                    {revenueConsulation.completed_consulation ||
+                                    {revenueAppointment?.completed_appointment ||
+                                        0}{" "}
+                                    lượt
+                                </Text>
+                            </Card>
+                        </Col>
+
+                        {/* Lịch hẹn tư vấn hôm nay */}
+                        <Col xl={6} md={6} sm={24} xs={24}>
+                            <Card className={style.card}>
+                                <Statistic
+                                    title={`Số lượt tư vấn Ngày: ${date}`}
+                                    value={
+                                        revenueConsulation?.today_consulation ||
+                                        0
+                                    }
+                                    style={{ display: "block" }}
+                                    precision={0}
+                                    jsx
+                                    Sao
+                                    chép
+                                    mã
+                                    valueStyle={{ color: "#e05265" }}
+                                    suffix="lượt"
+                                    formatter={formatter}
+                                />
+                                <Text
+                                    type="secondary"
+                                    style={{ display: "block" }}
+                                >
+                                    Đang thực hiện:{" "}
+                                    {revenueConsulation?.progress_consulation ||
+                                        0}{" "}
+                                    lượt
+                                </Text>
+
+                                <Text
+                                    type="success"
+                                    style={{ display: "block" }}
+                                >
+                                    Đã hoàn thành:{" "}
+                                    {revenueConsulation?.completed_consulation ||
                                         0}{" "}
                                     lượt
                                 </Text>

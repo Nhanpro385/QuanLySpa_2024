@@ -56,6 +56,7 @@ const PaymentManagement = () => {
         page: 1,
         per_page: 5,
         sort: "desc",
+        status: "",
     });
     const OnchangePage = (page, pagination) => {
         setSearchQuery((prev) => ({
@@ -101,7 +102,8 @@ const PaymentManagement = () => {
             searchquery.search !== "" ||
             searchquery.page !== 1 ||
             searchquery.per_page !== 5 ||
-            searchquery.sort !== "desc"
+            searchquery.sort !== "desc" ||
+            searchquery.status !== ""
         ) {
             searchpayment(searchquery);
         } else {
@@ -143,6 +145,14 @@ const PaymentManagement = () => {
                         res.payload.error ||
                         "vui lòng thử lại",
                 });
+                if (Object.keys(res.payload.errors).length > 0) {
+                    Object.keys(res.payload.errors).map((key) => {
+                        api.error({
+                            message: res.payload.errors[key],
+                            duration: 3,
+                        });
+                    });
+                }
                 setErrorpayment((prev) => res.payload.errors || {});
             }
         } catch (e) {
@@ -231,6 +241,28 @@ const PaymentManagement = () => {
                                         Cũ nhất
                                     </Select.Option>
                                 </Select>
+                            </Col>{" "}
+                            <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={6}>
+                                <Select
+                                    placeholder="Sắp xếp"
+                                    className="w-100"
+                                    onChange={(value) =>
+                                        setSearchQuery((prev) => ({
+                                            ...prev,
+                                            status: value,
+                                        }))
+                                    }
+                                >
+                                    <Select.Option value={""}>
+                                        Tất cả
+                                    </Select.Option>
+                                    <Select.Option value={1}>
+                                        Đã thanh toán
+                                    </Select.Option>
+                                    <Select.Option value={0}>
+                                        Chưa Thanh toán
+                                    </Select.Option>
+                                </Select>
                             </Col>
                             {/* <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={6}>
                                 <Select
@@ -255,7 +287,7 @@ const PaymentManagement = () => {
                                         OnsearchPayment(e.target.value)
                                     }
                                     onSearch={(value) => OnsearchPayment(value)}
-                                    placeholder="Tìm kiếm theo mã hóa đơn hoặc tên khách hàng"
+                                    placeholder="Tìm kiếm theo mã hóa đơn hoặc mã lịch hẹn"
                                 />
                             </Col>
                         </Row>

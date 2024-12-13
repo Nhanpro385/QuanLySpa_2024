@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Modal,
     Form,
@@ -6,15 +6,14 @@ import {
     Row,
     Input,
     DatePicker,
-    TimePicker,
     Switch,
     Button,
-    Space,
+    Radio,
 } from "antd";
-import { Controller, set, useForm } from "react-hook-form";
-
+import { Controller, useForm } from "react-hook-form";
 import "dayjs/locale/vi";
 import dayjs from "dayjs";
+
 const { TextArea } = Input;
 
 function ModalAddShift({
@@ -28,10 +27,32 @@ function ModalAddShift({
         control,
         handleSubmit,
         formState: { errors },
-        setValue,
         setError,
-        reset,
+        clearErrors,
     } = useForm();
+
+    const [selectedShiftTime, setSelectedShiftTime] = useState({
+        start_time: "8:00:00",
+        end_time: "12:00:00",
+    });
+
+    const initialShiftTime = [
+        {
+            label: "Ca sáng",
+            value: {
+                start_time: "08:00:00",
+                end_time: "12:00:00",
+            },
+        },
+        {
+            label: "Ca chiều",
+            value: {
+                start_time: "13:00:00",
+                end_time: "17:00:00",
+            },
+        },
+    ];
+
     useEffect(() => {
         if (error?.errors) {
             Object.keys(error.errors).forEach((key) => {
@@ -39,19 +60,16 @@ function ModalAddShift({
                     [
                         "shift_date",
                         "start_time",
-                        "end_time",
                         "max_customers",
                         "status",
                         "note",
                     ].includes(key)
                 ) {
-                    // Đặt lỗi vào form nếu key khớp
                     setError(key, {
                         type: "manual",
                         message: error.errors[key][0],
                     });
                 } else {
-                    // Log hoặc xử lý lỗi không khớp key
                     console.warn(
                         `Unhandled error for key '${key}': ${error.errors[key][0]}`
                     );
@@ -61,16 +79,17 @@ function ModalAddShift({
     }, [error]);
 
     const onSubmit = (data) => {
+        console.log("Data:", data); // Log data for testing
+
         const payload = {
             shift_date: dayjs(data.shift_date).format("YYYY-MM-DD"),
-            start_time: dayjs(data.start_time).format("HH:mm:ss"),
-            end_time: dayjs(data.end_time).format("HH:mm:ss"),
+            start_time: data.start_time?.start_time,
+            end_time: data.start_time?.end_time,
             max_customers: data.max_customers,
             note: data.note,
             status: data.status,
         };
         console.log("Payload:", payload); // Log payload for testing
-
         handleAddShift(payload);
     };
 
@@ -105,9 +124,7 @@ function ModalAddShift({
                             <Controller
                                 name="shift_date"
                                 control={control}
-                                rules={{
-                                    required: "Vui lòng chọn ngày!",
-                                }}
+                                rules={{ required: "Vui lòng chọn ngày!" }}
                                 render={({ field }) => (
                                     <DatePicker
                                         {...field}
@@ -116,67 +133,6 @@ function ModalAddShift({
                                         onChange={(date) =>
                                             field.onChange(date)
                                         }
-                                        needConfirm={false}
-                                    />
-                                )}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Thời Gian Bắt Đầu"
-                            validateStatus={errors.start_time ? "error" : ""}
-                            help={errors.start_time?.message}
-                        >
-                            <Controller
-                                name="start_time"
-                                control={control}
-                                rules={{
-                                    required:
-                                        "Vui lòng chọn thời gian bắt đầu!",
-                                }}
-                                render={({ field }) => (
-                                    <TimePicker
-                                        renderExtraFooter={() => (
-                                            <Space size="small">
-                                                <Button
-                                                    size="small"
-                                                    type="primary"
-                                                    onClick={() =>
-                                                        setValue(
-                                                            "start_time",
-                                                            dayjs(
-                                                                "08:00",
-                                                                "HH:mm"
-                                                            )
-                                                        )
-                                                    }
-                                                >
-                                                    Ca sáng
-                                                </Button>
-                                                <Button
-                                                    size="small"
-                                                    type="primary"
-                                                    onClick={() =>
-                                                        setValue(
-                                                            "start_time",
-                                                            dayjs(
-                                                                "13:00",
-                                                                "HH:mm"
-                                                            )
-                                                        )
-                                                    }
-                                                >
-                                                    Ca chiều
-                                                </Button>
-                                            </Space>
-                                        )}
-                                        {...field}
-                                        style={{ width: "100%" }}
-                                        onChange={(time) =>
-                                            field.onChange(time)
-                                        }
-                                        needConfirm={false}
                                     />
                                 )}
                             />
@@ -185,60 +141,69 @@ function ModalAddShift({
 
                     <Col span={12}>
                         <Form.Item
-                            label="Thời Gian Kết Thúc"
-                            validateStatus={errors.end_time ? "error" : ""}
-                            help={errors.end_time?.message}
+                            label="Thời Gian Ca làm"
+                            validateStatus={errors.start_time ? "error" : ""}
+                            help={errors.start_time?.message}
                         >
                             <Controller
-                                name="end_time"
+                                name="start_time"
                                 control={control}
-                                rules={{
-                                    required:
-                                        "Vui lòng chọn thời gian kết thúc!",
-                                }}
+                                rules={{ required: "Vui lòng chọn ca làm!" }}
                                 render={({ field }) => (
-                                    <TimePicker
-                                        {...field}
-                                        style={{ width: "100%" }}
-                                        renderExtraFooter={() => (
-                                            <Space size="small">
-                                                <Button
-                                                    size="small"
-                                                    type="primary"
-                                                    onClick={() =>
-                                                        setValue(
-                                                            "end_time",
-                                                            dayjs(
-                                                                "12:00",
-                                                                "HH:mm"
-                                                            )
+                                    <>
+                                        <Radio.Group
+                                            {...field}
+                                            block
+                                            onChange={(e) => {
+                                                const selectedShift =
+                                                    initialShiftTime.find(
+                                                        (item) =>
+                                                            item.label ===
+                                                            e.target.value
+                                                    );
+                                                setSelectedShiftTime(
+                                                    selectedShift?.value
+                                                );
+                                                field.onChange(
+                                                    selectedShift?.value
+                                                );
+                                            }}
+                                            value={
+                                                initialShiftTime.find(
+                                                    (item) =>
+                                                        JSON.stringify(
+                                                            item.value
+                                                        ) ===
+                                                        JSON.stringify(
+                                                            field.value
                                                         )
-                                                    }
+                                                )?.label
+                                            }
+                                            optionType="button"
+                                        >
+                                            {initialShiftTime.map((item) => (
+                                                <Radio.Button
+                                                    key={item.label}
+                                                    value={item.label}
                                                 >
-                                                    Ca sáng
-                                                </Button>
-                                                <Button
-                                                    size="small"
-                                                    type="primary"
-                                                    onClick={() =>
-                                                        setValue(
-                                                            "end_time",
-                                                            dayjs(
-                                                                "17:00",
-                                                                "HH:mm"
-                                                            )
-                                                        )
-                                                    }
-                                                >
-                                                    Ca chiều
-                                                </Button>
-                                            </Space>
+                                                    {item.label}
+                                                </Radio.Button>
+                                            ))}
+                                        </Radio.Group>
+
+                                        {selectedShiftTime && (
+                                            <div
+                                                style={{
+                                                    marginTop: "8px",
+                                                    color: "gray",
+                                                }}
+                                            >
+                                                Thời gian:{" "}
+                                                {selectedShiftTime.start_time} -{" "}
+                                                {selectedShiftTime.end_time}
+                                            </div>
                                         )}
-                                        onChange={(time) =>
-                                            field.onChange(time)
-                                        }
-                                        needConfirm={false}
-                                    />
+                                    </>
                                 )}
                             />
                         </Form.Item>

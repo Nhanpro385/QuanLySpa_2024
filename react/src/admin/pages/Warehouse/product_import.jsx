@@ -272,7 +272,7 @@ const WarehouseImport = () => {
             render: (_, product, index) => (
                 <InputNumber
                     className="w-100"
-                    min={1}
+                    min={1000}
                     size="large"
                     formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -290,7 +290,7 @@ const WarehouseImport = () => {
             render: (_, product, index) => (
                 <InputNumber
                     className="w-100"
-                    min={1}
+                    min={1000}
                     size="large"
                     formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -335,12 +335,13 @@ const WarehouseImport = () => {
                 {contextHolder}
                 <Form layout="vertical">
                     <Row gutter={[16, 16]}>
-                        <Col xl={16} md={16} sm={24} xs={24}>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card title="Thông tin nhập hàng">
                                 <Row gutter={[16, 16]}>
-                                    <Col xl={8} md={8} sm={24} xs={24}>
+                                    <Col xl={24} md={24} sm={24} xs={24}>
                                         <Form.Item label="Nhà cung cấp">
                                             <Select
+                                                className="w-100"
                                                 size="large"
                                                 placeholder="Nhập tên nhà cung cấp"
                                                 options={supplierData.map(
@@ -378,7 +379,7 @@ const WarehouseImport = () => {
                                 />
                             </Card>
                         </Col>
-                        <Col xl={8} md={8} sm={24} xs={24}>
+                        <Col xl={24} md={24} sm={24} xs={24}>
                             <Card className="bg-light">
                                 <Form.Item label="Mô tả">
                                     <Input.TextArea

@@ -31,7 +31,7 @@ const PaymentModalDetail = ({ isOpen, onClose, selectedInvoice }) => {
             key: "4",
             label: "Phương thức thanh toán",
             children:
-                selectedInvoice?.payment_type === 1
+                selectedInvoice?.payment_type === 0
                     ? "Tiền mặt"
                     : "Chuyển khoản",
         },
@@ -58,43 +58,42 @@ const PaymentModalDetail = ({ isOpen, onClose, selectedInvoice }) => {
         {
             key: "8",
             label: "Số tiền dịch vụ",
-            children: `${parseFloat(
-                selectedInvoice?.service_total || 0
-            ).toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-            })}`,
+            children: `${
+                parseFloat(
+                    selectedInvoice?.service_total || 0
+                ).toLocaleString() + " VNĐ"
+            }`,
         },
         {
             key: "9",
             label: "Số tiền sản phẩm",
-            children: `${parseFloat(
-                selectedInvoice?.product_total || 0
-            ).toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-            })}`,
+            children: `${
+                parseFloat(
+                    selectedInvoice?.product_total || 0
+                ).toLocaleString() + " VNĐ"
+            }`,
         },
         {
             key: "10",
             label: "Giảm giá",
-            children: `${parseFloat(
-                selectedInvoice?.reduce || 0
-            ).toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-            })}`,
+            children: `${
+                parseFloat(selectedInvoice?.reduce || 0).toLocaleString() +
+                " VNĐ"
+            }`,
         },
         // Add customer information
         {
             key: "11",
             label: "Tên khách hàng",
-            children: selectedInvoice?.appointment_id?.customer?.full_name || "Không có",
+            children:
+                selectedInvoice?.appointment_id?.customer?.full_name ||
+                "Không có",
         },
         {
             key: "12",
             label: "Số điện thoại khách hàng",
-            children: selectedInvoice?.appointment_id?.customer?.phone || "Không có",
+            children:
+                selectedInvoice?.appointment_id?.customer?.phone || "Không có",
         },
     ];
 
@@ -113,21 +112,13 @@ const PaymentModalDetail = ({ isOpen, onClose, selectedInvoice }) => {
             title: "Đơn giá",
             dataIndex: "unit_price",
             key: "unit_price",
-            render: (price) =>
-                `${parseFloat(price).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                })}`,
+            render: (price) => `${parseFloat(price).toLocaleString() + " VNĐ"}`,
         },
         {
             title: "Thành tiền",
             dataIndex: "total_price",
             key: "total_price",
-            render: (price) =>
-                `${parseFloat(price).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                })}`,
+            render: (price) => `${parseFloat(price).toLocaleString() + " VNĐ"}`,
         },
     ];
 
@@ -143,7 +134,12 @@ const PaymentModalDetail = ({ isOpen, onClose, selectedInvoice }) => {
                 </Button>,
             ]}
         >
-            <Descriptions title="Thông tin thanh toán" items={items} column={2} />
+            <Descriptions
+                bordered
+                title="Thông tin thanh toán"
+                items={items}
+                column={2}
+            />
             <Table
                 title={() => "Danh sách sản phẩm"}
                 columns={productColumns}

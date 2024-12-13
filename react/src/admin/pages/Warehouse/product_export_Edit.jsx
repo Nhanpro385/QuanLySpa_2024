@@ -255,6 +255,7 @@ const Product_export_Edit = () => {
             key: "name",
             render: (_, product, index) => (
                 <Select
+                disabled
                     className="w-100"
                     size="large"
                     showSearch
@@ -298,7 +299,7 @@ const Product_export_Edit = () => {
             render: (_, product, index) => (
                 <InputNumber
                     className="w-100"
-                    min={1}
+                    min={1000}
                     size="large"
                     formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -315,15 +316,15 @@ const Product_export_Edit = () => {
             key: "total",
             render: (_, product) => product.total.toLocaleString(),
         },
-        {
-            title: "Hành động",
-            key: "action",
-            render: (_, product, index) => (
-                <Button danger onClick={() => removeProduct(index)}>
-                    Xóa
-                </Button>
-            ),
-        },
+        // {
+        //     title: "Hành động",
+        //     key: "action",
+        //     render: (_, product, index) => (
+        //         <Button danger onClick={() => removeProduct(index)}>
+        //             Xóa
+        //         </Button>
+        //     ),
+        // },
     ];
 
     return (
@@ -347,11 +348,11 @@ const Product_export_Edit = () => {
                             <Card
                                 title="Danh sách xuất hàng"
                                 className="mt-3 bg-light"
-                                extra={
-                                    <Button type="primary" onClick={addProduct}>
-                                        Thêm sản phẩm
-                                    </Button>
-                                }
+                                // extra={
+                                //     <Button type="primary" onClick={addProduct}>
+                                //         Thêm sản phẩm
+                                //     </Button>
+                                // }
                             >
                                 <Table
                                     columns={columns}

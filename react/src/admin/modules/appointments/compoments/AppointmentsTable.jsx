@@ -33,7 +33,7 @@ const AppointmentsTable = ({
             key: "customer_id",
             render: (text, record) => {
                 return <span>{record?.customer_id || "Không tìm thấy"}</span>;
-            }
+            },
         },
         {
             title: "Tên Nhân Viên",
@@ -94,6 +94,12 @@ const AppointmentsTable = ({
                                                 e.preventDefault();
                                                 onEdit(record.id);
                                             }}
+                                            disabled={
+                                                record.status ===
+                                                "Đã hoàn thành."
+                                                    ? true
+                                                    : false
+                                            }
                                         >
                                             Sửa
                                         </Button>
@@ -124,7 +130,14 @@ const AppointmentsTable = ({
                                             okText="Có"
                                             cancelText="Không"
                                         >
-                                            <Button block danger>
+                                            <Button block danger
+                                             disabled={
+                                                record.status ===
+                                                "Đã hoàn thành."
+                                                    ? true
+                                                    : false
+                                            }
+                                            >
                                                 Xóa
                                             </Button>
                                         </Popconfirm>
@@ -151,7 +164,7 @@ const AppointmentsTable = ({
 
     return (
         <Table
-           scroll={{ x: 768 }}
+            scroll={{ x: 768 }}
             dataSource={dataSource}
             columns={columns}
             loading={loading}

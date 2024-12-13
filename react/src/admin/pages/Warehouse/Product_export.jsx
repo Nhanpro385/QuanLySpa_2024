@@ -257,7 +257,7 @@ const WarehouseExport = () => {
             render: (_, product, index) => (
                 <InputNumber
                     className="w-100"
-                    min={1}
+                    min={1000}
                     size="large"
                     formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")

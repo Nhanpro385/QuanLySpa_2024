@@ -331,7 +331,7 @@ const items = [
             className="text-decoration-none text-black fs-4"
             to="/admin/CommentManagement"
         >
-            Quản lý bình luận và đánh giá
+            Quản lý bình luận
         </Link>,
         "31",
         <CommentOutlined />,
@@ -397,7 +397,7 @@ const items = [
             Quản lý nhà cung cấp
         </Link>,
         "37",
-        <FileOutlined />,
+        <HomeOutlined />,
         [
             getItem(
                 <Link

@@ -11,7 +11,11 @@ import {
     Dropdown,
     Tag,
 } from "antd";
-import { Loading3QuartersOutlined, DownOutlined } from "@ant-design/icons";
+import {
+    Loading3QuartersOutlined,
+    DownOutlined,
+    LoadingOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -54,6 +58,7 @@ const ShiftManagement = () => {
         handleSubmit,
         formState: { errors },
         setValue,
+        clearErrors,
         reset,
     } = useForm();
     const navigate = useNavigate();
@@ -235,7 +240,7 @@ const ShiftManagement = () => {
             key: "end_time",
         },
         {
-            title: "Tối đa",
+            title: "Tối đa Khách",
             dataIndex: "max_customers",
             key: "max_customers",
             render: (text) => <span>{text} Người</span>,
@@ -248,7 +253,7 @@ const ShiftManagement = () => {
                 text == 1 ? (
                     <Tag color="green">Đang hoạt động</Tag>
                 ) : (
-                    <Tag color="red" >Đã kết thúc</Tag>
+                    <Tag color="red">Đã kết thúc</Tag>
                 ),
         },
         {
@@ -395,7 +400,7 @@ const ShiftManagement = () => {
             <Card
                 extra={
                     <Button
-                        icon={<Loading3QuartersOutlined />}
+                        icon={<LoadingOutlined />}
                         type="primary"
                         onClick={() => getshifts()}
                         loading={loading}

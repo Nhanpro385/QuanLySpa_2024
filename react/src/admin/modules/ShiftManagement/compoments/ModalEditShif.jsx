@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Modal,
     Form,
@@ -9,6 +9,7 @@ import {
     Button,
     TimePicker,
     Switch,
+    Radio,
     notification,
 } from "antd";
 import { useForm, Controller } from "react-hook-form";
@@ -35,27 +36,47 @@ function ModalAddShiftEdit({
     } = useForm({
         defaultValues: data,
     });
+
     const [api, contextHolder] = notification.useNotification();
+    const [selectedShiftTime, setSelectedShiftTime] = useState({
+        start_time: "08:00:00",
+        end_time: "12:00:00",
+    });
+
+    const initialShiftTime = [
+        {
+            label: "Ca sáng",
+            value: {
+                start_time: "08:00:00",
+                end_time: "12:00:00",
+            },
+        },
+        {
+            label: "Ca chiều",
+            value: {
+                start_time: "13:00:00",
+                end_time: "17:00:00",
+            },
+        },
+    ];
+
     useEffect(() => {
         if (data) {
-            // Ensure date and time fields are converted to dayjs objects
             setValue(
                 "shift_date",
                 data.shift_date ? dayjs(data.shift_date) : null
             );
-            setValue(
-                "start_time",
-                data.start_time ? dayjs(data.start_time, "HH:mm") : null
-            );
-            setValue(
-                "end_time",
-                data.end_time ? dayjs(data.end_time, "HH:mm") : null
-            );
+            setSelectedShiftTime({
+                start_time: data.start_time,
+                end_time: data.end_time,
+            });
+
             setValue("max_customers", data.max_customers);
             setValue("status", data.status);
             setValue("note", data.note);
         }
     }, [data, setValue]);
+
     useEffect(() => {
         if (error && typeof error === "object") {
             Object.keys(error).forEach((key) => {
@@ -69,7 +90,7 @@ function ModalAddShiftEdit({
                 ) {
                     setError(key, {
                         type: "manual",
-                        message: error[key][0], // Assumes error[key] is an array with messages
+                        message: error[key][0],
                     });
                 }
             });
@@ -80,10 +101,10 @@ function ModalAddShiftEdit({
         const payload = {
             id: data.id,
             shift_date: values.shift_date.format("YYYY-MM-DD"),
-            start_time: values.start_time.format("HH:mm:ss"),
-            end_time: values.end_time.format("HH:mm:ss"),
+            start_time: values.start_time,
+            end_time: values.end_time,
             max_customers: values.max_customers,
-            note: "Cập nhật ca sáng",
+            note: values.note || "Cập nhật ca làm",
             status: values.status,
         };
 
@@ -102,6 +123,7 @@ function ModalAddShiftEdit({
                 <Button
                     key="submit"
                     type="primary"
+                    loading={loading}
                     onClick={handleSubmit(handleFinish)}
                 >
                     Lưu
@@ -109,7 +131,7 @@ function ModalAddShiftEdit({
             ]}
         >
             {contextHolder}
-            <Form layout="vertical" onFinish={handleSubmit(handleFinish)}>
+            <Form layout="vertical">
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
@@ -120,9 +142,7 @@ function ModalAddShiftEdit({
                             <Controller
                                 name="shift_date"
                                 control={control}
-                                rules={{
-                                    required: "Vui lòng chọn ngày!",
-                                }}
+                                rules={{ required: "Vui lòng chọn ngày!" }}
                                 render={({ field }) => (
                                     <DatePicker
                                         {...field}
@@ -131,63 +151,82 @@ function ModalAddShiftEdit({
                                         onChange={(date) =>
                                             field.onChange(date)
                                         }
-                                        needConfirm={false}
                                     />
                                 )}
                             />
                         </Form.Item>
                     </Col>
+
                     <Col span={12}>
                         <Form.Item
-                            label="Thời Gian Bắt Đầu"
+                            label="Ca làm"
                             validateStatus={errors.start_time ? "error" : ""}
                             help={errors.start_time?.message}
                         >
                             <Controller
                                 name="start_time"
                                 control={control}
-                                rules={{
-                                    required:
-                                        "Vui lòng chọn thời gian bắt đầu!",
-                                }}
+                                rules={{ required: "Vui lòng chọn ca làm!" }}
                                 render={({ field }) => (
-                                    <TimePicker
-                                        {...field}
-                                        style={{ width: "100%" }}
-                                        onChange={(time) =>
-                                            field.onChange(time)
-                                        }
-                                        needConfirm={false}
+                                    <>
+                                        <Radio.Group
+                                            block
+                                            onChange={(e) => {
+                                                const selectedShift =
+                                                    initialShiftTime.find(
+                                                        (item) =>
+                                                            item.label ===
+                                                            e.target.value
+                                                    );
+                                                setSelectedShiftTime(
+                                                    selectedShift?.value
+                                                );
+                                                setValue(
+                                                    "start_time",
+                                                    selectedShift?.value.start_time
+                                                );
+                                                setValue(
+                                                    "end_time",
+                                                    selectedShift?.value.end_time
+                                                );
+                                                field.onChange(
+                                                    selectedShift?.value
+                                                        .start_time
+                                                );
+                                            }}
+                                            value={
+                                                initialShiftTime.find(
+                                                    (item) =>
+                                                        item.value
+                                                            .start_time ===
+                                                            selectedShiftTime.start_time &&
+                                                        item.value.end_time ===
+                                                            selectedShiftTime.end_time
+                                                )?.label
+                                            }
+                                            optionType="button"
+                                        >
+                                            {initialShiftTime.map((item) => (
+                                                <Radio.Button
+                                                    key={item.label}
+                                                    value={item.label}
+                                                >
+                                                    {item.label}
+                                                </Radio.Button>
+                                            ))}
+                                        </Radio.Group>
 
-                                    />
-                                )}
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={12}>
-                        <Form.Item
-                            label="Thời Gian Kết Thúc"
-                            validateStatus={errors.end_time ? "error" : ""}
-                            help={errors.end_time?.message}
-                        >
-                            <Controller
-                                name="end_time"
-                                control={control}
-                                rules={{
-                                    required:
-                                        "Vui lòng chọn thời gian kết thúc!",
-                                }}
-                                render={({ field }) => (
-                                    <TimePicker
-                                        {...field}
-                                        style={{ width: "100%" }}
-                                        onChange={(time) =>
-                                            field.onChange(time)
-                                        }
-                                        needConfirm={false}
-
-                                    />
+                                        <div
+                                            style={{
+                                                marginTop: "8px",
+                                                color: "gray",
+                                            }}
+                                        >
+                                            Thời gian:{" "}
+                                            {selectedShiftTime.start_time} -{" "}
+                                            {selectedShiftTime.end_time}
+                                        </div>
+                                    </>
                                 )}
                             />
                         </Form.Item>
@@ -203,13 +242,13 @@ function ModalAddShiftEdit({
                                 name="max_customers"
                                 control={control}
                                 rules={{
-                                    required: "Vui lòng nhập số  khách hàng!",
+                                    required: "Vui lòng nhập số khách hàng!",
                                 }}
                                 render={({ field }) => (
                                     <Input
                                         {...field}
                                         type="number"
-                                        placeholder="Nhập số  khách hàng"
+                                        placeholder="Nhập số khách hàng"
                                     />
                                 )}
                             />
@@ -224,6 +263,7 @@ function ModalAddShiftEdit({
                                 render={({ field }) => (
                                     <Switch
                                         {...field}
+                                        checked={field.value}
                                         onChange={(checked) =>
                                             field.onChange(checked)
                                         }

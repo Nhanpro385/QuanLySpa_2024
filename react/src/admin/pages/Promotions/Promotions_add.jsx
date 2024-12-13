@@ -254,7 +254,7 @@ const PromotionsAdd = () => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col xl={4} md={4} sm={24} xs={24}>
+                        <Col xl={6} md={6} sm={24} xs={24}>
                             <Form.Item
                                 name="discount_percent"
                                 label="Giảm giá (%)"
@@ -286,7 +286,7 @@ const PromotionsAdd = () => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col xl={4} md={4} sm={24} xs={24}>
+                        <Col xl={6} md={6} sm={24} xs={24}>
                             <Form.Item
                                 name="min_order_amount"
                                 label="Tôi thiểu giá trị"
@@ -324,38 +324,8 @@ const PromotionsAdd = () => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col xl={4} md={4} sm={24} xs={24}>
-                            <Form.Item
-                                name="min_quantity"
-                                label="Tối thiểu số lượng"
-                                help={
-                                    errors.min_quantity &&
-                                    errors.min_quantity.message
-                                }
-                                validateStatus={errors.min_quantity && "error"}
-                                required
-                            >
-                                <Controller
-                                    name="min_quantity"
-                                    control={control}
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message:
-                                                "Số lượng tối thiểu không được để trống",
-                                        },
-                                    }}
-                                    render={({ field }) => (
-                                        <InputNumber
-                                            {...field}
-                                            placeholder="Nhập số lượng tối thiểu"
-                                            style={{ width: "100%" }}
-                                        />
-                                    )}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col xl={6} md={6} sm={24} xs={24}>
+                       
+                        <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="startDateAndEndDate"
                                 label="Ngày bắt đầu và kết thúc"
@@ -388,7 +358,37 @@ const PromotionsAdd = () => {
                                 />
                             </Form.Item>
                         </Col>
-
+                        <Col xl={12} md={12} sm={24} xs={24}>
+                            <Form.Item
+                                name="min_quantity"
+                                label="Tối thiểu số lượng các loại sản phẩm"
+                                help={
+                                    errors.min_quantity &&
+                                    errors.min_quantity.message
+                                }
+                                validateStatus={errors.min_quantity && "error"}
+                                required
+                            >
+                                <Controller
+                                    name="min_quantity"
+                                    control={control}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message:
+                                                "Số lượng tối thiểu không được để trống",
+                                        },
+                                    }}
+                                    render={({ field }) => (
+                                        <InputNumber
+                                            {...field}
+                                            placeholder="Nhập số lượng tối thiểu"
+                                            style={{ width: "100%" }}
+                                        />
+                                    )}
+                                />
+                            </Form.Item>
+                        </Col>
                         <Col xl={6} md={6} sm={24} xs={24}>
                             <Form.Item name="image_url" label="Tải ảnh lên">
                                 <Controller

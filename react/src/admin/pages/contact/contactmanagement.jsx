@@ -84,13 +84,13 @@ const ContactManagement = () => {
             width: "20%",
             render: (text) => (
                 <span
-                    style={{
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 2,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                    }}
+                // style={{
+                //     display: "-webkit-box",
+                //     WebkitBoxOrient: "vertical",
+                //     WebkitLineClamp: 2,
+                //     overflow: "hidden",
+                //     textOverflow: "ellipsis",
+                // }}
                 >
                     {text || "Không có ghi chú"}
                 </span>
@@ -100,11 +100,16 @@ const ContactManagement = () => {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
+            width: "10%",
             render: (status) =>
                 status == 0 ? (
-                    <Tag color="red">Chưa liên hệ</Tag>
+                    <Tag className="w-100 text-center p-1" color="red">
+                        Chưa liên hệ
+                    </Tag>
                 ) : (
-                    <Tag color="green">Đã liên hệ</Tag>
+                    <Tag className="w-100 text-center p-1" color="green">
+                        Đã liên hệ
+                    </Tag>
                 ),
         },
         {
@@ -114,20 +119,11 @@ const ContactManagement = () => {
                 <Row gutter={[8, 8]}>
                     <Col xl={12} md={24} sm={24} xs={24}>
                         <Button
-                            type="primary"
-                            onClick={() => handleViewDetail(record)}
+                            type={record.status == 1 ? "primary" : "default"}
+                            onClick={() => handleEditOk(record)}
                             block
                         >
-                            Xem chi tiết
-                        </Button>
-                    </Col>
-                    <Col xl={12} md={24} sm={24} xs={24}>
-                        <Button
-                            type="default"
-                            onClick={() => handleEditContact(record)}
-                            block
-                        >
-                            Sửa
+                            Đổi trạng thái
                         </Button>
                     </Col>
                 </Row>
@@ -140,12 +136,6 @@ const ContactManagement = () => {
         showModal(); // Show modal
     };
 
-    const handleEditContact = (contact) => {
-        contact.status = contact.status == 1 ? true : false;
-        setSelectedContact(() => contact); // Set selected contact
-        editForm.setFieldsValue(contact); // Set form values with contact details
-        setIsEditModalOpen(true); // Open edit modal
-    };
     const handleChangePage = (page, pageSize) => {
         setSearchQuery({
             ...searchquery,
@@ -164,16 +154,17 @@ const ContactManagement = () => {
             fetchContacts();
         }
     }, [searchquery]);
-    const handleEditOk = async () => {
+    const handleEditOk = async (data) => {
         try {
-            const values = await editForm.validateFields(); // Wait for form validation
+            const status = data?.status == 0 ? 1 : 0;
 
             const res = await updateAdminContact({
-                id: selectedContact.id,
-                data: values,
+                id: data?.id,
+                data: {
+                    status: status,
+                },
             });
-            console.log(res);
-            
+
             if (res.payload?.status == "success") {
                 api.success({
                     message:
@@ -186,8 +177,6 @@ const ContactManagement = () => {
                         res?.payload?.message || "Cập nhật liên hệ thất bại",
                 });
             }
-
-            setIsEditModalOpen(false); // Close modal after successful update
         } catch (error) {
             if (error.name === "ValidationError") {
                 console.log("Validate Failed:", error);
@@ -234,95 +223,6 @@ const ContactManagement = () => {
                     }}
                 />
             </Card>
-
-            {/* Modal for viewing contact details */}
-            <Modal
-                title="Chi tiết liên hệ"
-                visible={isModalOpen}
-                onOk={handleOk}
-                onCancel={() => {
-                    handleCancel();
-                    setSelectedContact(null); // Clear selected contact on modal close
-                }}
-            >
-                {selectedContact ? (
-                    <>
-                        <p>
-                            <strong>Tên:</strong> {selectedContact.name}
-                        </p>
-                        <p>
-                            <strong>Số điện thoại:</strong>{" "}
-                            {selectedContact.phone}
-                        </p>
-                        <p>
-                            <strong>Email:</strong>{" "}
-                            {selectedContact.email ? (
-                                <a href={`mailto:${selectedContact.email}`}>
-                                    {selectedContact.email}
-                                </a>
-                            ) : (
-                                "Không có email"
-                            )}
-                        </p>
-                        <p>
-                            <strong>Ghi chú:</strong> {selectedContact.note}
-                        </p>
-                        <p>
-                            <strong>Trạng thái:</strong>{" "}
-                            {selectedContact.status}
-                        </p>
-                    </>
-                ) : (
-                    <p>Vui lòng chọn một liên hệ để xem chi tiết.</p>
-                )}
-            </Modal>
-
-            {/* Modal for editing contact */}
-            <Modal
-                title="Sửa thông tin liên hệ"
-                visible={isEditModalOpen}
-                onOk={handleEditOk}
-                onCancel={handleEditCancel}
-            >
-                <Form form={editForm} layout="vertical">
-                    <Form.Item
-                        label="Tên"
-                        name="name"
-                        rules={[
-                            { required: true, message: "Vui lòng nhập tên" },
-                        ]}
-                    >
-                        <Input disabled />
-                    </Form.Item>
-                    <Form.Item
-                        label="Số điện thoại"
-                        name="phone"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập số điện thoại",
-                            },
-                        ]}
-                    >
-                        <Input disabled />
-                    </Form.Item>
-                    <Form.Item label="Email" name="email">
-                        <Input disabled />
-                    </Form.Item>
-                    <Form.Item label="Đánh giá" name="evaluete">
-                        <Input disabled />
-                    </Form.Item>
-                    <Form.Item label="Ghi chú" name="note">
-                        <Input disabled />
-                    </Form.Item>{" "}
-                    <Form.Item label="Trạng thái" name="status">
-                        <Select>
-                            <Option value={false}>Chưa liên hệ</Option>
-                            <Option value={true}>Đã liên hệ</Option>
-                        </Select>
-                    </Form.Item>
-                </Form>
-            </Modal>
         </div>
     );
 };

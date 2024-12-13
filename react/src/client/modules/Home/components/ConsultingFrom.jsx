@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Form, Input, Col, Select, notification } from "antd";
 import {
     ArrowRightOutlined,
@@ -10,17 +10,31 @@ import clsx from "clsx"; // Import clsx
 import styles from "../styles/ConsultingFrom.module.scss";
 import useContactActions from "../../../../admin/modules/contact/hooks/usecontact";
 import { useSelector } from "react-redux";
+import useServicesActions from "../../../../admin/modules/services/hooks/useServices";
 const ConsultingFrom = () => {
     const [form] = Form.useForm();
     const { createClientContact } = useContactActions();
+    const { getServicesClient } = useServicesActions();
     const contact = useSelector((state) => state.contact);
     const [api, contextHolder] = notification.useNotification();
+    const [listServices, setListServices] = React.useState([]);
     const [size, setSize] = React.useState(() => {
         if (window.innerWidth < 768) return "horizontal";
         else return "inline";
     });
+    const getServices = async () => {
+        try {
+            const res = await getServicesClient(100);
+            if (res?.meta?.requestStatus === "fulfilled") {
+                setListServices(res?.payload?.data?.map((item) => item?.name));
+            }
+        } catch (error) {
+            console.error("Lỗi khi lấy dịch vụ:", error);
+        }
+    };
 
     React.useEffect(() => {
+        getServices();
         function handleResize() {
             if (window.innerWidth < 768) setSize("horizontal");
             else setSize("inline");
@@ -78,7 +92,6 @@ const ConsultingFrom = () => {
                     >
                         <Input
                             size="middle"
-
                             prefix={<UserOutlined />}
                             className={styles.input}
                         />
@@ -95,7 +108,6 @@ const ConsultingFrom = () => {
                     >
                         <Input
                             size="middle"
-
                             type="email"
                             prefix={<MailOutlined />}
                             className={styles.input}
@@ -122,7 +134,6 @@ const ConsultingFrom = () => {
                             type="text"
                             prefix={<PhoneOutlined />}
                             size="middle"
-
                             className={styles.input}
                         />
                     </Form.Item>
@@ -144,73 +155,10 @@ const ConsultingFrom = () => {
                             optionFilterProp="label"
                             size="middle"
                             className={styles.input}
-                            options={[
-                                {
-                                    label: "Bị vấn đề về mụn",
-                                    value: "Bị vấn đề về mụn",
-                                },
-                                {
-                                    label: "Bị vấn đề về nám",
-                                    value: "Bị vấn đề về nám",
-                                },
-                                {
-                                    label: "Bị vấn đề về da",
-                                    value: "Bị vấn đề về da",
-                                },
-                                {
-                                    label: "Chăm sóc da mặt cơ bản",
-                                    value: "Chăm sóc da mặt cơ bản",
-                                },
-                                { label: "Trẻ hóa da", value: "Trẻ hóa da" },
-                                {
-                                    label: "Điều trị thâm",
-                                    value: "Điều trị thâm",
-                                },
-                                {
-                                    label: "Điều trị sẹo rỗ",
-                                    value: "Điều trị sẹo rỗ",
-                                },
-                                {
-                                    label: "Chăm sóc da nhạy cảm",
-                                    value: "Chăm sóc da nhạy cảm",
-                                },
-                                {
-                                    label: "Cấp ẩm chuyên sâu",
-                                    value: "Cấp ẩm chuyên sâu",
-                                },
-                                {
-                                    label: "Làm trắng da",
-                                    value: "Làm trắng da",
-                                },
-                                {
-                                    label: "Thải độc tố da",
-                                    value: "Thải độc tố da",
-                                },
-                                {
-                                    label: "Liệu trình nâng cơ mặt",
-                                    value: "Liệu trình nâng cơ mặt",
-                                },
-                                {
-                                    label: "Căng bóng da",
-                                    value: "Căng bóng da",
-                                },
-                                {
-                                    label: "Điều trị da lão hóa",
-                                    value: "Điều trị da lão hóa",
-                                },
-                                {
-                                    label: "Chăm sóc da dầu",
-                                    value: "Chăm sóc da dầu",
-                                },
-                                {
-                                    label: "Chăm sóc da khô",
-                                    value: "Chăm sóc da khô",
-                                },
-                                {
-                                    label: "Khác",
-                                    value: "Khác",
-                                },
-                            ]}
+                            options={listServices.map((item) => ({
+                                label: item,
+                                value: item,
+                            }))}
                         />
                     </Form.Item>
                 </Col>

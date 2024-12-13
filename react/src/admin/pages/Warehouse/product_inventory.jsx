@@ -195,6 +195,7 @@ const ProductInventory = () => {
                 </Row> */}
                 <Table
                     columns={columns}
+                    loading={warehouse.inventory.loading}
                     dataSource={dataSource}
                     pagination={{
                         current: pagination.current_page,

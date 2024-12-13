@@ -30,14 +30,10 @@ const ProductHistoryModal = ({ isOpen, onClose, data }) => {
             title: "Giá (VNĐ)",
             dataIndex: "cost",
             key: "cost",
-            render: (cost) => parseInt(cost || 0).toLocaleString() + " VNĐ" || 0,
+            render: (cost) =>
+                parseInt(cost || 0).toLocaleString() + " VNĐ" || 0,
         },
-        {
-            title: "Giá cũ (VNĐ)",
-            dataIndex: "old_cost",
-            key: "old_cost",
-            render: (old_cost) => parseInt(old_cost || 0).toLocaleString() + " VNĐ" || 0,
-        },
+
         {
             title: "Ngày",
             dataIndex: "date",
@@ -81,7 +77,10 @@ const ProductHistoryModal = ({ isOpen, onClose, data }) => {
                     key: index,
                 }))}
                 columns={columns}
-                pagination={false}
+                pagination={{
+                    pageSize: 5,
+                    showSizeChanger: true,
+                }}
                 scroll={{ y: 400 }}
                 style={{ marginTop: 20 }}
                 rowClassName={(record) =>

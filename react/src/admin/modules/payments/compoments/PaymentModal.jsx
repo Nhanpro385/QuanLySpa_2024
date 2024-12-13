@@ -42,7 +42,6 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
         }, 0);
         const serviceTotal = parseFloat(DataAppointment?.service_total || 0);
         setTotalAmount(productTotal + serviceTotal);
-       
     }, [selectedProducts, DataAppointment]);
     useEffect(() => {
         if (data) {
@@ -77,8 +76,8 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
             // Đặt giá trị cho form
             form.setFieldsValue({
                 status: data.status || 0,
-                paymentMethod: data.payment_type ,
-                promotion_name: data.promotion_id?.id || "",
+                paymentMethod: data.payment_type,
+                promotion_name: data.promotion_id?.name || "",
                 products: data.products.map((item) => item.product_id) || [],
             });
         }
@@ -123,6 +122,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
             setDataPromotion(
                 promotions?.promotions?.data.map((item) => ({
                     ...item,
+
                     key: item.id,
                 }))
             );
@@ -326,10 +326,10 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                                 ]}
                             >
                                 <Select placeholder="Chọn phương thức">
-                                    <Select.Option value={1}>
+                                    <Select.Option value={0}>
                                         Tiền mặt
                                     </Select.Option>
-                                    <Select.Option value={0}>
+                                    <Select.Option value={1}>
                                         Chuyển khoản
                                     </Select.Option>
                                 </Select>
@@ -345,6 +345,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                                         const promotion = DataPromotion.find(
                                             (item) => item.id === value
                                         );
+
                                         form.setFieldsValue({
                                             promotion_name: promotion?.name,
                                         });
@@ -380,6 +381,10 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                                                             item.min_order_amount
                                                         ).toLocaleString()}
                                                 </Tag>
+                                                <Tag color="purple">
+                                                    Số lượng các loại:
+                                                    {item.min_quantity}
+                                                </Tag>
                                             </Space>
                                         ),
                                         value: item.id,
@@ -392,7 +397,16 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                                     mode="multiple"
                                     allowClear
                                     options={DataProduct.map((item) => ({
-                                        label: item.name,
+                                        label: (
+                                            <Space>
+                                                <Tag color="orange">
+                                                    {item?.name}
+                                                </Tag>
+                                                <Tag color="red">
+                                                    {parseInt(item?.price).toLocaleString() + " VNĐ"}
+                                                </Tag>
+                                            </Space>
+                                        ),
                                         value: item.id,
                                     }))}
                                     filterOption={false}

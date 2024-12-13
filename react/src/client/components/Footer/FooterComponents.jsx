@@ -43,11 +43,11 @@ const FooterComponents = () => {
                                 <p>Hotro@Sakuraspa.vn</p>
                             </div>
                         </div>
-                        <div className={style.boxSocial}>
+                        {/* <div className={style.boxSocial}>
                             <img src={facebook} alt="" />
                             <img src={youtube} alt="" />
                             <img src={social} alt="" />
-                        </div>
+                        </div> */}
                     </div>
                     <div className={style.boxMiddle}>
                         <div className={style.boxNameLocation}>

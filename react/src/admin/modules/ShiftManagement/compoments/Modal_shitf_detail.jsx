@@ -47,7 +47,7 @@ const ModalShiftDetail = ({ isOpen, onClose, selectedShif }) => {
         {
             key: "8",
             label: "Vai trò người tạo",
-            children: selectedShif?.created_by?.role || "Không xác định",
+            children: selectedShif?.created_by?.role == 0 ? "Quản lý" : "Nhân viên",
         },
     ];
 

@@ -274,6 +274,7 @@ const Warehouse = () => {
             </Row>
             <Table
                 dataSource={dataSource}
+                scroll={{ x: 768 }}
                 columns={columns}
                 loading={warehouse.import.loading || warehouse.export.loading}
                 pagination={{

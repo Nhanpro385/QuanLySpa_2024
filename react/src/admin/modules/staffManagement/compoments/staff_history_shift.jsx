@@ -34,19 +34,7 @@ const Staff_history_shift = ({ data }) => {
     };
     return (
         <Row>
-            <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                <Row gutter={[16, 16]}>
-                    <Col xl={5} lg={5} md={5} sm={24} xs={24}>
-                        <Select className="w-100" placeholder="Bộ lọc">
-                            <Select.Option key={1}>Mới nhất</Select.Option>
-                            <Select.Option key={2}>Cũ nhất</Select.Option>
-                        </Select>
-                    </Col>
-                    <Col xl={10} lg={10} md={10} sm={24} xs={24}>
-                        <RangePicker format={dateFormat} className="w-100" />
-                    </Col>
-                </Row>
-            </Col>
+            
             <Col xl={24} lg={24} md={24} sm={24} xs={24} className="mt-3">
                 <List
                     grid={{ gutter: 16, column: 4 }}

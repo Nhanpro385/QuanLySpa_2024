@@ -39,21 +39,22 @@ const CommentTable = ({
                 <Space>
                     <Avatar size="small" icon={<UserOutlined />} />
                     <Text>
-                        {record.type == 0
-                            ? <Tag color="green">Quản trị viên : {record?.created_by?.full_name || "Không có"}</Tag>
-                            : <Tag color="blue">Người dùng : {record?.customer?.full_name || "Không có"}</Tag>}
+                        {record.type == 0 ? (
+                            <Tag color="green">
+                                Quản trị viên :{" "}
+                                {record?.created_by?.full_name || "Không có"}
+                            </Tag>
+                        ) : (
+                            <Tag color="blue">
+                                Người dùng :{" "}
+                                {record?.customer?.full_name || "Không có"}
+                            </Tag>
+                        )}
                     </Text>
                 </Space>
             ),
         },
-        {
-            title: "Dịch vụ",
-            dataIndex: "service_id",
-            key: "service_id",
-            render: (service_id) => (
-                <Text>{service_id ? service_id : "Không có"}</Text>
-            ),
-        },
+
         {
             title: "Nội dung",
             dataIndex: "comment",
