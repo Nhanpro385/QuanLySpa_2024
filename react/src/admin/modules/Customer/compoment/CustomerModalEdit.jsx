@@ -63,7 +63,7 @@ const ModalEditCustomer = ({
                 "gender",
                 customer.gender == "Nam" ? 1 : customer.gender == "Nữ" ? 2 : 3
             );
-          
+            setValue("status", customer.status);
             setValue("role", customer.role);
         }
     }, [customer]);
@@ -159,7 +159,6 @@ const ModalEditCustomer = ({
                                 <Option value={1}>Nam</Option>
                                 <Option value={2}>Nữ</Option>
                                 <Option value={3}>Khác</Option>
-
                             </Select>
                         )}
                     />
@@ -183,8 +182,22 @@ const ModalEditCustomer = ({
                         </p>
                     )}
                 </Form.Item>
-
-                
+                <Form.Item label="Trạng Thái">
+                    <Controller
+                        name="status"
+                        control={control}
+                        rules={{ required: "Trạng thái" }}
+                        render={({ field }) => (
+                            <Select {...field} defaultValue={1}>
+                                <Option value={0}>Không hoạt động</Option>
+                                <Option value={1}>Hoạt động</Option>
+                            </Select>
+                        )}
+                    />
+                    {errors.status && (
+                        <p style={{ color: "red" }}>{errors.status.message}</p>
+                    )}
+                </Form.Item>
 
                 <Form.Item>
                     <Space>

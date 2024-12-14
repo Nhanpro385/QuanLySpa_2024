@@ -205,7 +205,8 @@ function Promotions() {
                                         </span>
                                     </div>
                                     <div>
-                                        Số lượng: {promotion.min_quantity}
+                                        Sản phẩm tối thiểu:{" "}
+                                        {promotion.min_quantity}
                                     </div>
                                 </div>
                             </Card>

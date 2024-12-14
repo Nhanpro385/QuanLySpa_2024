@@ -22,7 +22,6 @@ const ModalEditSupplier = ({
             country: "",
             contact_email: "",
             code: "",
-            status: false, // Default trạng thái là không kích hoạt
         },
     });
 
@@ -34,7 +33,6 @@ const ModalEditSupplier = ({
                 country: supplier.country || "",
                 contact_email: supplier.contact_email || "",
                 code: supplier.code || "",
-                status: supplier.status === 1, // true nếu status = 1
             });
         }
     }, [supplier, reset]);
@@ -43,7 +41,6 @@ const ModalEditSupplier = ({
         const formattedData = {
             id: supplier.id,
             ...data,
-            status: data.status ? 1 : 0, // Convert boolean to integer
         };
         handleUpdate(formattedData);
     };
@@ -130,9 +127,7 @@ const ModalEditSupplier = ({
                     label="Địa chỉ Email"
                     validateStatus={errors.contact_email ? "error" : ""}
                     help={
-                        errors.contact_email
-                            ? errors.contact_email.message
-                            : ""
+                        errors.contact_email ? errors.contact_email.message : ""
                     }
                 >
                     <Controller
@@ -179,28 +174,6 @@ const ModalEditSupplier = ({
                             {supplierErrors.errors.code[0]}
                         </p>
                     )}
-                </Form.Item>
-
-                <Form.Item
-                    label="Trạng thái"
-                    validateStatus={errors.status ? "error" : ""}
-                    help={errors.status ? errors.status.message : ""}
-                >
-                    <Controller
-                        name="status"
-                        control={control}
-                        render={({ field }) => (
-                            <Switch
-                                {...field}
-                                checked={field.value}
-                                onChange={(checked) =>
-                                    field.onChange(checked)
-                                }
-                                checkedChildren="Kích hoạt"
-                                unCheckedChildren="Không kích hoạt"
-                            />
-                        )}
-                    />
                 </Form.Item>
             </Form>
         </Modal>

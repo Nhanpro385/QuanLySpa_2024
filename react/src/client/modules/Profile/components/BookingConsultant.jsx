@@ -86,7 +86,7 @@ const BookingConsultant = () => {
                             <Tag color="warning">Đang chờ duyệt</Tag>
                         </>
                     ) : (
-                        <Tag color="green">Cảm ơn bạn đã tư vấn</Tag>
+                        <Tag color="green">Cảm ơn bạn đã tham gia tư vấn </Tag>
                     )}
                 </>
             ),

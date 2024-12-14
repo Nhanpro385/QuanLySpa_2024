@@ -32,7 +32,10 @@ const useAuthActions = () => {
     const authReset = async (data) => {
         return await dispatch(resetpassword(data));
     };
-    const authGetmeAdmin = async () => {
+    const authGetmeAdmin = async (config) => {
+        if (config) {
+            return await dispatch(GetmeAdmin(config));
+        }
         return await dispatch(GetmeAdmin());
     };
     const authLoginClient = async (email, password) => {

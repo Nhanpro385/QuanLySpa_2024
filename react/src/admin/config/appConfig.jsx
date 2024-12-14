@@ -64,7 +64,7 @@ const endpoints = {
         login: `${API_AUTH_URL}/login`,
         logout: `${API_AUTH_URL}/logout`,
         refresh: `${API_AUTH_URL}/refresh`,
-        me: `${API_AUTH_URL}/me?shifts=true&shifts_after=true&shifts_before=true&appointments=true&cosulations=true?treatmentHistories=true`,
+        me:(day) => `${API_AUTH_URL}/me?shifts=true&shifts_after=true&shifts_before=true&appointments=true&cosulations=true?treatmentHistories=true&day=${day}`,
         forgotpassword: `${API_AUTH_URL2}/forgot-password`,
         resetpassword: `${API_AUTH_URL2}/reset-password`,
         changepassword: `${API_AUTH_URL}/me/resetPassword`,

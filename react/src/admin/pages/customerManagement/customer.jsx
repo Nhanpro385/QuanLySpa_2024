@@ -122,12 +122,10 @@ function Customer() {
                 date_of_birth:
                     updatedCustomer.date_of_birth.format("YYYY-MM-DD"),
                 email: updatedCustomer.email,
-                status: 1,
+                status: updatedCustomer.status,
             };
-            console.log(payload);
 
             const resultAction = await updateCustomer(payload);
-            console.log(resultAction.payload.message);
 
             if (resultAction.payload.status == "success") {
                 api.success({

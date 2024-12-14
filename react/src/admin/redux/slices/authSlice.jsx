@@ -72,9 +72,10 @@ export const resetpassword = createAsyncThunk(
 );
 export const GetmeAdmin = createAsyncThunk(
     "auth/getme",
-    async (_, { rejectWithValue }) => {
+    async (config, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(endpoints.Auth.me);
+            
+            const response = await axiosInstance.get(endpoints.Auth.me(config?.day || ""));
             return response.data;
         } catch (error) {
             return rejectWithValue({

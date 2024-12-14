@@ -86,7 +86,7 @@ const Profile = () => {
                     dayjs(data.date_of_birth).format("YYYY-MM-DD") ||
                     "1999-01-01",
                 address: data.address || "Chưa cập nhật",
-                status: true,
+                status: data.status,
             };
             const res = await authEditProfileClient({
                 id: authCustomer?.user?.data?.id,
@@ -380,21 +380,27 @@ const Profile = () => {
                                         )}
                                     />
                                 </Col>{" "}
-                                {/* <Col span={24}>
+                                <Col span={24}>
                                     <label htmlFor="status">Trạng Thái</label>
                                     <Controller
                                         name="status"
                                         control={control}
                                         render={({ field }) => (
-                                            <Switch
-                                                checkedChildren="Hoạt động"
-                                                unCheckedChildren="Khóa"
-                                                defaultChecked
+                                            <Select
+                                                className="w-100"
+                                                defaultValue={1}
                                                 {...field}
-                                            />
+                                            >
+                                                <Select.Option value={0}>
+                                                    Không hoạt động
+                                                </Select.Option>
+                                                <Select.Option value={1}>
+                                                    Hoạt động
+                                                </Select.Option>
+                                            </Select>
                                         )}
                                     />
-                                </Col> */}
+                                </Col>
                             </Row>
 
                             <Row
