@@ -14,8 +14,8 @@ class CustomerResource extends JsonResource
             'id' => (string) $this->id,
             'full_name' => $this->full_name,
             'gender' => $this->gender,
-            'email' => $this->email ,
-            'phone' => $this->phone ,
+            'email' => $this->email,
+            'phone' => $this->phone,
             'address' => $this->address,
             'created_by' => $this->created_by ? [
                 'id' => (string) $this->createdBy->id,
@@ -31,6 +31,7 @@ class CustomerResource extends JsonResource
             'updated_at' => $this->updated_at ? $this->updated_at->format('d-m-Y H:i') : null,
             'appointments' => AppointmentResource::collection($this->appointments),
             'consulations' => ConsulationResource::collection($this->consultations),
+            'status' => $this->status
         ];
     }
 
