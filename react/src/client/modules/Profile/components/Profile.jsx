@@ -86,7 +86,7 @@ const Profile = () => {
                     dayjs(data.date_of_birth).format("YYYY-MM-DD") ||
                     "1999-01-01",
                 address: data.address || "Chưa cập nhật",
-                status: data.status,
+                status: 1,
             };
             const res = await authEditProfileClient({
                 id: authCustomer?.user?.data?.id,
@@ -380,7 +380,7 @@ const Profile = () => {
                                         )}
                                     />
                                 </Col>{" "}
-                                <Col span={24}>
+                                {/* <Col span={24}>
                                     <label htmlFor="status">Trạng Thái</label>
                                     <Controller
                                         name="status"
@@ -400,7 +400,7 @@ const Profile = () => {
                                             </Select>
                                         )}
                                     />
-                                </Col>
+                                </Col> */}
                             </Row>
 
                             <Row
