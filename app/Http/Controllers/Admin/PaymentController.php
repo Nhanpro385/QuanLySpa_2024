@@ -282,57 +282,57 @@ class PaymentController extends Controller
             'subtotal' => $subtotal,
             'total_amount' => (($subtotal - $reduce) < 0) ? 0 : $subtotal - $reduce,
         ]);
+        if (count($validateData['products']) > 0) {
+            if ($payment->status == 1 || $validateData['status'] == 1) {
+                $outbountInvoice = OutboundInvoice::create([
+                    'id' => app(Snowflake::class)->next(),
+                    'staff_id' => auth('api')->user()->id,
+                    'note' => 'Bán trong hóa đơn: ' . $payment->id,
+                    'outbound_invoice_type' => 'service',
+                    'total_amount' => 0
+                ]);
 
-        if ($payment->status == 1 || $validateData['status'] == 1) {
-            $outbountInvoice = OutboundInvoice::create([
-                'id' => app(Snowflake::class)->next(),
-                'staff_id' => auth('api')->user()->id,
-                'note' => 'Bán trong hóa đơn: ' . $payment->id,
-                'outbound_invoice_type' => 'service',
-                'total_amount' => 0
-            ]);
+                foreach ($validateData['products'] as $product) {
+                    $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
+                    if (!$inventory || $inventory->quantity <= 0 || $inventory->quantity < $product['quantity']) {
+                        DB::rollBack();
+                        return response()->json([
+                            "status" => "error",
+                            "message" => "Hết hàng trong kho.",
+                            'error' => 'Số lượng sản phẩm mã: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
+                        ], 400);
+                    }
 
-            foreach ($validateData['products'] as $product) {
-                $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
-                if (!$inventory || $inventory->quantity <= 0 || $inventory->quantity < $product['quantity']) {
-                    DB::rollBack();
-                    return response()->json([
-                        "status" => "error",
-                        "message" => "Hết hàng trong kho.",
-                        'error' => 'Số lượng sản phẩm mã: ' . (string) $product['product_id'] . ' trong kho không đáp ứng đc yêu cầu.'
-                    ], 400);
+                    $pr = Product::find($product['product_id']);
+
+                    $outbountInvoiceDetail = OutboundInvoiceDetail::create([
+                        'id' => app(Snowflake::class)->next(),
+                        'product_id' => $product['product_id'],
+                        'outbound_invoice_id' => $outbountInvoice->id,
+                        'quantity_export' => $product['quantity'],
+                        'quantity_olded' => $inventory->quantity,
+                        'unit_price' => $pr->price
+                    ]);
+
+                    $total_amount += $outbountInvoiceDetail->quantity_export * $outbountInvoiceDetail->unit_price;
+
+
+                    //Cap nhat moi cho ton kho
+                    $updateInventory = Inventory::create([
+                        'id' => app(Snowflake::class)->next(),
+                        'product_id' => $product['product_id'],
+                        'quantity' => $inventory->quantity - $product['quantity'],
+                        'created_by' => auth('api')->user()->id,
+                        'updated_by' => auth('api')->user()->id,
+                    ]);
                 }
-
-                $pr = Product::find($product['product_id']);
-
-                $outbountInvoiceDetail = OutboundInvoiceDetail::create([
-                    'id' => app(Snowflake::class)->next(),
-                    'product_id' => $product['product_id'],
-                    'outbound_invoice_id' => $outbountInvoice->id,
-                    'quantity_export' => $product['quantity'],
-                    'quantity_olded' => $inventory->quantity,
-                    'unit_price' => $pr->price
+                //cap nhat hoa don
+                $outbountInvoice->update([
+                    'total_amount' => $total_amount,
                 ]);
 
-                $total_amount += $outbountInvoiceDetail->quantity_export * $outbountInvoiceDetail->unit_price;
-
-
-                //Cap nhat moi cho ton kho
-                $updateInventory = Inventory::create([
-                    'id' => app(Snowflake::class)->next(),
-                    'product_id' => $product['product_id'],
-                    'quantity' => $inventory->quantity - $product['quantity'],
-                    'created_by' => auth('api')->user()->id,
-                    'updated_by' => auth('api')->user()->id,
-                ]);
             }
-            //cap nhat hoa don
-            $outbountInvoice->update([
-                'total_amount' => $total_amount,
-            ]);
-
         }
-
         DB::commit();
 
         $response = [

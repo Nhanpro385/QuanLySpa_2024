@@ -75,6 +75,7 @@ class CustomerController extends Controller
                     'updated_by' => $customer->updated_by ? $this->formatUserRole($customer->updatedBy) : null,
                     'created_at' => $customer->created_at->format('d-m-Y H:i'),
                     'updated_at' => $customer->updated_at->format('d-m-Y H:i'),
+                    'status' => $customer->status
                 ],
             ]);
         } catch (\Throwable $th) {
@@ -125,6 +126,7 @@ class CustomerController extends Controller
                     'updated_by' => null,
                     'created_at' => now()->format('d-m-Y H:i'),
                     'updated_at' => now()->format('d-m-Y H:i'),
+                    'status' => $customer->status
                 ],
             ], 201);
         } catch (\Throwable $th) {
@@ -169,6 +171,7 @@ class CustomerController extends Controller
                     'updated_by' => $customer->updated_by ? $this->formatUserRole($customer->updatedBy) : null,
                     'created_at' => $customer->created_at->format('d-m-Y H:i'),
                     'updated_at' => $customer->updated_at->format('d-m-Y H:i'),
+                    'status' => $customer->status
                 ],
             ]);
         } catch (ModelNotFoundException $e) {
