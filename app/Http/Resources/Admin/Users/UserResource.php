@@ -140,6 +140,12 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at ?
                 $this->created_at->format('Y-m-d') : null,
             'updated_at' => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
+            'payment_today' => [
+                'date' => $day ? $day->format('Y-m-d') : 'Hôm nay',
+                'total_amount' => $this->payments($day),
+                'total_amount_cash' => $this->payment_type_cash($day),
+                'total_amount_transfer' => $this->payment_type_transfer($day),
+            ]
         ];
     }
 

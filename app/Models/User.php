@@ -492,4 +492,16 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         });
     }
 
+    public function payments($day)
+    {
+        return $this->hasMany(Payment::class, 'created_by', 'id')->whereDate('created_at', $day)->sum('total_amount');
+    }
+    public function payment_type_cash($day)
+    {
+        return $this->hasMany(Payment::class, 'created_by', 'id')->whereDate('created_at', $day)->where('payment_type', 0)->sum('total_amount');
+    }
+    public function payment_type_transfer($day)
+    {
+        return $this->hasMany(Payment::class, 'created_by', 'id')->whereDate('created_at', $day)->where('payment_type', 1)->sum('total_amount');
+    }
 }
