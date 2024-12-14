@@ -30,7 +30,7 @@ class CustomerClientUpdateRequest extends FormRequest
             'gender' => 'required|integer|in:0,1,2',
             'address' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date|before_or_equal:today',
-            'status' => 'required|boolean',
+
 
         ];
     }
