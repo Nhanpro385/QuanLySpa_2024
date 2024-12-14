@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Dropdown, Space, Popconfirm } from "antd";
+import { Table, Button, Dropdown, Space, Popconfirm, Tag } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -34,8 +34,20 @@ const CustomerTable = ({
             title: "Địa chỉ",
             dataIndex: "address",
             key: "address",
+            width: 300,
         },
-
+        {
+            title: "Trạng thái",
+            dataIndex: "status",
+            key: "status",
+            render: (text, record) => (
+                <Tag color={record.status === 1 ? "green" : "red"}>
+                    {record.status === 1
+                        ? "Đang hoạt động"
+                        : "Tạm ngưng hoạt động"}
+                </Tag>
+            ),
+        },
         {
             title: "Thao Tác",
             key: "action",

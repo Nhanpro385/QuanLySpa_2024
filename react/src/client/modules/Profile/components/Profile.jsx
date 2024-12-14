@@ -86,7 +86,7 @@ const Profile = () => {
                     dayjs(data.date_of_birth).format("YYYY-MM-DD") ||
                     "1999-01-01",
                 address: data.address || "Chưa cập nhật",
-                status: 1,
+                status: 0,
             };
             const res = await authEditProfileClient({
                 id: authCustomer?.user?.data?.id,

@@ -189,8 +189,8 @@ const ModalEditCustomer = ({
                         rules={{ required: "Trạng thái" }}
                         render={({ field }) => (
                             <Select {...field} defaultValue={1}>
-                                <Option value={0}>Không hoạt động</Option>
-                                <Option value={1}>Hoạt động</Option>
+                                <Option value={0}>Tạm ngưng hoạt động</Option>
+                                <Option value={1}>Đang hoạt động</Option>
                             </Select>
                         )}
                     />

@@ -353,7 +353,7 @@ const Profile = () => {
                                         xs={24}
                                     >
                                         <Card
-                                            title="Thống Thanh toán"
+                                            title="Tổng Thanh toán"
                                             bordered={true}
                                         >
                                             <Row gutter={[16, 16]}>

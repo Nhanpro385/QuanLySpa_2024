@@ -205,18 +205,14 @@ const BookingInfo = () => {
                                         </li>
                                         <li>
                                             Tổng tiền:{" "}
-                                            {data?.totalprice?.toLocaleString(
-                                                "vi-VN",
-                                                {
-                                                    style: "currency",
-                                                    currency: "VND",
-                                                }
-                                            ) || 0}
+                                            {parseInt(
+                                                data?.totalprice
+                                            ).toLocaleString() + " VNĐ" || 0}
                                         </li>
                                         {/* <li>
                                             Chi nhánh: 14b1 Trương vĩnh nguyên
                                         </li> */}
-                                        <li>thời gian hẹn: {data?.time}</li>
+                                        <li>Thời gian hẹn: {data?.time}</li>
                                     </ul>
                                 </Col>
                                 <Col xl={6} lg={6} md={6} sm={24} xs={24}>
@@ -288,13 +284,10 @@ const BookingInfo = () => {
                                                     }}
                                                 >
                                                     <strong>
-                                                        {data?.totalprice?.toLocaleString(
-                                                            "vi-VN",
-                                                            {
-                                                                style: "currency",
-                                                                currency: "VND",
-                                                            }
-                                                        ) || 0}
+                                                        {parseInt(
+                                                            data?.totalprice
+                                                        ).toLocaleString() +
+                                                            " VNĐ" || 0}
                                                     </strong>
                                                 </span>
                                             </Col>
@@ -327,13 +320,9 @@ const BookingInfo = () => {
                                                     }}
                                                 >
                                                     <strong>
-                                                        {data?.totalprice?.toLocaleString(
-                                                            "vi-VN",
-                                                            {
-                                                                style: "currency",
-                                                                currency: "VND",
-                                                            }
-                                                        ) || 0}
+                                                        {parseInt(
+                                                            data?.totalprice
+                                                        ).toLocaleString() + " VNĐ" || 0}
                                                     </strong>
                                                 </span>
                                             </Col>
