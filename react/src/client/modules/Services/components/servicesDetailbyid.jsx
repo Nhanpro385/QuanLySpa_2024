@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import style from "../style/servicesDetailbyid.module.scss";
 import { useParams, useNavigate } from "react-router-dom";
 import useServicesActions from "../../../../admin/modules/services/hooks/useServices";
+import useServiceCategoriesActions from "../../../../admin/modules/services/hooks/useServiceCategories";
 import { useSelector } from "react-redux";
 import { generateSnowflakeId } from "../../../../admin/utils";
 import {
@@ -22,11 +23,13 @@ import {
     Form,
     Upload,
     notification,
+    Result,
 } from "antd";
 import {
     MessageOutlined,
     LoadingOutlined,
     PlusOutlined,
+    FrownOutlined,
 } from "@ant-design/icons";
 import usecommentsActions from "../../../../admin/modules/Comment/hooks/usecomment";
 import { URL_IMAGE } from "../../../../admin/config/appConfig";
@@ -36,9 +39,11 @@ const ServicesDetailById = () => {
     const [service, setService] = useState({});
     const [expandedKeys, setExpandedKeys] = useState({});
     const { getServicesDetailClient } = useServicesActions();
+    const { getServiceCategoriesClientById } = useServiceCategoriesActions();
     const { addcommentsClient, replycommentsClient } = usecommentsActions();
     const services = useSelector((state) => state.services);
     const comments = useSelector((state) => state.comments);
+    const categories = useSelector((state) => state.serviceCategories);
     const [form] = Form.useForm();
     const [formReply] = Form.useForm();
     const [fileList, setFileList] = useState([]);
@@ -55,7 +60,12 @@ const ServicesDetailById = () => {
             setService({});
         }
     }, [services]);
-
+    useEffect(() => {
+        if (service?.service_category_id?.id) {
+            getServiceCategoriesClientById(service?.service_category_id?.id);
+        }
+    }, [service]);
+   
     const toggleReplies = (key) => {
         setExpandedKeys((prev) => ({
             ...prev,
@@ -361,16 +371,23 @@ const ServicesDetailById = () => {
                     <Divider orientation="left">
                         Sản phẩm được sử dụng trong dịch vụ
                     </Divider>
-                    <Row gutter={[16, 16]}>
-                        {service?.products.map((product, index) => (
-                            <Col
-                                key={index}
-                                xxl={8}
-                                xl={8}
-                                lg={8}
-                                md={12}
-                                sm={24}
-                            >
+                    <List
+                        grid={{
+                            gutter: 16,
+                            xxl: 4,
+                            xl: 4,
+                            lg: 4,
+                            md: 2,
+                            sm: 1,
+                        }}
+                        pagination={{
+                            pageSize: 4,
+                            showSizeChanger: false,
+                        }}
+                        loading={services?.loading}
+                        dataSource={service?.products}
+                        renderItem={(product) => (
+                            <List.Item>
                                 <Card
                                     title={
                                         product?.name ||
@@ -380,29 +397,14 @@ const ServicesDetailById = () => {
                                     className={style.cardProduct}
                                 >
                                     <Row gutter={[16, 16]} align="middle">
-                                        <Col
-                                            xxl={5}
-                                            xl={5}
-                                            lg={5}
-                                            md={5}
-                                            sm={5}
-                                        >
+                                        <Col span={5}>
                                             <Image
                                                 src={`${URL_IMAGE}/products/${product?.image_url}`}
-                                                alt={
-                                                    product?.name ||
-                                                    "Không có ảnh"
-                                                }
+                                               
                                                 height={50}
                                             />
                                         </Col>
-                                        <Col
-                                            xxl={19}
-                                            xl={19}
-                                            lg={19}
-                                            md={19}
-                                            sm={19}
-                                        >
+                                        <Col span={19}>
                                             <span>
                                                 Số lượng sử dụng:{" "}
                                                 {product?.quantity_used ||
@@ -411,11 +413,126 @@ const ServicesDetailById = () => {
                                         </Col>
                                     </Row>
                                 </Card>
-                            </Col>
-                        ))}
-                    </Row>
+                            </List.Item>
+                        )}
+                    />
                 </div>
             )}
+            <List
+            loading={categories?.loading}
+                className="mt-4"
+                grid={{
+                    gutter: 16,
+                    column: 4,
+                    xs: 2,
+                    sm: 2,
+                    md: 3,
+                    lg: 4,
+                    xl: 4,
+                    xxl: 4,
+                }}
+                pagination={{
+                    pageSize: 8,
+                    showSizeChanger: false
+                }}
+                dataSource={categories?.category?.data?.service || []}
+                locale={{
+                    emptyText: (
+                        <Result
+                            icon={<FrownOutlined />}
+                            title="Không Tìm thấy dịch vụ"
+                            extra={
+                                <p>
+                                    Hãy thử tải lại trang hoặc liên hệ với chúng
+                                    tôi để được hỗ trợ
+                                </p>
+                            }
+                        />
+                    ),
+                }}
+                renderItem={(item) => (
+                    <List.Item>
+                        <div className={style.boxServicesItemDetail}>
+                            <div className={style.boxServicesDetailItemTop}>
+                                <Image
+                                    src={
+                                        `${URL_IMAGE}/services/special/` +
+                                        item.image_url
+                                    }
+                                    alt={item.name || "Dịch vụ"}
+                                    preview={false}
+                                    className={style.image}
+                                    onError={(e) =>
+                                        (e.target.src =
+                                            "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
+                                    } // Thay thế hình ảnh khi lỗi
+                                />
+                            </div>
+                            <div className={style.boxServicesItemMiddle}>
+                                <p>{item.title}</p>
+                            </div>
+                            <div className={style.boxServicesItemBottom}>
+                                <p>{item.name}</p>
+                            </div>
+                            <div className={style.boxServicesItemPrice}>
+                                <p>
+                                    Giá:{" "}
+                                    {item.price
+                                        ? `${parseInt(
+                                              item.price
+                                          ).toLocaleString()} VNĐ`
+                                        : "Liên hệ"}
+                                </p>
+                            </div>
+                            <Row justify="center" gutter={[8, 8]}>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Button
+                                        block
+                                        onClick={() =>
+                                            navigate(`/dichvu/${item.id}`)
+                                        }
+                                        danger
+                                        variant="outlined"
+                                        className={style.btnServicesDetail}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        Xem chi tiết
+                                    </Button>
+                                </Col>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Button
+                                        block
+                                        onClick={() =>
+                                            navigate(
+                                                `/datlichhen?dichvu=${item.id}`
+                                            )
+                                        }
+                                        type="primary"
+                                        className={style.btnServicesDetail}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        Đặt lịch
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </div>
+                    </List.Item>
+                )}
+            />
             <Card className="mt-4" title="Danh sách bình luận và đánh giá">
                 <List
                     locale={{ emptyText: "Chưa có bình luận nào" }}

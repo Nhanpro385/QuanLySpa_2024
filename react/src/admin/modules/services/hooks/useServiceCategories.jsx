@@ -7,6 +7,7 @@ import {
     ServiceCategoriesGetById,
     ServiceCategoriesSearch,
     ServiceCategoriesGetClient,
+    ServiceCategoriesGetClientById,
 } from "@admin/redux/slices/servicesCategoriesSlice";
 const useServiceCategoriesActions = () => {
     const dispatch = useDispatch();
@@ -42,6 +43,9 @@ const useServiceCategoriesActions = () => {
         }
         return await dispatch(ServiceCategoriesGetClient());
     };
+    const getServiceCategoriesClientById = async (id) => {
+        return await dispatch(ServiceCategoriesGetClientById(id));
+    }
 
     return {
         addServiceCategories,
@@ -51,6 +55,7 @@ const useServiceCategoriesActions = () => {
         getServiceCategoriesById,
         searchServiceCategories,
         getServiceCategoriesClient,
+        getServiceCategoriesClientById,
     };
 };
 

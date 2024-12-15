@@ -71,8 +71,10 @@ export const ServiceCategoriesDelete = createAsyncThunk(
         }
 
         try {
-          const res =  await axiosInstance.delete(endpoints.ServiceCategories.delete(id));
-            return  res.data;
+            const res = await axiosInstance.delete(
+                endpoints.ServiceCategories.delete(id)
+            );
+            return res.data;
         } catch (error) {
             return rejectWithValue({
                 status: error.response?.status || 500,
@@ -106,8 +108,8 @@ export const ServiceCategoriesUpdate = createAsyncThunk(
                 message:
                     error.response?.data?.message ||
                     "Có lỗi xảy ra khi cập nhật",
-                    errors: error.response?.data?.errors || [],
-                    error: error.response?.data?.error || [],
+                errors: error.response?.data?.errors || [],
+                error: error.response?.data?.error || [],
             });
         }
     }
@@ -144,9 +146,20 @@ export const ServiceCategoriesGetById = createAsyncThunk(
 export const ServiceCategoriesGetClient = createAsyncThunk(
     "ServiceCategories/getClient",
     async (per_page) => {
-        const queryParams = per_page ? `?per_page=${per_page}&services=true` : "";
+        const queryParams = per_page
+            ? `?per_page=${per_page}&services=true`
+            : "";
         const response = await axiosInstance.get(
             `${endpoints.ServiceCategories.listClient}${queryParams}`
+        );
+        return response.data;
+    }
+);
+export const ServiceCategoriesGetClientById = createAsyncThunk(
+    "ServiceCategories/getClientById",
+    async (id) => {
+        const response = await axiosInstance.get(
+            endpoints.ServiceCategories.detailClient(id)
         );
         return response.data;
     }
@@ -264,7 +277,25 @@ const ServiceCategoriesSlice = createSlice({
             .addCase(ServiceCategoriesGetClient.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-            });
+            })
+            .addCase(ServiceCategoriesGetClientById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(
+                ServiceCategoriesGetClientById.fulfilled,
+                (state, action) => {
+                    state.category = action.payload;
+                    state.loading = false;
+                }
+            )
+            .addCase(
+                ServiceCategoriesGetClientById.rejected,
+                (state, action) => {
+                    state.loading = false;
+                    state.error = action.error.message;
+                }
+            );
     },
 });
 

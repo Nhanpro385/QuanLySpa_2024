@@ -17,6 +17,7 @@ const endpoints = {
         delete: (id) => `${API_BASE_URL}/serviceCategories/${id}`,
         search: `${API_BASE_URL}/serviceCategories`,
         listClient: `${API_AUTH_URL3}/serviceCategories`,
+        detailClient: (id) => `${API_AUTH_URL3}/serviceCategories/${id}?services=true`,
     },
     Customers: {
         list: `${API_BASE_URL}/customer`,
