@@ -9,16 +9,12 @@
     transition: 0.3s;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-.slot:hover {
-    background-color: #e05265;
-    color: white;
-    cursor: pointer;
-}
+
 .slot.active {
     color: white;
     background-color: #e05265;
 }
-.shiftTitle{
+.shiftTitle {
     font-size: 20px;
     font-weight: 600;
     margin: 20px 0;

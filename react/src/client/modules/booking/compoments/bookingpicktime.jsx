@@ -313,11 +313,17 @@ const BookingPickTime = ({
                                 <Row gutter={[16, 16]} justify={"center"}>
                                     {shift.timeSlots.map((slot, idx) => {
                                         return (
-                                            <Col 
-                                            xxl={4} xl={4} lg={4} md={12} sm={12} xs={12}
-                                            key={idx}>
+                                            <Col
+                                                xxl={4}
+                                                xl={4}
+                                                lg={4}
+                                                md={12}
+                                                sm={12}
+                                                xs={12}
+                                                key={idx}
+                                            >
                                                 <Button
-                                                    // type="primary"
+                                                    type="default"
                                                     block
                                                     disabled={
                                                         slot.status ===

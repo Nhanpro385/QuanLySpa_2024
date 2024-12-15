@@ -14,3 +14,166 @@
     background-color: #f5f5f5;
     cursor: pointer;
 }
+.container {
+    width: 100%;
+    padding: 50px;
+    background-color: rgba(249, 249, 252, 1);
+}
+
+.boxServicesItemDetail {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+
+    box-sizing: border-box;
+    margin-bottom: 20px;
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease-in-out;
+
+    a {
+        text-decoration: none;
+        color: rgba(224, 82, 101, 1);
+        font-weight: 500;
+    }
+}
+
+.boxServicesItemDetail img {
+    border-radius: 10px;
+    border: none;
+}
+.boxServicesItemDetail:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+.boxServicesItemMiddle {
+    width: 100%;
+    padding: 15px 0 10px 0;
+
+    p {
+        text-align: left;
+        font-weight: 500;
+        font-size: 20px;
+        margin: 0 0 10px 0;
+    }
+}
+
+.boxServicesDetail {
+    width: 100%;
+    min-height: 500px;
+    .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
+.boxTopTitle {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    top: -130px;
+}
+
+.boxServicesDetailTitle {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    width: 850px;
+    background-color: rgba(255, 220, 220, 1);
+    border-radius: 30px;
+    padding: 30px 20px 30px 20px;
+    text-align: center;
+
+    .titleDescription {
+        font-size: 16px;
+        margin-bottom: 13px;
+    }
+
+    div {
+        margin: 0 10px 0 10px;
+        font-weight: 500;
+        font-size: 18px;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+}
+
+.boxServicesItemBottom {
+    p {
+        margin: 0 0 10px 0;
+        font-size: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 1; // Giới hạn văn bản ở 1 dòng
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis; // Thêm dấu "..."
+    }
+}
+
+.boxServicesItemPrice {
+    font-weight: 500;
+
+    p {
+        margin: 0 0 10px 0;
+        font-size: 17px;
+    }
+}
+
+.boxTitleServicesDetailTop {
+    h1 {
+        color: black;
+        font-size: 40px;
+        font-family: Arial, sans-serif;
+        font-weight: 500;
+    }
+}
+
+/* Điều chỉnh khi màn hình nhỏ hơn (responsive cho mobile) */
+@media (max-width: 768px) {
+    .boxServicesDetailTitle {
+        flex-direction: column;
+        /* Các div xếp dọc khi màn hình nhỏ */
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
+
+.boxTitleServicesDetailTop {
+    text-align: center;
+    margin: 50px 0px 50px 0px;
+}
+.boxServicesDetailItemTop {
+    width: 100%;
+    height: 200px; /* Chiều cao cố định cho hình ảnh */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ẩn các phần hình ảnh vượt quá */
+    background-color: #f5f5f5; /* Màu nền nếu hình ảnh không tải được */
+    border-radius: 8px; /* Tùy chọn để bo góc */
+}
+
+.boxServicesDetailItemTop img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cắt hình ảnh để phù hợp với khung */
+    object-position: center; /* Căn giữa hình ảnh */
+}
+.benefits {
+    // background-color: #ffdcdc;
+    padding: 20px;
+    margin-top: 20px;
+}
+.benefit_title {
+    text-align: center;
+    color: #e05265;
+}
+.benefit_description {
+    text-align: center;
+}

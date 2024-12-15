@@ -30,6 +30,13 @@ import {
     LoadingOutlined,
     PlusOutlined,
     FrownOutlined,
+    FundOutlined,
+    SmileOutlined,
+    HeartOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    SafetyOutlined,
+    DollarCircleOutlined,
 } from "@ant-design/icons";
 import usecommentsActions from "../../../../admin/modules/Comment/hooks/usecomment";
 import { URL_IMAGE } from "../../../../admin/config/appConfig";
@@ -65,7 +72,7 @@ const ServicesDetailById = () => {
             getServiceCategoriesClientById(service?.service_category_id?.id);
         }
     }, [service]);
-   
+
     const toggleReplies = (key) => {
         setExpandedKeys((prev) => ({
             ...prev,
@@ -296,33 +303,55 @@ const ServicesDetailById = () => {
             <Card>
                 <Row gutter={[16, 16]}>
                     <Col xxl={9} xl={9} lg={9} md={24} sm={24} xs={24}>
-                        <Card
-                            bordered={false}
+                        <Image
+                            src={`${URL_IMAGE}/services/special/${service?.image_url}`}
+                            alt={service?.name || "Không có hình ảnh"}
                             style={{
-                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                                width: "100%",
+                                minHeight: "300px",
+                                maxHeight: "300px",
+                                borderRadius: "8px",
                             }}
-                        >
-                            <Image
-                                src={`${URL_IMAGE}/services/special/${service?.image_url}`}
-                                alt={service?.name || "Không có hình ảnh"}
-                                style={{
-                                    width: "100%",
-                                    minHeight: "300px",
-                                    maxHeight: "300px",
-                                    borderRadius: "8px",
+                        />
+
+                        {service?.serviceImages?.length > 0 && (
+                            <List
+                                className="mt-4"
+                                grid={{
+                                    gutter: 16,
+                                    column: 4,
+                                    xs: 2,
+                                    sm: 2,
+                                    md: 2,
+                                    lg: 2,
+                                    xl: 2,
+                                    xxl: 3,
                                 }}
+                                pagination={{
+                                    pageSize: 3,
+                                    showSizeChanger: false,
+                                    align: "left",
+                                }}
+                                dataSource={service?.serviceImages || []}
+                                renderItem={(item) => (
+                                    <List.Item>
+                                        <Image
+                                            src={`${URL_IMAGE}/services/${item?.image_url}`}
+                                            alt={
+                                                item?.name ||
+                                                "Không có hình ảnh"
+                                            }
+                                            style={{
+                                                width: "100%",
+                                                minHeight: "100px",
+                                                maxHeight: "100px",
+                                                borderRadius: "8px",
+                                            }}
+                                        />
+                                    </List.Item>
+                                )}
                             />
-                        </Card>
-                        <Button
-                            block
-                            type="primary"
-                            style={{ marginTop: "20px" }}
-                            onClick={() => {
-                                navigate(`/datlichhen?dichvu=${service?.id}`);
-                            }}
-                        >
-                            Đặt lịch
-                        </Button>
+                        )}
                     </Col>
                     <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
                         <Card bordered={false}>
@@ -361,7 +390,50 @@ const ServicesDetailById = () => {
                                             : "Không hoạt động"}
                                     </Tag>
                                 </Descriptions.Item>
+
+                                <Descriptions.Item label="Trung bình số sao">
+                                    {service?.comments &&
+                                    service.comments.length > 0 ? (
+                                        <>
+                                            {/* Hiển thị số sao bằng Rate */}
+                                            <Rate
+                                                allowHalf
+                                                disabled
+                                                value={
+                                                    service.comments.reduce(
+                                                        (sum, comment) =>
+                                                            sum + comment.rate,
+                                                        0
+                                                    ) / service.comments.length
+                                                }
+                                            />
+                                            (
+                                            {(
+                                                service.comments.reduce(
+                                                    (sum, comment) =>
+                                                        sum + comment.rate,
+                                                    0
+                                                ) / service.comments.length
+                                            ).toFixed(1)}
+                                            )
+                                        </>
+                                    ) : (
+                                        "Chưa có đánh giá"
+                                    )}
+                                </Descriptions.Item>
                             </Descriptions>
+                            <Button
+                                block
+                                type="primary"
+                                style={{ marginTop: "20px" }}
+                                onClick={() => {
+                                    navigate(
+                                        `/datlichhen?dichvu=${service?.id}`
+                                    );
+                                }}
+                            >
+                                Đặt lịch
+                            </Button>
                         </Card>
                     </Col>
                 </Row>
@@ -400,7 +472,6 @@ const ServicesDetailById = () => {
                                         <Col span={5}>
                                             <Image
                                                 src={`${URL_IMAGE}/products/${product?.image_url}`}
-                                               
                                                 height={50}
                                             />
                                         </Col>
@@ -418,121 +489,100 @@ const ServicesDetailById = () => {
                     />
                 </div>
             )}
-            <List
-            loading={categories?.loading}
-                className="mt-4"
-                grid={{
-                    gutter: 16,
-                    column: 4,
-                    xs: 2,
-                    sm: 2,
-                    md: 3,
-                    lg: 4,
-                    xl: 4,
-                    xxl: 4,
-                }}
-                pagination={{
-                    pageSize: 8,
-                    showSizeChanger: false
-                }}
-                dataSource={categories?.category?.data?.service || []}
-                locale={{
-                    emptyText: (
-                        <Result
-                            icon={<FrownOutlined />}
-                            title="Không Tìm thấy dịch vụ"
-                            extra={
-                                <p>
-                                    Hãy thử tải lại trang hoặc liên hệ với chúng
-                                    tôi để được hỗ trợ
-                                </p>
-                            }
-                        />
-                    ),
-                }}
-                renderItem={(item) => (
-                    <List.Item>
-                        <div className={style.boxServicesItemDetail}>
-                            <div className={style.boxServicesDetailItemTop}>
-                                <Image
-                                    src={
-                                        `${URL_IMAGE}/services/special/` +
-                                        item.image_url
-                                    }
-                                    alt={item.name || "Dịch vụ"}
-                                    preview={false}
-                                    className={style.image}
-                                    onError={(e) =>
-                                        (e.target.src =
-                                            "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
-                                    } // Thay thế hình ảnh khi lỗi
+
+            <div className={style.benefits}>
+                <h1 className={style.benefit_title}>
+                    <strong>Lợi Ích Khi Khám Mụn Với Bác Sĩ Da Liễu</strong>
+                </h1>
+                <p className="text-center">
+                    Đừng trì hoãn việc khám mụn chuẩn Y khoa với bác sĩ Da liễu,
+                    bởi việc này sẽ mang đến cho bạn rất nhiều lợi ích và tránh
+                    được nhiều rủi ro biến chứng.
+                </p>
+                <List
+                    className="benefits-list"
+                    grid={{ gutter: 16, column: 3 }} // Tạo layout dạng lưới
+                    dataSource={[
+                        {
+                            icon: (
+                                <SmileOutlined
+                                    style={{ fontSize: 40, color: "#1890ff" }}
                                 />
+                            ),
+                            title: "Giúp bạn hiểu đúng nguyên nhân gây mụn",
+                            description:
+                                "Các nguyên nhân gây mụn khá phức tạp và đa yếu tố. Qua thăm khám, bác sĩ sẽ tìm ra nguyên nhân chính xác và giúp bạn kiểm soát tốt các yếu tố này, góp phần điều trị mụn hiệu quả.",
+                        },
+                        {
+                            icon: (
+                                <HeartOutlined
+                                    style={{ fontSize: 40, color: "#eb2f96" }}
+                                />
+                            ),
+                            title: "Điều trị mụn đúng cách từ bước đầu tiên",
+                            description:
+                                "Thay vì dành thời gian và tiền bạc để thử nhiều phương pháp trị mụn mà không rõ kết quả, bạn nên khám mụn với bác sĩ để tìm ra giải pháp đúng đắn ngay từ đầu, đảm bảo hiệu quả cao.",
+                        },
+                        {
+                            icon: (
+                                <CheckCircleOutlined
+                                    style={{ fontSize: 40, color: "#52c41a" }}
+                                />
+                            ),
+                            title: "Ngăn ngừa mụn tái phát hiệu quả",
+                            description:
+                                "Việc khám mụn chuẩn Y khoa và điều trị với phác đồ cá nhân hóa sẽ mang lại hiệu quả lâu dài, đồng thời bạn sẽ biết cách giảm thiểu các tác nhân xấu và ngăn mụn quay trở lại.",
+                        },
+                        {
+                            icon: (
+                                <ClockCircleOutlined
+                                    style={{ fontSize: 40, color: "#faad14" }}
+                                />
+                            ),
+                            title: "Rút ngắn thời gian điều trị",
+                            description:
+                                "Khi khám và điều trị mụn tại cơ sở uy tín, bạn sẽ hình dung rõ hơn về quá trình điều trị, áp dụng đúng phương pháp với mục tiêu rõ ràng, nhờ vậy bạn sẽ tiết kiệm thời gian đáng kể.",
+                        },
+                        {
+                            icon: (
+                                <SafetyOutlined
+                                    style={{ fontSize: 40, color: "#13c2c2" }}
+                                />
+                            ),
+                            title: "Ngừa mụn tiến triển nặng để lại sẹo thâm",
+                            description:
+                                "Khám và điều trị mụn chuẩn Y khoa sẽ giúp kiểm soát tốt tình trạng mụn, ngăn ngừa mụn tiến triển, giảm thiểu các vấn đề sau mụn như thâm sẹo và tránh những tác động xấu về tâm lý.",
+                        },
+                        {
+                            icon: (
+                                <DollarCircleOutlined
+                                    style={{ fontSize: 40, color: "#d46b08" }}
+                                />
+                            ),
+                            title: "Tiết kiệm chi phí tối ưu",
+                            description:
+                                "Bác sĩ Da liễu sẽ tư vấn cho bạn các phương pháp và sản phẩm điều trị thực sự cần thiết, phù hợp tình trạng của bạn, đạt hiệu quả mà vẫn đảm bảo chi phí tối ưu, phù hợp tài chính.",
+                        },
+                    ]}
+                    renderItem={(item) => (
+                        <List.Item>
+                            <div className="benefit-item">
+                                <div className="benefit-content">
+                                    <h3 className={style.benefit_title}>
+                                        <div className="benefit-icon">
+                                            {item.icon}
+                                        </div>
+                                        {item.title}
+                                    </h3>
+                                    <p className={style.benefit_description}>
+                                        {item.description}
+                                    </p>
+                                </div>
                             </div>
-                            <div className={style.boxServicesItemMiddle}>
-                                <p>{item.title}</p>
-                            </div>
-                            <div className={style.boxServicesItemBottom}>
-                                <p>{item.name}</p>
-                            </div>
-                            <div className={style.boxServicesItemPrice}>
-                                <p>
-                                    Giá:{" "}
-                                    {item.price
-                                        ? `${parseInt(
-                                              item.price
-                                          ).toLocaleString()} VNĐ`
-                                        : "Liên hệ"}
-                                </p>
-                            </div>
-                            <Row justify="center" gutter={[8, 8]}>
-                                <Col
-                                    xxl={24}
-                                    xl={24}
-                                    lg={24}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
-                                >
-                                    <Button
-                                        block
-                                        onClick={() =>
-                                            navigate(`/dichvu/${item.id}`)
-                                        }
-                                        danger
-                                        variant="outlined"
-                                        className={style.btnServicesDetail}
-                                        style={{ cursor: "pointer" }}
-                                    >
-                                        Xem chi tiết
-                                    </Button>
-                                </Col>
-                                <Col
-                                    xxl={24}
-                                    xl={24}
-                                    lg={24}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
-                                >
-                                    <Button
-                                        block
-                                        onClick={() =>
-                                            navigate(
-                                                `/datlichhen?dichvu=${item.id}`
-                                            )
-                                        }
-                                        type="primary"
-                                        className={style.btnServicesDetail}
-                                        style={{ cursor: "pointer" }}
-                                    >
-                                        Đặt lịch
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </div>
-                    </List.Item>
-                )}
-            />
+                        </List.Item>
+                    )}
+                />
+            </div>
             <Card className="mt-4" title="Danh sách bình luận và đánh giá">
                 <List
                     locale={{ emptyText: "Chưa có bình luận nào" }}
@@ -712,6 +762,128 @@ const ServicesDetailById = () => {
                 />
                 {loadMore}
             </Card>
+            <Divider
+                orientation="left"
+                style={{ marginTop: "40px", marginBottom: "40px" }}
+            >
+                Dịch vụ cùng danh mục
+            </Divider>
+
+            <List
+                loading={categories?.loading}
+                className="mt-4"
+                grid={{
+                    gutter: 16,
+                    column: 4,
+                    xs: 2,
+                    sm: 2,
+                    md: 3,
+                    lg: 4,
+                    xl: 4,
+                    xxl: 4,
+                }}
+                pagination={{
+                    pageSize: 8,
+                    showSizeChanger: false,
+                }}
+                dataSource={categories?.category?.data?.service || []}
+                locale={{
+                    emptyText: (
+                        <Result
+                            icon={<FrownOutlined />}
+                            title="Không Tìm thấy dịch vụ"
+                            extra={
+                                <p>
+                                    Hãy thử tải lại trang hoặc liên hệ với chúng
+                                    tôi để được hỗ trợ
+                                </p>
+                            }
+                        />
+                    ),
+                }}
+                renderItem={(item) => (
+                    <List.Item>
+                        <div className={style.boxServicesItemDetail}>
+                            <div className={style.boxServicesDetailItemTop}>
+                                <Image
+                                    src={
+                                        `${URL_IMAGE}/services/special/` +
+                                        item.image_url
+                                    }
+                                    alt={item.name || "Dịch vụ"}
+                                    preview={false}
+                                    className={style.image}
+                                    onError={(e) =>
+                                        (e.target.src =
+                                            "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg")
+                                    } // Thay thế hình ảnh khi lỗi
+                                />
+                            </div>
+                            <div className={style.boxServicesItemMiddle}>
+                                <p>{item.title}</p>
+                            </div>
+                            <div className={style.boxServicesItemBottom}>
+                                <p>{item.name}</p>
+                            </div>
+                            <div className={style.boxServicesItemPrice}>
+                                <p>
+                                    Giá:{" "}
+                                    {item.price
+                                        ? `${parseInt(
+                                              item.price
+                                          ).toLocaleString()} VNĐ`
+                                        : "Liên hệ"}
+                                </p>
+                            </div>
+                            <Row justify="center" gutter={[8, 8]}>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Button
+                                        block
+                                        onClick={() =>
+                                            navigate(`/dichvu/${item.id}`)
+                                        }
+                                        danger
+                                        variant="outlined"
+                                        className={style.btnServicesDetail}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        Xem chi tiết
+                                    </Button>
+                                </Col>
+                                <Col
+                                    xxl={24}
+                                    xl={24}
+                                    lg={24}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Button
+                                        block
+                                        onClick={() =>
+                                            navigate(
+                                                `/datlichhen?dichvu=${item.id}`
+                                            )
+                                        }
+                                        type="primary"
+                                        className={style.btnServicesDetail}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        Đặt lịch
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </div>
+                    </List.Item>
+                )}
+            />
         </div>
     );
 };

@@ -20,14 +20,13 @@
 }
 
 .boxRegimenItem {
-    background-color: whitesmoke;
+    // background-color: whitesmoke;
     border-radius: 10px;
     min-height: 200px;
     padding: 15px;
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 20px;
-
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.08);
     transition: box-shadow 0.3s ease-in-out;
 }
@@ -54,4 +53,7 @@
         font-family: Arial, sans-serif;
         font-weight: 500;
     }
+}
+.boxRegimenItem:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.08);
 }

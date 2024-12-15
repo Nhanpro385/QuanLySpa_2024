@@ -63,6 +63,8 @@ const SupplierManagement = () => {
             searchQuery.per_page !== 5
         ) {
             searchSupplier(searchQuery);
+        }else{
+            getSupplier();
         }
     }, [searchQuery]);
 
