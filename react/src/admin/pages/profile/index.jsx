@@ -284,7 +284,7 @@ const Profile = () => {
                                                                 0) + " lượt"
                                                         }
                                                         valueStyle={{
-                                                            color: "#3f8600",
+                                                            color: "#e05265",
                                                         }}
                                                     />
                                                     <Text type="secondary">
@@ -293,13 +293,13 @@ const Profile = () => {
                                                             0}
                                                     </Text>
                                                     <br />
-                                                    <Text type="success">
+                                                    <Text type="secondary">
                                                         Trong tuần:{" "}
                                                         {UserData?.countConsulation_week ||
                                                             0}
                                                     </Text>
                                                     <br />
-                                                    <Text type="danger">
+                                                    <Text type="secondary">
                                                         Trong ngày:{" "}
                                                         {UserData?.countConsulation_today ||
                                                             0}
@@ -320,7 +320,7 @@ const Profile = () => {
                                                                 0) + " lượt"
                                                         }
                                                         valueStyle={{
-                                                            color: "#3f8600",
+                                                            color: "#e05265",
                                                         }}
                                                     />
                                                     <Text type="secondary">
@@ -329,13 +329,13 @@ const Profile = () => {
                                                             0}
                                                     </Text>
                                                     <br />
-                                                    <Text type="success">
+                                                    <Text type="secondary">
                                                         Trong tuần:{" "}
                                                         {UserData?.countAppoinment_week ||
                                                             0}
                                                     </Text>
                                                     <br />
-                                                    <Text type="danger">
+                                                    <Text type="secondary">
                                                         Trong ngày:{" "}
                                                         {UserData?.countAppoinment_today ||
                                                             0}
@@ -374,10 +374,10 @@ const Profile = () => {
                                                                 0) + " VNĐ"
                                                         }
                                                         valueStyle={{
-                                                            color: "#3f8600",
+                                                            color: "#e05265",
                                                         }}
                                                     />
-                                                    <Text type="danger">
+                                                    <Text type="secondary">
                                                         Tiền mặt:{" "}
                                                         {parseInt(
                                                             UserData
@@ -387,7 +387,7 @@ const Profile = () => {
                                                             " VNĐ" || 0}
                                                     </Text>
                                                     <br />
-                                                    <Text type="success">
+                                                    <Text type="secondary">
                                                         Chuyển khoản:{" "}
                                                         {parseInt(
                                                             UserData

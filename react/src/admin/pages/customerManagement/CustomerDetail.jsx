@@ -8,293 +8,127 @@ import {
     Form,
     Image,
     Input,
-    message,
     Row,
-    notification,
     Tabs,
+    Statistic,
+    Descriptions,
+    Typography,
 } from "antd";
-import Statistics_staff from "../../modules/staffManagement/compoments/statistics_page";
+import style from "../../modules/Customer/style/CustomerDetail.module.scss";
+
+import Appoiment_history_detail from "../../modules/Customer/compoment/appoiment_history_detail";
+import useCustomerActions from "../../modules/Customer/hooks/useCustomerActions";
 import { useParams } from "react-router-dom";
-import useCustomerActions from "@admin/modules/Customer/hooks/useCustomerActions";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
+import Customer_history_consulations from "../../modules/Customer/compoment/Customer_history_consulations";
+console.log(style);
+
+const { Title, Text } = Typography;
 
 const CustomerDetail = () => {
-    const { id } = useParams(); // Lấy ID từ URL
-    const { getCustomerById, updateCustomer } = useCustomerActions(); // Gọi API lấy dữ liệu khách hàng
-    const { customer, loading } = useSelector((state) => state.customers); // Lấy thông tin customer từ store
-    const [api, contextHolder] = notification.useNotification();
-    // Sử dụng react-hook-form
-    const {
-        control,
-        handleSubmit,
-        setValue,
-        setError,
-        formState: { errors },
-    } = useForm();
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const { getCustomerById } = useCustomerActions();
+    const [CustomerData, setCustomerData] = useState({});
+    const customer = useSelector((state) => state.customers);
 
-    // Gọi API để lấy dữ liệu customer khi component được mount
     useEffect(() => {
-        getCustomerById(id);
+        if (id) {
+            getCustomerById(id);
+        } else {
+            navigate("/admin/khachhang");
+        }
     }, [id]);
 
-    // Cập nhật form với dữ liệu từ API khi customer thay đổi
     useEffect(() => {
-        if (customer) {
-            setValue("full_name", customer.data?.full_name);
-            setValue("email", customer.data?.email);
-            setValue("phone", customer.data?.phone);
-            setValue("address", customer.data?.address);
+        console.log(customer);
+        if (customer.customer.data) {
+            setCustomerData(customer.customer.data);
         }
-    }, [customer, setValue]);
-
-    const onSubmit = async (data) => {
-        const payload = {
-            id,
-            email: data.email,
-            full_name: data.full_name,
-            phone: data.phone,
-            address: data.address,
-            gender: customer.data.gender,
-            name: customer.data.name,
-
-            status: customer.data.status,
-        };
-        try {
-            const resultAction = await updateCustomer(payload);
-            if (resultAction.payload.status === "success") {
-                api.success({
-                    message: "Cập nhật khách hàng thành công",
-                    description: resultAction.payload.message || "Thành công",
-                    duration: 3,
-                });
-            } else {
-                Object.keys(resultAction.payload.errors).map((key) => {
-                    if (
-                        [
-                            "full_name",
-                            "email",
-                            "phone",
-                            "address",
-                            "gender",
-                            "name",
-                            "status",
-                        ].includes(key)
-                    ) {
-                        setError(key, {
-                            type: "manual",
-                            message: resultAction.payload.errors[key][0],
-                        });
-                    } else {
-                        api.error({
-                            message: "Cập nhật khách hàng không thành công",
-                            description:
-                                resultAction.payload.errors[key][0] ||
-                                "Vui lòng thử lại sau",
-                            duration: 3,
-                        });
-                    }
-                });
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    // Render loading state
+    }, [customer]);
 
     return (
         <Row gutter={[16, 16]}>
-            {contextHolder}
+            {/* Thông tin cơ bản */}
             <Col span={24}>
                 <Card>
-                    <Row gutter={[16, 16]}>
-                        <Col xl={5} lg={5} md={5} sm={12} xs={24}>
+                    <Row gutter={[16, 16]} align="middle">
+                        <Col xl={5} lg={5} md={5} sm={24} xs={24}>
                             <Image
-                                src={
-                                    customer?.profileImage ||
-                                    "https://nld.mediacdn.vn/thumb_w/698/2020/9/23/hoo1403-1600769609391337398991-1600824814143647303103-crop-16008249755862069103195.jpg"
-                                }
-                            ></Image>
+                                src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${
+                                    CustomerData?.id || 0
+                                }`}
+                                fallback="https://via.placeholder.com/150"
+                            />
                         </Col>
-                        <Col xl={19} lg={19} md={19} sm={12} xs={24}>
-                            <Row>
-                                <Col span={24} className="p-3 ">
-                                    <Row
-                                        justify={"space-between"}
-                                        align={"middle"}
-                                    >
-                                        <Col
-                                            xl={12}
-                                            lg={12}
-                                            md={12}
-                                            sm={24}
-                                            xs={24}
-                                        >
-                                            <h2 className="m-2">
-                                                Thông tin khách hàng
-                                            </h2>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                                <Divider className="m-2"></Divider>
-                                <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                                    <Form
-                                        layout="vertical"
-                                        onFinish={handleSubmit(onSubmit)}
-                                    >
-                                        <Row gutter={16}>
-                                            <Col
-                                                xl={12}
-                                                lg={12}
-                                                md={12}
-                                                sm={24}
-                                                xs={24}
-                                            >
-                                                <Form.Item label="Họ và tên">
-                                                    <Controller
-                                                        name="full_name"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                size="middle"
-                                                                {...field}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.full_name && (
-                                                        <p
-                                                            style={{
-                                                                color: "red",
-                                                            }}
-                                                        >
-                                                            {
-                                                                errors.full_name
-                                                                    .message
-                                                            }
-                                                        </p>
-                                                    )}
-                                                </Form.Item>
-                                            </Col>
-                                            <Col
-                                                xl={12}
-                                                lg={12}
-                                                md={12}
-                                                sm={24}
-                                                xs={24}
-                                            >
-                                                <Form.Item label="Email">
-                                                    <Controller
-                                                        name="email"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                size="middle"
-                                                                {...field}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.email && (
-                                                        <p
-                                                            style={{
-                                                                color: "red",
-                                                            }}
-                                                        >
-                                                            {
-                                                                errors.email
-                                                                    .message
-                                                            }
-                                                        </p>
-                                                    )}
-                                                </Form.Item>
-                                            </Col>
-                                            <Col
-                                                xl={12}
-                                                lg={12}
-                                                md={12}
-                                                sm={24}
-                                                xs={24}
-                                            >
-                                                <Form.Item label="Số điện thoại">
-                                                    <Controller
-                                                        name="phone"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                size="middle"
-                                                                {...field}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.phone && (
-                                                        <p
-                                                            style={{
-                                                                color: "red",
-                                                            }}
-                                                        >
-                                                            {
-                                                                errors.phone
-                                                                    .message
-                                                            }
-                                                        </p>
-                                                    )}
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={12}>
-                                                <Form.Item label="Địa chỉ">
-                                                    <Controller
-                                                        name="address"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                size="middle"
-                                                                {...field}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.address && (
-                                                        <p
-                                                            style={{
-                                                                color: "red",
-                                                            }}
-                                                        >
-                                                            {
-                                                                errors.address
-                                                                    .message
-                                                            }
-                                                        </p>
-                                                    )}
-                                                </Form.Item>
-                                            </Col>
-                                            <Col span={24}>
-                                                <Button
-                                                    type="primary"
-                                                    htmlType="submit"
-                                                    icon={<EditOutlined />}
-                                                >
-                                                    Chỉnh sửa
-                                                </Button>
-                                            </Col>
-                                        </Row>
-                                    </Form>
-                                </Col>
-                            </Row>
+                        <Col xl={19} lg={19} md={19} sm={24} xs={24}>
+                            <Title level={2} className={style.title_name}>
+                                {CustomerData?.full_name || "Không tìm thấy"}
+                            </Title>
+                            {CustomerData?.created_by && (
+                                <Title level={5} color="gray">
+                                    Người tạo :{" "}
+                                    {CustomerData?.created_by?.full_name ||
+                                        "Không tìm thấy"}
+                                    {" - "}
+                                    {CustomerData?.created_by?.role ||
+                                        "Không tìm thấy"}
+                                </Title>
+                            )}
+
+                            <Divider />
+                            <Descriptions
+                                column={{ xs: 1, sm: 1, md: 2 }}
+                                layout="vertical"
+                            >
+                                <Descriptions.Item label="Họ và tên">
+                                    {CustomerData?.full_name || "Không có tên"}
+                                </Descriptions.Item>
+
+                                <Descriptions.Item label="Email">
+                                    {CustomerData?.contact_email ||
+                                        "Không có email"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Số điện thoại">
+                                    {CustomerData?.phone ||
+                                        "Không có số điện thoại"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Giới tính">
+                                    {CustomerData?.gender ||
+                                        "Không có giới tính"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Địa chỉ">
+                                    {CustomerData?.address ||
+                                        "Không có địa chỉ"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Ngày sinh">
+                                    {CustomerData?.date_of_birth ||
+                                        "Không có ngày sinh"}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Ghi chú">
+                                    {CustomerData?.note || "Không có ghi chú"}
+                                </Descriptions.Item>
+                            </Descriptions>
                         </Col>
                     </Row>
                 </Card>
             </Col>
+            {/* Thống kê và các tab */}
             <Col span={24}>
                 <Card>
-                    <Tabs
-                        defaultActiveKey="1"
-                        items={[
-                            {
-                                label: "Thống kê Dữ liệu",
-                                key: "1",
-                                children: <h1>chua lam gi</h1>,
-                            },
-                        ]}
-                    />
+                    <Tabs defaultActiveKey="3">
+                        <Tabs.TabPane tab="Lịch sử dịch vụ" key="3">
+                            <Appoiment_history_detail
+                                data={CustomerData?.appointments || []}
+                            />
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Lịch sử tư vấn" key="4">
+                            <Customer_history_consulations
+                                data={CustomerData?.consulations || []}
+                            />
+                        </Tabs.TabPane>
+                    </Tabs>
                 </Card>
             </Col>
         </Row>

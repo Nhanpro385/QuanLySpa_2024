@@ -7,7 +7,7 @@ import ModalEditCustomer from "../../modules/Customer/compoment/CustomerModalEdi
 import useModal from "../../modules/appointments/hooks/openmodal";
 import CustomerTable from "../../modules/Customer/compoment/CustomerTable";
 import useCustomerActions from "../../modules/Customer/hooks/useCustomerActions";
-import CustomerDetail from "../../modules/Customer/compoment/CustomerDetail";
+
 
 function Customer() {
     // Hooks and Actions
@@ -33,11 +33,7 @@ function Customer() {
     const [formErrors, setFormErrors] = useState({});
     const navigate = useNavigate();
     const { isModalOpen, showModal, handleCancel } = useModal();
-    const {
-        isModalOpen: isModalOpen2,
-        showModal: showModal2,
-        handleCancel: handleCancel2,
-    } = useModal();
+ 
 
     // Pagination meta
     const pagination = customers.customers.meta || {};
@@ -160,21 +156,8 @@ function Customer() {
     const handleDetailCustomer = async (id) => {
         try {
             console.log(id);
-
-            const resultAction = await getCustomerById(id);
-            if (!customers.loading) {
-                if (resultAction.payload.status === "success") {
-                    showModal2();
-                } else {
-                    api.error({
-                        message: "Không thể tìm thấy khách hàng",
-                        description:
-                            resultAction.payload.message ||
-                            "Vui lòng thử lại sau",
-                        duration: 3,
-                    });
-                }
-            }
+            navigate(`/admin/khachhang/chitiet/${id}`);
+            
         } catch (error) {
             console.log(error);
         }
@@ -242,11 +225,7 @@ function Customer() {
                 handleCancel={handleCancel}
                 formErrors={formErrors}
             />
-            <CustomerDetail
-                isOpen={isModalOpen2}
-                onClose={handleCancel2}
-                selectedCustomer={customers.customer.data}
-            />
+           
         </Card>
     );
 }

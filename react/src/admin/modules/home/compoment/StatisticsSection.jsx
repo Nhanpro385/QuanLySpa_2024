@@ -55,6 +55,10 @@ const StatisticsSection = ({
                     >
                         <Row gutter={[16, 16]} justify="center" align="middle">
                             <Progress
+                                strokeColor={{
+                                    "0%": "#e05265",
+                                    "100%": "#e05265",
+                                }}
                                 size={getProgressSize()}
                                 type="circle"
                                 percent={Math.min(
@@ -196,10 +200,7 @@ const StatisticsSection = ({
                             <Card className={style.card}>
                                 <Statistic
                                     title={`Tổng tiền mặt`}
-                                    value={
-                                        dailyRevenues?.cash_revenue ||
-                                        0
-                                    }
+                                    value={dailyRevenues?.cash_revenue || 0}
                                     style={{ display: "block" }}
                                     precision={0}
                                     jsx
@@ -217,8 +218,6 @@ const StatisticsSection = ({
                                     Số lượt :{dailyRevenues?.cash_count || 0}{" "}
                                     lượt
                                 </Text>
-
-                               
                             </Card>
                         </Col>
                         <Col xl={6} md={6} sm={24} xs={24}>
@@ -240,8 +239,8 @@ const StatisticsSection = ({
                                     type="secondary"
                                     style={{ display: "block" }}
                                 >
-                                    Số lượt :{dailyRevenues?.transfer_count || 0}{" "}
-                                    lượt
+                                    Số lượt :
+                                    {dailyRevenues?.transfer_count || 0} lượt
                                 </Text>
                             </Card>
                         </Col>
