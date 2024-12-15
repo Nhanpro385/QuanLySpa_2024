@@ -121,7 +121,6 @@ const Promotions_Edit = () => {
                 id: idpromotion,
                 data: payload,
             });
-            console.log(res);
 
             if (res.payload.status == 422) {
                 console.log(res.payload.errors);
@@ -140,10 +139,15 @@ const Promotions_Edit = () => {
                         duration: 3,
                     });
                 }
-            } else {
+            } else if (res.meta.requestStatus === "fulfilled") {
                 api.success({
                     message: "Chỉnh sửa chương trình khuyến mãi thành công",
-                    duration: 3,
+                    description: res.payload.message || "",
+                });
+            } else {
+                api.error({
+                    message: "Chỉnh sửa chương trình khuyến mãi thất bại",
+                    description: res.payload.message || "",
                 });
             }
         } catch (err) {

@@ -328,7 +328,7 @@ const WarehouseImport = () => {
                         type="primary"
                         onClick={() => navigator("/admin/warehouse")}
                     >
-                        quay lại
+                        Quay lại
                     </Button>
                 }
             >

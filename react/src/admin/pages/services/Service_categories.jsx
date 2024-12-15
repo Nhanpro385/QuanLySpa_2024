@@ -184,7 +184,7 @@ const ServiceCategories = () => {
                 </Col>
                 <Col span={24}>
                     <Card
-                        title="Danh sách danh mục sản phẩm"
+                        title="Danh sách danh mục dịch vụ"
                         extra={
                             <Button
                                 icon={<Loading3QuartersOutlined />}

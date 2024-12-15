@@ -295,7 +295,7 @@ const WarehouseExport = () => {
                         type="primary"
                         onClick={() => navigator("/admin/warehouse")}
                     >
-                        quay lại
+                        Quay lại
                     </Button>
                 }
             >

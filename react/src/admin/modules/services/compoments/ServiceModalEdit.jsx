@@ -330,7 +330,7 @@ function ServiceModalEdit({
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item label="mức độ ưu tiên">
+                                    <Form.Item label="Mức độ ưu tiên">
                                         <Controller
                                             name="priority"
                                             control={control}
