@@ -22,7 +22,7 @@ class CustomerClientUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'full_name' => 'required|string|max:255|regex:/^[\p{L} ]+$/u',
+            'full_name' => 'required|string|max:255',
             'note' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:customers,email,' . $this->route('id'),
             'phone' => 'required|digits_between:10,15|unique:customers,phone,' . $this->route('id') . '|regex:/^(0[3,5,7,8,9][0-9]{8})$/',
