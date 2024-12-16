@@ -322,7 +322,7 @@ const WarehouseImport = () => {
         <div className="warehouse-import">
             <h1 className="text-center">Nhập hàng</h1>
             <Card
-                title="Nhập sản phẩm : #123456789"
+          
                 extra={
                     <Button
                         type="primary"

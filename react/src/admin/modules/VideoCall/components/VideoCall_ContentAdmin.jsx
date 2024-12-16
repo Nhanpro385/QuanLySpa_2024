@@ -46,12 +46,12 @@ const VideoCall_ContentAdmin = () => {
         },
         {
             key: "3",
-            label: "email",
+            label: "Email",
             children: ConsultationsDetail?.customer?.email || "không tìm thấy",
         },
         {
             key: "4",
-            label: "tình trạng da",
+            label: "Tình trạng da của khách hàng",
             children: ConsultationsDetail?.skin_condition || "không tìm thấy",
         },
     ];
@@ -135,7 +135,7 @@ const VideoCall_ContentAdmin = () => {
                                         status="404"
                                         title="Không tìm thấy cuộc gọi"
                                         className="w-100"
-                                        subTitle="vui lòng kiểm tra lại đường dẫn và có thông báo về cuộc gọi"
+                                        subTitle="Vui lòng kiểm tra lại đường dẫn và có thông báo về cuộc gọi"
                                         extra={
                                             <Button
                                                 type="primary"

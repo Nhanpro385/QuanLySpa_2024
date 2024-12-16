@@ -244,10 +244,10 @@ const StreatmentsEdit = () => {
                                                     placeholder="Chọn trạng thái"
                                                 >
                                                     <Select.Option value={0}>
-                                                        chưa hoàn thành
+                                                        Chưa hoàn thành
                                                     </Select.Option>
                                                     <Select.Option value={1}>
-                                                        hoàn thành
+                                                        Hoàn thành
                                                     </Select.Option>
                                                 </Select>
                                             )}

@@ -197,7 +197,7 @@ const Promotions_Edit = () => {
                         <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="name"
-                                label="Tên khuyến mãi"
+                                label="Mã khuyến mãi"
                                 help={errors.name && errors.name.message}
                                 validateStatus={errors.name && "error"}
                             >
@@ -208,13 +208,13 @@ const Promotions_Edit = () => {
                                         required: {
                                             value: true,
                                             message:
-                                                "Tên chương trình không được để trống",
+                                                "Mã chương trình không được để trống",
                                         },
                                     }}
                                     render={({ field }) => (
                                         <Input
                                             {...field}
-                                            placeholder="Nhập tên chương trình khuyến mãi"
+                                            placeholder="Nhập Mã chương trình khuyến mãi"
                                         />
                                     )}
                                 />
@@ -295,7 +295,7 @@ const Promotions_Edit = () => {
                         <Col xl={4} md={4} sm={24} xs={24}>
                             <Form.Item
                                 name="min_order_amount"
-                                label="Tôi thiểu giá trị"
+                                label="Tối thiểu giá trị"
                                 help={
                                     errors.min_order_amount &&
                                     errors.min_order_amount.message

@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import { useNavigate } from "react-router-dom";
 const WarehouseExport = () => {
-     useEffect(() => {
+    useEffect(() => {
         document.title = "Xuất hàng";
     }, []);
     const navigator = useNavigate();
@@ -289,7 +289,6 @@ const WarehouseExport = () => {
         <div className="warehouse-import">
             <h1 className="text-center">Xuất hàng</h1>
             <Card
-                title="Nhập sản phẩm : #123456789"
                 extra={
                     <Button
                         type="primary"
@@ -346,7 +345,7 @@ const WarehouseExport = () => {
                                     className="mt-3"
                                     onClick={submitProduct}
                                 >
-                                    xuất hàng
+                                    Xuất hàng
                                 </Button>
                             </Card>
                         </Col>

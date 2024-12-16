@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem("tokenClient");
-
         // Kiểm tra nếu không có token
         if (!token) {
             console.log("Chưa đăng nhập");

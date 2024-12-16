@@ -190,7 +190,7 @@ const PromotionsAdd = () => {
                         <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="name"
-                                label="Tên khuyến mãi"
+                                label="Mã khuyến mãi"
                                 help={errors.name && errors.name.message}
                                 validateStatus={errors.name && "error"}
                                 required
@@ -202,7 +202,7 @@ const PromotionsAdd = () => {
                                         required: {
                                             value: true,
                                             message:
-                                                "Tên chương trình không được để trống",
+                                                "Mã chương trình không được để trống",
                                         },
                                     }}
                                     render={({ field }) => (
@@ -289,7 +289,7 @@ const PromotionsAdd = () => {
                         <Col xl={6} md={6} sm={24} xs={24}>
                             <Form.Item
                                 name="min_order_amount"
-                                label="Tôi thiểu giá trị"
+                                label="Tối thiểu giá trị"
                                 help={
                                     errors.min_order_amount &&
                                     errors.min_order_amount.message
@@ -324,7 +324,7 @@ const PromotionsAdd = () => {
                                 />
                             </Form.Item>
                         </Col>
-                       
+
                         <Col xl={12} md={12} sm={24} xs={24}>
                             <Form.Item
                                 name="startDateAndEndDate"

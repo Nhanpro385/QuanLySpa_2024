@@ -132,7 +132,7 @@ const HeaderComponents = () => {
                         }}
                         to="/thongtincanhan/tuvandatlich"
                     >
-                        Lịch sử tư vấn
+                        Lịch Sử Tư Vấn
                     </Link>
                     </Button>
                 </Menu.Item>

@@ -105,22 +105,20 @@ const Profile = () => {
                 return;
             }
             if (res.payload.status === "success") {
-                if (data.email !== authCustomer?.user?.data?.email) {
-                    authLogoutClient();
-                    localStorage.removeItem("tokenClient");
+                // if (data.email !== authCustomer?.user?.data?.email) {
+                //     authLogoutClient();
+                //     localStorage.removeItem("tokenClient");
 
-                    api.success({
-                        message:
-                            res.payload.message ||
-                            "Cập nhật thông tin thành công!",
-                        description: "Vui lòng đăng nhập lại!",
-                        duration: 2,
-                    });
-                    setTimeout(() => {
-                        navigate("/dangnhap");
-                    }, 1500);
-                    return;
-                }
+                //     api.success({
+                //         message:
+                //             res.payload.message ||
+                //             "Cập nhật thông tin thành công!",
+                //         description: "Vui lòng đăng nhập lại!",
+                //         duration: 2,
+                //     });
+                //
+                //     return;
+                // }
 
                 api.success({
                     message:
