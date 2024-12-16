@@ -22,7 +22,7 @@ class SendAppointmentReminders extends Command
     public function handle()
     {
 
-        info("Thực hiện gửi mail: " . Carbon::now()->subMinutes(30)->format('Y-m-d H:i:00'));
+        info("Thực hiện gửi mail: " . Carbon::now()->format('Y-m-d H:i:00'));
 
         $appointments = Appointment::where('start_time', '=', Carbon::now()->addMinutes(30)->format('H:i:00'))->where('appointment_date', '=', Carbon::now()->format('Y-m-d'))->where('status', '=', 1)->get();
 
