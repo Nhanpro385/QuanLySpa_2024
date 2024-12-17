@@ -114,38 +114,38 @@ const HeaderComponents = () => {
             <Menu>
                 <Menu.Item key="profile">
                     <Button variant="outlined" block>
-                    <Link
-                        style={{
-                            textDecoration: "none",
-                        }}
-                        to="/thongtincanhan"
-                    >
-                        Thông Tin Cá Nhân
-                    </Link>
+                        <Link
+                            style={{
+                                textDecoration: "none",
+                            }}
+                            to="/thongtincanhan"
+                        >
+                            Thông Tin Cá Nhân
+                        </Link>
                     </Button>
                 </Menu.Item>
                 <Menu.Item key="booking">
                     <Button variant="outlined" block>
-                    <Link
-                        style={{
-                            textDecoration: "none",
-                        }}
-                        to="/thongtincanhan/tuvandatlich"
-                    >
-                        Lịch Sử Tư Vấn
-                    </Link>
+                        <Link
+                            style={{
+                                textDecoration: "none",
+                            }}
+                            to="/thongtincanhan/tuvandatlich"
+                        >
+                            Lịch Sử Tư Vấn
+                        </Link>
                     </Button>
                 </Menu.Item>
                 <Menu.Item key="serviceHistory">
                     <Button variant="outlined" block>
-                    <Link
-                        style={{
-                            textDecoration: "none",
-                        }}
-                        to="/thongtincanhan/lichsudichvu"
-                    >
-                        Lịch Sử Dịch Vụ
-                    </Link>
+                        <Link
+                            style={{
+                                textDecoration: "none",
+                            }}
+                            to="/thongtincanhan/lichsudichvu"
+                        >
+                            Lịch Sử Dịch Vụ
+                        </Link>
                     </Button>
                 </Menu.Item>
                 {/* <Menu.Item key="treatmentHistory">
@@ -224,68 +224,75 @@ const HeaderComponents = () => {
         <Header
             style={{
                 backgroundColor: "#fff",
-                padding: "0 16px",
-                width: "100%",
+                padding: "0 50px",
+                width: "100vw",
+                position: "fixed",
+                zIndex: 2
             }}
-            className="container"
+
         >
-            <Row align="middle" gutter={[16, 16]}>
-                <Col xs={20} sm={20} md={20} lg={20} xl={4} xxl={4}>
-                    <Row align="middle" justify="middle">
-                        <Col xs={3} sm={3} md={2} lg={2} xl={3} xxl={4}>
-                            <img
-                                src={logo}
-                                alt="logo"
-                                style={{ width: "3.5rem", cursor: "pointer" }}
-                                onClick={() => navigate("/")}
-                            />
-                        </Col>
-                        <Col xs={21} sm={21} md={22} lg={22} xl={21} xxl={20}>
-                            <h1
-                                style={{
-                                    fontSize: "2.5rem",
-                                    color: "#E05265",
-                                    fontWeight: 500,
-                                    margin: "0",
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                }}
-                                onClick={() => navigate("/")}
-                            >
-                                Sakura Spa
-                            </h1>
-                        </Col>
-                    </Row>
-                </Col>
-                <Col xs={0} sm={0} md={0} lg={0} xl={20} xxl={20}>
-                    <AppMenu isInline={true} />
-                </Col>
-                <Col
-                    xs={4}
-                    sm={4}
-                    md={4}
-                    lg={4}
-                    xl={0}
-                    style={{ textAlign: "right" }}
-                >
-                    <MenuOutlined
-                        onClick={() => setVisible(true)}
-                        style={{
-                            fontSize: "25px",
-                            color: "#E05265",
-                        }}
-                    />
-                </Col>
-            </Row>
-            <Drawer
-                open={visible}
-                closable={() => setVisible(false)}
-                onClose={() => setVisible(false)}
-                placement="right"
-                width={350}
+            <div
+                className="container"
             >
-                <AppMenu />
-            </Drawer>
+
+                <Row align="middle" gutter={[16, 16]}>
+                    <Col xs={20} sm={20} md={20} lg={20} xl={4} xxl={4}>
+                        <Row align="middle" justify="middle">
+                            <Col xs={3} sm={3} md={2} lg={2} xl={3} xxl={4}>
+                                <img
+                                    src={logo}
+                                    alt="logo"
+                                    style={{ width: "3.5rem", cursor: "pointer" }}
+                                    onClick={() => navigate("/")}
+                                />
+                            </Col>
+                            <Col xs={21} sm={21} md={22} lg={22} xl={21} xxl={20}>
+                                <h1
+                                    style={{
+                                        fontSize: "2.5rem",
+                                        color: "#E05265",
+                                        fontWeight: 500,
+                                        margin: "0",
+                                        textAlign: "center",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => navigate("/")}
+                                >
+                                    Sakura Spa
+                                </h1>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col xs={0} sm={0} md={0} lg={0} xl={20} xxl={20}>
+                        <AppMenu isInline={true} />
+                    </Col>
+                    <Col
+                        xs={4}
+                        sm={4}
+                        md={4}
+                        lg={4}
+                        xl={0}
+                        style={{ textAlign: "right" }}
+                    >
+                        <MenuOutlined
+                            onClick={() => setVisible(true)}
+                            style={{
+                                fontSize: "25px",
+                                color: "#E05265",
+                            }}
+                        />
+                    </Col>
+                </Row>
+                <Drawer
+                    open={visible}
+                    closable={() => setVisible(false)}
+                    onClose={() => setVisible(false)}
+                    placement="right"
+                    width={350}
+                >
+                    <AppMenu />
+                </Drawer>
+            </div>
         </Header>
     );
 };

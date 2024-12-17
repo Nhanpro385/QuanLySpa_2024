@@ -17,7 +17,7 @@ const { Header } = Layout;
 const HeaderAdmin = () => {
     const { authLogout } = useAuthActions();
     const [openDrawer, setOpenDrawer] = useState(false);
-  
+
 
 
     const showDrawer = () => {
@@ -39,7 +39,11 @@ const HeaderAdmin = () => {
                         textDecoration: "none",
                     }}
                 >
-                   Yêu cầu tư vấn
+                    <p
+                        style={{
+                            fontWeight: 500
+                        }}
+                    >  Yêu cầu tư vấn</p>
                 </Link>
             ),
         },
@@ -58,14 +62,18 @@ const HeaderAdmin = () => {
                         textDecoration: "none",
                     }}
                 >
-                    Thông tin cá nhân
-                </Link>
+                    <p
+                        style={{
+                            fontWeight: 500
+                        }}
+                    > Thông tin cá nhân</p>
+                </Link >
             ),
         },
         {
             key: "4",
             icon: <SelectOutlined />,
-            label: "Đăng xuất",
+            label: <p>Đăng Xuất</p>,
             onClick: async () => {
                 try {
                     const res = await authLogout();

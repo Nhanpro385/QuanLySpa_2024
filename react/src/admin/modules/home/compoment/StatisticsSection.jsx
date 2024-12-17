@@ -66,7 +66,7 @@ const StatisticsSection = ({
                                         dailyRevenues?.total_revenue || 0
                                     ) /
                                         2000000) *
-                                        100,
+                                    100,
                                     100
                                 )}
                                 format={() =>
@@ -315,7 +315,7 @@ const StatisticsSection = ({
                                     style={{ display: "block" }}
                                 >
                                     Đã hoàn thành:{" "}
-                                    {revenueConsulation?.completed_consulation ||
+                                    {revenueConsulation?.complete_consulation ||
                                         0}{" "}
                                     lượt
                                 </Text>

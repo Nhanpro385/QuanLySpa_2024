@@ -29,10 +29,25 @@ const DefaultLayout = ({ children }) => {
                 backgroundColor: "#fff",
             }}
             >
-                <HeaderComponents />
-                <Content>{children}</Content>
-                <FooterComponents />
-            
+                <div
+                    style={{
+                        position: "relative",
+                        // marginTop: "50px"
+                    }}
+                >
+
+                    <HeaderComponents
+
+                    />
+                    <Content
+                        style={{
+                            marginTop: "50px"
+                        }}
+                    >{children}</Content>
+                    <FooterComponents />
+                </div>
+
+
             </Layout>
         </ConfigProvider>
     );

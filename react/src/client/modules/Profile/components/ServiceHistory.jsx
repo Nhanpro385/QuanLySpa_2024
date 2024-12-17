@@ -115,14 +115,15 @@ const ServiceHistory = () => {
                 return <div>{services}</div>;
             },
         },
+
         {
             title: "Thời gian",
             dataIndex: "appointment_date",
             key: "appointment_date",
             render: (date, record) => (
-                <div>
+                <div >
                     <div>{date}</div>
-                    <div style={{ color: "red" }}>{record.time}</div>
+                    <div style={{ color: "red" }}>{record.start_time}</div>
                 </div>
             ),
         },
@@ -136,12 +137,12 @@ const ServiceHistory = () => {
                         status === "Đã đặt lịch hẹn."
                             ? "blue"
                             : status === "Đang thực hiện."
-                            ? "green"
-                            : status === "Đã hoàn thành."
-                            ? "cyan"
-                            : status === "Đã hủy lịch hẹn."
-                            ? "red"
-                            : "default"
+                                ? "green"
+                                : status === "Đã hoàn thành."
+                                    ? "cyan"
+                                    : status === "Đã hủy lịch hẹn."
+                                        ? "red"
+                                        : "default"
                     }
                 >
                     {status}
@@ -155,7 +156,7 @@ const ServiceHistory = () => {
                 <Space>
                     <Button
                         type="primary"
-                      
+
                         onClick={() => handleDetail(record)}
                     >
                         Chi Tiết
@@ -236,9 +237,7 @@ const ServiceHistory = () => {
                                 <Option value="Đã đặt lịch hẹn.">
                                     Đã đặt lịch hẹn.
                                 </Option>
-                                <Option value="Đã hủy lịch hẹn.">
-                                    Đã hủy lịch hẹn.
-                                </Option>
+
                                 <Option value="Đang thực hiện.">
                                     Đang thực hiện.
                                 </Option>
@@ -265,7 +264,7 @@ const ServiceHistory = () => {
                     <Card
                         extra={
                             <Button
-                               type="primary"
+                                type="primary"
                                 icon={<LoadingOutlined />}
                                 onClick={() => authGetmeClient()}
                             >

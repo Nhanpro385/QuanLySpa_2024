@@ -40,7 +40,7 @@ const FooterComponents = () => {
                             </div>
                             <div className={style.boxContact}>
                                 <img src={mail} alt="" />
-                                <p>Hotro@Sakuraspa.vn</p>
+                                <p>sakuraspa2025@gmail.com</p>
                             </div>
                         </div>
                         {/* <div className={style.boxSocial}>

@@ -7,8 +7,9 @@ import { useSelector } from "react-redux";
 import styles from "../styles/Videocall.module.scss";
 import { VIDEOSDK_TOKEN, validateMeeting } from "../services/API";
 import { useParams } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const VideoCall_Content = () => {
+    const nagigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const { idmeet } = useParams();
     const { authGetmeClient } = useAuthActions();
@@ -135,7 +136,7 @@ const VideoCall_Content = () => {
                                             <Button
                                                 type="primary"
                                                 onClick={() =>
-                                                    window.history.back()
+                                                    nagigate("/thongtincanhan/tuvandatlich")
                                                 }
                                             >
                                                 Quay lại

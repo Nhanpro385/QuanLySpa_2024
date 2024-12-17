@@ -16,16 +16,16 @@ const NotificationModule = () => {
     const [count, setCount] = useState(5);
     const pagnation = notifications?.notifications?.data?.meta || {};
 
-    
+
     useEffect(() => {
         const interval = setInterval(() => {
             getnotification(count);
-        }, 15000);  
+        }, 15000);
 
-        return () => clearInterval(interval); 
+        return () => clearInterval(interval);
     }, [count]);
 
-    
+
     useEffect(() => {
         if (
             notifications?.notifications?.data?.data?.length > 0 &&
@@ -181,6 +181,7 @@ const NotificationModule = () => {
             open={open}
             className={styles.notificationPopover}
             onOpenChange={handleOpenChange}
+
         >
             <NotificationOutlined style={{ fontSize: 18 }} /> Thông báo
             <Tag
@@ -192,7 +193,7 @@ const NotificationModule = () => {
             >
                 {notiData.filter((item) => !item.read).length}
             </Tag>
-        </Popover>
+        </Popover >
     );
 };
 

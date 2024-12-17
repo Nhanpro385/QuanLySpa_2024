@@ -40,10 +40,10 @@ const BookingConsultant = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: "Tên bác sĩ",
+            title: "Tên chuyên viên",
             dataIndex: ["staff_id", "fullname"],
             key: "staff_id",
-            render: (text) => text || "chưa có",
+            render: (text) => text || "Chưa có",
         },
         {
             title: "Thời gian",
@@ -74,14 +74,14 @@ const BookingConsultant = () => {
             key: "action",
             render: (text, record) => (
                 <>
-                    {record.status === 1 ? (
+                    {record.status == 1 ? (
                         <Button
                             type="primary"
                             onClick={() => handleApprove(record)}
                         >
                             Tham gia cuộc gọi
                         </Button>
-                    ) : record.status === 0 ? (
+                    ) : record.status == 0 ? (
                         <>
                             <Tag color="warning">Đang chờ duyệt</Tag>
                         </>
