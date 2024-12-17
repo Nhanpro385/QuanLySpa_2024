@@ -63,7 +63,7 @@ const SupplierManagement = () => {
             searchQuery.per_page !== 5
         ) {
             searchSupplier(searchQuery);
-        }else{
+        } else {
             getSupplier();
         }
     }, [searchQuery]);
@@ -184,6 +184,7 @@ const SupplierManagement = () => {
     // Handle form submission for editing supplier
     const handleSubmitEdit = async (data) => {
         try {
+            data.status = true
             const resultAction = await updateSupplier(data);
 
             if (resultAction.meta.requestStatus === "fulfilled") {
@@ -256,7 +257,7 @@ const SupplierManagement = () => {
                         title="Danh sách Nhà cung cấp"
                         extra={
                             <Button
-                            loading={Suppliers.loading}
+                                loading={Suppliers.loading}
                                 icon={<LoadingOutlined />}
                                 type="primary"
                                 onClick={() => getSupplier()}
@@ -289,8 +290,8 @@ const SupplierManagement = () => {
                             dataSource={SupplierData}
                             pagination={pagination}
                             handlePageChange={handlePageChange}
-                            // handleEdit={handleEdit}
-                            // handleDelete={handleDelete}
+                        // handleEdit={handleEdit}
+                        // handleDelete={handleDelete}
                         />
                     </Card>
                 </Col>
