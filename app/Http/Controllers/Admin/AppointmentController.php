@@ -566,6 +566,7 @@ class AppointmentController extends Controller
 
                     //them chi tiet hoa don xuat
                     $total_amount = 0;
+                    $tongxuat = 0;
                     foreach ($products_out_of_stock as $product) {
                         $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
                         if (!$inventory || $inventory->quantity <= 0 || $inventory->quantity < $product['quantity']) {
@@ -588,7 +589,7 @@ class AppointmentController extends Controller
                             'unit_price' => $pr->price
                         ]);
 
-                        $total_amount += $outbountInvoiceDetail->quantity_export * $outbountInvoiceDetail->unit_price;
+                        $tongxuat += $outbountInvoiceDetail->quantity_export * $outbountInvoiceDetail->unit_price;
 
 
                         //Cap nhat moi cho ton kho
@@ -602,7 +603,7 @@ class AppointmentController extends Controller
                     }
                     //cap nhat hoa don
                     $outbountInvoice->update([
-                        'total_amount' => $total_amount,
+                        'total_amount' => $tongxuat,
                     ]);
 
                 }

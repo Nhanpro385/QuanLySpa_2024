@@ -291,7 +291,7 @@ class PaymentController extends Controller
                     'outbound_invoice_type' => 'service',
                     'total_amount' => 0
                 ]);
-
+                $tongxuat = 0;
                 foreach ($validateData['products'] as $product) {
                     $inventory = Inventory::where('product_id', $product['product_id'])->orderBy('created_at', 'DESC')->first();
                     if (!$inventory || $inventory->quantity <= 0 || $inventory->quantity < $product['quantity']) {
@@ -314,7 +314,7 @@ class PaymentController extends Controller
                         'unit_price' => $pr->price
                     ]);
 
-                    $total_amount += $outbountInvoiceDetail->quantity_export * $outbountInvoiceDetail->unit_price;
+                    $tongxuat += $outbountInvoiceDetail->quantity_export * $outbountInvoiceDetail->unit_price;
 
 
                     //Cap nhat moi cho ton kho
@@ -328,7 +328,7 @@ class PaymentController extends Controller
                 }
                 //cap nhat hoa don
                 $outbountInvoice->update([
-                    'total_amount' => $total_amount,
+                    'total_amount' => $tongxuat,
                 ]);
 
             }
