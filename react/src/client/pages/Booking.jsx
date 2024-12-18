@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import ListBookingServiceTable from "../modules/booking/compoments/listBookingServiceTable";
 import { useNavigate, useLocation } from "react-router-dom";
 const Appbooking = () => {
+    document.title = "Đặt lịch";
     const [idService, setIdService] = useState(null);
     const location = useLocation();
     useEffect(() => {

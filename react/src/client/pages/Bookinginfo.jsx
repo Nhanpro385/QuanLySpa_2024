@@ -15,6 +15,7 @@ import baner from "../assets/images/banerbookinginfo.png";
 import { useNavigate } from "react-router-dom";
 import useappointmentsActions from "../../admin/modules/appointments/hooks/useappointments";
 const BookingInfo = () => {
+    document.title = "Thông tin đặt lịch";
     const { CreateClient } = useappointmentsActions();
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();

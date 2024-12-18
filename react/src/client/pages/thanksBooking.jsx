@@ -16,6 +16,7 @@ import baner from "../assets/images/banerbookinginfo.png";
 import { useNavigate } from "react-router-dom";
 
 const ThanksBooking = () => {
+    document.title = "Cảm ơn";
     const navigate = useNavigate();
 
     return (
