@@ -19,7 +19,7 @@ import { set } from "react-hook-form";
 import PaymentModalAddnew from "../../modules/payments/compoments/PaymentModalAddnew";
 import { generateSnowflakeId } from "../../utils";
 import debounce from "lodash/debounce";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Loading3QuartersOutlined, LoadingOutlined } from "@ant-design/icons";
 const PaymentManagement = () => {
     const [api, contextHolder] = notification.useNotification();
     const { isModalOpen, showModal, handleCancel } = useModal();
@@ -166,9 +166,9 @@ const PaymentManagement = () => {
                 ...data,
             };
             const res = await addpayment(payload);
-            console.log(res);
+            
 
-            if (res.payload.status === "success") {
+            if (res.payload.status == "success") {
                 api.success({
                     message: "Thêm thanh toán thành công",
                     duration: 3,
@@ -176,12 +176,14 @@ const PaymentManagement = () => {
 
                 closePaymentModal3();
                 getpayment();
+                return true;
             } else {
                 api.error({
                     message: res.payload.message || "Có lỗi xảy ra",
                     duration: 3,
                     description: res.payload.error || "",
                 });
+                return false;
             }
         } catch (e) {
             console.log(e);
@@ -210,7 +212,7 @@ const PaymentManagement = () => {
                                     Thêm thanh toán
                                 </Button>{" "}
                                 <Button
-                                    icon={<LoadingOutlined />}
+                                    icon={<Loading3QuartersOutlined />}
                                     loading={payments.loading}
                                     danger
                                     variant="outlined"
@@ -264,23 +266,7 @@ const PaymentManagement = () => {
                                     </Select.Option>
                                 </Select>
                             </Col>
-                            {/* <Col xxl={3} xl={4} lg={6} md={6} sm={6} xs={6}>
-                                <Select
-                                    placeholder="Lọc theo"
-                                    className="w-100"
-                                    defaultValue="all"
-                                >
-                                    <Select.Option value="all">
-                                        Tất cả
-                                    </Select.Option>
-                                    <Select.Option value="paid">
-                                        Đã thanh toán
-                                    </Select.Option>
-                                    <Select.Option value="unpaid">
-                                        Chưa thanh toán
-                                    </Select.Option>
-                                </Select>
-                            </Col> */}
+                       
                             <Col xxl={6} xl={8} lg={12} md={12} sm={12} xs={12}>
                                 <Input.Search
                                     onChange={(e) =>

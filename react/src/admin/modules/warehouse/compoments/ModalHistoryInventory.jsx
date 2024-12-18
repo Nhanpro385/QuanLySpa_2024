@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Table, Descriptions, Tag } from "antd";
 import style from "../styles/odalHistoryInventory.module.scss";
+import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 
 const ProductHistoryModal = ({ isOpen, onClose, data }) => {
     const columns = [
@@ -21,9 +22,13 @@ const ProductHistoryModal = ({ isOpen, onClose, data }) => {
             key: "quantity",
             render: (quantity, record) =>
                 record?.type === "outbound" ? (
-                    <Tag color="red">{quantity}</Tag>
+                    <Tag color="red">
+                        {quantity} <CaretDownOutlined />
+                    </Tag>
                 ) : (
-                    <Tag color="green">{quantity}</Tag>
+                    <Tag color="green">
+                        {quantity} <CaretUpOutlined />
+                    </Tag>
                 ),
         },
         {

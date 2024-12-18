@@ -185,7 +185,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                     min={1}
                     value={
                         selectedProducts.find((item) => item.id === record.id)
-                            ?.quantity || 1
+                            ?.quantity || 0
                     }
                     onChange={(e) =>
                         handleQuantityChange(record.id, e.target.value)
@@ -383,6 +383,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                                                 </Tag>
                                                 <Tag color="purple">
                                                     Số lượng các loại:
+                                                    {" "}
                                                     {item.min_quantity}
                                                 </Tag>
                                             </Space>

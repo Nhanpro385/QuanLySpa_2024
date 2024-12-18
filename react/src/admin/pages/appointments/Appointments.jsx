@@ -10,7 +10,7 @@ import useappointmentsActions from "../../modules/appointments/hooks/useappointm
 import { useSelector } from "react-redux";
 import debounce from "lodash/debounce";
 import AppointmentsDetail from "../../modules/appointments/compoments/AppointmentsDetail";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Loading3QuartersOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 function Appointments() {
     useEffect(() => {
         document.title = "Lịch hẹn";
@@ -137,7 +137,7 @@ function Appointments() {
                     <Card
                         extra={
                             <Button
-                                icon={<LoadingOutlined />}
+                                icon={<Loading3QuartersOutlined />}
                                 type="primary"
                                 onClick={() => getappointments()}
                                 loading={loading}

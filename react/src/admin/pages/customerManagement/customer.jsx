@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Input, Row, Col, notification } from "antd";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Loading3QuartersOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ModalEditCustomer from "../../modules/Customer/compoment/CustomerModalEdit";
@@ -167,7 +167,7 @@ function Customer() {
             extra={
                 <Button
                     type="primary"
-                    icon={<LoadingOutlined />}
+                    icon={<Loading3QuartersOutlined />}
                     onClick={() => getCustomer()}
                     loading={customers.loading}
                 >

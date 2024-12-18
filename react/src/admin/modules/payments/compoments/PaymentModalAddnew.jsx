@@ -31,8 +31,6 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
     const [selectedProducts, setSelectedProducts] = useState([]);
 
     const handleFinish = (values) => {
-        console.log(values);
-
         addpayment({
             payment_type: values.paymentMethod,
             promotion_name: values.promotion_name || null,
@@ -42,8 +40,10 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
                 quantity: item.quantity,
             })),
         }).then((e) => {
-            setSelectedProducts([]);
-            form.resetFields();
+            if (e) {
+                setSelectedProducts([]);
+                form.resetFields();
+            }
         });
     };
 
@@ -154,7 +154,7 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
                     min={1}
                     value={
                         selectedProducts.find((item) => item.id === record.id)
-                            ?.quantity || 1
+                            ?.quantity || 0
                     }
                     onChange={(e) =>
                         handleQuantityChange(record.id, e.target.value)

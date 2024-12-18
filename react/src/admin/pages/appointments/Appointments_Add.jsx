@@ -291,7 +291,7 @@ const Appointment_Add = () => {
             if (res.meta.requestStatus === "fulfilled") {
                 const shift = res.payload.data;
                 const { shift_date } = shift;
-                setValue("appointment_date", dayjs(shift_date));
+                // setValue("appointment_date", dayjs(shift_date));
                 setValue("users", []);
                 // Ánh xạ vai trò
                 const roleMap = {
