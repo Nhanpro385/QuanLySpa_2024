@@ -140,7 +140,7 @@ const StreatMents = () => {
                 </Col>
             </Row>
 
-            <Row gutter={[16, 16]} className="mb-4">
+            {/* <Row gutter={[16, 16]} className="mb-4">
                 <Col xl={6} md={6} sm={6} xs={24}>
                     <DatePicker
                         className="w-100"
@@ -152,7 +152,7 @@ const StreatMents = () => {
                         }}
                     />
                 </Col>
-            </Row>
+            </Row> */}
 
             <StreatmentsTable
                 sreatment={streatmentData}
