@@ -50,31 +50,6 @@ const TableSection = ({
         <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
             <Col xl={24} md={24} sm={24} xs={24}>
                 <Card
-                    title="Thống kê tư vấn của nhân viên"
-                    extra={
-                        <Row gutter={[16, 16]}>
-                            <Select
-                                defaultValue="Hôm nay"
-                                style={{ width: 120, marginRight: 8 }}
-                                onChange={(value) => setDateStaff(value)}
-                            >
-                                <Option value="today">Hôm nay</Option>
-                                <Option value="week">Tuần này</Option>
-                                <Option value="month">Tháng này</Option>
-                            </Select>
-                        </Row>
-                    }
-                >
-                    <Table
-                        scroll={{ x: 768 }}
-                        columns={staffConsulationsColumns}
-                        dataSource={filteredStaffConsultations}
-                        pagination={{ pageSize: 5 }}
-                    />
-                </Card>
-            </Col>
-            <Col xl={24} md={24} sm={24} xs={24}>
-                <Card
                     title="Thống kê lịch hẹn của nhân viên"
                     extra={
                         <Row gutter={[16, 16]}>
@@ -94,6 +69,31 @@ const TableSection = ({
                         scroll={{ x: 768 }}
                         columns={staffAppoimentsColumns}
                         dataSource={filteredStaffAppoiments}
+                        pagination={{ pageSize: 5 }}
+                    />
+                </Card>
+            </Col>
+            <Col xl={24} md={24} sm={24} xs={24}>
+                <Card
+                    title="Thống kê tư vấn của nhân viên"
+                    extra={
+                        <Row gutter={[16, 16]}>
+                            <Select
+                                defaultValue="Hôm nay"
+                                style={{ width: 120, marginRight: 8 }}
+                                onChange={(value) => setDateStaff(value)}
+                            >
+                                <Option value="today">Hôm nay</Option>
+                                <Option value="week">Tuần này</Option>
+                                <Option value="month">Tháng này</Option>
+                            </Select>
+                        </Row>
+                    }
+                >
+                    <Table
+                        scroll={{ x: 768 }}
+                        columns={staffConsulationsColumns}
+                        dataSource={filteredStaffConsultations}
                         pagination={{ pageSize: 5 }}
                     />
                 </Card>
