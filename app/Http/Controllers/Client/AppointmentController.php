@@ -34,7 +34,7 @@ class AppointmentController extends Controller
                 ], 404);
             }
 
-            $countAppointmentShift = Appointment::where('shift_id', $validateData['shift_id'])->count();
+            $countAppointmentShift = Appointment::where('shift_id', $validateData['shift_id'])->whereIn('status', [1, 2])->count();
             if ($shift->max_customers <= $countAppointmentShift) {
                 return response()->json([
                     "status" => false,

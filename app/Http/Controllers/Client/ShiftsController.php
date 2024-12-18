@@ -25,15 +25,19 @@ class ShiftsController extends Controller
             $filters = $queryResult['filter'];
             $relations = $queryResult['relations'];
             $sorts = $queryResult['sorts'];
-    
+
             $perPage = $request->query('per_page', 5);
-    
+
             $query = Shift::query();
-    
+
             // Loại bỏ các shift có status = 0
-            $subQuery = DB::table('appointments') ->select('appointments.shift_id', DB::raw('COUNT(*) AS appointment_count')) ->join('shifts', 'appointments.shift_id', '=', 'shifts.id') ->whereNull('appointments.deleted_at') ->whereRaw('DATE(appointments.appointment_date) = shifts.shift_date') ->whereRaw('TIME(appointments.start_time) >= TIME(shifts.start_time)') ->whereRaw('TIME(appointments.start_time) <= TIME(shifts.end_time)') ->groupBy('appointments.shift_id'); 
-            $query = Shift::query() ->leftJoinSub($subQuery, 'appointment_counts', function($join) { $join->on('shifts.id', '=', 'appointment_counts.shift_id'); }) ->select('shifts.*', DB::raw('IFNULL(appointment_counts.appointment_count, 0) AS appointment_count')) ->where('shifts.status', '!=', 0) ->where(function($query) { $query->whereNull('appointment_counts.appointment_count') ->orWhereColumn('appointment_counts.appointment_count', '<', 'shifts.max_customers'); });  
-             $query->orderByRaw("
+            $subQuery = DB::table('appointments')->select('appointments.shift_id', DB::raw('COUNT(*) AS appointment_count'))->join('shifts', 'appointments.shift_id', '=', 'shifts.id')->whereNull('appointments.deleted_at')->whereIn('appointments.status', [1, 2])->whereRaw('DATE(appointments.appointment_date) = shifts.shift_date')->whereRaw('TIME(appointments.start_time) >= TIME(shifts.start_time)')->whereRaw('TIME(appointments.start_time) <= TIME(shifts.end_time)')->groupBy('appointments.shift_id');
+            $query = Shift::query()->leftJoinSub($subQuery, 'appointment_counts', function ($join) {
+                $join->on('shifts.id', '=', 'appointment_counts.shift_id');
+            })->select('shifts.*', DB::raw('IFNULL(appointment_counts.appointment_count, 0) AS appointment_count'))->where('shifts.status', '!=', 0)->where(function ($query) {
+                $query->whereNull('appointment_counts.appointment_count')->orWhereColumn('appointment_counts.appointment_count', '<', 'shifts.max_customers');
+            });
+            $query->orderByRaw("
                 CASE
                     WHEN shift_date >= CURDATE() THEN 0 -- Ưu tiên ngày tương lai và hôm nay
                     ELSE 1 -- Ngày quá khứ
@@ -41,7 +45,7 @@ class ShiftsController extends Controller
                 ABS(DATEDIFF(shift_date, CURDATE())) ASC, -- Khoảng cách gần nhất
                 start_time ASC -- Thời gian bắt đầu
             ");
-    
+
             // Bước 2: Áp dụng các bộ lọc thông thường
             if (!empty($filters)) {
                 foreach ($filters as $filter) {
@@ -49,7 +53,7 @@ class ShiftsController extends Controller
                     $query->where($column, $operator, $value);
                 }
             }
-    
+
             // Bước 3: Áp dụng các bộ lọc liên quan
             if (!empty($relations)) {
                 foreach ($relations as $relationFilter) {
@@ -59,16 +63,16 @@ class ShiftsController extends Controller
                     });
                 }
             }
-    
+
             // Bước 4: Áp dụng sắp xếp tùy chọn từ query params (nếu có)
             if (!empty($sorts)) {
                 [$sortBy, $sortOrder] = $sorts;
                 $query->orderBy($sortBy, $sortOrder);
             }
-    
+
             // Phân trang kết quả
             $shifts = $query->paginate($perPage);
-    
+
             return (new ShiftCollection($shifts))->additional(['status' => true]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -78,7 +82,7 @@ class ShiftsController extends Controller
             ], 500);
         }
     }
-    
+
 
     // Store a new shift
     // Store a new shift
@@ -160,10 +164,10 @@ class ShiftsController extends Controller
     //             'message' => 'Không tìm thấy ca làm việc với ID này.',
     //         ], 404);
     //     }
-    
+
     //     // Nếu tìm thấy, thực hiện xóa
     //     $shift->delete();
-    
+
     //     return response()->json([
     //         'status' => true,
     //         'message' => 'Xóa ca làm việc thành công.',
