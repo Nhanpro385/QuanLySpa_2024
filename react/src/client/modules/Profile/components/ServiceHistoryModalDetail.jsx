@@ -34,7 +34,7 @@ const ServiceHistoryModalDetail = ({
             title: "Giá",
             dataIndex: "price",
             key: "price",
-            render: (text) => `${parseInt(text).toLocaleString()} VND`,
+            render: (text) => `${parseInt(text).toLocaleString()} VNĐ`,
         },
     ];
 
@@ -116,7 +116,7 @@ const ServiceHistoryModalDetail = ({
                             {parseInt(
                                 appointmentData?.total_price_services
                             ).toLocaleString()}{" "}
-                            VND
+                            VNĐ
                         </Descriptions.Item>
                     </Descriptions>
                 </Col>

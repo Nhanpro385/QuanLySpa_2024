@@ -66,14 +66,22 @@ const StatisticsSection = ({
                                         dailyRevenues?.total_revenue || 0
                                     ) /
                                         2000000) *
-                                    100,
+                                        100,
                                     100
                                 )}
-                                format={() =>
-                                    parseInt(
-                                        dailyRevenues?.total_revenue || 0
-                                    ).toLocaleString() + " VND"
-                                }
+                                format={() => (
+                                    <p
+                                        style={
+                                            {
+                                                color: "#e05265",
+                                            }
+                                        }
+                                    >
+                                        {parseInt(
+                                            dailyRevenues?.total_revenue || 0
+                                        ).toLocaleString()}
+                                    </p>
+                                )}
                             />
                         </Row>
                     </Card>
@@ -95,7 +103,7 @@ const StatisticsSection = ({
                                             }
                                             precision={0}
                                             valueStyle={{ color: "#e05265" }}
-                                            suffix="VND"
+                                            suffix="VNĐ"
                                             formatter={formatter}
                                         />
                                         <Text
@@ -106,7 +114,7 @@ const StatisticsSection = ({
                                             {parseInt(
                                                 dailyRevenues?.pending_revenue
                                             ).toLocaleString() || 0}{" "}
-                                            VND
+                                            VNĐ
                                         </Text>
 
                                         <Text
@@ -117,7 +125,7 @@ const StatisticsSection = ({
                                             {parseInt(
                                                 dailyRevenues?.completed_revenue
                                             ).toLocaleString() || 0}{" "}
-                                            VND
+                                            VNĐ
                                         </Text>
                                     </Card>
                                 </Col>
@@ -132,7 +140,7 @@ const StatisticsSection = ({
                                             style={{ display: "block" }}
                                             precision={0}
                                             valueStyle={{ color: "#e05265" }}
-                                            suffix="VND"
+                                            suffix="VNĐ"
                                             formatter={formatter}
                                         />
                                         <Text
@@ -143,7 +151,7 @@ const StatisticsSection = ({
                                             {parseInt(
                                                 weeklyRevenues?.pending_revenue
                                             ).toLocaleString() || 0}{" "}
-                                            VND
+                                            VNĐ
                                         </Text>
 
                                         <Text
@@ -154,7 +162,7 @@ const StatisticsSection = ({
                                             {parseInt(
                                                 weeklyRevenues?.completed_revenue
                                             ).toLocaleString() || 0}{" "}
-                                            VND
+                                            VNĐ
                                         </Text>
                                     </Card>
                                 </Col>
@@ -168,7 +176,7 @@ const StatisticsSection = ({
                                             }
                                             precision={0}
                                             valueStyle={{ color: "#e05265" }}
-                                            suffix="VND"
+                                            suffix="VNĐ"
                                             formatter={formatter}
                                         />
                                         <Text
@@ -179,7 +187,7 @@ const StatisticsSection = ({
                                             {parseInt(
                                                 monthlyRevenues?.pending_revenue
                                             ).toLocaleString() || 0}{" "}
-                                            VND
+                                            VNĐ
                                         </Text>
 
                                         <Text
@@ -190,7 +198,7 @@ const StatisticsSection = ({
                                             {parseInt(
                                                 monthlyRevenues?.completed_revenue
                                             ).toLocaleString() || 0}{" "}
-                                            VND
+                                            VNĐ
                                         </Text>
                                     </Card>
                                 </Col>

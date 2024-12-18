@@ -43,7 +43,7 @@ const TableProduct = ({
             key: "price",
             render: (text, record) => (
                 <span>
-                    {parseInt(record?.price).toLocaleString() + " VND" ||
+                    {parseInt(record?.price).toLocaleString() + " VNĐ" ||
                         "Dữ liệu không có"}
                 </span>
             ),

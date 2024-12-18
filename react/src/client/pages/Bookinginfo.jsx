@@ -110,10 +110,7 @@ const BookingInfo = () => {
             key: "price",
             align: "center",
             render: (text) =>
-                parseInt(text).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                }),
+                parseInt(text).toLocaleString() + " VNĐ" || "Dữ liệu không có",
         },
     ];
     return (

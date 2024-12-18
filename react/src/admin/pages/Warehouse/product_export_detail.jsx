@@ -5,13 +5,6 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 
-// Hàm định dạng tiền tệ
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-    }).format(value);
-};
 
 const ProductExportDetail = () => {
     const { id } = useParams();
@@ -38,7 +31,7 @@ const ProductExportDetail = () => {
                     bar_code: item?.product?.bar_code,
                     old_quantity: item?.quantity_olded,
                     export_quantity: item?.quantity_export,
-                    price: formatCurrency(item?.unit_price),
+                    price: parseInt(item?.unit_price).toLocaleString() + " VNĐ",
                 }))
             );
         }
@@ -86,7 +79,7 @@ const ProductExportDetail = () => {
                         {dataDetail?.id || "N/A"}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng tiền">
-                        {formatCurrency(dataDetail?.total_amount || 0)}
+                        {parseInt(dataDetail?.total_amount || 0).toLocaleString() + " VNĐ"}
                     </Descriptions.Item>
                     <Descriptions.Item label="Ghi chú">
                         {dataDetail?.note || "Không có"}

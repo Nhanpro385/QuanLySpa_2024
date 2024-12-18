@@ -48,7 +48,7 @@ const Staff_history_shift = ({ data }) => {
             render: (text) => (
                 <Space>
                     <DollarOutlined style={{ marginRight: "8px" }} />
-                    {text?.toLocaleString() || 0} VND
+                    {text?.toLocaleString() || 0} VNĐ
                 </Space>
             ),
         },

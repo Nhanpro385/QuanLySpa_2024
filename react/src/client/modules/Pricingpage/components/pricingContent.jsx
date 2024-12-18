@@ -55,12 +55,7 @@ const PricingContent = () => {
         setLoading(false);
     }, [serviceCategories]);
 
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-        }).format(price);
-    };
+  
 
     const isServiceNew = (createdAt) => {
         const createdDate = new Date(createdAt);
@@ -87,7 +82,7 @@ const PricingContent = () => {
                         }
                         className="w-100"
                     >
-                        <h3>Giá niêm yết: {formatPrice(item.price)}</h3>
+                        <h3>Giá niêm yết: {parseInt(item?.price).toLocaleString()} VNĐ</h3>
                         <Row gutter={[16, 16]} className="mt-3">
                             <Col
                                 xxl={12}
@@ -230,7 +225,7 @@ const PricingContent = () => {
                                                     key="price"
                                                     align="center"
                                                     render={(price) =>
-                                                        formatPrice(price)
+                                                        parseInt(price).toLocaleString() + " VNĐ"
                                                     }
                                                 />
                                                 <Column

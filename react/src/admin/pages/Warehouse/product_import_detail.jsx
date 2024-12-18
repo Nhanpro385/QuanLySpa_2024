@@ -5,13 +5,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 
-// Hàm định dạng tiền tệ
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-    }).format(value);
-};
+
 
 const ProductImportDetail = () => {
     const { id } = useParams();
@@ -38,9 +32,9 @@ const ProductImportDetail = () => {
                     sku: item?.product?.sku,
                     old_quantity: item?.quantity_olded,
                     import_quantity: item?.quantity_import,
-                    old_import_price: formatCurrency(item?.cost_olded),
-                    new_import_price: formatCurrency(item?.cost_import),
-                    price: formatCurrency(item?.unit_price),
+                    old_import_price: parseInt(item?.cost_olded).toLocaleString() + " VNĐ",
+                    new_import_price: parseInt(item?.cost_import).toLocaleString() + " VNĐ",
+                    price: parseInt(item?.unit_price).toLocaleString() + " VNĐ",
                 }))
             );
         }
@@ -98,7 +92,7 @@ const ProductImportDetail = () => {
                         {dataDetail?.id || "N/A"}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng tiền">
-                        {formatCurrency(dataDetail?.total_amount || 0)}
+                        {parseInt(dataDetail?.total_amount || 0).toLocaleString() + " VNĐ"}
                     </Descriptions.Item>
                     <Descriptions.Item label="Nhà cung cấp">
                         {dataDetail?.supplier?.name || "N/A"}

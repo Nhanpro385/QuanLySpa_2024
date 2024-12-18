@@ -173,7 +173,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
             dataIndex: "price",
             key: "price",
             render: (_, record) =>
-                parseInt(record.price).toLocaleString() + " VND",
+                parseInt(record.price).toLocaleString() + " VNĐ",
         },
         {
             title: "Số lượng",
@@ -204,7 +204,7 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
                         "quantity",
                         1
                     ) * record.price
-                ).toLocaleString() + " VND",
+                ).toLocaleString() + " VNĐ",
         },
         {
             title: "Thao tác",
@@ -269,12 +269,12 @@ const PaymentModal = ({ isOpen, onClose, payment, error, data }) => {
             label: "Tiền dịch vụ",
             children:
                 parseInt(DataAppointment?.service_total || 0).toLocaleString() +
-                " VND",
+                " VNĐ",
         },
         {
             key: "6",
             label: "Tổng tiền cần thanh toán",
-            children: totalAmount.toLocaleString() + " VND",
+            children: totalAmount.toLocaleString() + " VNĐ",
         },
     ];
 

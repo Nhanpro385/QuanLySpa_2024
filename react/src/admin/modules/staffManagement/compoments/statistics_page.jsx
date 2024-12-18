@@ -66,44 +66,38 @@ const Statistics_staff = ({ data }) => {
             {/* Tổng Thanh toán */}
             <Col xl={6} lg={6} md={6} sm={12} xs={24}>
                 <Card bordered={true}>
-                    <Row gutter={[16, 16]}>
-                        <Col xxl={12} xl={12} lg={12} md={12} sm={24} xs={24}>
-                            <Statistic
-                                title={`Tổng tiền đã thực hiện`}
-                                value={
-                                    data?.payment_today?.total_amount
-                                        ? parseInt(
-                                              data.payment_today.total_amount
-                                          ).toLocaleString() + " VNĐ"
-                                        : "0 VNĐ"
-                                }
-                                valueStyle={{ color: "#cf1322" }}
-                            />
-                            <Text type="secondary">
-                                <strong>
-                                    Tiền mặt:{" "}
-                                    {data?.payment_today?.total_amount_cash
-                                        ? parseInt(
-                                              data.payment_today
-                                                  .total_amount_cash
-                                          ).toLocaleString() + " VNĐ"
-                                        : "0 VNĐ"}
-                                </strong>
-                            </Text>
-                            <br />
-                            <Text type="secondary">
-                                <strong>
-                                    Chuyển khoản:{" "}
-                                    {data?.payment_today?.total_amount_transfer
-                                        ? parseInt(
-                                              data.payment_today
-                                                  .total_amount_transfer
-                                          ).toLocaleString() + " VNĐ"
-                                        : "0 VNĐ"}
-                                </strong>
-                            </Text>
-                        </Col>
-                    </Row>
+                    <Statistic
+                        title={`Tổng tiền đã thực hiện`}
+                        value={
+                            data?.payment_today?.total_amount
+                                ? parseInt(
+                                      data.payment_today.total_amount
+                                  ).toLocaleString() + " VNĐ"
+                                : "0 VNĐ"
+                        }
+                        valueStyle={{ color: "#cf1322" }}
+                    />
+                    <Text type="secondary">
+                        <strong>
+                            Tiền mặt:{" "}
+                            {data?.payment_today?.total_amount_cash
+                                ? parseInt(
+                                      data.payment_today.total_amount_cash
+                                  ).toLocaleString() + " VNĐ"
+                                : "0 VNĐ"}
+                        </strong>
+                    </Text>
+                    <br />
+                    <Text type="secondary">
+                        <strong>
+                            Chuyển khoản:{" "}
+                            {data?.payment_today?.total_amount_transfer
+                                ? parseInt(
+                                      data.payment_today.total_amount_transfer
+                                  ).toLocaleString() + " VNĐ"
+                                : "0 VNĐ"}
+                        </strong>
+                    </Text>
                 </Card>
             </Col>
         </Row>

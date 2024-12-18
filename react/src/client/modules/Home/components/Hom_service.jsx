@@ -106,7 +106,7 @@ const Home_service = () => {
                                     trigger="click"
                                     title={`Chi phí dự kiến: ${parseInt(
                                         item.price
-                                    ).toLocaleString()} VND`}
+                                    ).toLocaleString()} VNĐ`}
                                 >
                                     <Button className={styles.tooltipButton}>
                                         <MoneyCollectFilled />

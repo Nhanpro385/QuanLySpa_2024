@@ -95,8 +95,8 @@ const ServicesDetailById = () => {
     const data = service.comments.map((item, index) => ({
         key: index,
         title: item?.customer?.full_name || "Khách hàng không xác định",
-        avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`,
-        description: "Phản hồi từ khách hàng.",
+        avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${item.customer.id}`,
+        // description: "Phản hồi từ khách hàng.",
         content: item?.comment || "Không có",
         time: item?.created_at || "Không có",
         images: item?.image_url || [],
@@ -210,10 +210,9 @@ const ServicesDetailById = () => {
             >
                 <div className="d-flex align-items-center mb-2">
                     <Avatar
-                        src={
-                            "https://api.dicebear.com/7.x/miniavs/svg?seed=" +
-                            index
-                        }
+                        src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${
+                            reply?.type == 1 ? reply?.customer?.id : 1232
+                        }`}
                         size="large"
                         className="mr-3"
                     />
@@ -715,7 +714,9 @@ const ServicesDetailById = () => {
                             ]}
                         >
                             <List.Item.Meta
-                                avatar={<Avatar src={item?.avatar} />}
+                                avatar={
+                                    <Avatar size="large" src={item?.avatar} />
+                                }
                                 title={item?.title}
                                 description={item?.description}
                             />

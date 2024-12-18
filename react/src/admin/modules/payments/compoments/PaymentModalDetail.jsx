@@ -50,10 +50,7 @@ const PaymentModalDetail = ({ isOpen, onClose, selectedInvoice }) => {
             label: "Tổng tiền",
             children: `${parseFloat(
                 selectedInvoice?.total_amount || 0
-            ).toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-            })}`,
+            ).toLocaleString()} VNĐ`,
         },
         {
             key: "8",

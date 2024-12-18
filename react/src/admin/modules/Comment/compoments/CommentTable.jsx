@@ -89,6 +89,7 @@ const CommentTable = ({
                                 key: "edit",
                                 label: (
                                     <Button
+                                    disabled={record?.type == 1}
                                         block
                                         onClick={() => handleEdit(record)}
                                     >

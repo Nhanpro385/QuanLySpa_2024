@@ -32,7 +32,7 @@ const InvoiceTable = ({
             title: "Tổng tiền",
             dataIndex: "total_amount",
             key: "total_amount",
-            render: (text) => parseInt(text).toLocaleString() + " VND",
+            render: (text) => parseInt(text).toLocaleString() + " VNĐ",
         },
 
         {

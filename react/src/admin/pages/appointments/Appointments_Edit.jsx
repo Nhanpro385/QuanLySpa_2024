@@ -163,12 +163,12 @@ const Appointment_Edit = () => {
                         </Tag>
                         <Tag
                             color={
-                                shifts.shift?.data?.staffs.length > 0
+                                shifts.shift?.data?.staffs?.length > 0
                                     ? "green"
                                     : "red"
                             }
                         >
-                            <UserOutlined /> {shifts.shift?.data?.staffs.length}{" "}
+                            <UserOutlined /> {shifts.shift?.data?.staffs?.length}{" "}
                             nhân viên
                         </Tag>
                     </>
@@ -193,7 +193,7 @@ const Appointment_Edit = () => {
         );
     }, [shifts.shift]);
     useEffect(() => {
-        if (shifts.shifts.data.length > 0) {
+        if (shifts?.shifts?.data?.length > 0) {
             setShiftsOptions(
                 shifts.shifts.data.map((shift) => ({
                     value: shift.id,
@@ -210,7 +210,7 @@ const Appointment_Edit = () => {
                             </Tag>
                             <Tag
                                 color={
-                                    shift.staffs.length > 0 ? "green" : "red"
+                                    shift?.staffs?.length > 0 ? "green" : "red"
                                 }
                             >
                                 <UserOutlined /> {shift?.staffs?.length} nhân
@@ -327,7 +327,7 @@ const Appointment_Edit = () => {
                     navigate("/admin/lichhen");
                 }, 1000);
             } else {
-                if (Object.keys(res.payload.errors).length > 0) {
+                if (Object.keys(res.payload.errors)?.length > 0) {
                     Object.keys(res.payload.errors).forEach((key) => {
                         if (
                             [

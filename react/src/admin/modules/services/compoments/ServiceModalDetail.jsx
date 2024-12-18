@@ -36,13 +36,7 @@ const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
         {
             key: "4",
             label: "Giá",
-            children: `${parseFloat(servicedata?.price || 0).toLocaleString(
-                "vi-VN",
-                {
-                    style: "currency",
-                    currency: "VND",
-                }
-            )}`,
+            children: `${parseFloat(servicedata?.price || 0).toLocaleString()} VNĐ`,
         },
         {
             key: "5",
@@ -128,7 +122,8 @@ const ServiceModalDetail = ({ isOpen, onClose, servicedata }) => {
                             <Image
                                 key={image.id}
                                 src={
-                                    `${URL_IMAGE}/services/${image.image_url}` || ""
+                                    `${URL_IMAGE}/services/${image.image_url}` ||
+                                    ""
                                 }
                                 alt={`Image for ${servicedata?.name}`}
                                 fallback="https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"

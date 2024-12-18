@@ -67,7 +67,7 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
                         <Space>
                             <Tag color="blue">{item.name}</Tag>
                             <Tag color="green">
-                                {parseInt(item.price).toLocaleString() + " VND"}
+                                {parseInt(item.price).toLocaleString() + " VNĐ"}
                             </Tag>
                         </Space>
                     ),
@@ -142,7 +142,7 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
             dataIndex: "price",
             key: "price",
             render: (_, record) =>
-                parseInt(record.price).toLocaleString() + " VND",
+                parseInt(record.price).toLocaleString() + " VNĐ",
         },
         {
             title: "Số lượng",
@@ -173,7 +173,7 @@ const PaymentModalAddnew = ({ isOpen, onClose, addpayment, error }) => {
                         "quantity",
                         1
                     ) * record.price
-                ).toLocaleString() + " VND",
+                ).toLocaleString() + " VNĐ",
         },
         {
             title: "Thao tác",

@@ -68,7 +68,7 @@ function Staff_history_shift_Detail({ open, onOk, onCancel, appoitmentData }) {
                                 {service.name}
                             </Descriptions.Item>
                             <Descriptions.Item label="Giá">
-                                {parseInt(service.price).toLocaleString()} VND
+                                {parseInt(service.price).toLocaleString()} VNĐ
                             </Descriptions.Item>
                             <Descriptions.Item label="Thời gian">
                                 {service.duration}

@@ -33,14 +33,14 @@ const ModalProductDetail = ({ isOpen, onClose, ProductData }) => {
             label: "Giá bán",
             children: `${
                 parseInt(ProductData?.price).toLocaleString() || 0
-            } VND`,
+            } VNĐ`,
         },
         {
             key: "Chi phí",
             label: "Chi phí",
             children: `${
                 parseInt(ProductData?.cost).toLocaleString() || 0
-            } VND`,
+            } VNĐ`,
         },
         {
             key: "Ngày tạo",

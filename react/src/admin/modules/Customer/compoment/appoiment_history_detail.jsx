@@ -48,7 +48,7 @@ const Appoiment_history_detail = ({ data }) => {
             render: (text) => (
                 <Space>
                     <DollarOutlined style={{ marginRight: "8px" }} />
-                    {text?.toLocaleString() || 0} VND
+                    {text?.toLocaleString() || 0} VNĐ
                 </Space>
             ),
         },

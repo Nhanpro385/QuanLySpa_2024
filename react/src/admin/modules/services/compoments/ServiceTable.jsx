@@ -28,12 +28,7 @@ const ServiceTable = ({
             dataIndex: "price",
             key: "price",
             render: (text, record) => (
-                <span>
-                    {Number(record.price).toLocaleString("it-IT", {
-                        style: "currency",
-                        currency: "VND",
-                    })}
-                </span>
+                <span>{parseInt(record.price).toLocaleString()} VNĐ</span>
             ),
         },
         { title: "Thời gian dự kiến", dataIndex: "duration", key: "duration" },
