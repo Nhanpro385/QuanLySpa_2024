@@ -25,7 +25,7 @@ const ProductExportDetail = () => {
             return;
         }
         getExportDetailAction(id);
-    }, [id, getExportDetailAction]);
+    }, []);
 
     useEffect(() => {
         if (warehouse?.export?.detail?.data) {

@@ -22,7 +22,6 @@ const ProductImportDetail = () => {
 
     useEffect(() => {
         if (!id) {
-            
             return;
         }
         getImportDetailAction(id);
