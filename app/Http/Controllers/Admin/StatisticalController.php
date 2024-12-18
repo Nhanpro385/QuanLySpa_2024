@@ -232,15 +232,15 @@ class StatisticalController extends Controller
         if ($request->input('day')) {
             $day = $request->input('day');
         }
-        $today_appointment = Appointment::whereDate('created_at', $day)->whereDate('appointment_date', $day)->count();
+        $today_appointment = Appointment::whereDate('appointment_date', $day)->whereDate('appointment_date', $day)->count();
 
-        $cancel_appointment = Appointment::whereDate('created_at', $day)->whereDate('appointment_date', $day)->where('status', 0)->count();
+        $cancel_appointment = Appointment::whereDate('appointment_date', $day)->whereDate('appointment_date', $day)->where('status', 0)->count();
 
-        $appointment = Appointment::whereDate('created_at', $day)->whereDate('appointment_date', $day)->where('status', 1)->count();
+        $appointment = Appointment::whereDate('appointment_date', $day)->whereDate('appointment_date', $day)->where('status', 1)->count();
 
-        $progress_appointment = Appointment::whereDate('created_at', $day)->whereDate('appointment_date', $day)->where('status', 2)->count();
+        $progress_appointment = Appointment::whereDate('appointment_date', $day)->whereDate('appointment_date', $day)->where('status', 2)->count();
 
-        $completed_appointment = Appointment::whereDate('created_at', $day)->whereDate('appointment_date', $day)->where('status', 3)->count();
+        $completed_appointment = Appointment::whereDate('appointment_date', $day)->whereDate('appointment_date', $day)->where('status', 3)->count();
 
         $arr = [
             'status' => true,
