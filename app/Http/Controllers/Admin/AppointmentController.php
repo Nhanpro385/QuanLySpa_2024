@@ -58,6 +58,7 @@ class AppointmentController extends Controller
                         ->orWhere('email', 'like', '%' . $value . '%');
                 })
                     ->orWhere('appointment_date', 'like', '%' . $value . '%')
+                    ->orWhere('id', 'like', '%' . $value . '%')
                 ;
             }
             foreach ($queryResult['relations'] as $relationFilter) {
